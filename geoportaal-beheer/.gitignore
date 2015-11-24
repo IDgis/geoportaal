@@ -10,3 +10,5 @@ target
 /.cache-main
 /.cache-tests
 *.tmp
+/.gradle
+/build/
