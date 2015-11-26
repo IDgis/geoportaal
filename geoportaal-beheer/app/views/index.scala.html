@@ -1,7 +1,17 @@
-@(message: String)
+@(publishers: java.util.List[String], languages: java.util.List[String], westCrds: java.util.List[java.math.BigDecimal], date: String)
 
-@main("Welcome to Play") {
-
-    @play20.welcome(message, style = "Java")
-
+@main("Home") {
+    @for(publisher <- publishers) {
+    	<h1 class="test">@publisher</h1>
+    }
+    
+    @for(language <- languages) {
+    	<h1 class="test">@language</h1>
+    }
+    
+    @for(westCrd <- westCrds) {
+    	<h1 class="test">@westCrd</h1>
+    }
+    
+    <h1 class="test">@date</h1>
 }
