@@ -5,9 +5,44 @@
 <html lang="en">
     <head>
         <title>@title</title>
+        <link rel="stylesheet" media="screen" href="@routes.Assets.versioned("lib/bootstrap/css/bootstrap.min.css")">
         <link rel="stylesheet" media="screen" href="@routes.Assets.versioned("stylesheets/main.css")">
     </head>
     <body>
+        <div class="logo">
+			<a href="http://www.overijssel.nl">
+				<img src="@routes.Assets.versioned("images/logo_overijssel.png")"></img>
+			</a>
+		</div>
+		<div class="titelbalk">
+			<h1 class="header">@title</h1>
+		</div>
+		<div class="grid">
+			<div class="tabs">
+				<div class="toptaak-element">
+					<div class="toptaak-outer">
+						<div class="@if(title == "Toevoegen") {toptaak-inner-active} else {toptaak-inner}">
+							<a class="tabs" href="@routes.Add.add()">
+								<span class="toptaak-titel">
+									Toevoegen
+								</span>
+							</a>
+						</div>
+					</div>
+				</div>
+				<div class="toptaak-element">
+					<div class="toptaak-outer">
+						<div class="@if(title == "Zoeken") {toptaak-inner-active} else {toptaak-inner}">
+							<a class="tabs" href="@routes.Index.index()">
+								<span class="toptaak-titel">
+									Zoeken en wijzigen									
+								</span>
+							</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
         @content
     </body>
 </html>
