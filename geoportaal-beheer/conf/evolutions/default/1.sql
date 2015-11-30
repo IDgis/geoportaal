@@ -28,7 +28,7 @@ CREATE TABLE Attachment (
 ;
 
 CREATE TABLE Dataset ( 
-	id serial,
+	id char(50) NOT NULL,
 	location char(200) NOT NULL,
 	file_id char(50),
 	title char(50) NOT NULL,
@@ -65,3 +65,9 @@ INSERT INTO Defaults VALUES
     ('Provincie Overijssel', 'Provincie Overijssel', 'Nederlands', 5.791, 7.090, 52.115, 52.853, '2015-01-01', '2016-01-01');
     
 # --- !Downs
+
+DROP SCHEMA gb;
+DROP TABLE Defaults;
+DROP TABLE Subject;
+DROP TABLE Attachment;
+DROP TABLE Dataset;

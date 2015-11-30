@@ -1,17 +1,104 @@
-@(publishers: java.util.List[String], languages: java.util.List[String], westCrds: java.util.List[java.math.BigDecimal], date: String)
-
-@main("Home") {
-    @for(publisher <- publishers) {
-    	<h1 class="test">@publisher</h1>
-    }
-    
-    @for(language <- languages) {
-    	<h1 class="test">@language</h1>
-    }
-    
-    @for(westCrd <- westCrds) {
-    	<h1 class="test">@westCrd</h1>
-    }
-    
-    <h1 class="test">@date</h1>
+@main("Zoeken") {
+	<div class="welkom">
+		<p>Hier kunt u naar metadata records zoeken en veranderingen doorvoeren.</p>
+	</div>
+	<form class="form-horizontal" method="get">
+		<div class="form-group">
+			<label class="col-sm-3 control-label">Tekst</label>
+			<div class="col-sm-8">
+				<input class="form-control" type="text" placeholder="Op tekst zoeken" data-toggle="tooltip" data-placement="top" 
+				title="Zoek op een woord">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">Leverancier</label>
+			<div class="col-sm-8">
+				<select class="form-control" data-toggle="tooltip" data-placement="top" title="Filter op leverancier">
+					<option></option>
+				</select>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">Status</label>
+			<div class="col-sm-8">
+				<select class="form-control" data-toggle="tooltip" data-placement="top" title="Filter op status">
+					<option>Alle</option>
+					<option>Concept</option>
+					<option>Ter goedkeuring</option>
+					<option>In publicatie</option>
+					<option>Verwijderd</option>
+				</select>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">Formaat</label>
+			<div class="col-sm-8">
+				<select class="form-control" data-toggle="tooltip" data-placement="top" title="Filter op formaat">
+					<option>Adobe Illustrator: AI</option>
+					<option>Freehand: FH</option>
+					<option>Adobe Acrobat: PDF</option>
+					<option>Microstation: DGN</option>
+					<option>Autocad: DWG DXF</option>
+					<option>PaintShop: PSP</option>
+					<option>ArcGIS: MXD</option>
+				</select>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">Update datum tussen</label>
+			<div class="col-sm-4">
+				<input class="form-control" type="date" placeholder="Begindatum" data-toggle="tooltip" data-placement="top" 
+				title="Zoek op begindatum">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">en</label>
+			<div class="col-sm-4">
+				<input class="form-control" type="date" placeholder="Einddatum" data-toggle="tooltip" data-placement="top" 
+				title="Zoek op einddatum">
+			</div>
+		</div>
+		<div class="form-group">
+ 			<div class="col-sm-offset-3 col-sm-7">
+ 				<button class="knop" type="button">Zoek</button>
+ 				<a class="knop">Help</a>
+			</div>
+		</div>
+	</form>
+	<div class="alle-records">
+		<input type="checkbox" class="checkalles">
+		<span>Alle records selecteren</span>
+	</div>
+	
+	<div class="geselecteerde-records">
+		<span>Acties voor geselecteerde records:</span>
+	</div>
+	<form class="form-inline beheer-knoppen" method="get">
+		<div class="form-group">
+			<button class="knop" type="button">Concept</button>
+			<button class="knop" type="button">Ter goedkeuring</button>
+			<button class="knop" type="button">In publicatie</button>
+			<button class="knop" type="button">Verwijderen</button>
+			<button class="knop" type="button">Leverancier wijzigen</button>
+			<select class="form-control" id="edit-status">
+				<option></option>
+			</select>
+		</div>
+	</form>
+	<div class="overzicht-records">
+		<table class="col-sm-offset-0 table table-bordered">
+			<tbody>
+				<tr>
+					<th>
+						<input type="checkbox" class="checkalles">
+					</th>
+					<th>Actie</th>
+					<th>Titel</th>
+					<th>Leverancier</th>
+					<th>Status</th>
+					<th>Datum</th>
+				</tr>
+			</tbody>
+		</table>
+	</div>
 }
