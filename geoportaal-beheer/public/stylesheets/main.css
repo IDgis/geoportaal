@@ -10,8 +10,7 @@ div.titelbalk {margin-top:20px;margin-bottom:20px;}
 h1.header {padding:.3em .5em;border-radius:0 12px 0 0;background-color:#831625;margin-left:0;margin-right:0;color:#ffffff;font-size:1.625em;
 	font-weight:bold;font-style:normal;line-height:47px;}
 	
-.grid {background-repeat:repeat;margin-left: -100%;margin-right:-100%;padding-left:100%;padding-right:100%;margin-top:20px;
-	margin-bottom:20px;padding-top:5px;padding-bottom:5px;}
+.grid {margin-top:20px;margin-bottom:20px;padding-top:5px;padding-bottom:5px;}
 .grid:after {content:'';display:block;clear:both;}
 .toptaak-element {float:left;width:49.95%;height:85px;display:block;}
 .toptaak-outer {height:100%;padding:1px;}
@@ -41,8 +40,10 @@ form.beheer-knoppen {margin-top:20px;margin-bottom:20px;margin-left:20px;}
 div.overzicht-records {margin-top:20px;margin-bottom:20px;margin-left:20px;}
 div.alle-records {margin-top:20px;margin-bottom:20px;margin-left:20px;}
 div.geselecteerde-records {margin-top:20px;margin-bottom:20px;margin-left:20px;}
-div.editor-knoppen {margin-bottom:20px;}
+div.editor-knoppen {margin-bottom:20px;margin-left:15px;}
 
-#actiemelding {display:none;}
-#otherCreator {display:none;}
+#js-form-warning-fields, #js-form-warning-subjects {display:none;}
+#js-other-creator {display:none;}
+#js-form-approval {display:none;}
 #input-attachment {display:inline;}
+#js-cancel-form {line-height:20px;padding:7.5px 12px;}
