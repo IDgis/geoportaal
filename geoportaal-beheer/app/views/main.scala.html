@@ -1,4 +1,4 @@
-@(title: String)(content: Html)
+@(title: String, jsMain: String)(content: Html)
 
 <!DOCTYPE html>
 
@@ -44,5 +44,7 @@
 			</div>
 		</div>
         @content
+        <script src="@routes.Assets.versioned("lib/dojo/dojo/dojo.js")" type="text/javascript"></script>
+        <script src="@jsMain" type="text/javascript"></script>
     </body>
 </html>

@@ -1,5 +1,7 @@
 package models;
 
+import java.util.List;
+
 public class DublinCore {
 	
 	private String id;
@@ -7,23 +9,28 @@ public class DublinCore {
 	private String fileId;
 	private String title;
 	private String description;
-	private String attachment;
+	private List<String> attachment;
 	private String type;
 	private String creator;
 	private String rights;
-	private String useLimitation;;
-	private String format;;
+	private String useLimitation;
+	private String format;
 	private String source;
-	private String dateCreation;
-	private String datePublication;
-	private String dateRevision;
-	private String dateValidFrom;
-	private String dateValidUntil;
+	private String dateSourceCreation;
+	private String dateSourcePublication;
+	private String dateSourceRevision;
+	private String dateSourceValidFrom;
+	private String dateSourceValidUntil;
+	private List<String> subject;
 	
-	public DublinCore(String id, String location, String fileId, String title, String description, String attachment,
+	public DublinCore() {
+		
+	}
+	
+	public DublinCore(String id, String location, String fileId, String title, String description, List<String> attachment,
 			String type, String creator, String rights, String useLimitation, String format, String source,
-			String dateCreation, String datePublication, String dateRevision, String dateValidFrom,
-			String dateValidUntil) {
+			String dateSourceCreation, String dateSourcePublication, String dateSourceRevision, String dateSourceValidFrom,
+			String dateSourceValidUntil, List<String> subject) {
 		super();
 		this.id = id;
 		this.location = location;
@@ -37,11 +44,12 @@ public class DublinCore {
 		this.useLimitation = useLimitation;
 		this.format = format;
 		this.source = source;
-		this.dateCreation = dateCreation;
-		this.datePublication = datePublication;
-		this.dateRevision = dateRevision;
-		this.dateValidFrom = dateValidFrom;
-		this.dateValidUntil = dateValidUntil;
+		this.dateSourceCreation = dateSourceCreation;
+		this.dateSourcePublication = dateSourcePublication;
+		this.dateSourceRevision = dateSourceRevision;
+		this.dateSourceValidFrom = dateSourceValidFrom;
+		this.dateSourceValidUntil = dateSourceValidUntil;
+		this.subject = subject;
 	}
 	public String getId() {
 		return id;
@@ -73,10 +81,10 @@ public class DublinCore {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	public String getAttachment() {
+	public List<String> getAttachment() {
 		return attachment;
 	}
-	public void setAttachment(String attachment) {
+	public void setAttachment(List<String> attachment) {
 		this.attachment = attachment;
 	}
 	public String getType() {
@@ -88,6 +96,7 @@ public class DublinCore {
 	public String getCreator() {
 		return creator;
 	}
+
 	public void setCreator(String creator) {
 		this.creator = creator;
 	}
@@ -115,34 +124,52 @@ public class DublinCore {
 	public void setSource(String source) {
 		this.source = source;
 	}
-	public String getDateCreation() {
-		return dateCreation;
+
+	public String getDateSourceCreation() {
+		return dateSourceCreation;
 	}
-	public void setDateCreation(String dateCreation) {
-		this.dateCreation = dateCreation;
+
+	public void setDateSourceCreation(String dateSourceCreation) {
+		this.dateSourceCreation = dateSourceCreation;
 	}
-	public String getDatePublication() {
-		return datePublication;
+
+	public String getDateSourcePublication() {
+		return dateSourcePublication;
 	}
-	public void setDatePublication(String datePublication) {
-		this.datePublication = datePublication;
+
+	public void setDateSourcePublication(String dateSourcePublication) {
+		this.dateSourcePublication = dateSourcePublication;
 	}
-	public String getDateRevision() {
-		return dateRevision;
+
+	public String getDateSourceRevision() {
+		return dateSourceRevision;
 	}
-	public void setDateRevision(String dateRevision) {
-		this.dateRevision = dateRevision;
+
+	public void setDateSourceRevision(String dateSourceRevision) {
+		this.dateSourceRevision = dateSourceRevision;
 	}
-	public String getDateValidFrom() {
-		return dateValidFrom;
+
+	public String getDateSourceValidFrom() {
+		return dateSourceValidFrom;
 	}
-	public void setDateValidFrom(String dateValidFrom) {
-		this.dateValidFrom = dateValidFrom;
+
+	public void setDateSourceValidFrom(String dateSourceValidFrom) {
+		this.dateSourceValidFrom = dateSourceValidFrom;
 	}
-	public String getDateValidUntil() {
-		return dateValidUntil;
+
+	public String getDateSourceValidUntil() {
+		return dateSourceValidUntil;
 	}
-	public void setDateValidUntil(String dateValidUntil) {
-		this.dateValidUntil = dateValidUntil;
+
+	public void setDateSourceValidUntil(String dateSourceValidUntil) {
+		this.dateSourceValidUntil = dateSourceValidUntil;
+	}
+
+	public List<String> getSubject() {
+		return subject;
+	}
+
+	public void setSubject(List<String> subject) {
+		this.subject = subject;
 	}
 }
