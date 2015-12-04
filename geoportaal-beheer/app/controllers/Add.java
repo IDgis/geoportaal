@@ -7,6 +7,7 @@ import static models.QSubject.subject1;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 import javax.sql.DataSource;
@@ -26,11 +27,13 @@ public class Add extends Controller {
 	DataSource ds = DB.getDataSource();
 	
 	public Result add() {
+		Boolean create = true;
+		
 		String uuid = UUID.randomUUID().toString();
 		Date dateToday = new Date();
 		String today = new SimpleDateFormat("dd-MM-yyyy").format(new Date(dateToday.getTime()));
-
-		return ok(views.html.addRecord.render(uuid, today));
+		
+		return ok(views.html.form.render(create, uuid, today, null, null));
 	}
 	
 	public Result submit() throws ParseException {
@@ -44,34 +47,19 @@ public class Add extends Controller {
     	Date dateToday = new Date();
     	
 		Date dSC = new SimpleDateFormat("dd-MM-yyyy").parse(dc.getDateSourceCreation());
-		String textDSC = new SimpleDateFormat("yyyy-MM-dd").format(new Date(dSC.getTime()));
-		
 		Date dSP = new SimpleDateFormat("dd-MM-yyyy").parse(dc.getDateSourcePublication());
-		String textDSP = new SimpleDateFormat("yyyy-MM-dd").format(new Date(dSP.getTime()));
-		
 		Date dSR = new SimpleDateFormat("dd-MM-yyyy").parse(dc.getDateSourceRevision());
-		String textDSR = new SimpleDateFormat("yyyy-MM-dd").format(new Date(dSR.getTime()));
-		
 		Date dSVF = new SimpleDateFormat("dd-MM-yyyy").parse(dc.getDateSourceValidFrom());
-		String textDSVF = new SimpleDateFormat("yyyy-MM-dd").format(new Date(dSVF.getTime()));
-		
 		Date dSVU = new SimpleDateFormat("dd-MM-yyyy").parse(dc.getDateSourceValidUntil());
-		String textDSVU = new SimpleDateFormat("yyyy-MM-dd").format(new Date(dSVU.getTime()));
-		
-		System.out.println(textDSC);
-		System.out.println(textDSP);
-		System.out.println(textDSR);
-		System.out.println(textDSVF);
-		System.out.println(textDSVU);
 		
 		queryFactory.insert(dataset)
-    		.columns(dataset.id, dataset.location, dataset.fileId, dataset.title, dataset.description, dataset.type,
+    		.columns(dataset.id, dataset.location, dataset.fileId, dataset.title, dataset.description, dataset.typeInfo,
     			dataset.creator, dataset.rights, dataset.useLimitation, dataset.format, dataset.source, dataset.dateSourceCreation,
     			dataset.dateSourcePublication, dataset.dateSourceRevision, dataset.dateSourceValidFrom, dataset.dateSourceValidUntil,
     			dataset.supplier, dataset.status, dataset.published, dataset.lastRevisionUser, dataset.lastRevisionDate)
-    		.values(dc.getId(), dc.getLocation(), dc.getFileId(), dc.getTitle(), dc.getDescription(), dc.getType(), dc.getCreator(),
-    				dc.getRights(), dc.getUseLimitation(), dc.getFormat(), dc.getSource(), textDSC, textDSP, textDSR, textDSVF, textDSVU, 
-    				"Nienhuis", "concept", "false", "Nienhuis", dateToday)
+    		.values(dc.getId(), dc.getLocation(), dc.getFileId(), dc.getTitle(), dc.getDescription(), dc.getTypeInfo(), dc.getCreator(),
+    				dc.getRights(), dc.getUseLimitation(), dc.getFormat(), dc.getSource(), dSC, dSP, dSR, dSVF, dSVU, 
+    				"Nienhuis", "concept", false, "Nienhuis", dateToday)
     		.execute();
     	
 		

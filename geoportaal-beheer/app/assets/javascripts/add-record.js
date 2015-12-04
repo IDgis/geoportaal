@@ -15,6 +15,13 @@ require([
 		var addAttachment = on(win.doc, '.js-add-attachment:click', function(e) {
 			var attachment = query(this).parents('.js-attachment')[0];
 			domConstruct.place(lang.clone(attachment), dom.byId('js-group-attachment'), "last");
+			
+			
+			/*
+			<button class="knop js-remove-attachment" type="button">
+				<span class="glyphicon glyphicon-remove"></span>
+			</button>
+			*/
 		});
 		
 		var handleOtherCreator = on(dom.byId('js-creator-select'), 'change', function(e) {

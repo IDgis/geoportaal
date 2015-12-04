@@ -1,0 +1,315 @@
+@(create: Boolean, uuid: String, today: String, datasetRow: com.querydsl.core.Tuple, subjectsDataset: java.util.List[String])
+
+@import models.QDataset.dataset
+
+@main(if(create) {"Toevoegen"} else {"Wijzigen"}, routes.Assets.versioned("javascripts/add-record.js").url) {
+	<div class="welkom">
+		<p class="welkom">Vul de velden zo volledig mogelijk in.</p>
+		<p class="welkom">* = verplicht</p>
+	</div>
+	
+	@helper.form(action = routes.Add.submit(), 'class -> "form-horizontal beheer-formulier") {
+		<div class="form-group">
+			<label class="col-sm-3 control-label">Unieke ID</label>
+			<div class="col-sm-8">
+				<input class="form-control" type="text" data-toggle="tooltip" data-placement="top" title="De unieke ID van de data" 
+				name="id" value="@if(create) {@uuid} else {@datasetRow.get(dataset.id)}" readonly>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">Locatie*</label>
+			<div class="col-sm-8">
+				<input class="form-control js-mandatory" type="text" data-toggle="tooltip" data-placement="top" data-field="locatie"
+				title="Vul het pad naar het bestand op de computer in" name="location" value="@if(!create) {@datasetRow.get(dataset.location)}">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">Kenmerk</label>
+			<div class="col-sm-8">
+				<input class="form-control" type="text" data-toggle="tooltip" data-placement="top" 
+				title="Vul het kenmerk in" name="fileId" value="@if(!create) {@datasetRow.get(dataset.fileId)}">
+			</div>
+		</div>
+		
+		<div class="form-group">
+			<label class="col-sm-3 control-label">Titel*</label>
+			<div class="col-sm-8">
+				<input class="form-control js-mandatory" type="text" data-toggle="tooltip" data-placement="top" data-field="titel"
+				title="Vul de titel in" name="title" value="@if(!create) {@datasetRow.get(dataset.title)}">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">Omschrijving*</label>
+			<div class="col-sm-8">
+				<textarea class="form-control js-mandatory" rows="4" data-toggle="tooltip" data-placement="top" data-field="omschrijving"
+				title="Vul de omschrijving in" name="description">@if(!create) {@datasetRow.get(dataset.description)}</textarea>
+			</div>
+		</div>
+		<div id="js-group-attachment">
+			<div class="form-group js-attachment">
+				<label class="col-sm-3 control-label">Bijlage</label>
+				<div class="col-sm-8 form-inline">
+					<input id="input-attachment" type="file" data-toggle="tooltip" data-placement="top" title="Voeg de bijlage(s) toe"
+					name="attachment[]">
+					<button class="knop js-add-attachment" type="button">
+						<span class="glyphicon glyphicon-plus"></span>
+					</button>
+				</div>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">Type informatie</label>
+			<div class="col-sm-8">
+				<select class="form-control" data-toggle="tooltip" data-placement="top" title="Selecteer het type informatie"
+				name="typeInfo">
+					<option value="none" @if(!create && datasetRow.get(dataset.typeInfo) == "none") {selected}></option>
+					<option value="map" @if(!create && datasetRow.get(dataset.typeInfo) == "map") {selected}>kaart</option>
+					<option value="database" @if(!create && datasetRow.get(dataset.typeInfo) == "database") {selected}>database</option>
+					<option value="table" @if(!create && datasetRow.get(dataset.typeInfo) == "table") {selected}>tabel</option>
+					<option value="application" @if(!create && datasetRow.get(dataset.typeInfo) == "application") {selected}>applicatie</option>
+					<option value="drawing" @if(!create && datasetRow.get(dataset.typeInfo) == "drawing") {selected}>tekening</option>
+					<option value="report" @if(!create && datasetRow.get(dataset.typeInfo) == "report") {selected}>rapport</option>
+					<option value="website" @if(!create && datasetRow.get(dataset.typeInfo) == "website") {selected}>website</option>
+				</select>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">Eindverantwoordelijke*</label>
+			<div class="col-sm-8">
+				<select id="js-creator-select" class="form-control" data-toggle="tooltip" data-placement="top" 
+				title="Selecteer de eindverantwoordelijke" name="creator">
+					<option value="OvUnitEconomy" @if(!create && datasetRow.get(dataset.creator) == "OvUnitEconomy") {selected}>Provincie Overijssel: eenheid Economie en Cultuur</option>
+					<option value="OvUnitPolicy" @if(!create && datasetRow.get(dataset.creator) == "OvUnitPolicy") {selected}>Provincie Overijssel: eenheid Bestuurs- en Concernzaken</option>
+					<option value="OvUnitManagement" @if(!create && datasetRow.get(dataset.creator) == "OvUnitManagement") {selected}>Provincie Overijssel: eenheid Bedrijfsvoering</option>
+					<option value="OvUnitProject" @if(!create && datasetRow.get(dataset.creator) == "OvUnitProject") {selected}>Provincie Overijssel: eenheid Project- en Programmamanagement</option>
+					<option value="OvUnitSpatial" @if(!create && datasetRow.get(dataset.creator) == "OvUnitSpatial") {selected}>Provincie Overijssel: eenheid Ruimte en Bereikbaarheid</option>
+					<option value="OvUnitNature" @if(!create && datasetRow.get(dataset.creator) == "OvUnitNature") {selected}>Provincie Overijssel: eenheid Natuur en Milieu</option>
+					<option value="OvUnitRoads" @if(!create && datasetRow.get(dataset.creator) == "OvUnitRoads") {selected}>Provincie Overijssel: eenheid Wegen en Kanalen</option>
+					<option value="OvUnitPublic" @if(!create && datasetRow.get(dataset.creator) == "OvUnitPublic") {selected}>Provincie Overijssel: eenheid Publieke Dienstverlening</option>
+					<option value="other" @if(!create && datasetRow.get(dataset.creator) == "other") {selected}>Andere</option>
+				</select>
+			</div>
+		</div>
+		<div class="form-group" id="js-other-creator">
+			<label class="col-sm-3 control-label"></label>
+			<div class="col-sm-8">
+				<input id="js-other-creator-input" class="form-control" type="text" placeholder="Voer eindverantwoordelijke van bestand in">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">Eigendomsrechten</label>
+			<div class="col-sm-8">
+				<select class="form-control" data-toggle="tooltip" data-placement="top" title="Selecteer de eigendomsrechten"
+				name="rights">
+					<option value="none" @if(!create && datasetRow.get(dataset.rights) == "none") {selected}></option>
+					<option value="noRestrictions" @if(!create && datasetRow.get(dataset.rights) == "noRestrictions") {selected}>Geen restricties</option>
+					<option value="copyright" @if(!create && datasetRow.get(dataset.rights) == "copyright") {selected}>Copyright</option>
+					<option value="patent" @if(!create && datasetRow.get(dataset.rights) == "patent") {selected}>Patent</option>
+					<option value="patentFuture" @if(!create && datasetRow.get(dataset.rights) == "patentFuture") {selected}>Patent in wording</option>
+					<option value="brandName" @if(!create && datasetRow.get(dataset.rights) == "brandName") {selected}>Merknaam</option>
+					<option value="license" @if(!create && datasetRow.get(dataset.rights) == "license") {selected}>Licentie</option>
+					<option value="ip" @if(!create && datasetRow.get(dataset.rights) == "ip") {selected}>Intellectueel eigendom</option>
+					<option value="notAccessible" @if(!create && datasetRow.get(dataset.rights) == "notAccessible") {selected}>Niet toegankelijk</option>
+					<option value="dataWithDeclaration" @if(!create && datasetRow.get(dataset.rights) == "dataWithDeclaration") {selected}>Data mag alleen met verklaring uitgeleverd worden</option>
+					<option value="dataClassified" @if(!create && datasetRow.get(dataset.rights) == "dataClassified") {selected}>Data mag niet uitgeleverd worden</option>
+				</select>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">Gebruiksrestricties*</label>
+			<div class="col-sm-8">
+				<select class="form-control" data-toggle="tooltip" data-placement="top" title="Selecteer de gebruiksrestrictie"
+				name="useLimitation">
+					<option value="intern" @if(!create && datasetRow.get(dataset.useLimitation) == "intern") {selected}>Alleen voor intern gebruik</option>
+					<option value="extern" @if(!create && datasetRow.get(dataset.useLimitation) == "extern") {selected}>De bron mag ook voor externe partijen vindbaar zijn</option>
+				</select>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">Formaat</label>
+			<div class="col-sm-8">
+				<select class="form-control" data-toggle="tooltip" data-placement="top" 
+				title="Selecteer het formaat van de data" name="format">
+					<option value="none" @if(!create && datasetRow.get(dataset.format) == "none") {selected}></option>
+					<option value="adobeIllustrator" @if(!create && datasetRow.get(dataset.format) == "adobeIllustrator") {selected}>Adobe Illustrator: AI</option>
+					<option value="freehand" @if(!create && datasetRow.get(dataset.format) == "freehand") {selected}>Freehand: FH</option>
+					<option value="adobeAcrobat" @if(!create && datasetRow.get(dataset.format) == "adobeAcrobat") {selected}>Adobe Acrobat: PDF</option>
+					<option value="microstation" @if(!create && datasetRow.get(dataset.format) == "microstation") {selected}>Microstation: DGN</option>
+					<option value="autocad" @if(!create && datasetRow.get(dataset.format) == "autocad") {selected}>Autocad: DWG DXF</option>
+					<option value="paintshop" @if(!create && datasetRow.get(dataset.format) == "paintshop") {selected}>PaintShop: PSP</option>
+					<option value="arcgis" @if(!create && datasetRow.get(dataset.format) == "arcgis") {selected}>ArcGIS: MXD</option>
+				</select>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">Bron</label>
+			<div class="col-sm-8">
+				<input class="form-control" type="text" data-toggle="tooltip" data-placement="top" 
+				title="Vul de persoon of organisatie waar de bron vandaan komt" name="source" 
+				value="@if(!create) {@datasetRow.get(dataset.source)}">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">Datum creatie</label>
+			<div class="col-sm-4">
+				<input class="form-control" type="text" data-toggle="tooltip" data-placement="top" 
+				title="Vul de datum in wanneer de metadata gemaakt is" name="dateSourceCreation" 
+				value="@if(create) {@today} else {@datasetRow.get(dataset.dateSourceCreation.dayOfMonth())-@datasetRow.get(dataset.dateSourceCreation.month())-@datasetRow.get(dataset.dateSourceCreation.year())}">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">Datum publicatie</label>
+			<div class="col-sm-4">
+				<input class="form-control" type="text" data-toggle="tooltip"  data-placement="top" 
+				title="Vul de datum in wanneer de metadata gepubliceerd is" name="dateSourcePublication" 
+				value="@if(create) {@today} else {@datasetRow.get(dataset.dateSourcePublication.dayOfMonth())-@datasetRow.get(dataset.dateSourcePublication.month())-@datasetRow.get(dataset.dateSourcePublication.year())}">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">Datum mutatie</label>
+			<div class="col-sm-4">
+				<input class="form-control" type="text" data-toggle="tooltip" data-placement="top" 
+				title="Vul de datum in wanneer de metadata gewijzigd is" name="dateSourceRevision" 
+				value="@if(create) {@today} else {@datasetRow.get(dataset.dateSourceRevision.dayOfMonth())-@datasetRow.get(dataset.dateSourceRevision.month())-@datasetRow.get(dataset.dateSourceRevision.year())}">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">Datum geldig, van</label>
+			<div class="col-sm-4">
+				<input class="form-control" type="text" data-toggle="tooltip" data-placement="top" 
+				title="Vul de datum in vanaf wanneer de bron geldig is" name="dateSourceValidFrom" 
+				value="@if(create) {@today} else {@datasetRow.get(dataset.dateSourceValidFrom.dayOfMonth())-@datasetRow.get(dataset.dateSourceValidFrom.month())-@datasetRow.get(dataset.dateSourceValidFrom.year())}">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">Datum geldig, tot</label>
+			<div class="col-sm-4">
+				<input class="form-control" type="text" data-toggle="tooltip" data-placement="top" 
+				title="Vul de datum in tot wanneer de bron geldig is" name="dateSourceValidUntil" 
+				value="@if(create) {@today} else {@datasetRow.get(dataset.dateSourceValidUntil.dayOfMonth())-@datasetRow.get(dataset.dateSourceValidUntil.month())-@datasetRow.get(dataset.dateSourceValidUntil.year())}">
+			</div>
+		</div>
+		<div class="form-group" data-toggle="tooltip" data-placement="top" title="Vink de onderwerpen aan die van toepassing zijn op de data">
+			<label class="col-sm-3 control-label">ISO onderwerp*</label>
+			<div class="col-sm-4">
+				<div>
+					<input type="checkbox" class="js-subject-input" name="subject[]" value="inlandWaters"
+					@if(subjectsDataset != null) {@for(subject <- subjectsDataset) {@if(subject == "inlandWaters") {checked}}}>
+					<span>Binnenwater</span>
+				</div>
+				<div>
+					<input type="checkbox" class="js-subject-input" name="subject[]" value="structure"
+					@if(subjectsDataset != null) {@for(subject <- subjectsDataset) {@if(subject == "structure") {checked}}}>
+					<span>Civiele structuren</span>
+				</div>
+				<div>
+					<input type="checkbox" class="js-subject-input" name="subject[]" value="society"
+					@if(subjectsDataset != null) {@for(subject <- subjectsDataset) {@if(subject == "society") {checked}}}>
+					<span>Cultuur, maatschappij en demografie</span>
+				</div>
+				<div>
+					<input type="checkbox" class="js-subject-input" name="subject[]" value="economy"
+					@if(subjectsDataset != null) {@for(subject <- subjectsDataset) {@if(subject == "economy") {checked}}}>
+					<span>Economie</span>
+				</div>
+				<div>
+					<input type="checkbox" class="js-subject-input" name="subject[]" value="biota"
+					@if(subjectsDataset != null) {@for(subject <- subjectsDataset) {@if(subject == "biota") {checked}}}>
+					<span>Flora en fauna</span>
+				</div>
+				<div>
+					<input type="checkbox" class="js-subject-input" name="subject[]" value="geoscientificInformation"
+					@if(subjectsDataset != null) {@for(subject <- subjectsDataset) {@if(subject == "geoscientificInformation") {checked}}}>
+					<span>Geowetenschappelijke data</span>
+				</div>
+				<div>
+					<input type="checkbox" class="js-subject-input" name="subject[]" value="health"
+					@if(subjectsDataset != null) {@for(subject <- subjectsDataset) {@if(subject == "health") {checked}}}>
+					<span>Gezondheid</span>
+				</div>
+				<div>
+					<input type="checkbox" class="js-subject-input" name="subject[]" value="boundaries"
+					@if(subjectsDataset != null) {@for(subject <- subjectsDataset) {@if(subject == "boundaries") {checked}}}>
+					<span>Grenzen</span>
+				</div>
+				<div>
+					<input type="checkbox" class="js-subject-input" name="subject[]" value="elevation"
+					@if(subjectsDataset != null) {@for(subject <- subjectsDataset) {@if(subject == "elevation") {checked}}}>
+					<span>Hoogte</span>
+				</div>
+				<div>
+					<input type="checkbox" class="js-subject-input" name="subject[]" value="climatologyMeteorologyAtmosphere"
+					@if(subjectsDataset != null) {@for(subject <- subjectsDataset) {@if(subject == "climatologyMeteorologyAtmosphere") {checked}}}>
+					<span>Klimatologie, metereologie en atmosfeer</span>
+				</div>
+				<div>
+					<input type="checkbox" class="js-subject-input" name="subject[]" value="farming"
+					@if(subjectsDataset != null) {@for(subject <- subjectsDataset) {@if(subject == "farming") {checked}}}>
+					<span>Landbouw en veeteelt</span>
+				</div>
+				<div>
+					<input type="checkbox" class="js-subject-input" name="subject[]" value="location"
+					@if(subjectsDataset != null) {@for(subject <- subjectsDataset) {@if(subject == "location") {checked}}}>
+					<span>Locatie</span>
+				</div>
+				<div>
+					<input type="checkbox" class="js-subject-input" name="subject[]" value="intelligenceMilitary"
+					@if(subjectsDataset != null) {@for(subject <- subjectsDataset) {@if(subject == "intelligenceMilitary") {checked}}}>
+					<span>Militair</span>
+				</div>
+				<div>
+					<input type="checkbox" class="js-subject-input" name="subject[]" value="environment"
+					@if(subjectsDataset != null) {@for(subject <- subjectsDataset) {@if(subject == "environment") {checked}}}>
+					<span>Natuur en milieu</span>
+				</div>
+				<div>
+					<input type="checkbox" class="js-subject-input" name="subject[]" value="utilitiesCommunication"
+					@if(subjectsDataset != null) {@for(subject <- subjectsDataset) {@if(subject == "utilitiesCommunication") {checked}}}>
+					<span>Nutsvoorieningen en communicatie</span>
+				</div>
+				<div>
+					<input type="checkbox" class="js-subject-input" name="subject[]" value="oceans"
+					@if(subjectsDataset != null) {@for(subject <- subjectsDataset) {@if(subject == "oceans") {checked}}}>
+					<span>Oceanen</span>
+				</div>
+				<div>
+					<input type="checkbox" class="js-subject-input" name="subject[]" value="imageryBaseMapsEarthCover"
+					@if(subjectsDataset != null) {@for(subject <- subjectsDataset) {@if(subject == "imageryBaseMapsEarthCover") {checked}}}>
+					<span>Referentiemateriaal aardbedekking</span>
+				</div>
+				<div>
+					<input type="checkbox" class="js-subject-input" name="subject[]" value="planningCadastre"
+					@if(subjectsDataset != null) {@for(subject <- subjectsDataset) {@if(subject == "planningCadastre") {checked}}}>
+					<span>Ruimtelijke ordening en kadaster</span>
+				</div>
+				<div>
+					<input type="checkbox" class="js-subject-input" name="subject[]" value="transportation"
+					@if(subjectsDataset != null) {@for(subject <- subjectsDataset) {@if(subject == "transportation") {checked}}}>
+					<span>Transport en logistiek</span>
+				</div>
+			</div>
+		</div>
+		<div id="js-form-warning-fields">
+			<div class="alert alert-danger" role="alert">
+	 			<b></b>
+			</div>
+		</div>
+		<div id="js-form-warning-subjects">
+			<div class="alert alert-danger" role="alert">
+	 			<b>Er moet minimaal &#233;&#233;n onderwerp aangevinkt zijn.</b>
+			</div>
+		</div>
+		<div id="js-form-approval">
+			<div class="alert alert-success" role="alert">
+	 			<b>Het formulier is correct ingevuld.</b>
+			</div>
+		</div>
+		<div class="editor-knoppen">
+			<div class="form-group">
+				<button id="js-validate-form" class="knop" type="button">Valideren</button>
+				<button id="js-save-form" class="knop" type="submit">Opslaan</button>
+				<a class="knop" id="js-cancel-form" href="@routes.Add.cancel()">Annuleren</a>
+			</div>
+		</div>
+	}
+}
