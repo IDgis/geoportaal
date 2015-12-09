@@ -5,6 +5,7 @@ import static models.QDataset.dataset;
 import java.sql.SQLException;
 import java.util.List;
 
+import javax.inject.Inject;
 import javax.sql.DataSource;
 
 import com.querydsl.core.Tuple;
@@ -17,11 +18,17 @@ import play.Routes;
 import play.db.DB;
 import play.mvc.Controller;
 import play.mvc.Result;
+import play.mvc.Security;
 
+import actions.DefaultAuthenticator;
+
+@Security.Authenticated(DefaultAuthenticator.class)
 public class Index extends Controller {
+	@Inject ZooKeeper zk;
+	
 	DataSource ds = DB.getDataSource();
 	
-    public Result index() throws SQLException {
+	public Result index() throws SQLException {
     	SQLTemplates templates = new PostgreSQLTemplates();
     	Configuration configuration = new Configuration(templates);
     	SQLQueryFactory queryFactory = new SQLQueryFactory(configuration, ds);
