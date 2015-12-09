@@ -4,6 +4,9 @@
 
 # Home page
 GET     /                           controllers.Index.index()
+GET		/user/login					controllers.User.login(r: String)
+GET		/user/logout				controllers.User.logout()
+POST	/user/authenticate			controllers.User.authenticate()
 GET		/add						controllers.Add.add()
 GET		/submit						controllers.Add.submit()
 GET		/edit/:datasetId			controllers.Edit.edit(datasetId: String)
