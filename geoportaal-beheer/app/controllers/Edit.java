@@ -13,8 +13,6 @@ import com.querydsl.sql.PostgreSQLTemplates;
 import com.querydsl.sql.SQLQueryFactory;
 import com.querydsl.sql.SQLTemplates;
 
-import models.DublinCore;
-import play.data.Form;
 import play.db.DB;
 import play.mvc.Controller;
 import play.mvc.Result;
