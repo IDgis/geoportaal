@@ -35,7 +35,7 @@ div.tabs:after {content:'';display:block;clear:both;}
 a.tabs {height:100%;width:100%;display:block;background-position:15px 15px;width:155px !important;height:80px !important;
 	background-repeat:no-repeat;background-size:35px;}
 
-#edit-status {display:none;}
+#js-edit-supplier-select {display:none;}
 form.beheer-knoppen {margin-top:20px;margin-bottom:20px;margin-left:20px;}
 div.overzicht-records {margin-top:20px;margin-bottom:20px;margin-left:20px;}
 div.alle-records {margin-top:20px;margin-bottom:20px;margin-left:20px;}
@@ -47,3 +47,4 @@ div.editor-knoppen {margin-bottom:20px;margin-left:15px;}
 #js-form-approval {display:none;}
 #input-attachment {display:inline;}
 #js-cancel-form {line-height:20px;padding:7.5px 12px;}
+#help-button {line-height:20px;padding:7.5px 12px;}

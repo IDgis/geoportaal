@@ -10,7 +10,7 @@ public class DublinCore {
 	private String title;
 	private String description;
 	private List<String> attachment;
-	private String type;
+	private String typeInfo;
 	private String creator;
 	private String rights;
 	private String useLimitation;
@@ -28,7 +28,7 @@ public class DublinCore {
 	}
 	
 	public DublinCore(String id, String location, String fileId, String title, String description, List<String> attachment,
-			String type, String creator, String rights, String useLimitation, String format, String source,
+			String typeInfo, String creator, String rights, String useLimitation, String format, String source,
 			String dateSourceCreation, String dateSourcePublication, String dateSourceRevision, String dateSourceValidFrom,
 			String dateSourceValidUntil, List<String> subject) {
 		super();
@@ -38,7 +38,7 @@ public class DublinCore {
 		this.title = title;
 		this.description = description;
 		this.attachment = attachment;
-		this.type = type;
+		this.typeInfo = typeInfo;
 		this.creator = creator;
 		this.rights = rights;
 		this.useLimitation = useLimitation;
@@ -87,12 +87,14 @@ public class DublinCore {
 	public void setAttachment(List<String> attachment) {
 		this.attachment = attachment;
 	}
-	public String getType() {
-		return type;
+	public String getTypeInfo() {
+		return typeInfo;
 	}
-	public void setType(String type) {
-		this.type = type;
+
+	public void setTypeInfo(String typeInfo) {
+		this.typeInfo = typeInfo;
 	}
+
 	public String getCreator() {
 		return creator;
 	}

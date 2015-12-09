@@ -13,8 +13,25 @@ require([
 	], function(dom, query, on, lang, win, domAttr, domConstruct, domStyle) {
 		
 		var addAttachment = on(win.doc, '.js-add-attachment:click', function(e) {
+			var attachment = query('.js-add-attachment').parents('.js-attachment')[0];
+			var attachmentClone = lang.clone(attachment);
+			var attachmentCloneDiv = query(attachmentClone).query('.js-attachment-input')[0];
+			
+			var buttonNode = domConstruct.create("button");
+			domAttr.set(buttonNode, 'class', 'knop js-remove-attachment');
+			domAttr.set(buttonNode, 'type', 'button');
+			
+			var spanNode = domConstruct.create("span");
+			domAttr.set(spanNode, 'class', 'glyphicon glyphicon-remove');
+			
+			domConstruct.place(spanNode, buttonNode, 'last');
+			domConstruct.place(buttonNode, attachmentCloneDiv, 'last');
+			domConstruct.place(attachmentClone, dom.byId('js-group-attachment'), 'last');
+		});
+		
+		var addAttachment = on(win.doc, '.js-remove-attachment:click', function(e) {
 			var attachment = query(this).parents('.js-attachment')[0];
-			domConstruct.place(lang.clone(attachment), dom.byId('js-group-attachment'), "last");
+			domConstruct.destroy(attachment);
 		});
 		
 		var handleOtherCreator = on(dom.byId('js-creator-select'), 'change', function(e) {

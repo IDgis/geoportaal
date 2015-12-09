@@ -6,7 +6,12 @@
 GET     /                           controllers.Index.index()
 GET		/add						controllers.Add.add()
 GET		/submit						controllers.Add.submit()
+GET		/edit/:datasetId			controllers.Edit.edit(datasetId: String)
+GET		/editStatus/:datasetId		controllers.Edit.changeStatus(datasetId: String, status: String)
+GET		/editSupplier/:datasetId	controllers.Edit.changeSupplier(datasetId: String, supplier: String)
 GET		/cancel						controllers.Add.cancel()
+GET		/delete/:datasetId			controllers.Delete.delete(datasetId: String)
+GET		/routes.js					controllers.Index.jsRoutes()
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
