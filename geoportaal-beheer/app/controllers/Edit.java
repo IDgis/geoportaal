@@ -1,7 +1,13 @@
 package controllers;
 
 import static models.QDataset.dataset;
-import static models.QSubject.subject1;
+import static models.QInfoFormats.infoFormats;
+import static models.QRights.rights;
+import static models.QSubjects.subjects;
+import static models.QTypeInformations.typeInformations;
+import static models.QUseLimitations.useLimitations;
+import static models.QCreators.creators;
+import static models.QDataSubject.dataSubject;
 
 import java.util.List;
 
@@ -38,12 +44,37 @@ public class Edit extends Controller {
     			.where(dataset.id.eq(datasetId))
     			.fetchFirst();
     	
-    	List<String> subjectsDataset = queryFactory.select(subject1.subject)
-    			.from(subject1)
-    			.where(subject1.datasetId.eq(datasetId))
+    	List<String> subjectsDataset = queryFactory.select(dataSubject.subject)
+    			.from(dataSubject)
+    			.where(dataSubject.datasetId.eq(datasetId))
     			.fetch();
     	
-    	return ok(views.html.form.render(create, "", "", datasetRow, subjectsDataset));
+    	List<Tuple> typeInformationList = queryFactory.select(typeInformations.identification, typeInformations.label)
+        		.from(typeInformations)
+        		.fetch();
+        	
+    	List<Tuple> creatorsList = queryFactory.select(creators.identification, creators.label)
+            	.from(creators)
+            	.fetch();
+        	
+       	List<Tuple> rightsList = queryFactory.select(rights.identification, rights.label)
+               	.from(rights)
+               	.fetch();
+        	
+       	List<Tuple> useLimitationList = queryFactory.select(useLimitations.identification, useLimitations.label)
+               	.from(useLimitations)
+               	.fetch();
+        	
+        List<Tuple> infoFormatList = queryFactory.select(infoFormats.identification, infoFormats.label)
+               	.from(infoFormats)
+               	.fetch();
+        	
+        List<Tuple> subjectList = queryFactory.select(subjects.identification, subjects.label)
+               	.from(subjects)
+               	.fetch();
+    	
+    	return ok(views.html.form.render(create, "", "", datasetRow, subjectsDataset, typeInformationList, creatorsList, rightsList, 
+    			useLimitationList, infoFormatList, subjectList));
 	}
 	
 	public Result changeStatus(String datasetId, String status) {

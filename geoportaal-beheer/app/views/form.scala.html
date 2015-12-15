@@ -1,6 +1,23 @@
-@(create: Boolean, uuid: String, today: String, datasetRow: com.querydsl.core.Tuple, subjectsDataset: java.util.List[String])
+@(create: Boolean, 
+	uuid: String, 
+	today: String, 
+	datasetRow: com.querydsl.core.Tuple, 
+	subjectsDataset: java.util.List[String], 
+	typeInformationList: java.util.List[com.querydsl.core.Tuple], 
+	creatorList: java.util.List[com.querydsl.core.Tuple], 
+	rightsList: java.util.List[com.querydsl.core.Tuple], 
+	useLimitationList: java.util.List[com.querydsl.core.Tuple],
+	infoFormatList: java.util.List[com.querydsl.core.Tuple], 
+	subjectList: java.util.List[com.querydsl.core.Tuple]
+)
 
 @import models.QDataset.dataset
+@import models.QTypeInformations.typeInformations
+@import models.QCreators.creators
+@import models.QRights.rights
+@import models.QUseLimitations.useLimitations
+@import models.QInfoFormats.infoFormats
+@import models.QSubjects.subjects
 
 @main(if(create) {"Toevoegen"} else {"Wijzigen"}, routes.Assets.versioned("javascripts/add-record.js").url) {
 	<div class="welkom">
@@ -62,14 +79,12 @@
 			<div class="col-sm-8">
 				<select class="form-control" data-toggle="tooltip" data-placement="top" title="Selecteer het type informatie"
 				name="typeInfo">
-					<option value="none" @if(!create && datasetRow.get(dataset.typeInfo) == "none") {selected}></option>
-					<option value="map" @if(!create && datasetRow.get(dataset.typeInfo) == "map") {selected}>kaart</option>
-					<option value="database" @if(!create && datasetRow.get(dataset.typeInfo) == "database") {selected}>database</option>
-					<option value="table" @if(!create && datasetRow.get(dataset.typeInfo) == "table") {selected}>tabel</option>
-					<option value="application" @if(!create && datasetRow.get(dataset.typeInfo) == "application") {selected}>applicatie</option>
-					<option value="drawing" @if(!create && datasetRow.get(dataset.typeInfo) == "drawing") {selected}>tekening</option>
-					<option value="report" @if(!create && datasetRow.get(dataset.typeInfo) == "report") {selected}>rapport</option>
-					<option value="website" @if(!create && datasetRow.get(dataset.typeInfo) == "website") {selected}>website</option>
+					@for(typeInformationOption <- typeInformationList) {
+						<option value="@typeInformationOption.get(typeInformations.identification)" 
+						@if(!create && datasetRow.get(dataset.typeInfo) == typeInformationOption.get(typeInformations.identification)) {selected}>
+							@typeInformationOption.get(typeInformations.label)
+						</option>
+					}
 				</select>
 			</div>
 		</div>
@@ -78,15 +93,12 @@
 			<div class="col-sm-8">
 				<select id="js-creator-select" class="form-control" data-toggle="tooltip" data-placement="top" 
 				title="Selecteer de eindverantwoordelijke" name="creator">
-					<option value="OvUnitEconomy" @if(!create && datasetRow.get(dataset.creator) == "OvUnitEconomy") {selected}>Provincie Overijssel: eenheid Economie en Cultuur</option>
-					<option value="OvUnitPolicy" @if(!create && datasetRow.get(dataset.creator) == "OvUnitPolicy") {selected}>Provincie Overijssel: eenheid Bestuurs- en Concernzaken</option>
-					<option value="OvUnitManagement" @if(!create && datasetRow.get(dataset.creator) == "OvUnitManagement") {selected}>Provincie Overijssel: eenheid Bedrijfsvoering</option>
-					<option value="OvUnitProject" @if(!create && datasetRow.get(dataset.creator) == "OvUnitProject") {selected}>Provincie Overijssel: eenheid Project- en Programmamanagement</option>
-					<option value="OvUnitSpatial" @if(!create && datasetRow.get(dataset.creator) == "OvUnitSpatial") {selected}>Provincie Overijssel: eenheid Ruimte en Bereikbaarheid</option>
-					<option value="OvUnitNature" @if(!create && datasetRow.get(dataset.creator) == "OvUnitNature") {selected}>Provincie Overijssel: eenheid Natuur en Milieu</option>
-					<option value="OvUnitRoads" @if(!create && datasetRow.get(dataset.creator) == "OvUnitRoads") {selected}>Provincie Overijssel: eenheid Wegen en Kanalen</option>
-					<option value="OvUnitPublic" @if(!create && datasetRow.get(dataset.creator) == "OvUnitPublic") {selected}>Provincie Overijssel: eenheid Publieke Dienstverlening</option>
-					<option value="other" @if(!create && datasetRow.get(dataset.creator) == "other") {selected}>Andere</option>
+					@for(creatorOption <- creatorList) {
+						<option value="@creatorOption.get(creators.identification)" 
+						@if(!create && datasetRow.get(dataset.creator) == creatorOption.get(creators.identification)) {selected}>
+							@creatorOption.get(creators.label)
+						</option>
+					}
 				</select>
 			</div>
 		</div>
@@ -101,17 +113,12 @@
 			<div class="col-sm-8">
 				<select class="form-control" data-toggle="tooltip" data-placement="top" title="Selecteer de eigendomsrechten"
 				name="rights">
-					<option value="none" @if(!create && datasetRow.get(dataset.rights) == "none") {selected}></option>
-					<option value="noRestrictions" @if(!create && datasetRow.get(dataset.rights) == "noRestrictions") {selected}>Geen restricties</option>
-					<option value="copyright" @if(!create && datasetRow.get(dataset.rights) == "copyright") {selected}>Copyright</option>
-					<option value="patent" @if(!create && datasetRow.get(dataset.rights) == "patent") {selected}>Patent</option>
-					<option value="patentFuture" @if(!create && datasetRow.get(dataset.rights) == "patentFuture") {selected}>Patent in wording</option>
-					<option value="brandName" @if(!create && datasetRow.get(dataset.rights) == "brandName") {selected}>Merknaam</option>
-					<option value="license" @if(!create && datasetRow.get(dataset.rights) == "license") {selected}>Licentie</option>
-					<option value="ip" @if(!create && datasetRow.get(dataset.rights) == "ip") {selected}>Intellectueel eigendom</option>
-					<option value="notAccessible" @if(!create && datasetRow.get(dataset.rights) == "notAccessible") {selected}>Niet toegankelijk</option>
-					<option value="dataWithDeclaration" @if(!create && datasetRow.get(dataset.rights) == "dataWithDeclaration") {selected}>Data mag alleen met verklaring uitgeleverd worden</option>
-					<option value="dataClassified" @if(!create && datasetRow.get(dataset.rights) == "dataClassified") {selected}>Data mag niet uitgeleverd worden</option>
+					@for(rightsOption <- rightsList) {
+						<option value="@rightsOption.get(rights.identification)"
+						@if(!create && datasetRow.get(dataset.creator) == rightsOption.get(rights.identification)) {selected}>
+							@rightsOption.get(rights.label)
+						</option>
+					}
 				</select>
 			</div>
 		</div>
@@ -120,8 +127,12 @@
 			<div class="col-sm-8">
 				<select class="form-control" data-toggle="tooltip" data-placement="top" title="Selecteer de gebruiksrestrictie"
 				name="useLimitation">
-					<option value="intern" @if(!create && datasetRow.get(dataset.useLimitation) == "intern") {selected}>Alleen voor intern gebruik</option>
-					<option value="extern" @if(!create && datasetRow.get(dataset.useLimitation) == "extern") {selected}>De bron mag ook voor externe partijen vindbaar zijn</option>
+					@for(useLimitationOption <- useLimitationList) {
+						<option value="@useLimitationOption.get(useLimitations.identification)"
+						@if(!create && datasetRow.get(dataset.useLimitation) == useLimitationOption.get(useLimitations.identification)) {selected}>
+							@useLimitationOption.get(useLimitations.label)
+						</option>
+					}
 				</select>
 			</div>
 		</div>
@@ -130,14 +141,12 @@
 			<div class="col-sm-8">
 				<select class="form-control" data-toggle="tooltip" data-placement="top" 
 				title="Selecteer het formaat van de data" name="format">
-					<option value="none" @if(!create && datasetRow.get(dataset.format) == "none") {selected}></option>
-					<option value="adobeIllustrator" @if(!create && datasetRow.get(dataset.format) == "adobeIllustrator") {selected}>Adobe Illustrator: AI</option>
-					<option value="freehand" @if(!create && datasetRow.get(dataset.format) == "freehand") {selected}>Freehand: FH</option>
-					<option value="adobeAcrobat" @if(!create && datasetRow.get(dataset.format) == "adobeAcrobat") {selected}>Adobe Acrobat: PDF</option>
-					<option value="microstation" @if(!create && datasetRow.get(dataset.format) == "microstation") {selected}>Microstation: DGN</option>
-					<option value="autocad" @if(!create && datasetRow.get(dataset.format) == "autocad") {selected}>Autocad: DWG DXF</option>
-					<option value="paintshop" @if(!create && datasetRow.get(dataset.format) == "paintshop") {selected}>PaintShop: PSP</option>
-					<option value="arcgis" @if(!create && datasetRow.get(dataset.format) == "arcgis") {selected}>ArcGIS: MXD</option>
+					@for(infoFormatOption <- infoFormatList) {
+						<option value="@infoFormatOption.get(infoFormats.identification)"
+						@if(!create && datasetRow.get(dataset.format) == infoFormatOption.get(infoFormats.identification)) {selected}>
+							@infoFormatOption.get(infoFormats.label)
+						</option>
+					}
 				</select>
 			</div>
 		</div>
@@ -192,6 +201,20 @@
 		<div class="form-group" data-toggle="tooltip" data-placement="top" title="Vink de onderwerpen aan die van toepassing zijn op de data">
 			<label class="col-sm-3 control-label">ISO onderwerp*</label>
 			<div class="col-sm-4">
+				@for(subjectOption <- subjectList) {
+					<div>
+						<input type="checkbox" class="js-subject-input" name="subject[]" value="@subjectOption.get(subjects.identification)" 
+							@if(subjectsDataset != null) {
+								@for(subject <- subjectsDataset) {
+									@if(subject == subjectOption.get(subjects.identification)) {checked}
+								}
+							}
+						>
+						<span>@subjectOption.get(subjects.label)</span>
+					</div>
+				}
+				
+				<!-- 
 				<div>
 					<input type="checkbox" class="js-subject-input" name="subject[]" value="inlandWaters"
 					@if(subjectsDataset != null) {@for(subject <- subjectsDataset) {@if(subject == "inlandWaters") {checked}}}>
@@ -287,6 +310,7 @@
 					@if(subjectsDataset != null) {@for(subject <- subjectsDataset) {@if(subject == "transportation") {checked}}}>
 					<span>Transport en logistiek</span>
 				</div>
+				-->
 			</div>
 		</div>
 		<div id="js-form-warning-fields">

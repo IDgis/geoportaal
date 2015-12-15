@@ -1,6 +1,9 @@
 package controllers;
 
 import static models.QDataset.dataset;
+import static models.QInfoFormats.infoFormats;
+import static models.QStatuses.statuses;
+import static models.QSuppliers.suppliers;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -39,7 +42,19 @@ public class Index extends Controller {
     			.orderBy(dataset.lastRevisionDate.asc())
     			.fetch();
     	
-    	return ok(views.html.index.render(datasetRows));
+    	List<String> supplierList = queryFactory.select(suppliers.name)
+            	.from(suppliers)
+            	.fetch();
+    	
+    	List<Tuple> statusList = queryFactory.select(statuses.identification, statuses.label)
+            	.from(statuses)
+            	.fetch();
+    	
+    	List<Tuple> infoFormatList = queryFactory.select(infoFormats.identification, infoFormats.label)
+            	.from(infoFormats)
+            	.fetch();
+    	
+    	return ok(views.html.index.render(datasetRows, supplierList, statusList, infoFormatList));
     }
 	
 	public Result jsRoutes() {
