@@ -1,6 +1,12 @@
-@(datasetRows: java.util.List[com.querydsl.core.Tuple])
+@(datasetRows: java.util.List[com.querydsl.core.Tuple], 
+	supplierList: java.util.List[String],
+	statusList: java.util.List[com.querydsl.core.Tuple],
+	infoFormatList: java.util.List[com.querydsl.core.Tuple])
 
 @import models.QDataset.dataset
+@import models.QSuppliers.suppliers
+@import models.QStatuses.statuses
+@import models.QInfoFormats.infoFormats
 
 @main("Zoeken", routes.Assets.versioned("javascripts/index.js").url) {
 	<div class="welkom">
@@ -17,7 +23,10 @@
 			<label class="col-sm-3 control-label">Leverancier</label>
 			<div class="col-sm-8">
 				<select class="form-control" data-toggle="tooltip" data-placement="top" title="Filter op leverancier">
-					<option></option>
+					<option value="none"></option>
+					@for(supplierOption <- supplierList) {
+						<option value="@supplierOption">@supplierOption</option>
+					}
 				</select>
 			</div>
 		</div>
@@ -25,11 +34,9 @@
 			<label class="col-sm-3 control-label">Status</label>
 			<div class="col-sm-8">
 				<select class="form-control" data-toggle="tooltip" data-placement="top" title="Filter op status">
-					<option>Alle</option>
-					<option>Concept</option>
-					<option>Ter goedkeuring</option>
-					<option>In publicatie</option>
-					<option>Verwijderd</option>
+					@for(statusOption <- statusList) {
+						<option value="@statusOption.get(statuses.identification)">@statusOption.get(statuses.label)</option>
+					}
 				</select>
 			</div>
 		</div>
@@ -37,26 +44,24 @@
 			<label class="col-sm-3 control-label">Formaat</label>
 			<div class="col-sm-8">
 				<select class="form-control" data-toggle="tooltip" data-placement="top" title="Filter op formaat">
-					<option>Adobe Illustrator: AI</option>
-					<option>Freehand: FH</option>
-					<option>Adobe Acrobat: PDF</option>
-					<option>Microstation: DGN</option>
-					<option>Autocad: DWG DXF</option>
-					<option>PaintShop: PSP</option>
-					<option>ArcGIS: MXD</option>
+					@for(infoFormatOption <- infoFormatList) {
+						<option value="@infoFormatOption.get(infoFormats.identification)">
+							@infoFormatOption.get(infoFormats.label)
+						</option>
+					}
 				</select>
 			</div>
 		</div>
 		<div class="form-group">
 			<label class="col-sm-3 control-label">Update datum tussen</label>
 			<div class="col-sm-4">
-				<input class="form-control" type="text" data-toggle="tooltip" data-placement="top" title="Zoek op begindatum">
+				<input class="form-control" type="date" data-toggle="tooltip" data-placement="top" title="Zoek op begindatum">
 			</div>
 		</div>
 		<div class="form-group">
 			<label class="col-sm-3 control-label">en</label>
 			<div class="col-sm-4">
-				<input class="form-control" type="text" data-toggle="tooltip" data-placement="top" title="Zoek op einddatum">
+				<input class="form-control" type="date" data-toggle="tooltip" data-placement="top" title="Zoek op einddatum">
 			</div>
 		</div>
 		<div class="form-group">

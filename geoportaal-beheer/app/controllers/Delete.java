@@ -1,8 +1,8 @@
 package controllers;
 
-import static models.QAttachment.attachment1;
+import static models.QDataAttachment.dataAttachment;
 import static models.QDataset.dataset;
-import static models.QSubject.subject1;
+import static models.QDataSubject.dataSubject;
 
 import javax.sql.DataSource;
 
@@ -27,12 +27,12 @@ public class Delete extends Controller {
     		.where(dataset.id.eq(datasetId))
     		.execute();
     	
-    	queryFactory.delete(attachment1)
-    		.where(attachment1.datasetId.eq(datasetId))
+    	queryFactory.delete(dataAttachment)
+    		.where(dataAttachment.datasetId.eq(datasetId))
     		.execute();
     	
-    	queryFactory.delete(subject1)
-    		.where(subject1.datasetId.eq(datasetId))
+    	queryFactory.delete(dataSubject)
+    		.where(dataSubject.datasetId.eq(datasetId))
     		.execute();
 		
 		return redirect(controllers.routes.Index.index());

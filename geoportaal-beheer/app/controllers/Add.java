@@ -1,16 +1,24 @@
 package controllers;
 
-import static models.QAttachment.attachment1;
+import static models.QDataAttachment.dataAttachment;
 import static models.QDataset.dataset;
-import static models.QSubject.subject1;
+import static models.QDataSubject.dataSubject;
+import static models.QTypeInformations.typeInformations;
+import static models.QCreators.creators;
+import static models.QRights.rights;
+import static models.QUseLimitations.useLimitations;
+import static models.QInfoFormats.infoFormats;
+import static models.QSubjects.subjects;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 import javax.sql.DataSource;
 
+import com.querydsl.core.Tuple;
 import com.querydsl.sql.Configuration;
 import com.querydsl.sql.PostgreSQLTemplates;
 import com.querydsl.sql.SQLQueryFactory;
@@ -28,11 +36,40 @@ public class Add extends Controller {
 	public Result add() {
 		Boolean create = true;
 		
+		SQLTemplates templates = new PostgreSQLTemplates();
+    	Configuration configuration = new Configuration(templates);
+    	SQLQueryFactory queryFactory = new SQLQueryFactory(configuration, ds);
+    	
+    	List<Tuple> typeInformationList = queryFactory.select(typeInformations.identification, typeInformations.label)
+    		.from(typeInformations)
+    		.fetch();
+    	
+    	List<Tuple> creatorsList = queryFactory.select(creators.identification, creators.label)
+        	.from(creators)
+        	.fetch();
+    	
+    	List<Tuple> rightsList = queryFactory.select(rights.identification, rights.label)
+            	.from(rights)
+            	.fetch();
+    	
+    	List<Tuple> useLimitationList = queryFactory.select(useLimitations.identification, useLimitations.label)
+            	.from(useLimitations)
+            	.fetch();
+    	
+    	List<Tuple> infoFormatList = queryFactory.select(infoFormats.identification, infoFormats.label)
+            	.from(infoFormats)
+            	.fetch();
+    	
+    	List<Tuple> subjectList = queryFactory.select(subjects.identification, subjects.label)
+            	.from(subjects)
+            	.fetch();
+		
 		String uuid = UUID.randomUUID().toString();
 		Date dateToday = new Date();
 		String today = new SimpleDateFormat("dd-MM-yyyy").format(new Date(dateToday.getTime()));
 		
-		return ok(views.html.form.render(create, uuid, today, null, null));
+		return ok(views.html.form.render(create, uuid, today, null, null, typeInformationList, creatorsList, rightsList, 
+				useLimitationList, infoFormatList, subjectList));
 	}
 	
 	public Result submit() throws ParseException {
@@ -64,8 +101,8 @@ public class Add extends Controller {
 		
 		if(dc.getAttachment() != null) {
 			for(String attachment : dc.getAttachment()) {
-				queryFactory.insert(attachment1)
-					.columns(attachment1.datasetId, attachment1.attachment)
+				queryFactory.insert(dataAttachment)
+					.columns(dataAttachment.datasetId, dataAttachment.attachment)
 					.values(dc.getId(), attachment)
 					.execute();
 			}
@@ -73,8 +110,8 @@ public class Add extends Controller {
 		
 		if(dc.getSubject() != null) {
 			for(String subject : dc.getSubject()) {
-				queryFactory.insert(subject1)
-					.columns(subject1.datasetId, subject1.subject)
+				queryFactory.insert(dataSubject)
+					.columns(dataSubject.datasetId, dataSubject.subject)
 					.values(dc.getId(), subject)
 					.execute();
 			}
