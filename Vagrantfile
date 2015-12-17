@@ -6,18 +6,29 @@ Vagrant.configure(2) do |config|
 	config.vm.box = "ubuntu/vivid64"
 
 	# Provision using a shell script:
-	config.vm.provision :shell, path: "scripts/vagrant-provision.sh"
+	config.vm.provision :shell, path: "scripts/docker-daemon.sh"
+	
+	# Forward the Docker daemon port:
+	config.vm.network :forwarded_port, host: 2375, guest: 2375
 	
 	# Forward the zookeeper port:
 	config.vm.network "forwarded_port", guest: 2181, host: 2181
 	
 	# Forward the exhibitor port:
-	config.vm.network "forwarded_port", guest:8081, host: 8082, auto_correct: true
-
+	config.vm.network "forwarded_port", guest: 8081, host: 8082, auto_correct: true
+	
+	# Forward the play-app port:
+	config.vm.network "forwarded_port", guest: 9000, host: 9000
+	
+	# Forward the apache port:
+	config.vm.network "forwarded_port", guest: 80, host: 80
+	
+	# Set shared directory:
+	config.vm.synced_folder "/Users/Sandro/git", "/vagrant"
+	
 	# Configure VirtualBox:
   	config.vm.provider "virtualbox" do |vb|
 		# Customize the amount of memory on the VM:
-		vb.gui = true
-		vb.memory = "1024"
+		vb.memory = "2048"
 	end
 end
