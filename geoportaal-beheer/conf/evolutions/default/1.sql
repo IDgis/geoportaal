@@ -23,7 +23,8 @@ CREATE TABLE data_subject (
 
 CREATE TABLE data_attachment ( 
 	dataset_id char(50) NOT NULL,
-	attachment char(200) NOT NULL
+	attachment_name char(200) NOT NULL,
+	attachment_content text
 )
 ;
 

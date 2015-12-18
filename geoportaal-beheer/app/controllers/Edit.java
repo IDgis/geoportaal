@@ -8,6 +8,7 @@ import static models.QTypeInformations.typeInformations;
 import static models.QUseLimitations.useLimitations;
 import static models.QCreators.creators;
 import static models.QDataSubject.dataSubject;
+import static models.QDataAttachment.dataAttachment;
 
 import java.util.List;
 
@@ -49,6 +50,11 @@ public class Edit extends Controller {
     			.where(dataSubject.datasetId.eq(datasetId))
     			.fetch();
     	
+    	List<Tuple> attachmentsDataset = queryFactory.select(dataAttachment.attachmentName, dataAttachment.attachmentContent)
+    			.from(dataAttachment)
+    			.where(dataAttachment.datasetId.eq(datasetId))
+    			.fetch();
+    	
     	List<Tuple> typeInformationList = queryFactory.select(typeInformations.identification, typeInformations.label)
         		.from(typeInformations)
         		.fetch();
@@ -73,8 +79,8 @@ public class Edit extends Controller {
                	.from(subjects)
                	.fetch();
     	
-    	return ok(views.html.form.render(create, "", "", datasetRow, subjectsDataset, typeInformationList, creatorsList, rightsList, 
-    			useLimitationList, infoFormatList, subjectList));
+    	return ok(views.html.form.render(create, "", "", datasetRow, subjectsDataset, attachmentsDataset, typeInformationList, creatorsList, 
+    			rightsList, useLimitationList, infoFormatList, subjectList));
 	}
 	
 	public Result changeStatus(String datasetId, String status) {

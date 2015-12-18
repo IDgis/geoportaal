@@ -10,6 +10,9 @@ import static models.QUseLimitations.useLimitations;
 import static models.QInfoFormats.infoFormats;
 import static models.QSubjects.subjects;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -28,6 +31,7 @@ import models.DublinCore;
 import play.data.Form;
 import play.db.DB;
 import play.mvc.Controller;
+import play.mvc.Http.MultipartFormData.FilePart;
 import play.mvc.Result;
 
 public class Add extends Controller {
@@ -68,19 +72,19 @@ public class Add extends Controller {
 		Date dateToday = new Date();
 		String today = new SimpleDateFormat("dd-MM-yyyy").format(new Date(dateToday.getTime()));
 		
-		return ok(views.html.form.render(create, uuid, today, null, null, typeInformationList, creatorsList, rightsList, 
+		return ok(views.html.form.render(create, uuid, today, null, null, null, typeInformationList, creatorsList, rightsList, 
 				useLimitationList, infoFormatList, subjectList));
 	}
 	
-	public Result submit() throws ParseException {
-		Form<DublinCore> dcForm = Form.form(DublinCore.class);
-		DublinCore dc = dcForm.bindFromRequest().get();
-		
+	public Result submit() throws ParseException, FileNotFoundException {
 		SQLTemplates templates = new PostgreSQLTemplates();
     	Configuration configuration = new Configuration(templates);
     	SQLQueryFactory queryFactory = new SQLQueryFactory(configuration, ds);
-    	
-    	Date dateToday = new Date();
+		
+		Form<DublinCore> dcForm = Form.form(DublinCore.class);
+		DublinCore dc = dcForm.bindFromRequest().get();
+		
+		Date dateToday = new Date();
     	
 		Date dSC = new SimpleDateFormat("dd-MM-yyyy").parse(dc.getDateSourceCreation());
 		Date dSP = new SimpleDateFormat("dd-MM-yyyy").parse(dc.getDateSourcePublication());
@@ -98,12 +102,16 @@ public class Add extends Controller {
     				"Nienhuis", "concept", false, "Nienhuis", dateToday)
     		.execute();
     	
-		
-		if(dc.getAttachment() != null) {
-			for(String attachment : dc.getAttachment()) {
+		play.mvc.Http.MultipartFormData body = request().body().asMultipartFormData();
+		List<FilePart> allFiles = body.getFiles();
+		for(FilePart fp: allFiles) {
+			if(fp != null) {
+				java.io.File file = fp.getFile();
+				InputStream inpSt = new FileInputStream(file);
+				
 				queryFactory.insert(dataAttachment)
-					.columns(dataAttachment.datasetId, dataAttachment.attachment)
-					.values(dc.getId(), attachment)
+					.columns(dataAttachment.datasetId, dataAttachment.attachmentName, dataAttachment.attachmentContent)
+					.values(dc.getId(), fp.getFilename(), inpSt)
 					.execute();
 			}
 		}
