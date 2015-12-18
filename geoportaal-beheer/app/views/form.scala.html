@@ -31,44 +31,74 @@
 	@helper.form(action = routes.Add.submit(), 'enctype -> "multipart/form-data", 'class -> "form-horizontal beheer-formulier") {
 		<div class="form-group">
 			<label class="col-sm-3 control-label">Unieke ID</label>
-			<div class="col-sm-8">
+			<div class="col-sm-7">
 				<input class="form-control" type="text" data-toggle="tooltip" data-placement="top" title="De unieke ID van de data" 
 				name="id" value="@if(create) {@uuid} else {@datasetRow.get(dataset.id)}" readonly>
+			</div>
+			<div class="col-sm-2">
+				<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement=top type="button" 
+				data-content="Term name: identifier">
+					<span class="glyphicon glyphicon-info-sign"></span>
+				</button>
 			</div>
 		</div>
 		<div class="form-group">
 			<label class="col-sm-3 control-label">Locatie*</label>
-			<div class="col-sm-8">
+			<div class="col-sm-7">
 				<input class="form-control js-mandatory" type="text" data-toggle="tooltip" data-placement="top" data-field="locatie"
 				title="Vul het pad naar het bestand op de computer in" name="location" value="@if(!create) {@datasetRow.get(dataset.location)}">
+			</div>
+			<div class="col-sm-2">
+				<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" 
+				data-content="Het pad naar het bestand op uw PC">
+					<span class="glyphicon glyphicon-info-sign"></span>
+				</button>
 			</div>
 		</div>
 		<div class="form-group">
 			<label class="col-sm-3 control-label">Kenmerk</label>
-			<div class="col-sm-8">
+			<div class="col-sm-7">
 				<input class="form-control" type="text" data-toggle="tooltip" data-placement="top" 
 				title="Vul het kenmerk in" name="fileId" value="@if(!create) {@datasetRow.get(dataset.fileId)}">
+			</div>
+			<div class="col-sm-2">
+				<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" 
+				data-content="Het kenmerk van de bron">
+					<span class="glyphicon glyphicon-info-sign"></span>
+				</button>
 			</div>
 		</div>
 		
 		<div class="form-group">
 			<label class="col-sm-3 control-label">Titel*</label>
-			<div class="col-sm-8">
+			<div class="col-sm-7">
 				<input class="form-control js-mandatory" type="text" data-toggle="tooltip" data-placement="top" data-field="titel"
 				title="Vul de titel in" name="title" value="@if(!create) {@datasetRow.get(dataset.title)}">
+			</div>
+			<div class="col-sm-2">
+				<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" 
+				data-content="Term Name: title">
+					<span class="glyphicon glyphicon-info-sign"></span>
+				</button>
 			</div>
 		</div>
 		<div class="form-group">
 			<label class="col-sm-3 control-label">Omschrijving*</label>
-			<div class="col-sm-8">
+			<div class="col-sm-7">
 				<textarea class="form-control js-mandatory" rows="4" data-toggle="tooltip" data-placement="top" data-field="omschrijving"
 				title="Vul de omschrijving in" name="description">@if(!create) {@datasetRow.get(dataset.description)}</textarea>
+			</div>
+			<div class="col-sm-2">
+				<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" 
+				data-content="Term Name: description">
+					<span class="glyphicon glyphicon-info-sign"></span>
+				</button>
 			</div>
 		</div>
 		<div id="js-group-attachment">
 			<div class="form-group js-attachment">
 				<label class="col-sm-3 control-label">Bijlage</label>
-				<div class="col-sm-8 form-inline js-attachment-input">
+				<div class="col-sm-7 form-inline js-attachment-input">
 					<input id="input-attachment" type="file" data-toggle="tooltip" data-placement="top" title="Voeg de bijlage(s) toe"
 					name="attachmentName[]">
 					<button class="knop js-add-attachment" type="button">
@@ -76,7 +106,12 @@
 					</button>
 					
 				</div>
-				
+				<div class="col-sm-2">
+					<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" 
+					data-content="Term Name: relation">
+						<span class="glyphicon glyphicon-info-sign"></span>
+					</button>
+				</div>
 			</div>
 		</div>
 		@if(!create) {
@@ -91,7 +126,7 @@
 		
 		<div class="form-group">
 			<label class="col-sm-3 control-label">Type informatie</label>
-			<div class="col-sm-8">
+			<div class="col-sm-7">
 				<select class="form-control" data-toggle="tooltip" data-placement="top" title="Selecteer het type informatie"
 				name="typeInfo">
 					@for(typeInformationOption <- typeInformationList) {
@@ -102,10 +137,16 @@
 					}
 				</select>
 			</div>
+			<div class="col-sm-2">
+				<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" 
+				data-content="Term Name: type">
+					<span class="glyphicon glyphicon-info-sign"></span>
+				</button>
+			</div>
 		</div>
 		<div class="form-group">
 			<label class="col-sm-3 control-label">Eindverantwoordelijke*</label>
-			<div class="col-sm-8">
+			<div class="col-sm-7">
 				<select id="js-creator-select" class="form-control" data-toggle="tooltip" data-placement="top" 
 				title="Selecteer de eindverantwoordelijke" name="creator">
 					@for(creatorOption <- creatorList) {
@@ -116,16 +157,27 @@
 					}
 				</select>
 			</div>
+			<div class="col-sm-2">
+				<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" 
+				data-content="Term Name: creator">
+					<span class="glyphicon glyphicon-info-sign"></span>
+				</button>
+			</div>
 		</div>
 		<div class="form-group" id="js-other-creator">
 			<label class="col-sm-3 control-label"></label>
-			<div class="col-sm-8">
+			<div class="col-sm-7">
 				<input id="js-other-creator-input" class="form-control" type="text" placeholder="Voer eindverantwoordelijke van bestand in">
+			</div>
+			<div class="col-sm-2">
+				<button class="btn btn-default" data-placement="right">
+					<span class="glyphicon glyphicon-info-sign"></span>
+				</button>
 			</div>
 		</div>
 		<div class="form-group">
 			<label class="col-sm-3 control-label">Eigendomsrechten</label>
-			<div class="col-sm-8">
+			<div class="col-sm-7">
 				<select class="form-control" data-toggle="tooltip" data-placement="top" title="Selecteer de eigendomsrechten"
 				name="rights">
 					@for(rightsOption <- rightsList) {
@@ -136,10 +188,16 @@
 					}
 				</select>
 			</div>
+			<div class="col-sm-2">
+				<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" 
+				data-content="Term Name: rights">
+					<span class="glyphicon glyphicon-info-sign"></span>
+				</button>
+			</div>
 		</div>
 		<div class="form-group">
 			<label class="col-sm-3 control-label">Gebruiksrestricties*</label>
-			<div class="col-sm-8">
+			<div class="col-sm-7">
 				<select class="form-control" data-toggle="tooltip" data-placement="top" title="Selecteer de gebruiksrestrictie"
 				name="useLimitation">
 					@for(useLimitationOption <- useLimitationList) {
@@ -150,10 +208,16 @@
 					}
 				</select>
 			</div>
+			<div class="col-sm-2">
+				<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" 
+				data-content="De gebruiksrestricties van het bestand">
+					<span class="glyphicon glyphicon-info-sign"></span>
+				</button>
+			</div>
 		</div>
 		<div class="form-group">
 			<label class="col-sm-3 control-label">Formaat</label>
-			<div class="col-sm-8">
+			<div class="col-sm-7">
 				<select class="form-control" data-toggle="tooltip" data-placement="top" 
 				title="Selecteer het formaat van de data" name="format">
 					@for(infoFormatOption <- infoFormatList) {
@@ -164,13 +228,25 @@
 					}
 				</select>
 			</div>
+			<div class="col-sm-2">
+				<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" 
+				data-content="Term Name: format">
+					<span class="glyphicon glyphicon-info-sign"></span>
+				</button>
+			</div>
 		</div>
 		<div class="form-group">
 			<label class="col-sm-3 control-label">Bron</label>
-			<div class="col-sm-8">
+			<div class="col-sm-7">
 				<input class="form-control" type="text" data-toggle="tooltip" data-placement="top" 
 				title="Vul de persoon of organisatie waar de bron vandaan komt" name="source" 
 				value="@if(!create) {@datasetRow.get(dataset.source)}">
+			</div>
+			<div class="col-sm-2">
+				<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" 
+				data-content="Term Name: source">
+					<span class="glyphicon glyphicon-info-sign"></span>
+				</button>
 			</div>
 		</div>
 		<div class="form-group">
@@ -180,6 +256,12 @@
 				title="Vul de datum in wanneer de metadata gemaakt is" name="dateSourceCreation" 
 				value="@if(create) {@today} else {@datasetRow.get(dataset.dateSourceCreation.dayOfMonth())-@datasetRow.get(dataset.dateSourceCreation.month())-@datasetRow.get(dataset.dateSourceCreation.year())}">
 			</div>
+			<div class="col-sm-offset-3 col-sm-2">
+				<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" 
+				data-content="Term Name: date">
+					<span class="glyphicon glyphicon-info-sign"></span>
+				</button>
+			</div>
 		</div>
 		<div class="form-group">
 			<label class="col-sm-3 control-label">Datum publicatie</label>
@@ -187,6 +269,12 @@
 				<input class="form-control js-date" type="text" data-toggle="tooltip"  data-placement="top" 
 				title="Vul de datum in wanneer de metadata gepubliceerd is" name="dateSourcePublication" 
 				value="@if(create) {@today} else {@datasetRow.get(dataset.dateSourcePublication.dayOfMonth())-@datasetRow.get(dataset.dateSourcePublication.month())-@datasetRow.get(dataset.dateSourcePublication.year())}">
+			</div>
+			<div class="col-sm-offset-3 col-sm-2">
+				<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" 
+				data-content="Term Name: date">
+					<span class="glyphicon glyphicon-info-sign"></span>
+				</button>
 			</div>
 		</div>
 		<div class="form-group">
@@ -196,6 +284,12 @@
 				title="Vul de datum in wanneer de metadata gewijzigd is" name="dateSourceRevision" 
 				value="@if(create) {@today} else {@datasetRow.get(dataset.dateSourceRevision.dayOfMonth())-@datasetRow.get(dataset.dateSourceRevision.month())-@datasetRow.get(dataset.dateSourceRevision.year())}">
 			</div>
+			<div class="col-sm-offset-3 col-sm-2">
+				<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" 
+				data-content="Term Name: date">
+					<span class="glyphicon glyphicon-info-sign"></span>
+				</button>
+			</div>
 		</div>
 		<div class="form-group">
 			<label class="col-sm-3 control-label">Datum geldig, van</label>
@@ -204,6 +298,12 @@
 				title="Vul de datum in vanaf wanneer de bron geldig is" name="dateSourceValidFrom" 
 				value="@if(create) {@today} else {@datasetRow.get(dataset.dateSourceValidFrom.dayOfMonth())-@datasetRow.get(dataset.dateSourceValidFrom.month())-@datasetRow.get(dataset.dateSourceValidFrom.year())}">
 			</div>
+			<div class="col-sm-offset-3 col-sm-2">
+				<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" 
+				data-content="Term Name: date">
+					<span class="glyphicon glyphicon-info-sign"></span>
+				</button>
+			</div>
 		</div>
 		<div class="form-group">
 			<label class="col-sm-3 control-label">Datum geldig, tot</label>
@@ -211,6 +311,12 @@
 				<input class="form-control js-date" type="text" data-toggle="tooltip" data-placement="top" 
 				title="Vul de datum in tot wanneer de bron geldig is" name="dateSourceValidUntil" 
 				value="@if(create) {@today} else {@datasetRow.get(dataset.dateSourceValidUntil.dayOfMonth())-@datasetRow.get(dataset.dateSourceValidUntil.month())-@datasetRow.get(dataset.dateSourceValidUntil.year())}">
+			</div>
+			<div class="col-sm-offset-3 col-sm-2">
+				<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" 
+				data-content="Term Name: date">
+					<span class="glyphicon glyphicon-info-sign"></span>
+				</button>
 			</div>
 		</div>
 		<div class="form-group" data-toggle="tooltip" data-placement="top" title="Vink de onderwerpen aan die van toepassing zijn op de data">
@@ -228,6 +334,12 @@
 						<span>@subjectOption.get(subjects.label)</span>
 					</div>
 				}
+			</div>
+			<div class="col-sm-offset-3 col-sm-2">
+				<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" 
+				data-content="Term Name: subject">
+					<span class="glyphicon glyphicon-info-sign"></span>
+				</button>
 			</div>
 		</div>
 		<div id="js-form-warning-fields">
