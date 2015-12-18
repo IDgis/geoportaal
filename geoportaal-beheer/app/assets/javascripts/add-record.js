@@ -1,3 +1,7 @@
+$('.js-date').datepicker({
+	dateFormat: 'dd-mm-yy'
+});
+
 require([
 	'dojo/dom',
 	'dojo/query',
@@ -7,8 +11,8 @@ require([
 	'dojo/dom-attr',
 	'dojo/dom-construct',
 	'dojo/dom-style',
-
 	'dojo/NodeList-traverse',
+	
 	'dojo/domReady!'
 	], function(dom, query, on, lang, win, domAttr, domConstruct, domStyle) {
 		
@@ -29,7 +33,7 @@ require([
 			domConstruct.place(attachmentClone, dom.byId('js-group-attachment'), 'last');
 		});
 		
-		var addAttachment = on(win.doc, '.js-remove-attachment:click', function(e) {
+		var removeAttachment = on(win.doc, '.js-remove-attachment:click', function(e) {
 			var attachment = query(this).parents('.js-attachment')[0];
 			domConstruct.destroy(attachment);
 		});
@@ -63,11 +67,11 @@ require([
 			}
 			
 			var textWarning = 'De volgende velden moeten nog ingevuld worden: ';
-			for(var i = 0; i < validateFields.length -1; i++) {
-				textWarning += validateFields[i] + ', '
+			for(var j = 0; j < validateFields.length -1; j++) {
+				textWarning += validateFields[j] + ', ';
 			}
-			for(var i = validateFields.length -1; i < validateFields.length; i++) {
-				textWarning += validateFields[i]
+			for(var k = validateFields.length -1; k < validateFields.length; k++) {
+				textWarning += validateFields[k];
 			}
 			
 			if(validateCounter > 0) {

@@ -1,3 +1,7 @@
+$('.js-date').datepicker({
+	dateFormat: 'dd-mm-yy'
+});
+
 require([
 	'dojo/dom',
 	'dojo/query',
@@ -9,8 +13,8 @@ require([
 	'dojo/dom-construct',
 	'dojo/dom-style',
 	'dojo/request/xhr',
-
 	'dojo/NodeList-traverse',
+	
 	'dojo/domReady!'
 	], function(dom, query, on, array, lang, win, domAttr, domConstruct, domStyle, xhr) {
 	
