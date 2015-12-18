@@ -1,3 +1,7 @@
+$(function () {
+  $('[data-toggle="popover"]').popover()
+})
+
 $('.js-date').datepicker({
 	dateFormat: 'dd-mm-yy'
 });
