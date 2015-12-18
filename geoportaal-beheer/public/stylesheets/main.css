@@ -48,3 +48,6 @@ div.editor-knoppen {margin-bottom:20px;margin-left:15px;}
 #input-attachment {display:inline;}
 #js-cancel-form {line-height:20px;padding:7.5px 12px;}
 #help-button {line-height:20px;padding:7.5px 12px;}
+
+#attachment-files-box {margin-bottom:15px;left:-8px;}
+.attachment-file {font-size:14px;}

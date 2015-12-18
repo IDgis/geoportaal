@@ -2,7 +2,8 @@
 	uuid: String, 
 	today: String, 
 	datasetRow: com.querydsl.core.Tuple, 
-	subjectsDataset: java.util.List[String], 
+	subjectsDataset: java.util.List[String],
+	attachmentsDataset: java.util.List[com.querydsl.core.Tuple], 
 	typeInformationList: java.util.List[com.querydsl.core.Tuple], 
 	creatorList: java.util.List[com.querydsl.core.Tuple], 
 	rightsList: java.util.List[com.querydsl.core.Tuple], 
@@ -18,6 +19,8 @@
 @import models.QUseLimitations.useLimitations
 @import models.QInfoFormats.infoFormats
 @import models.QSubjects.subjects
+@import models.QDataAttachment.dataAttachment
+@import models.QDataAttachment.dataAttachment
 
 @main(if(create) {"Toevoegen"} else {"Wijzigen"}, routes.Assets.versioned("javascripts/add-record.js").url) {
 	<div class="welkom">
@@ -25,7 +28,7 @@
 		<p class="welkom">* = verplicht</p>
 	</div>
 	
-	@helper.form(action = routes.Add.submit(), 'class -> "form-horizontal beheer-formulier") {
+	@helper.form(action = routes.Add.submit(), 'enctype -> "multipart/form-data", 'class -> "form-horizontal beheer-formulier") {
 		<div class="form-group">
 			<label class="col-sm-3 control-label">Unieke ID</label>
 			<div class="col-sm-8">
@@ -67,13 +70,25 @@
 				<label class="col-sm-3 control-label">Bijlage</label>
 				<div class="col-sm-8 form-inline js-attachment-input">
 					<input id="input-attachment" type="file" data-toggle="tooltip" data-placement="top" title="Voeg de bijlage(s) toe"
-					name="attachment[]">
+					name="attachmentName[]">
 					<button class="knop js-add-attachment" type="button">
 						<span class="glyphicon glyphicon-plus"></span>
 					</button>
+					
 				</div>
+				
 			</div>
 		</div>
+		@if(!create) {
+			<div id="attachment-files-box" class="col-sm-offset-3 col-sm-8">
+				@if(attachmentsDataset != null) {
+					@for(attachmentFile <- attachmentsDataset) {
+						<p class="attachment-file">@attachmentFile.get(dataAttachment.attachmentName)</p>
+					}
+				}
+			</div>
+		}
+		
 		<div class="form-group">
 			<label class="col-sm-3 control-label">Type informatie</label>
 			<div class="col-sm-8">
@@ -115,7 +130,7 @@
 				name="rights">
 					@for(rightsOption <- rightsList) {
 						<option value="@rightsOption.get(rights.identification)"
-						@if(!create && datasetRow.get(dataset.creator) == rightsOption.get(rights.identification)) {selected}>
+						@if(!create && datasetRow.get(dataset.rights) == rightsOption.get(rights.identification)) {selected}>
 							@rightsOption.get(rights.label)
 						</option>
 					}
@@ -161,7 +176,7 @@
 		<div class="form-group">
 			<label class="col-sm-3 control-label">Datum creatie</label>
 			<div class="col-sm-4">
-				<input class="form-control" type="text" data-toggle="tooltip" data-placement="top" 
+				<input class="form-control js-date" type="text" data-toggle="tooltip" data-placement="top" 
 				title="Vul de datum in wanneer de metadata gemaakt is" name="dateSourceCreation" 
 				value="@if(create) {@today} else {@datasetRow.get(dataset.dateSourceCreation.dayOfMonth())-@datasetRow.get(dataset.dateSourceCreation.month())-@datasetRow.get(dataset.dateSourceCreation.year())}">
 			</div>
@@ -169,7 +184,7 @@
 		<div class="form-group">
 			<label class="col-sm-3 control-label">Datum publicatie</label>
 			<div class="col-sm-4">
-				<input class="form-control" type="text" data-toggle="tooltip"  data-placement="top" 
+				<input class="form-control js-date" type="text" data-toggle="tooltip"  data-placement="top" 
 				title="Vul de datum in wanneer de metadata gepubliceerd is" name="dateSourcePublication" 
 				value="@if(create) {@today} else {@datasetRow.get(dataset.dateSourcePublication.dayOfMonth())-@datasetRow.get(dataset.dateSourcePublication.month())-@datasetRow.get(dataset.dateSourcePublication.year())}">
 			</div>
@@ -177,7 +192,7 @@
 		<div class="form-group">
 			<label class="col-sm-3 control-label">Datum mutatie</label>
 			<div class="col-sm-4">
-				<input class="form-control" type="text" data-toggle="tooltip" data-placement="top" 
+				<input class="form-control js-date" type="text" data-toggle="tooltip" data-placement="top" 
 				title="Vul de datum in wanneer de metadata gewijzigd is" name="dateSourceRevision" 
 				value="@if(create) {@today} else {@datasetRow.get(dataset.dateSourceRevision.dayOfMonth())-@datasetRow.get(dataset.dateSourceRevision.month())-@datasetRow.get(dataset.dateSourceRevision.year())}">
 			</div>
@@ -185,7 +200,7 @@
 		<div class="form-group">
 			<label class="col-sm-3 control-label">Datum geldig, van</label>
 			<div class="col-sm-4">
-				<input class="form-control" type="text" data-toggle="tooltip" data-placement="top" 
+				<input class="form-control js-date" type="text" data-toggle="tooltip" data-placement="top" 
 				title="Vul de datum in vanaf wanneer de bron geldig is" name="dateSourceValidFrom" 
 				value="@if(create) {@today} else {@datasetRow.get(dataset.dateSourceValidFrom.dayOfMonth())-@datasetRow.get(dataset.dateSourceValidFrom.month())-@datasetRow.get(dataset.dateSourceValidFrom.year())}">
 			</div>
@@ -193,7 +208,7 @@
 		<div class="form-group">
 			<label class="col-sm-3 control-label">Datum geldig, tot</label>
 			<div class="col-sm-4">
-				<input class="form-control" type="text" data-toggle="tooltip" data-placement="top" 
+				<input class="form-control js-date" type="text" data-toggle="tooltip" data-placement="top" 
 				title="Vul de datum in tot wanneer de bron geldig is" name="dateSourceValidUntil" 
 				value="@if(create) {@today} else {@datasetRow.get(dataset.dateSourceValidUntil.dayOfMonth())-@datasetRow.get(dataset.dateSourceValidUntil.month())-@datasetRow.get(dataset.dateSourceValidUntil.year())}">
 			</div>
@@ -213,104 +228,6 @@
 						<span>@subjectOption.get(subjects.label)</span>
 					</div>
 				}
-				
-				<!-- 
-				<div>
-					<input type="checkbox" class="js-subject-input" name="subject[]" value="inlandWaters"
-					@if(subjectsDataset != null) {@for(subject <- subjectsDataset) {@if(subject == "inlandWaters") {checked}}}>
-					<span>Binnenwater</span>
-				</div>
-				<div>
-					<input type="checkbox" class="js-subject-input" name="subject[]" value="structure"
-					@if(subjectsDataset != null) {@for(subject <- subjectsDataset) {@if(subject == "structure") {checked}}}>
-					<span>Civiele structuren</span>
-				</div>
-				<div>
-					<input type="checkbox" class="js-subject-input" name="subject[]" value="society"
-					@if(subjectsDataset != null) {@for(subject <- subjectsDataset) {@if(subject == "society") {checked}}}>
-					<span>Cultuur, maatschappij en demografie</span>
-				</div>
-				<div>
-					<input type="checkbox" class="js-subject-input" name="subject[]" value="economy"
-					@if(subjectsDataset != null) {@for(subject <- subjectsDataset) {@if(subject == "economy") {checked}}}>
-					<span>Economie</span>
-				</div>
-				<div>
-					<input type="checkbox" class="js-subject-input" name="subject[]" value="biota"
-					@if(subjectsDataset != null) {@for(subject <- subjectsDataset) {@if(subject == "biota") {checked}}}>
-					<span>Flora en fauna</span>
-				</div>
-				<div>
-					<input type="checkbox" class="js-subject-input" name="subject[]" value="geoscientificInformation"
-					@if(subjectsDataset != null) {@for(subject <- subjectsDataset) {@if(subject == "geoscientificInformation") {checked}}}>
-					<span>Geowetenschappelijke data</span>
-				</div>
-				<div>
-					<input type="checkbox" class="js-subject-input" name="subject[]" value="health"
-					@if(subjectsDataset != null) {@for(subject <- subjectsDataset) {@if(subject == "health") {checked}}}>
-					<span>Gezondheid</span>
-				</div>
-				<div>
-					<input type="checkbox" class="js-subject-input" name="subject[]" value="boundaries"
-					@if(subjectsDataset != null) {@for(subject <- subjectsDataset) {@if(subject == "boundaries") {checked}}}>
-					<span>Grenzen</span>
-				</div>
-				<div>
-					<input type="checkbox" class="js-subject-input" name="subject[]" value="elevation"
-					@if(subjectsDataset != null) {@for(subject <- subjectsDataset) {@if(subject == "elevation") {checked}}}>
-					<span>Hoogte</span>
-				</div>
-				<div>
-					<input type="checkbox" class="js-subject-input" name="subject[]" value="climatologyMeteorologyAtmosphere"
-					@if(subjectsDataset != null) {@for(subject <- subjectsDataset) {@if(subject == "climatologyMeteorologyAtmosphere") {checked}}}>
-					<span>Klimatologie, metereologie en atmosfeer</span>
-				</div>
-				<div>
-					<input type="checkbox" class="js-subject-input" name="subject[]" value="farming"
-					@if(subjectsDataset != null) {@for(subject <- subjectsDataset) {@if(subject == "farming") {checked}}}>
-					<span>Landbouw en veeteelt</span>
-				</div>
-				<div>
-					<input type="checkbox" class="js-subject-input" name="subject[]" value="location"
-					@if(subjectsDataset != null) {@for(subject <- subjectsDataset) {@if(subject == "location") {checked}}}>
-					<span>Locatie</span>
-				</div>
-				<div>
-					<input type="checkbox" class="js-subject-input" name="subject[]" value="intelligenceMilitary"
-					@if(subjectsDataset != null) {@for(subject <- subjectsDataset) {@if(subject == "intelligenceMilitary") {checked}}}>
-					<span>Militair</span>
-				</div>
-				<div>
-					<input type="checkbox" class="js-subject-input" name="subject[]" value="environment"
-					@if(subjectsDataset != null) {@for(subject <- subjectsDataset) {@if(subject == "environment") {checked}}}>
-					<span>Natuur en milieu</span>
-				</div>
-				<div>
-					<input type="checkbox" class="js-subject-input" name="subject[]" value="utilitiesCommunication"
-					@if(subjectsDataset != null) {@for(subject <- subjectsDataset) {@if(subject == "utilitiesCommunication") {checked}}}>
-					<span>Nutsvoorieningen en communicatie</span>
-				</div>
-				<div>
-					<input type="checkbox" class="js-subject-input" name="subject[]" value="oceans"
-					@if(subjectsDataset != null) {@for(subject <- subjectsDataset) {@if(subject == "oceans") {checked}}}>
-					<span>Oceanen</span>
-				</div>
-				<div>
-					<input type="checkbox" class="js-subject-input" name="subject[]" value="imageryBaseMapsEarthCover"
-					@if(subjectsDataset != null) {@for(subject <- subjectsDataset) {@if(subject == "imageryBaseMapsEarthCover") {checked}}}>
-					<span>Referentiemateriaal aardbedekking</span>
-				</div>
-				<div>
-					<input type="checkbox" class="js-subject-input" name="subject[]" value="planningCadastre"
-					@if(subjectsDataset != null) {@for(subject <- subjectsDataset) {@if(subject == "planningCadastre") {checked}}}>
-					<span>Ruimtelijke ordening en kadaster</span>
-				</div>
-				<div>
-					<input type="checkbox" class="js-subject-input" name="subject[]" value="transportation"
-					@if(subjectsDataset != null) {@for(subject <- subjectsDataset) {@if(subject == "transportation") {checked}}}>
-					<span>Transport en logistiek</span>
-				</div>
-				-->
 			</div>
 		</div>
 		<div id="js-form-warning-fields">
