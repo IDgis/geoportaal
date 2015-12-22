@@ -18,8 +18,8 @@ apply plugin: QueryDSLPlugin
 apply plugin: DockerPlugin
 apply plugin: 'org.ajoberstar.release-opinion'
 
-def nexusUser = "test"
-def nexusPassword = "test"
+nexusUser = "test"
+nexusPassword = "test"
 
 repositories {
 	jcenter ()
