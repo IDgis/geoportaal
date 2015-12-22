@@ -18,6 +18,9 @@ apply plugin: QueryDSLPlugin
 apply plugin: DockerPlugin
 apply plugin: 'org.ajoberstar.release-opinion'
 
+def nexusUser = ""
+def nexusPassword = ""
+
 repositories {
 	jcenter ()
 	mavenCentral ()
