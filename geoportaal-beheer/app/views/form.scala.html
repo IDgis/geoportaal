@@ -30,14 +30,27 @@
 	
 	@helper.form(action = routes.Add.submit(), 'enctype -> "multipart/form-data", 'class -> "form-horizontal beheer-formulier") {
 		<div class="form-group">
-			<label class="col-sm-3 control-label">Unieke ID</label>
+			<label class="col-sm-3 control-label">Titel*</label>
 			<div class="col-sm-7">
-				<input class="form-control" type="text" data-toggle="tooltip" data-placement="top" title="De unieke ID van de data" 
-				name="id" value="@if(create) {@uuid} else {@datasetRow.get(dataset.id)}" readonly>
+				<input class="form-control js-mandatory" type="text" data-toggle="tooltip" data-placement="top" data-field="titel"
+				title="Vul de titel in" name="title" value="@if(!create) {@datasetRow.get(dataset.title)}">
 			</div>
 			<div class="col-sm-2">
-				<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement=top type="button" 
-				data-content="Term name: identifier">
+				<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" 
+				data-content="Term Name: title">
+					<span class="glyphicon glyphicon-info-sign"></span>
+				</button>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">Omschrijving*</label>
+			<div class="col-sm-7">
+				<textarea class="form-control js-mandatory" rows="4" data-toggle="tooltip" data-placement="top" data-field="omschrijving"
+				title="Vul de omschrijving in" name="description">@if(!create) {@datasetRow.get(dataset.description)}</textarea>
+			</div>
+			<div class="col-sm-2">
+				<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" 
+				data-content="Term Name: description">
 					<span class="glyphicon glyphicon-info-sign"></span>
 				</button>
 			</div>
@@ -68,29 +81,15 @@
 				</button>
 			</div>
 		</div>
-		
 		<div class="form-group">
-			<label class="col-sm-3 control-label">Titel*</label>
+			<label class="col-sm-3 control-label">Unieke ID</label>
 			<div class="col-sm-7">
-				<input class="form-control js-mandatory" type="text" data-toggle="tooltip" data-placement="top" data-field="titel"
-				title="Vul de titel in" name="title" value="@if(!create) {@datasetRow.get(dataset.title)}">
+				<input class="form-control" type="text" data-toggle="tooltip" data-placement="top" title="De unieke ID van de data" 
+				name="id" value="@if(create) {@uuid} else {@datasetRow.get(dataset.id)}" readonly>
 			</div>
 			<div class="col-sm-2">
-				<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" 
-				data-content="Term Name: title">
-					<span class="glyphicon glyphicon-info-sign"></span>
-				</button>
-			</div>
-		</div>
-		<div class="form-group">
-			<label class="col-sm-3 control-label">Omschrijving*</label>
-			<div class="col-sm-7">
-				<textarea class="form-control js-mandatory" rows="4" data-toggle="tooltip" data-placement="top" data-field="omschrijving"
-				title="Vul de omschrijving in" name="description">@if(!create) {@datasetRow.get(dataset.description)}</textarea>
-			</div>
-			<div class="col-sm-2">
-				<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" 
-				data-content="Term Name: description">
+				<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement=top type="button" 
+				data-content="Term name: identifier">
 					<span class="glyphicon glyphicon-info-sign"></span>
 				</button>
 			</div>
@@ -99,14 +98,17 @@
 			<div class="form-group js-attachment">
 				<label class="col-sm-3 control-label">Bijlage</label>
 				<div class="col-sm-7 form-inline js-attachment-input">
-					<input id="input-attachment" type="file" data-toggle="tooltip" data-placement="top" title="Voeg de bijlage(s) toe"
+					<input class="input-attachment" type="file" data-toggle="tooltip" data-placement="top" title="Voeg de bijlage(s) toe"
 					name="attachmentName[]">
-					<button class="knop js-add-attachment" type="button">
+					<button class="knop js-add-attachment" type="button" title="Bijlage toevoegen">
 						<span class="glyphicon glyphicon-plus"></span>
+					</button>
+					<button class="knop js-empty-attachment" type="button" title="Bijlage leegmaken">
+						<span class="glyphicon glyphicon-erase"></span>
 					</button>
 					
 				</div>
-				<div class="col-sm-2">
+				<div class="col-sm-2 js-attachment-tooltip">
 					<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" 
 					data-content="Term Name: relation">
 						<span class="glyphicon glyphicon-info-sign"></span>
@@ -268,7 +270,7 @@
 			<div class="col-sm-4">
 				<input class="form-control js-date" type="text" data-toggle="tooltip"  data-placement="top" 
 				title="Vul de datum in wanneer de metadata gepubliceerd is" name="dateSourcePublication" 
-				value="@if(create) {@today} else {@datasetRow.get(dataset.dateSourcePublication.dayOfMonth())-@datasetRow.get(dataset.dateSourcePublication.month())-@datasetRow.get(dataset.dateSourcePublication.year())}">
+				value="@if(!create) {@datasetRow.get(dataset.dateSourcePublication.dayOfMonth())-@datasetRow.get(dataset.dateSourcePublication.month())-@datasetRow.get(dataset.dateSourcePublication.year())}">
 			</div>
 			<div class="col-sm-offset-3 col-sm-2">
 				<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" 
@@ -282,7 +284,7 @@
 			<div class="col-sm-4">
 				<input class="form-control js-date" type="text" data-toggle="tooltip" data-placement="top" 
 				title="Vul de datum in wanneer de metadata gewijzigd is" name="dateSourceRevision" 
-				value="@if(create) {@today} else {@datasetRow.get(dataset.dateSourceRevision.dayOfMonth())-@datasetRow.get(dataset.dateSourceRevision.month())-@datasetRow.get(dataset.dateSourceRevision.year())}">
+				value="@if(!create) {@datasetRow.get(dataset.dateSourceRevision.dayOfMonth())-@datasetRow.get(dataset.dateSourceRevision.month())-@datasetRow.get(dataset.dateSourceRevision.year())}">
 			</div>
 			<div class="col-sm-offset-3 col-sm-2">
 				<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" 
@@ -296,7 +298,7 @@
 			<div class="col-sm-4">
 				<input class="form-control js-date" type="text" data-toggle="tooltip" data-placement="top" 
 				title="Vul de datum in vanaf wanneer de bron geldig is" name="dateSourceValidFrom" 
-				value="@if(create) {@today} else {@datasetRow.get(dataset.dateSourceValidFrom.dayOfMonth())-@datasetRow.get(dataset.dateSourceValidFrom.month())-@datasetRow.get(dataset.dateSourceValidFrom.year())}">
+				value="@if(!create) {@datasetRow.get(dataset.dateSourceValidFrom.dayOfMonth())-@datasetRow.get(dataset.dateSourceValidFrom.month())-@datasetRow.get(dataset.dateSourceValidFrom.year())}">
 			</div>
 			<div class="col-sm-offset-3 col-sm-2">
 				<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" 
@@ -310,7 +312,7 @@
 			<div class="col-sm-4">
 				<input class="form-control js-date" type="text" data-toggle="tooltip" data-placement="top" 
 				title="Vul de datum in tot wanneer de bron geldig is" name="dateSourceValidUntil" 
-				value="@if(create) {@today} else {@datasetRow.get(dataset.dateSourceValidUntil.dayOfMonth())-@datasetRow.get(dataset.dateSourceValidUntil.month())-@datasetRow.get(dataset.dateSourceValidUntil.year())}">
+				value="@if(!create) {@datasetRow.get(dataset.dateSourceValidUntil.dayOfMonth())-@datasetRow.get(dataset.dateSourceValidUntil.month())-@datasetRow.get(dataset.dateSourceValidUntil.year())}">
 			</div>
 			<div class="col-sm-offset-3 col-sm-2">
 				<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" 
@@ -359,7 +361,6 @@
 		</div>
 		<div class="editor-knoppen">
 			<div class="form-group">
-				<button id="js-validate-form" class="knop" type="button">Valideren</button>
 				<button id="js-save-form" class="knop" type="submit">Opslaan</button>
 				<a class="knop" id="js-cancel-form" href="@routes.Add.cancel()">Annuleren</a>
 			</div>
