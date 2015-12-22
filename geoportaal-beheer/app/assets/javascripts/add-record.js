@@ -24,10 +24,13 @@ require([
 			var attachment = query('.js-add-attachment').parents('.js-attachment')[0];
 			var attachmentClone = lang.clone(attachment);
 			var attachmentCloneDiv = query(attachmentClone).query('.js-attachment-input')[0];
+			var attachmentCloneTooltip = query(attachmentClone).query('.js-attachment-tooltip')[0];
+			domConstruct.destroy(attachmentCloneTooltip);
 			
 			var buttonNode = domConstruct.create("button");
 			domAttr.set(buttonNode, 'class', 'knop js-remove-attachment');
 			domAttr.set(buttonNode, 'type', 'button');
+			domAttr.set(buttonNode, 'title', 'Bijlage verwijderen');
 			
 			var spanNode = domConstruct.create("span");
 			domAttr.set(spanNode, 'class', 'glyphicon glyphicon-remove');
@@ -40,6 +43,10 @@ require([
 		var removeAttachment = on(win.doc, '.js-remove-attachment:click', function(e) {
 			var attachment = query(this).parents('.js-attachment')[0];
 			domConstruct.destroy(attachment);
+		});
+		var emptyAttachment = on(win.doc, '.js-empty-attachment:click', function(e) {
+			var inputAttachment = query(this).siblings('.input-attachment')[0];
+			domAttr.set(inputAttachment, 'value', '');
 		});
 		
 		var handleOtherCreator = on(dom.byId('js-creator-select'), 'change', function(e) {
@@ -55,6 +62,7 @@ require([
 			}
 		});
 		
+		/*
 		var validateForm = on(dom.byId('js-validate-form'), 'click', function(e) {
 			var mandatoryInputs = query('.js-mandatory');
 			var validateCounter = 0;
@@ -97,4 +105,5 @@ require([
 				domStyle.set(dom.byId('js-form-approval'), 'display', 'block');
 			}
 		});
+		*/
 });
