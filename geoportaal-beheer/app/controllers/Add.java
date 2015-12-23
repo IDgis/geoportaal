@@ -1,14 +1,14 @@
 package controllers;
 
-import static models.QDataAttachment.dataAttachment;
-import static models.QDataset.dataset;
-import static models.QDataSubject.dataSubject;
-import static models.QTypeInformations.typeInformations;
 import static models.QCreators.creators;
-import static models.QRights.rights;
-import static models.QUseLimitations.useLimitations;
+import static models.QDataAttachment.dataAttachment;
+import static models.QDataSubject.dataSubject;
+import static models.QDataset.dataset;
 import static models.QInfoFormats.infoFormats;
+import static models.QRights.rights;
 import static models.QSubjects.subjects;
+import static models.QTypeInformations.typeInformations;
+import static models.QUseLimitations.useLimitations;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -19,52 +19,43 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
-import javax.sql.DataSource;
+import javax.inject.Inject;
 
 import com.querydsl.core.Tuple;
-import com.querydsl.sql.Configuration;
-import com.querydsl.sql.PostgreSQLTemplates;
-import com.querydsl.sql.SQLQueryFactory;
-import com.querydsl.sql.SQLTemplates;
 
 import models.DublinCore;
 import play.data.Form;
-import play.db.DB;
 import play.mvc.Controller;
 import play.mvc.Http.MultipartFormData.FilePart;
 import play.mvc.Result;
 
 public class Add extends Controller {
-	DataSource ds = DB.getDataSource();
+	@Inject Database db;
 	
 	public Result add() {
 		Boolean create = true;
 		
-		SQLTemplates templates = new PostgreSQLTemplates();
-    	Configuration configuration = new Configuration(templates);
-    	SQLQueryFactory queryFactory = new SQLQueryFactory(configuration, ds);
-    	
-    	List<Tuple> typeInformationList = queryFactory.select(typeInformations.identification, typeInformations.label)
+		List<Tuple> typeInformationList = db.queryFactory.select(typeInformations.identification, typeInformations.label)
     		.from(typeInformations)
     		.fetch();
     	
-    	List<Tuple> creatorsList = queryFactory.select(creators.identification, creators.label)
+    	List<Tuple> creatorsList = db.queryFactory.select(creators.identification, creators.label)
         	.from(creators)
         	.fetch();
     	
-    	List<Tuple> rightsList = queryFactory.select(rights.identification, rights.label)
+    	List<Tuple> rightsList = db.queryFactory.select(rights.identification, rights.label)
             	.from(rights)
             	.fetch();
     	
-    	List<Tuple> useLimitationList = queryFactory.select(useLimitations.identification, useLimitations.label)
+    	List<Tuple> useLimitationList = db.queryFactory.select(useLimitations.identification, useLimitations.label)
             	.from(useLimitations)
             	.fetch();
     	
-    	List<Tuple> infoFormatList = queryFactory.select(infoFormats.identification, infoFormats.label)
+    	List<Tuple> infoFormatList = db.queryFactory.select(infoFormats.identification, infoFormats.label)
             	.from(infoFormats)
             	.fetch();
     	
-    	List<Tuple> subjectList = queryFactory.select(subjects.identification, subjects.label)
+    	List<Tuple> subjectList = db.queryFactory.select(subjects.identification, subjects.label)
             	.from(subjects)
             	.fetch();
 		
@@ -77,10 +68,6 @@ public class Add extends Controller {
 	}
 	
 	public Result submit() throws ParseException, FileNotFoundException {
-		SQLTemplates templates = new PostgreSQLTemplates();
-    	Configuration configuration = new Configuration(templates);
-    	SQLQueryFactory queryFactory = new SQLQueryFactory(configuration, ds);
-		
 		Form<DublinCore> dcForm = Form.form(DublinCore.class);
 		DublinCore dc = dcForm.bindFromRequest().get();
 		
@@ -92,7 +79,7 @@ public class Add extends Controller {
 		Date dSVF = new SimpleDateFormat("dd-MM-yyyy").parse(dc.getDateSourceValidFrom());
 		Date dSVU = new SimpleDateFormat("dd-MM-yyyy").parse(dc.getDateSourceValidUntil());
 		
-		queryFactory.insert(dataset)
+		db.queryFactory.insert(dataset)
     		.columns(dataset.id, dataset.location, dataset.fileId, dataset.title, dataset.description, dataset.typeInfo,
     			dataset.creator, dataset.rights, dataset.useLimitation, dataset.format, dataset.source, dataset.dateSourceCreation,
     			dataset.dateSourcePublication, dataset.dateSourceRevision, dataset.dateSourceValidFrom, dataset.dateSourceValidUntil,
@@ -109,7 +96,7 @@ public class Add extends Controller {
 				java.io.File file = fp.getFile();
 				InputStream inpSt = new FileInputStream(file);
 				
-				queryFactory.insert(dataAttachment)
+				db.queryFactory.insert(dataAttachment)
 					.columns(dataAttachment.datasetId, dataAttachment.attachmentName, dataAttachment.attachmentContent)
 					.values(dc.getId(), fp.getFilename(), inpSt)
 					.execute();
@@ -118,7 +105,7 @@ public class Add extends Controller {
 		
 		if(dc.getSubject() != null) {
 			for(String subject : dc.getSubject()) {
-				queryFactory.insert(dataSubject)
+				db.queryFactory.insert(dataSubject)
 					.columns(dataSubject.datasetId, dataSubject.subject)
 					.values(dc.getId(), subject)
 					.execute();
