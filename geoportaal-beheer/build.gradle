@@ -18,9 +18,6 @@ apply plugin: QueryDSLPlugin
 apply plugin: DockerPlugin
 apply plugin: 'org.ajoberstar.release-opinion'
 
-nexusUser "test"
-nexusPassword "test"
-
 repositories {
 	jcenter ()
 	mavenCentral ()
