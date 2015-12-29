@@ -1,5 +1,6 @@
 package models;
 
+import java.util.Date;
 import java.util.List;
 
 public class DublinCore {
@@ -15,11 +16,11 @@ public class DublinCore {
 	private String useLimitation;
 	private String format;
 	private String source;
-	private String dateSourceCreation;
-	private String dateSourcePublication;
-	private String dateSourceRevision;
-	private String dateSourceValidFrom;
-	private String dateSourceValidUntil;
+	private Date dateSourceCreation;
+	private Date dateSourcePublication;
+	private Date dateSourceRevision;
+	private Date dateSourceValidFrom;
+	private Date dateSourceValidUntil;
 	private List<String> subject;
 	
 	public DublinCore() {
@@ -27,8 +28,8 @@ public class DublinCore {
 	}
 	
 	public DublinCore(String id, String location, String fileId, String title, String description, String typeInfo, String creator, 
-			String rights, String useLimitation, String format, String source, String dateSourceCreation, String dateSourcePublication, 
-			String dateSourceRevision, String dateSourceValidFrom, String dateSourceValidUntil, List<String> subject) {
+			String rights, String useLimitation, String format, String source, Date dateSourceCreation, Date dateSourcePublication, 
+			Date dateSourceRevision, Date dateSourceValidFrom, Date dateSourceValidUntil, List<String> subject) {
 		super();
 		this.id = id;
 		this.location = location;
@@ -118,43 +119,43 @@ public class DublinCore {
 		this.source = source;
 	}
 
-	public String getDateSourceCreation() {
+	public Date getDateSourceCreation() {
 		return dateSourceCreation;
 	}
 
-	public void setDateSourceCreation(String dateSourceCreation) {
+	public void setDateSourceCreation(Date dateSourceCreation) {
 		this.dateSourceCreation = dateSourceCreation;
 	}
 
-	public String getDateSourcePublication() {
+	public Date getDateSourcePublication() {
 		return dateSourcePublication;
 	}
 
-	public void setDateSourcePublication(String dateSourcePublication) {
+	public void setDateSourcePublication(Date dateSourcePublication) {
 		this.dateSourcePublication = dateSourcePublication;
 	}
 
-	public String getDateSourceRevision() {
+	public Date getDateSourceRevision() {
 		return dateSourceRevision;
 	}
 
-	public void setDateSourceRevision(String dateSourceRevision) {
+	public void setDateSourceRevision(Date dateSourceRevision) {
 		this.dateSourceRevision = dateSourceRevision;
 	}
 
-	public String getDateSourceValidFrom() {
+	public Date getDateSourceValidFrom() {
 		return dateSourceValidFrom;
 	}
 
-	public void setDateSourceValidFrom(String dateSourceValidFrom) {
+	public void setDateSourceValidFrom(Date dateSourceValidFrom) {
 		this.dateSourceValidFrom = dateSourceValidFrom;
 	}
 
-	public String getDateSourceValidUntil() {
+	public Date getDateSourceValidUntil() {
 		return dateSourceValidUntil;
 	}
 
-	public void setDateSourceValidUntil(String dateSourceValidUntil) {
+	public void setDateSourceValidUntil(Date dateSourceValidUntil) {
 		this.dateSourceValidUntil = dateSourceValidUntil;
 	}
 

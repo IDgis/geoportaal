@@ -10,6 +10,7 @@ import static models.QSubjects.subjects;
 import static models.QTypeInformations.typeInformations;
 import static models.QUseLimitations.useLimitations;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -25,53 +26,50 @@ public class Edit extends Controller {
 	public Result edit(String datasetId) {
 		Boolean create = false;
 		
-		Tuple datasetRow = db.queryFactory.select(dataset.id, dataset.location, dataset.fileId, dataset.title, dataset.description,
-    			dataset.typeInfo, dataset.creator, dataset.rights, dataset.useLimitation, dataset.format, dataset.source, 
-    			dataset.dateSourceCreation.dayOfMonth(), dataset.dateSourceCreation.month(), dataset.dateSourceCreation.year(),
-    			dataset.dateSourcePublication.dayOfMonth(), dataset.dateSourcePublication.month(), dataset.dateSourcePublication.year(),
-    			dataset.dateSourceRevision.dayOfMonth(), dataset.dateSourceRevision.month(), dataset.dateSourceRevision.year(),
-    			dataset.dateSourceValidFrom.dayOfMonth(), dataset.dateSourceValidFrom.month(), dataset.dateSourceValidFrom.year(),
-    			dataset.dateSourceValidUntil.dayOfMonth(), dataset.dateSourceValidUntil.month(), dataset.dateSourceValidUntil.year())
+		Tuple datasetRow = db.queryFactory.select(dataset.all())
     			.from(dataset)
     			.where(dataset.id.eq(datasetId))
     			.fetchFirst();
     	
-    	List<String> subjectsDataset = db.queryFactory.select(dataSubject.subject)
+    	List<Tuple> subjectsDataset = db.queryFactory.select(dataSubject.all())
     			.from(dataSubject)
     			.where(dataSubject.datasetId.eq(datasetId))
     			.fetch();
     	
-    	List<Tuple> attachmentsDataset = db.queryFactory.select(dataAttachment.attachmentName, dataAttachment.attachmentContent)
+    	List<Tuple> attachmentsDataset = db.queryFactory.select(dataAttachment.all())
     			.from(dataAttachment)
     			.where(dataAttachment.datasetId.eq(datasetId))
     			.fetch();
     	
-    	List<Tuple> typeInformationList = db.queryFactory.select(typeInformations.identification, typeInformations.label)
+    	List<Tuple> typeInformationList = db.queryFactory.select(typeInformations.all())
         		.from(typeInformations)
         		.fetch();
         	
-    	List<Tuple> creatorsList = db.queryFactory.select(creators.identification, creators.label)
+    	List<Tuple> creatorsList = db.queryFactory.select(creators.all())
             	.from(creators)
             	.fetch();
         	
-       	List<Tuple> rightsList = db.queryFactory.select(rights.identification, rights.label)
+       	List<Tuple> rightsList = db.queryFactory.select(rights.all())
                	.from(rights)
                	.fetch();
         	
-       	List<Tuple> useLimitationList = db.queryFactory.select(useLimitations.identification, useLimitations.label)
+       	List<Tuple> useLimitationList = db.queryFactory.select(useLimitations.all())
                	.from(useLimitations)
                	.fetch();
         	
-        List<Tuple> infoFormatList = db.queryFactory.select(infoFormats.identification, infoFormats.label)
+        List<Tuple> infoFormatList = db.queryFactory.select(infoFormats.all())
                	.from(infoFormats)
                	.fetch();
-        	
-        List<Tuple> subjectList = db.queryFactory.select(subjects.identification, subjects.label)
+        
+        SimpleDateFormat sdfUS = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat sdfLocal = new SimpleDateFormat("dd-MM-yyyy");
+        
+        List<Tuple> subjectList = db.queryFactory.select(subjects.all())
                	.from(subjects)
                	.fetch();
     	
-    	return ok(views.html.form.render(create, "", "", datasetRow, subjectsDataset, attachmentsDataset, typeInformationList, creatorsList, 
-    			rightsList, useLimitationList, infoFormatList, subjectList));
+    	return ok(views.html.form.render(create, "", "", "", datasetRow, subjectsDataset, attachmentsDataset, typeInformationList, creatorsList, 
+    			rightsList, useLimitationList, infoFormatList, sdfUS, sdfLocal, subjectList));
 	}
 	
 	public Result changeStatus(String datasetId, String status) {

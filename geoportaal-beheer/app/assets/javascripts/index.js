@@ -1,6 +1,16 @@
-$('.js-date').datepicker({
-	dateFormat: 'dd-mm-yy'
-});
+if(!Modernizr.inputtypes.date) {
+	$('#js-date-update-start').datepicker({
+		dateFormat: 'dd-mm-yy',
+		altField: '#js-hidden-date-update-start',
+		altFormat: 'yy-mm-dd'
+	});
+	
+	$('#js-date-update-end').datepicker({
+		dateFormat: 'dd-mm-yy',
+		altField: '#js-hidden-date-update-end',
+		altFormat: 'yy-mm-dd'
+	});
+}
 
 require([
 	'dojo/dom',
@@ -18,6 +28,15 @@ require([
 	'dojo/domReady!'
 	], function(dom, query, on, array, lang, win, domAttr, domConstruct, domStyle, xhr) {
 	
+		var datesArray = query('input[type=date]');
+		if(!Modernizr.inputtypes.date) {
+			array.forEach(datesArray, function(item) {
+				var name = domAttr.get(item, 'name');
+				domAttr.remove(item, 'name');
+				domAttr.set(query(item).query('~ input')[0], 'name', name);
+			});
+		}
+		
 		var deleteRecords = on(dom.byId('js-delete'), 'click', function(e) {
 			var recordsChecked = query('.js-record-checkbox:checked');
 			

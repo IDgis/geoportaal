@@ -6,6 +6,7 @@ import static models.QStatuses.statuses;
 import static models.QSuppliers.suppliers;
 
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -24,25 +25,26 @@ public class Index extends Controller {
 	@Inject Database db;
 	
 	public Result index() throws SQLException {
-    	List<Tuple> datasetRows = db.queryFactory.select(dataset.id, dataset.title, dataset.supplier, dataset.status, 
-    			dataset.lastRevisionDate.dayOfMonth(), dataset.lastRevisionDate.month(), dataset.lastRevisionDate.year())
+    	List<Tuple> datasetRows = db.queryFactory.select(dataset.all())
     			.from(dataset)
     			.orderBy(dataset.lastRevisionDate.asc())
     			.fetch();
     	
-    	List<String> supplierList = db.queryFactory.select(suppliers.name)
+    	List<Tuple> supplierList = db.queryFactory.select(suppliers.all())
             	.from(suppliers)
             	.fetch();
     	
-    	List<Tuple> statusList = db.queryFactory.select(statuses.identification, statuses.label)
+    	List<Tuple> statusList = db.queryFactory.select(statuses.all())
             	.from(statuses)
             	.fetch();
     	
-    	List<Tuple> infoFormatList = db.queryFactory.select(infoFormats.identification, infoFormats.label)
+    	List<Tuple> infoFormatList = db.queryFactory.select(infoFormats.all())
             	.from(infoFormats)
             	.fetch();
     	
-    	return ok(views.html.index.render(datasetRows, supplierList, statusList, infoFormatList));
+    	SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+    	
+    	return ok(views.html.index.render(datasetRows, supplierList, statusList, infoFormatList, sdf));
     }
 	
 	public Result jsRoutes() {
