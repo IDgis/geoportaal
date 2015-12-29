@@ -2,9 +2,37 @@ $(function () {
   $('[data-toggle="popover"]').popover()
 })
 
-$('.js-date').datepicker({
-	dateFormat: 'dd-mm-yy'
-});
+if(!Modernizr.inputtypes.date) {
+	$('#js-date-creation').datepicker({
+		dateFormat: 'dd-mm-yy',
+		altField: '#js-hidden-date-creation',
+		altFormat: 'yy-mm-dd'
+	});
+	
+	$('#js-date-publication').datepicker({
+		dateFormat: 'dd-mm-yy',
+		altField: '#js-hidden-date-publication',
+		altFormat: 'yy-mm-dd'
+	});
+	
+	$('#js-date-revision').datepicker({
+		dateFormat: 'dd-mm-yy',
+		altField: '#js-hidden-date-revision',
+		altFormat: 'yy-mm-dd'
+	});
+	
+	$('#js-date-valid-from').datepicker({
+		dateFormat: 'dd-mm-yy',
+		altField: '#js-hidden-date-valid-from',
+		altFormat: 'yy-mm-dd'
+	});
+	
+	$('#js-date-valid-until').datepicker({
+		dateFormat: 'dd-mm-yy',
+		altField: '#js-hidden-date-valid-until',
+		altFormat: 'yy-mm-dd'
+	});
+}
 
 require([
 	'dojo/dom',
@@ -12,14 +40,52 @@ require([
 	'dojo/on',
 	'dojo/_base/lang',
 	'dojo/_base/window',
+	'dojo/_base/array',
 	'dojo/dom-attr',
 	'dojo/dom-construct',
 	'dojo/dom-style',
 	'dojo/NodeList-traverse',
 	
 	'dojo/domReady!'
-	], function(dom, query, on, lang, win, domAttr, domConstruct, domStyle) {
+	], function(dom, query, on, lang, win, array, domAttr, domConstruct, domStyle) {
 		
+		var create = domAttr.get(dom.byId('js-date-creation'), 'data-create');
+		var datesArray = query('input[type=date]');
+		if(!Modernizr.inputtypes.date) {
+			array.forEach(datesArray, function(item) {
+				var name = domAttr.get(item, 'name');
+				domAttr.remove(item, 'name');
+				domAttr.set(query(item).query('~ input')[0], 'name', name);
+			});
+
+			if(create === "true") {
+				var todayLocal = domAttr.get(dom.byId('js-date-creation'), 'data-date-create-today-local');
+				var todayUS = domAttr.get(dom.byId('js-date-creation'), 'data-date-create-today-US');
+				
+				domAttr.set(dom.byId('js-date-creation'), 'value', todayLocal);
+				domAttr.set(dom.byId('js-hidden-date-creation'), 'value', todayUS);
+			} else {
+				array.forEach(datesArray, function(item) {
+					var dateLocal = domAttr.get(item, 'data-date-value-local');
+					var dateUS = domAttr.get(item, 'data-date-value-US');
+					
+					domAttr.set(item, 'value', dateLocal);
+					domAttr.set(query(item).query('~ input')[0], 'value', dateUS);
+				});
+			}
+		} else {
+			if(create === "true") {
+				var today = domAttr.get(dom.byId('js-date-creation'), 'data-date-create-today-US');
+				domAttr.set(dom.byId('js-date-creation'), 'value', today);
+			} else {
+				array.forEach(datesArray, function(item) {
+					var date = domAttr.get(item, 'data-date-value-US');
+					
+					domAttr.set(item, 'value', date);
+				});
+			}
+		}
+	
 		var addAttachment = on(win.doc, '.js-add-attachment:click', function(e) {
 			var attachment = query('.js-add-attachment').parents('.js-attachment')[0];
 			var attachmentClone = lang.clone(attachment);

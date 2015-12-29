@@ -1,14 +1,17 @@
 @(create: Boolean, 
 	uuid: String, 
-	today: String, 
+	todayUS: String,
+	todayLocal: String,  
 	datasetRow: com.querydsl.core.Tuple, 
-	subjectsDataset: java.util.List[String],
+	subjectsDataset: java.util.List[com.querydsl.core.Tuple],
 	attachmentsDataset: java.util.List[com.querydsl.core.Tuple], 
 	typeInformationList: java.util.List[com.querydsl.core.Tuple], 
 	creatorList: java.util.List[com.querydsl.core.Tuple], 
 	rightsList: java.util.List[com.querydsl.core.Tuple], 
 	useLimitationList: java.util.List[com.querydsl.core.Tuple],
-	infoFormatList: java.util.List[com.querydsl.core.Tuple], 
+	infoFormatList: java.util.List[com.querydsl.core.Tuple],
+	sdfUS: java.text.SimpleDateFormat,
+	sdfLocal: java.text.SimpleDateFormat,
 	subjectList: java.util.List[com.querydsl.core.Tuple]
 )
 
@@ -20,7 +23,7 @@
 @import models.QInfoFormats.infoFormats
 @import models.QSubjects.subjects
 @import models.QDataAttachment.dataAttachment
-@import models.QDataAttachment.dataAttachment
+@import models.QDataSubject.dataSubject
 
 @main(if(create) {"Toevoegen"} else {"Wijzigen"}, routes.Assets.versioned("javascripts/add-record.js").url) {
 	<div class="welkom">
@@ -254,9 +257,12 @@
 		<div class="form-group">
 			<label class="col-sm-3 control-label">Datum creatie</label>
 			<div class="col-sm-4">
-				<input class="form-control js-date" type="text" data-toggle="tooltip" data-placement="top" 
-				title="Vul de datum in wanneer de metadata gemaakt is" name="dateSourceCreation" 
-				value="@if(create) {@today} else {@datasetRow.get(dataset.dateSourceCreation.dayOfMonth())-@datasetRow.get(dataset.dateSourceCreation.month())-@datasetRow.get(dataset.dateSourceCreation.year())}">
+				<input class="form-control js-date" type="date" data-toggle="tooltip" data-placement="top" 
+				title="Vul de datum in wanneer de metadata gemaakt is" id="js-date-creation" name="dateSourceCreation"
+				data-create="@create" data-date-create-today-US="@todayUS" data-date-create-today-local="@todayLocal"
+				@if(!create) {data-date-value-US="@sdfUS.format(datasetRow.get(dataset.dateSourceCreation).getTime())"} 
+				@if(!create) {data-date-value-local="@sdfLocal.format(datasetRow.get(dataset.dateSourceCreation).getTime())"}>
+				<input type="hidden" id="js-hidden-date-creation">
 			</div>
 			<div class="col-sm-offset-3 col-sm-2">
 				<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" 
@@ -268,9 +274,11 @@
 		<div class="form-group">
 			<label class="col-sm-3 control-label">Datum publicatie</label>
 			<div class="col-sm-4">
-				<input class="form-control js-date" type="text" data-toggle="tooltip"  data-placement="top" 
-				title="Vul de datum in wanneer de metadata gepubliceerd is" name="dateSourcePublication" 
-				value="@if(!create) {@datasetRow.get(dataset.dateSourcePublication.dayOfMonth())-@datasetRow.get(dataset.dateSourcePublication.month())-@datasetRow.get(dataset.dateSourcePublication.year())}">
+				<input class="form-control js-date" type="date" data-toggle="tooltip"  data-placement="top" 
+				title="Vul de datum in wanneer de metadata gepubliceerd is" id="js-date-publication" name="dateSourcePublication"
+				@if(!create) {data-date-value-US="@sdfUS.format(datasetRow.get(dataset.dateSourcePublication).getTime())"} 
+				@if(!create) {data-date-value-local="@sdfLocal.format(datasetRow.get(dataset.dateSourcePublication).getTime())"}>
+				<input type="hidden" id="js-hidden-date-publication">
 			</div>
 			<div class="col-sm-offset-3 col-sm-2">
 				<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" 
@@ -282,9 +290,11 @@
 		<div class="form-group">
 			<label class="col-sm-3 control-label">Datum mutatie</label>
 			<div class="col-sm-4">
-				<input class="form-control js-date" type="text" data-toggle="tooltip" data-placement="top" 
-				title="Vul de datum in wanneer de metadata gewijzigd is" name="dateSourceRevision" 
-				value="@if(!create) {@datasetRow.get(dataset.dateSourceRevision.dayOfMonth())-@datasetRow.get(dataset.dateSourceRevision.month())-@datasetRow.get(dataset.dateSourceRevision.year())}">
+				<input class="form-control js-date" type="date" data-toggle="tooltip" data-placement="top" 
+				title="Vul de datum in wanneer de metadata gewijzigd is" id="js-date-revision" name="dateSourceRevision"
+				@if(!create) {data-date-value-US="@sdfUS.format(datasetRow.get(dataset.dateSourceRevision).getTime())"} 
+				@if(!create) {data-date-value-local="@sdfLocal.format(datasetRow.get(dataset.dateSourceRevision).getTime())"}>
+				<input type="hidden" id="js-hidden-date-revision">
 			</div>
 			<div class="col-sm-offset-3 col-sm-2">
 				<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" 
@@ -296,9 +306,11 @@
 		<div class="form-group">
 			<label class="col-sm-3 control-label">Datum geldig, van</label>
 			<div class="col-sm-4">
-				<input class="form-control js-date" type="text" data-toggle="tooltip" data-placement="top" 
-				title="Vul de datum in vanaf wanneer de bron geldig is" name="dateSourceValidFrom" 
-				value="@if(!create) {@datasetRow.get(dataset.dateSourceValidFrom.dayOfMonth())-@datasetRow.get(dataset.dateSourceValidFrom.month())-@datasetRow.get(dataset.dateSourceValidFrom.year())}">
+				<input class="form-control js-date" type="date" data-toggle="tooltip" data-placement="top" 
+				title="Vul de datum in vanaf wanneer de bron geldig is" id="js-date-valid-from" name="dateSourceValidFrom"
+				@if(!create) {data-date-value-US="@sdfUS.format(datasetRow.get(dataset.dateSourceValidFrom).getTime())"} 
+				@if(!create) {data-date-value-local="@sdfLocal.format(datasetRow.get(dataset.dateSourceValidFrom).getTime())"}>
+				<input type="hidden" id="js-hidden-date-valid-from">
 			</div>
 			<div class="col-sm-offset-3 col-sm-2">
 				<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" 
@@ -310,9 +322,11 @@
 		<div class="form-group">
 			<label class="col-sm-3 control-label">Datum geldig, tot</label>
 			<div class="col-sm-4">
-				<input class="form-control js-date" type="text" data-toggle="tooltip" data-placement="top" 
-				title="Vul de datum in tot wanneer de bron geldig is" name="dateSourceValidUntil" 
-				value="@if(!create) {@datasetRow.get(dataset.dateSourceValidUntil.dayOfMonth())-@datasetRow.get(dataset.dateSourceValidUntil.month())-@datasetRow.get(dataset.dateSourceValidUntil.year())}">
+				<input class="form-control js-date" type="date" data-toggle="tooltip" data-placement="top" 
+				title="Vul de datum in tot wanneer de bron geldig is" id="js-date-valid-until" name="dateSourceValidUntil"
+				@if(!create) {data-date-value-US="@sdfUS.format(datasetRow.get(dataset.dateSourceValidUntil).getTime())"} 
+				@if(!create) {data-date-value-local="@sdfLocal.format(datasetRow.get(dataset.dateSourceValidUntil).getTime())"}>
+				<input type="hidden" id="js-hidden-date-valid-until">
 			</div>
 			<div class="col-sm-offset-3 col-sm-2">
 				<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" 
@@ -329,7 +343,7 @@
 						<input type="checkbox" class="js-subject-input" name="subject[]" value="@subjectOption.get(subjects.identification)" 
 							@if(subjectsDataset != null) {
 								@for(subject <- subjectsDataset) {
-									@if(subject == subjectOption.get(subjects.identification)) {checked}
+									@if(subject.get(dataSubject.subject) == subjectOption.get(subjects.identification)) {checked}
 								}
 							}
 						>

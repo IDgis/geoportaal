@@ -1,7 +1,9 @@
 @(datasetRows: java.util.List[com.querydsl.core.Tuple], 
-	supplierList: java.util.List[String],
+	supplierList: java.util.List[com.querydsl.core.Tuple],
 	statusList: java.util.List[com.querydsl.core.Tuple],
-	infoFormatList: java.util.List[com.querydsl.core.Tuple])
+	infoFormatList: java.util.List[com.querydsl.core.Tuple],
+	sdf: java.text.SimpleDateFormat
+	)
 
 @import models.QDataset.dataset
 @import models.QSuppliers.suppliers
@@ -25,7 +27,7 @@
 				<select class="form-control" data-toggle="tooltip" data-placement="top" title="Filter op leverancier">
 					<option value="none"></option>
 					@for(supplierOption <- supplierList) {
-						<option value="@supplierOption">@supplierOption</option>
+						<option value="@supplierOption">@supplierOption.get(suppliers.name)</option>
 					}
 				</select>
 			</div>
@@ -55,13 +57,17 @@
 		<div class="form-group">
 			<label class="col-sm-3 control-label">Update datum tussen</label>
 			<div class="col-sm-4">
-				<input class="form-control js-date" type="text" data-toggle="tooltip" data-placement="top" title="Zoek op begindatum">
+				<input class="form-control js-date" id="js-date-update-start" type="date" data-toggle="tooltip" data-placement="top" 
+				title="Zoek op begindatum" name="dateUpdateStart">
+				<input type="hidden" id="js-hidden-date-update-start">
 			</div>
 		</div>
 		<div class="form-group">
 			<label class="col-sm-3 control-label">en</label>
 			<div class="col-sm-4">
-				<input class="form-control js-date" type="text" data-toggle="tooltip" data-placement="top" title="Zoek op einddatum">
+				<input class="form-control js-date" id="js-date-update-end" type="date" data-toggle="tooltip" data-placement="top" 
+				title="Zoek op einddatum" name="dateUpdateEnd">
+				<input type="hidden" id="js-hidden-date-update-end">
 			</div>
 		</div>
 		<div class="form-group">
@@ -124,8 +130,7 @@
 						<td>@datasetRow.get(dataset.title)</td>
 						<td>@datasetRow.get(dataset.supplier)</td>
 						<td>@datasetRow.get(dataset.status)</td>
-						<td>@datasetRow.get(dataset.lastRevisionDate.dayOfMonth())-@datasetRow.get(dataset.lastRevisionDate.month())-@datasetRow.get(dataset.lastRevisionDate.year())
-						</td>
+						<td>@sdf.format(datasetRow.get(dataset.lastRevisionDate).getTime())</td>
 					</tr>
 				}
 			</tbody>
