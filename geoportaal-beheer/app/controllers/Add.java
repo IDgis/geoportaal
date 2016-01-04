@@ -23,6 +23,7 @@ import java.util.UUID;
 import javax.inject.Inject;
 
 import com.querydsl.core.Tuple;
+import com.querydsl.sql.dml.SQLInsertClause;
 
 import models.DublinCore;
 import play.data.Form;
@@ -74,7 +75,7 @@ public class Add extends Controller {
 		Timestamp dateToday = new Timestamp(new Date().getTime());
 		
 		db.queryFactory.insert(dataset)
-    		.set(dataset.id, dc.getId())
+    		.set(dataset.uuid, dc.getUuid())
     		.set(dataset.location, dc.getLocation())
     		.set(dataset.fileId, dc.getFileId())
     		.set(dataset.title, dc.getTitle())
@@ -97,8 +98,15 @@ public class Add extends Controller {
     		.set(dataset.lastRevisionDate, dateToday)
     		.execute();
     	
+		Integer datasetId = db.queryFactory
+				.from(dataset)
+				.select(dataset.id)
+				.where(dataset.uuid.eq(dc.getUuid()))
+				.fetchFirst();
+		
 		play.mvc.Http.MultipartFormData body = request().body().asMultipartFormData();
 		List<FilePart> allFiles = body.getFiles();
+		
 		for(FilePart fp: allFiles) {
 			if(fp != null) {
 				java.io.File file = fp.getFile();
@@ -108,7 +116,7 @@ public class Add extends Controller {
 				inputStream.close();
 				
 				db.queryFactory.insert(dataAttachment)
-					.set(dataAttachment.datasetId, dc.getId())
+					.set(dataAttachment.datasetId, datasetId)
 					.set(dataAttachment.attachmentName, fp.getFilename())
 					.set(dataAttachment.attachmentContent, input)
 					.execute();
@@ -118,7 +126,7 @@ public class Add extends Controller {
 		if(dc.getSubject() != null) {
 			for(String subject : dc.getSubject()) {
 				db.queryFactory.insert(dataSubject)
-					.set(dataSubject.datasetId, dc.getId())
+					.set(dataSubject.datasetId, datasetId)
 					.set(dataSubject.subject, subject)
 					.execute();
 			}

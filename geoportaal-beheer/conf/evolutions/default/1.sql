@@ -14,8 +14,8 @@ CREATE TABLE defaults (
 ;
 
 CREATE TABLE dataset ( 
-	id integer NOT NULL,
-	uuid char(30) NOT NULL,
+	id serial NOT NULL,
+	uuid char(50) NOT NULL,
 	location char(100) NOT NULL,
 	file_id char(20),
 	title char(50) NOT NULL,
@@ -42,7 +42,7 @@ CREATE TABLE dataset (
 CREATE TABLE data_attachment ( 
 	dataset_id integer NOT NULL,
 	attachment_name char(200) NOT NULL,
-	attachment_content text
+	attachment_content text NOT NULL
 )
 ;
 
@@ -110,12 +110,12 @@ ALTER TABLE dataset ADD CONSTRAINT PK_dataset
 
 
 ALTER TABLE data_attachment ADD CONSTRAINT PK_data_attachment 
-	PRIMARY KEY (dataset_id)
+	PRIMARY KEY (attachment_name)
 ;
 
 
 ALTER TABLE data_subject ADD CONSTRAINT PK_data_subject 
-	PRIMARY KEY (dataset_id)
+	PRIMARY KEY (subject)
 ;
 
 
@@ -126,13 +126,13 @@ ALTER TABLE supplier ADD CONSTRAINT PK_supplier
 
 
 
-ALTER TABLE dataset ADD CONSTRAINT FK_dataset_data_attachment 
-	FOREIGN KEY (id) REFERENCES data_attachment (dataset_id)
+ALTER TABLE data_attachment ADD CONSTRAINT FK_data_attachment_dataset 
+	FOREIGN KEY (dataset_id) REFERENCES dataset (id)
 ON DELETE CASCADE ON UPDATE CASCADE
 ;
 
-ALTER TABLE dataset ADD CONSTRAINT FK_dataset_data_subject 
-	FOREIGN KEY (id) REFERENCES data_subject (dataset_id)
+ALTER TABLE data_subject ADD CONSTRAINT FK_data_subject_dataset 
+	FOREIGN KEY (dataset_id) REFERENCES dataset (id)
 ON DELETE CASCADE ON UPDATE CASCADE
 ;
 

@@ -23,8 +23,14 @@ import play.mvc.Result;
 public class Edit extends Controller {
 	@Inject Database db;
 	
-	public Result edit(Integer datasetId) {
+	public Result edit(String datasetUuid) {
 		Boolean create = false;
+		
+		Integer datasetId = db.queryFactory
+				.from(dataset)
+				.select(dataset.id)
+				.where(dataset.uuid.eq(datasetUuid))
+				.fetchFirst();
 		
 		Tuple datasetRow = db.queryFactory.select(dataset.all())
     			.from(dataset)
