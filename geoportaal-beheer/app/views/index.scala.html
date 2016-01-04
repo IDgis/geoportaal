@@ -6,9 +6,9 @@
 	)
 
 @import models.QDataset.dataset
-@import models.QSuppliers.suppliers
-@import models.QStatuses.statuses
-@import models.QInfoFormats.infoFormats
+@import models.QSupplier.supplier
+@import models.QStatus.status
+@import models.QInfoFormat.infoFormat
 
 @main("Zoeken", routes.Assets.versioned("javascripts/index.js").url) {
 	<div class="welkom">
@@ -27,7 +27,7 @@
 				<select class="form-control" data-toggle="tooltip" data-placement="top" title="Filter op leverancier">
 					<option value="none"></option>
 					@for(supplierOption <- supplierList) {
-						<option value="@supplierOption">@supplierOption.get(suppliers.name)</option>
+						<option value="@supplierOption">@supplierOption.get(supplier.name)</option>
 					}
 				</select>
 			</div>
@@ -37,7 +37,7 @@
 			<div class="col-sm-8">
 				<select class="form-control" data-toggle="tooltip" data-placement="top" title="Filter op status">
 					@for(statusOption <- statusList) {
-						<option value="@statusOption.get(statuses.identification)">@statusOption.get(statuses.label)</option>
+						<option value="@statusOption.get(status.identification)">@statusOption.get(status.label)</option>
 					}
 				</select>
 			</div>
@@ -47,8 +47,8 @@
 			<div class="col-sm-8">
 				<select class="form-control" data-toggle="tooltip" data-placement="top" title="Filter op formaat">
 					@for(infoFormatOption <- infoFormatList) {
-						<option value="@infoFormatOption.get(infoFormats.identification)">
-							@infoFormatOption.get(infoFormats.label)
+						<option value="@infoFormatOption.get(infoFormat.identification)">
+							@infoFormatOption.get(infoFormat.label)
 						</option>
 					}
 				</select>

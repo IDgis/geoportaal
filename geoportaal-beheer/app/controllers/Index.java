@@ -1,9 +1,9 @@
 package controllers;
 
 import static models.QDataset.dataset;
-import static models.QInfoFormats.infoFormats;
-import static models.QStatuses.statuses;
-import static models.QSuppliers.suppliers;
+import static models.QInfoFormat.infoFormat;
+import static models.QStatus.status;
+import static models.QSupplier.supplier;
 
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
@@ -30,16 +30,16 @@ public class Index extends Controller {
     			.orderBy(dataset.lastRevisionDate.asc())
     			.fetch();
     	
-    	List<Tuple> supplierList = db.queryFactory.select(suppliers.all())
-            	.from(suppliers)
+    	List<Tuple> supplierList = db.queryFactory.select(supplier.all())
+            	.from(supplier)
             	.fetch();
     	
-    	List<Tuple> statusList = db.queryFactory.select(statuses.all())
-            	.from(statuses)
+    	List<Tuple> statusList = db.queryFactory.select(status.all())
+            	.from(status)
             	.fetch();
     	
-    	List<Tuple> infoFormatList = db.queryFactory.select(infoFormats.all())
-            	.from(infoFormats)
+    	List<Tuple> infoFormatList = db.queryFactory.select(infoFormat.all())
+            	.from(infoFormat)
             	.fetch();
     	
     	SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");

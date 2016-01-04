@@ -1,14 +1,14 @@
 package controllers;
 
-import static models.QCreators.creators;
+import static models.QCreator.creator;
 import static models.QDataAttachment.dataAttachment;
 import static models.QDataSubject.dataSubject;
 import static models.QDataset.dataset;
-import static models.QInfoFormats.infoFormats;
+import static models.QInfoFormat.infoFormat;
 import static models.QRights.rights;
-import static models.QSubjects.subjects;
-import static models.QTypeInformations.typeInformations;
-import static models.QUseLimitations.useLimitations;
+import static models.QSubject.subject;
+import static models.QTypeInformation.typeInformation;
+import static models.QUseLimitation.useLimitation;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -39,28 +39,28 @@ public class Add extends Controller {
 		String todayUS = new SimpleDateFormat("yyyy-MM-dd").format(new Date().getTime());
 		String todayLocal = new SimpleDateFormat("dd-MM-yyyy").format(new Date().getTime());
 		
-		List<Tuple> typeInformationList = db.queryFactory.select(typeInformations.all())
-    		.from(typeInformations)
+		List<Tuple> typeInformationList = db.queryFactory.select(typeInformation.all())
+    		.from(typeInformation)
     		.fetch();
     	
-    	List<Tuple> creatorsList = db.queryFactory.select(creators.all())
-        	.from(creators)
+    	List<Tuple> creatorsList = db.queryFactory.select(creator.all())
+        	.from(creator)
         	.fetch();
     	
     	List<Tuple> rightsList = db.queryFactory.select(rights.all())
             	.from(rights)
             	.fetch();
     	
-    	List<Tuple> useLimitationList = db.queryFactory.select(useLimitations.all())
-            	.from(useLimitations)
+    	List<Tuple> useLimitationList = db.queryFactory.select(useLimitation.all())
+            	.from(useLimitation)
             	.fetch();
     	
-    	List<Tuple> infoFormatList = db.queryFactory.select(infoFormats.all())
-            	.from(infoFormats)
+    	List<Tuple> infoFormatList = db.queryFactory.select(infoFormat.all())
+            	.from(infoFormat)
             	.fetch();
     	
-    	List<Tuple> subjectList = db.queryFactory.select(subjects.all())
-            	.from(subjects)
+    	List<Tuple> subjectList = db.queryFactory.select(subject.all())
+            	.from(subject)
             	.fetch();
 		
 		return ok(views.html.form.render(create, uuid, todayUS, todayLocal, null, null, null, typeInformationList, creatorsList, rightsList, 

@@ -5,7 +5,7 @@ import java.util.List;
 
 public class DublinCore {
 	
-	private String id;
+	private Integer id;
 	private String location;
 	private String fileId;
 	private String title;
@@ -27,7 +27,7 @@ public class DublinCore {
 		
 	}
 	
-	public DublinCore(String id, String location, String fileId, String title, String description, String typeInfo, String creator, 
+	public DublinCore(Integer id, String location, String fileId, String title, String description, String typeInfo, String creator, 
 			String rights, String useLimitation, String format, String source, Date dateSourceCreation, Date dateSourcePublication, 
 			Date dateSourceRevision, Date dateSourceValidFrom, Date dateSourceValidUntil, List<String> subject) {
 		super();
@@ -49,10 +49,10 @@ public class DublinCore {
 		this.dateSourceValidUntil = dateSourceValidUntil;
 		this.subject = subject;
 	}
-	public String getId() {
+	public Integer getId() {
 		return id;
 	}
-	public void setId(String id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 	public String getLocation() {
