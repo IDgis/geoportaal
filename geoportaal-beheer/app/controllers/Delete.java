@@ -12,7 +12,7 @@ import play.mvc.Result;
 public class Delete extends Controller {
 	@Inject Database db;
 	
-	public Result delete(String datasetId) {
+	public Result delete(Integer datasetId) {
 		db.queryFactory.delete(dataset)
     		.where(dataset.id.eq(datasetId))
     		.execute();

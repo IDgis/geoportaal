@@ -16,12 +16,12 @@
 )
 
 @import models.QDataset.dataset
-@import models.QTypeInformations.typeInformations
-@import models.QCreators.creators
+@import models.QTypeInformation.typeInformation
+@import models.QCreator.creator
 @import models.QRights.rights
-@import models.QUseLimitations.useLimitations
-@import models.QInfoFormats.infoFormats
-@import models.QSubjects.subjects
+@import models.QUseLimitation.useLimitation
+@import models.QInfoFormat.infoFormat
+@import models.QSubject.subject
 @import models.QDataAttachment.dataAttachment
 @import models.QDataSubject.dataSubject
 
@@ -88,7 +88,7 @@
 			<label class="col-sm-3 control-label">Unieke ID</label>
 			<div class="col-sm-7">
 				<input class="form-control" type="text" data-toggle="tooltip" data-placement="top" title="De unieke ID van de data" 
-				name="id" value="@if(create) {@uuid} else {@datasetRow.get(dataset.id)}" readonly>
+				name="uuid" value="@if(create) {@uuid} else {@datasetRow.get(dataset.uuid)}" readonly>
 			</div>
 			<div class="col-sm-2">
 				<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement=top type="button" 
@@ -135,9 +135,9 @@
 				<select class="form-control" data-toggle="tooltip" data-placement="top" title="Selecteer het type informatie"
 				name="typeInfo">
 					@for(typeInformationOption <- typeInformationList) {
-						<option value="@typeInformationOption.get(typeInformations.identification)" 
-						@if(!create && datasetRow.get(dataset.typeInfo) == typeInformationOption.get(typeInformations.identification)) {selected}>
-							@typeInformationOption.get(typeInformations.label)
+						<option value="@typeInformationOption.get(typeInformation.identification)" 
+						@if(!create && datasetRow.get(dataset.typeInfo) == typeInformationOption.get(typeInformation.identification)) {selected}>
+							@typeInformationOption.get(typeInformation.label)
 						</option>
 					}
 				</select>
@@ -155,9 +155,9 @@
 				<select id="js-creator-select" class="form-control" data-toggle="tooltip" data-placement="top" 
 				title="Selecteer de eindverantwoordelijke" name="creator">
 					@for(creatorOption <- creatorList) {
-						<option value="@creatorOption.get(creators.identification)" 
-						@if(!create && datasetRow.get(dataset.creator) == creatorOption.get(creators.identification)) {selected}>
-							@creatorOption.get(creators.label)
+						<option value="@creatorOption.get(creator.identification)" 
+						@if(!create && datasetRow.get(dataset.creator) == creatorOption.get(creator.identification)) {selected}>
+							@creatorOption.get(creator.label)
 						</option>
 					}
 				</select>
@@ -206,9 +206,9 @@
 				<select class="form-control" data-toggle="tooltip" data-placement="top" title="Selecteer de gebruiksrestrictie"
 				name="useLimitation">
 					@for(useLimitationOption <- useLimitationList) {
-						<option value="@useLimitationOption.get(useLimitations.identification)"
-						@if(!create && datasetRow.get(dataset.useLimitation) == useLimitationOption.get(useLimitations.identification)) {selected}>
-							@useLimitationOption.get(useLimitations.label)
+						<option value="@useLimitationOption.get(useLimitation.identification)"
+						@if(!create && datasetRow.get(dataset.useLimitation) == useLimitationOption.get(useLimitation.identification)) {selected}>
+							@useLimitationOption.get(useLimitation.label)
 						</option>
 					}
 				</select>
@@ -226,9 +226,9 @@
 				<select class="form-control" data-toggle="tooltip" data-placement="top" 
 				title="Selecteer het formaat van de data" name="format">
 					@for(infoFormatOption <- infoFormatList) {
-						<option value="@infoFormatOption.get(infoFormats.identification)"
-						@if(!create && datasetRow.get(dataset.format) == infoFormatOption.get(infoFormats.identification)) {selected}>
-							@infoFormatOption.get(infoFormats.label)
+						<option value="@infoFormatOption.get(infoFormat.identification)"
+						@if(!create && datasetRow.get(dataset.format) == infoFormatOption.get(infoFormat.identification)) {selected}>
+							@infoFormatOption.get(infoFormat.label)
 						</option>
 					}
 				</select>
@@ -340,14 +340,14 @@
 			<div class="col-sm-4">
 				@for(subjectOption <- subjectList) {
 					<div>
-						<input type="checkbox" class="js-subject-input" name="subject[]" value="@subjectOption.get(subjects.identification)" 
+						<input type="checkbox" class="js-subject-input" name="subject[]" value="@subjectOption.get(subject.identification)" 
 							@if(subjectsDataset != null) {
-								@for(subject <- subjectsDataset) {
-									@if(subject.get(dataSubject.subject) == subjectOption.get(subjects.identification)) {checked}
+								@for(subjectChecked <- subjectsDataset) {
+									@if(subjectChecked.get(dataSubject.subject) == subjectOption.get(subject.identification)) {checked}
 								}
 							}
 						>
-						<span>@subjectOption.get(subjects.label)</span>
+						<span>@subjectOption.get(subject.label)</span>
 					</div>
 				}
 			</div>

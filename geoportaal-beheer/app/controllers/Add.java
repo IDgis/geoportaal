@@ -1,14 +1,14 @@
 package controllers;
 
-import static models.QCreators.creators;
+import static models.QCreator.creator;
 import static models.QDataAttachment.dataAttachment;
 import static models.QDataSubject.dataSubject;
 import static models.QDataset.dataset;
-import static models.QInfoFormats.infoFormats;
+import static models.QInfoFormat.infoFormat;
 import static models.QRights.rights;
-import static models.QSubjects.subjects;
-import static models.QTypeInformations.typeInformations;
-import static models.QUseLimitations.useLimitations;
+import static models.QSubject.subject;
+import static models.QTypeInformation.typeInformation;
+import static models.QUseLimitation.useLimitation;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -23,6 +23,7 @@ import java.util.UUID;
 import javax.inject.Inject;
 
 import com.querydsl.core.Tuple;
+import com.querydsl.sql.dml.SQLInsertClause;
 
 import models.DublinCore;
 import play.data.Form;
@@ -39,28 +40,28 @@ public class Add extends Controller {
 		String todayUS = new SimpleDateFormat("yyyy-MM-dd").format(new Date().getTime());
 		String todayLocal = new SimpleDateFormat("dd-MM-yyyy").format(new Date().getTime());
 		
-		List<Tuple> typeInformationList = db.queryFactory.select(typeInformations.all())
-    		.from(typeInformations)
+		List<Tuple> typeInformationList = db.queryFactory.select(typeInformation.all())
+    		.from(typeInformation)
     		.fetch();
     	
-    	List<Tuple> creatorsList = db.queryFactory.select(creators.all())
-        	.from(creators)
+    	List<Tuple> creatorsList = db.queryFactory.select(creator.all())
+        	.from(creator)
         	.fetch();
     	
     	List<Tuple> rightsList = db.queryFactory.select(rights.all())
             	.from(rights)
             	.fetch();
     	
-    	List<Tuple> useLimitationList = db.queryFactory.select(useLimitations.all())
-            	.from(useLimitations)
+    	List<Tuple> useLimitationList = db.queryFactory.select(useLimitation.all())
+            	.from(useLimitation)
             	.fetch();
     	
-    	List<Tuple> infoFormatList = db.queryFactory.select(infoFormats.all())
-            	.from(infoFormats)
+    	List<Tuple> infoFormatList = db.queryFactory.select(infoFormat.all())
+            	.from(infoFormat)
             	.fetch();
     	
-    	List<Tuple> subjectList = db.queryFactory.select(subjects.all())
-            	.from(subjects)
+    	List<Tuple> subjectList = db.queryFactory.select(subject.all())
+            	.from(subject)
             	.fetch();
 		
 		return ok(views.html.form.render(create, uuid, todayUS, todayLocal, null, null, null, typeInformationList, creatorsList, rightsList, 
@@ -74,7 +75,7 @@ public class Add extends Controller {
 		Timestamp dateToday = new Timestamp(new Date().getTime());
 		
 		db.queryFactory.insert(dataset)
-    		.set(dataset.id, dc.getId())
+    		.set(dataset.uuid, dc.getUuid())
     		.set(dataset.location, dc.getLocation())
     		.set(dataset.fileId, dc.getFileId())
     		.set(dataset.title, dc.getTitle())
@@ -97,8 +98,15 @@ public class Add extends Controller {
     		.set(dataset.lastRevisionDate, dateToday)
     		.execute();
     	
+		Integer datasetId = db.queryFactory
+				.from(dataset)
+				.select(dataset.id)
+				.where(dataset.uuid.eq(dc.getUuid()))
+				.fetchFirst();
+		
 		play.mvc.Http.MultipartFormData body = request().body().asMultipartFormData();
 		List<FilePart> allFiles = body.getFiles();
+		
 		for(FilePart fp: allFiles) {
 			if(fp != null) {
 				java.io.File file = fp.getFile();
@@ -108,7 +116,7 @@ public class Add extends Controller {
 				inputStream.close();
 				
 				db.queryFactory.insert(dataAttachment)
-					.set(dataAttachment.datasetId, dc.getId())
+					.set(dataAttachment.datasetId, datasetId)
 					.set(dataAttachment.attachmentName, fp.getFilename())
 					.set(dataAttachment.attachmentContent, input)
 					.execute();
@@ -118,7 +126,7 @@ public class Add extends Controller {
 		if(dc.getSubject() != null) {
 			for(String subject : dc.getSubject()) {
 				db.queryFactory.insert(dataSubject)
-					.set(dataSubject.datasetId, dc.getId())
+					.set(dataSubject.datasetId, datasetId)
 					.set(dataSubject.subject, subject)
 					.execute();
 			}
