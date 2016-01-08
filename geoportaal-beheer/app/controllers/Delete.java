@@ -1,8 +1,8 @@
 package controllers;
 
-import static models.QDataAttachment.dataAttachment;
-import static models.QDataSubject.dataSubject;
-import static models.QDataset.dataset;
+import static models.QMdAttachment.mdAttachment;
+import static models.QMdSubject.mdSubject;
+import static models.QMetadata.metadata;
 
 import javax.inject.Inject;
 
@@ -13,16 +13,16 @@ public class Delete extends Controller {
 	@Inject Database db;
 	
 	public Result delete(Integer datasetId) {
-		db.queryFactory.delete(dataset)
-    		.where(dataset.id.eq(datasetId))
+		db.queryFactory.delete(metadata)
+    		.where(metadata.id.eq(datasetId))
     		.execute();
     	
-    	db.queryFactory.delete(dataAttachment)
-    		.where(dataAttachment.datasetId.eq(datasetId))
+    	db.queryFactory.delete(mdAttachment)
+    		.where(mdAttachment.metadataId.eq(datasetId))
     		.execute();
     	
-    	db.queryFactory.delete(dataSubject)
-    		.where(dataSubject.datasetId.eq(datasetId))
+    	db.queryFactory.delete(mdSubject)
+    		.where(mdSubject.metadataId.eq(datasetId))
     		.execute();
 		
 		return redirect(controllers.routes.Index.index());

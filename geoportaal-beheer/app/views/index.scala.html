@@ -1,7 +1,7 @@
 @(datasetRows: java.util.List[com.querydsl.core.Tuple], 
 	supplierList: java.util.List[com.querydsl.core.Tuple],
 	statusList: java.util.List[com.querydsl.core.Tuple],
-	infoFormatList: java.util.List[com.querydsl.core.Tuple],
+	mdFormatList: java.util.List[com.querydsl.core.Tuple],
 	sdf: java.text.SimpleDateFormat
 	)
 
@@ -10,6 +10,8 @@
 @import models.QSupplier.supplier
 @import models.QStatus.status
 @import models.QMdFormat.mdFormat
+@import models.QStatusLabel.statusLabel
+@import models.QMdFormatLabel.mdFormatLabel
 
 @main(Messages.get("index.header"), routes.Assets.versioned("javascripts/index.js").url) {
 	<div class="welkom">
@@ -38,7 +40,7 @@
 			<div class="col-sm-8">
 				<select class="form-control" data-toggle="tooltip" data-placement="top" title="Filter op status">
 					@for(statusOption <- statusList) {
-						<option value="@statusOption.get(status.name)">@statusOption.get(status.label)</option>
+						<option value="@statusOption.get(status.name)">@statusOption.get(statusLabel.label)</option>
 					}
 				</select>
 			</div>
@@ -47,9 +49,9 @@
 			<label class="col-sm-3 control-label">Formaat</label>
 			<div class="col-sm-8">
 				<select class="form-control" data-toggle="tooltip" data-placement="top" title="Filter op formaat">
-					@for(infoFormatOption <- infoFormatList) {
+					@for(infoFormatOption <- mdFormatList) {
 						<option value="@infoFormatOption.get(mdFormat.name)">
-							@infoFormatOption.get(mdFormat.label)
+							@infoFormatOption.get(mdFormatLabel.label)
 						</option>
 					}
 				</select>
@@ -129,7 +131,7 @@
 						</td>
 						<td>@datasetRow.get(metadata.title)</td>
 						<td>@datasetRow.get(supplier.name)</td>
-						<td>@datasetRow.get(status.label)</td>
+						<td>@datasetRow.get(statusLabel.label)</td>
 						<td>@sdf.format(datasetRow.get(metadata.lastRevisionDate).getTime())</td>
 					</tr>
 				}

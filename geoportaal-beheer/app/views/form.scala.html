@@ -9,21 +9,27 @@
 	creatorList: java.util.List[com.querydsl.core.Tuple], 
 	rightsList: java.util.List[com.querydsl.core.Tuple], 
 	useLimitationList: java.util.List[com.querydsl.core.Tuple],
-	infoFormatList: java.util.List[com.querydsl.core.Tuple],
+	mdFormatList: java.util.List[com.querydsl.core.Tuple],
 	sdfUS: java.text.SimpleDateFormat,
 	sdfLocal: java.text.SimpleDateFormat,
 	subjectList: java.util.List[com.querydsl.core.Tuple]
 )
 
-@import models.QDataset.dataset
+@import models.QMetadata.metadata
 @import models.QTypeInformation.typeInformation
 @import models.QCreator.creator
 @import models.QRights.rights
 @import models.QUseLimitation.useLimitation
-@import models.QInfoFormat.infoFormat
+@import models.QMdFormat.mdFormat
 @import models.QSubject.subject
-@import models.QDataAttachment.dataAttachment
-@import models.QDataSubject.dataSubject
+@import models.QMdAttachment.mdAttachment
+@import models.QMdSubject.mdSubject
+@import models.QTypeInformationLabel.typeInformationLabel
+@import models.QCreatorLabel.creatorLabel
+@import models.QRightsLabel.rightsLabel
+@import models.QUseLimitationLabel.useLimitationLabel
+@import models.QMdFormatLabel.mdFormatLabel
+@import models.QSubjectLabel.subjectLabel
 
 @main(if(create) {"Toevoegen"} else {"Wijzigen"}, routes.Assets.versioned("javascripts/add-record.js").url) {
 	<div class="welkom">
@@ -36,7 +42,7 @@
 			<label class="col-sm-3 control-label">Titel*</label>
 			<div class="col-sm-7">
 				<input class="form-control js-mandatory" type="text" data-toggle="tooltip" data-placement="top" data-field="titel"
-				title="Vul de titel in" name="title" value="@if(!create) {@datasetRow.get(dataset.title)}">
+				title="Vul de titel in" name="title" value="@if(!create) {@datasetRow.get(metadata.title)}">
 			</div>
 			<div class="col-sm-2">
 				<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" 
@@ -49,7 +55,7 @@
 			<label class="col-sm-3 control-label">Omschrijving*</label>
 			<div class="col-sm-7">
 				<textarea class="form-control js-mandatory" rows="4" data-toggle="tooltip" data-placement="top" data-field="omschrijving"
-				title="Vul de omschrijving in" name="description">@if(!create) {@datasetRow.get(dataset.description)}</textarea>
+				title="Vul de omschrijving in" name="description">@if(!create) {@datasetRow.get(metadata.description)}</textarea>
 			</div>
 			<div class="col-sm-2">
 				<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" 
@@ -62,7 +68,7 @@
 			<label class="col-sm-3 control-label">Locatie*</label>
 			<div class="col-sm-7">
 				<input class="form-control js-mandatory" type="text" data-toggle="tooltip" data-placement="top" data-field="locatie"
-				title="Vul het pad naar het bestand op de computer in" name="location" value="@if(!create) {@datasetRow.get(dataset.location)}">
+				title="Vul het pad naar het bestand op de computer in" name="location" value="@if(!create) {@datasetRow.get(metadata.location)}">
 			</div>
 			<div class="col-sm-2">
 				<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" 
@@ -75,7 +81,7 @@
 			<label class="col-sm-3 control-label">Kenmerk</label>
 			<div class="col-sm-7">
 				<input class="form-control" type="text" data-toggle="tooltip" data-placement="top" 
-				title="Vul het kenmerk in" name="fileId" value="@if(!create) {@datasetRow.get(dataset.fileId)}">
+				title="Vul het kenmerk in" name="fileId" value="@if(!create) {@datasetRow.get(metadata.fileId)}">
 			</div>
 			<div class="col-sm-2">
 				<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" 
@@ -88,7 +94,7 @@
 			<label class="col-sm-3 control-label">Unieke ID</label>
 			<div class="col-sm-7">
 				<input class="form-control" type="text" data-toggle="tooltip" data-placement="top" title="De unieke ID van de data" 
-				name="uuid" value="@if(create) {@uuid} else {@datasetRow.get(dataset.uuid)}" readonly>
+				name="uuid" value="@if(create) {@uuid} else {@datasetRow.get(metadata.uuid)}" readonly>
 			</div>
 			<div class="col-sm-2">
 				<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement=top type="button" 
@@ -123,7 +129,7 @@
 			<div id="attachment-files-box" class="col-sm-offset-3 col-sm-8">
 				@if(attachmentsDataset != null) {
 					@for(attachmentFile <- attachmentsDataset) {
-						<p class="attachment-file">@attachmentFile.get(dataAttachment.attachmentName)</p>
+						<p class="attachment-file">@attachmentFile.get(mdAttachment.attachmentName)</p>
 					}
 				}
 			</div>
@@ -135,9 +141,9 @@
 				<select class="form-control" data-toggle="tooltip" data-placement="top" title="Selecteer het type informatie"
 				name="typeInfo">
 					@for(typeInformationOption <- typeInformationList) {
-						<option value="@typeInformationOption.get(typeInformation.identification)" 
-						@if(!create && datasetRow.get(dataset.typeInfo) == typeInformationOption.get(typeInformation.identification)) {selected}>
-							@typeInformationOption.get(typeInformation.label)
+						<option value="@typeInformationOption.get(typeInformation.name)" 
+						@if(!create && datasetRow.get(metadata.typeInformation) == typeInformationOption.get(typeInformation.id)) {selected}>
+							@typeInformationOption.get(typeInformationLabel.label)
 						</option>
 					}
 				</select>
@@ -155,9 +161,9 @@
 				<select id="js-creator-select" class="form-control" data-toggle="tooltip" data-placement="top" 
 				title="Selecteer de eindverantwoordelijke" name="creator">
 					@for(creatorOption <- creatorList) {
-						<option value="@creatorOption.get(creator.identification)" 
-						@if(!create && datasetRow.get(dataset.creator) == creatorOption.get(creator.identification)) {selected}>
-							@creatorOption.get(creator.label)
+						<option value="@creatorOption.get(creator.name)" 
+						@if(!create && datasetRow.get(metadata.creator) == creatorOption.get(creator.id)) {selected}>
+							@creatorOption.get(creatorLabel.label)
 						</option>
 					}
 				</select>
@@ -186,9 +192,9 @@
 				<select class="form-control" data-toggle="tooltip" data-placement="top" title="Selecteer de eigendomsrechten"
 				name="rights">
 					@for(rightsOption <- rightsList) {
-						<option value="@rightsOption.get(rights.identification)"
-						@if(!create && datasetRow.get(dataset.rights) == rightsOption.get(rights.identification)) {selected}>
-							@rightsOption.get(rights.label)
+						<option value="@rightsOption.get(rights.name)"
+						@if(!create && datasetRow.get(metadata.rights) == rightsOption.get(rights.id)) {selected}>
+							@rightsOption.get(rightsLabel.label)
 						</option>
 					}
 				</select>
@@ -206,9 +212,9 @@
 				<select class="form-control" data-toggle="tooltip" data-placement="top" title="Selecteer de gebruiksrestrictie"
 				name="useLimitation">
 					@for(useLimitationOption <- useLimitationList) {
-						<option value="@useLimitationOption.get(useLimitation.identification)"
-						@if(!create && datasetRow.get(dataset.useLimitation) == useLimitationOption.get(useLimitation.identification)) {selected}>
-							@useLimitationOption.get(useLimitation.label)
+						<option value="@useLimitationOption.get(useLimitation.name)"
+						@if(!create && datasetRow.get(metadata.useLimitation) == useLimitationOption.get(useLimitation.id)) {selected}>
+							@useLimitationOption.get(useLimitationLabel.label)
 						</option>
 					}
 				</select>
@@ -225,10 +231,10 @@
 			<div class="col-sm-7">
 				<select class="form-control" data-toggle="tooltip" data-placement="top" 
 				title="Selecteer het formaat van de data" name="format">
-					@for(infoFormatOption <- infoFormatList) {
-						<option value="@infoFormatOption.get(infoFormat.identification)"
-						@if(!create && datasetRow.get(dataset.format) == infoFormatOption.get(infoFormat.identification)) {selected}>
-							@infoFormatOption.get(infoFormat.label)
+					@for(mdFormatOption <- mdFormatList) {
+						<option value="@mdFormatOption.get(mdFormat.name)"
+						@if(!create && datasetRow.get(metadata.mdFormat) == mdFormatOption.get(mdFormat.id)) {selected}>
+							@mdFormatOption.get(mdFormatLabel.label)
 						</option>
 					}
 				</select>
@@ -245,7 +251,7 @@
 			<div class="col-sm-7">
 				<input class="form-control" type="text" data-toggle="tooltip" data-placement="top" 
 				title="Vul de persoon of organisatie waar de bron vandaan komt" name="source" 
-				value="@if(!create) {@datasetRow.get(dataset.source)}">
+				value="@if(!create) {@datasetRow.get(metadata.source)}">
 			</div>
 			<div class="col-sm-2">
 				<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" 
@@ -260,8 +266,8 @@
 				<input class="form-control js-date" type="date" data-toggle="tooltip" data-placement="top" 
 				title="Vul de datum in wanneer de metadata gemaakt is" id="js-date-creation" name="dateSourceCreation"
 				data-create="@create" data-date-create-today-US="@todayUS" data-date-create-today-local="@todayLocal"
-				@if(!create) {data-date-value-US="@sdfUS.format(datasetRow.get(dataset.dateSourceCreation).getTime())"} 
-				@if(!create) {data-date-value-local="@sdfLocal.format(datasetRow.get(dataset.dateSourceCreation).getTime())"}>
+				@if(!create) {data-date-value-US="@sdfUS.format(datasetRow.get(metadata.dateSourceCreation).getTime())"} 
+				@if(!create) {data-date-value-local="@sdfLocal.format(datasetRow.get(metadata.dateSourceCreation).getTime())"}>
 				<input type="hidden" id="js-hidden-date-creation">
 			</div>
 			<div class="col-sm-offset-3 col-sm-2">
@@ -276,8 +282,8 @@
 			<div class="col-sm-4">
 				<input class="form-control js-date" type="date" data-toggle="tooltip"  data-placement="top" 
 				title="Vul de datum in wanneer de metadata gepubliceerd is" id="js-date-publication" name="dateSourcePublication"
-				@if(!create) {data-date-value-US="@sdfUS.format(datasetRow.get(dataset.dateSourcePublication).getTime())"} 
-				@if(!create) {data-date-value-local="@sdfLocal.format(datasetRow.get(dataset.dateSourcePublication).getTime())"}>
+				@if(!create) {data-date-value-US="@sdfUS.format(datasetRow.get(metadata.dateSourcePublication).getTime())"} 
+				@if(!create) {data-date-value-local="@sdfLocal.format(datasetRow.get(metadata.dateSourcePublication).getTime())"}>
 				<input type="hidden" id="js-hidden-date-publication">
 			</div>
 			<div class="col-sm-offset-3 col-sm-2">
@@ -292,8 +298,8 @@
 			<div class="col-sm-4">
 				<input class="form-control js-date" type="date" data-toggle="tooltip" data-placement="top" 
 				title="Vul de datum in wanneer de metadata gewijzigd is" id="js-date-revision" name="dateSourceRevision"
-				@if(!create) {data-date-value-US="@sdfUS.format(datasetRow.get(dataset.dateSourceRevision).getTime())"} 
-				@if(!create) {data-date-value-local="@sdfLocal.format(datasetRow.get(dataset.dateSourceRevision).getTime())"}>
+				@if(!create) {data-date-value-US="@sdfUS.format(datasetRow.get(metadata.dateSourceRevision).getTime())"} 
+				@if(!create) {data-date-value-local="@sdfLocal.format(datasetRow.get(metadata.dateSourceRevision).getTime())"}>
 				<input type="hidden" id="js-hidden-date-revision">
 			</div>
 			<div class="col-sm-offset-3 col-sm-2">
@@ -308,8 +314,8 @@
 			<div class="col-sm-4">
 				<input class="form-control js-date" type="date" data-toggle="tooltip" data-placement="top" 
 				title="Vul de datum in vanaf wanneer de bron geldig is" id="js-date-valid-from" name="dateSourceValidFrom"
-				@if(!create) {data-date-value-US="@sdfUS.format(datasetRow.get(dataset.dateSourceValidFrom).getTime())"} 
-				@if(!create) {data-date-value-local="@sdfLocal.format(datasetRow.get(dataset.dateSourceValidFrom).getTime())"}>
+				@if(!create) {data-date-value-US="@sdfUS.format(datasetRow.get(metadata.dateSourceValidFrom).getTime())"} 
+				@if(!create) {data-date-value-local="@sdfLocal.format(datasetRow.get(metadata.dateSourceValidFrom).getTime())"}>
 				<input type="hidden" id="js-hidden-date-valid-from">
 			</div>
 			<div class="col-sm-offset-3 col-sm-2">
@@ -324,8 +330,8 @@
 			<div class="col-sm-4">
 				<input class="form-control js-date" type="date" data-toggle="tooltip" data-placement="top" 
 				title="Vul de datum in tot wanneer de bron geldig is" id="js-date-valid-until" name="dateSourceValidUntil"
-				@if(!create) {data-date-value-US="@sdfUS.format(datasetRow.get(dataset.dateSourceValidUntil).getTime())"} 
-				@if(!create) {data-date-value-local="@sdfLocal.format(datasetRow.get(dataset.dateSourceValidUntil).getTime())"}>
+				@if(!create) {data-date-value-US="@sdfUS.format(datasetRow.get(metadata.dateSourceValidUntil).getTime())"} 
+				@if(!create) {data-date-value-local="@sdfLocal.format(datasetRow.get(metadata.dateSourceValidUntil).getTime())"}>
 				<input type="hidden" id="js-hidden-date-valid-until">
 			</div>
 			<div class="col-sm-offset-3 col-sm-2">
@@ -340,14 +346,14 @@
 			<div class="col-sm-4">
 				@for(subjectOption <- subjectList) {
 					<div>
-						<input type="checkbox" class="js-subject-input" name="subject[]" value="@subjectOption.get(subject.identification)" 
+						<input type="checkbox" class="js-subject-input" name="subject[]" value="@subjectOption.get(subject.name)" 
 							@if(subjectsDataset != null) {
 								@for(subjectChecked <- subjectsDataset) {
-									@if(subjectChecked.get(dataSubject.subject) == subjectOption.get(subject.identification)) {checked}
+									@if(subjectChecked.get(mdSubject.subject) == subjectOption.get(subject.id)) {checked}
 								}
 							}
 						>
-						<span>@subjectOption.get(subject.label)</span>
+						<span>@subjectOption.get(subjectLabel.label)</span>
 					</div>
 				}
 			</div>

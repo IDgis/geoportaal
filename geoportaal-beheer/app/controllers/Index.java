@@ -1,9 +1,11 @@
 package controllers;
 
-import static models.QDataset.dataset;
-import static models.QInfoFormat.infoFormat;
+import static models.QMdFormat.mdFormat;
+import static models.QMetadata.metadata;
 import static models.QStatus.status;
 import static models.QSupplier.supplier;
+import static models.QStatusLabel.statusLabel;
+import static models.QMdFormatLabel.mdFormatLabel;
 
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
@@ -25,26 +27,34 @@ public class Index extends Controller {
 	@Inject Database db;
 	
 	public Result index() throws SQLException {
-    	List<Tuple> datasetRows = db.queryFactory.select(dataset.all())
-    			.from(dataset)
-    			.orderBy(dataset.lastRevisionDate.asc())
+		List<Tuple> datasetRows = db.queryFactory
+    			.select(metadata.id, metadata.uuid, metadata.title, metadata.lastRevisionDate, statusLabel.label, supplier.name)
+    			.from(metadata)
+    			.join(status).on(metadata.status.eq(status.id))
+    			.join(supplier).on(metadata.supplier.eq(supplier.id))
+    			.join(statusLabel).on(status.id.eq(statusLabel.statusId))
+    			.orderBy(metadata.lastRevisionDate.asc())
     			.fetch();
     	
     	List<Tuple> supplierList = db.queryFactory.select(supplier.all())
             	.from(supplier)
             	.fetch();
     	
-    	List<Tuple> statusList = db.queryFactory.select(status.all())
+    	List<Tuple> statusList = db.queryFactory
+    			.select(status.name, statusLabel.label)
             	.from(status)
+            	.join(statusLabel).on(status.id.eq(statusLabel.statusId))
             	.fetch();
     	
-    	List<Tuple> infoFormatList = db.queryFactory.select(infoFormat.all())
-            	.from(infoFormat)
+    	List<Tuple> mdFormatList = db.queryFactory
+    			.select(mdFormat.name, mdFormatLabel.label)
+            	.from(mdFormat)
+            	.join(mdFormatLabel).on(mdFormat.id.eq(mdFormatLabel.mdFormatId))
             	.fetch();
     	
     	SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
     	
-    	return ok(views.html.index.render(datasetRows, supplierList, statusList, infoFormatList, sdf));
+    	return ok(views.html.index.render(datasetRows, supplierList, statusList, mdFormatList, sdf));
     }
 	
 	public Result jsRoutes() {
