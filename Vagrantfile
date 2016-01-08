@@ -6,10 +6,13 @@ Vagrant.configure(2) do |config|
 	config.vm.box = "ubuntu/vivid64"
 
 	# Provision using a shell script:
-	config.vm.provision :shell, path: "scripts/docker-daemon.sh"
+	config.vm.provision :shell, path: "scripts/provisioning.sh"
+	
+	# Forward the Postgres port:
+	config.vm.network "forwarded_port", guest: 5432, host: 5433
 	
 	# Forward the Docker daemon port:
-	config.vm.network :forwarded_port, host: 2375, guest: 2375
+	# config.vm.network "forwarded_port", guest: 2375, host: 2375
 	
 	# Forward the zookeeper port:
 	config.vm.network "forwarded_port", guest: 2181, host: 2181
@@ -18,7 +21,7 @@ Vagrant.configure(2) do |config|
 	config.vm.network "forwarded_port", guest: 8081, host: 8082, auto_correct: true
 	
 	# Forward the play-app port:
-	config.vm.network "forwarded_port", guest: 9000, host: 9000
+	# config.vm.network "forwarded_port", guest: 9000, host: 9000
 	
 	# Forward the apache port:
 	config.vm.network "forwarded_port", guest: 80, host: 80

@@ -47,42 +47,42 @@ public class Add extends Controller {
 		String todayLocal = new SimpleDateFormat("dd-MM-yyyy").format(new Date().getTime());
 		
 		List<Tuple> typeInformationList = db.queryFactory
-			.select(typeInformation.id, typeInformationLabel.label)
+			.select(typeInformation.id, typeInformation.name, typeInformationLabel.label)
     		.from(typeInformation)
     		.join(typeInformationLabel).on(typeInformation.id.eq(typeInformationLabel.typeInformationId))
     		.fetch();
     	
     	List<Tuple> creatorsList = db.queryFactory
-    		.select(creator.id, creatorLabel.label)
+    		.select(creator.id, creator.name, creatorLabel.label)
         	.from(creator)
         	.join(creatorLabel).on(creator.id.eq(creatorLabel.creatorId))
         	.fetch();
     	
     	List<Tuple> rightsList = db.queryFactory
-    			.select(rights.id, rightsLabel.label)
+    			.select(rights.id, rights.name, rightsLabel.label)
             	.from(rights)
             	.join(rightsLabel).on(rights.id.eq(rightsLabel.rightsId))
             	.fetch();
     	
     	List<Tuple> useLimitationList = db.queryFactory
-    			.select(useLimitation.id, useLimitationLabel.label)
+    			.select(useLimitation.id, useLimitation.name, useLimitationLabel.label)
             	.from(useLimitation)
             	.join(useLimitationLabel).on(useLimitation.id.eq(useLimitationLabel.useLimitationId))
             	.fetch();
     	
     	List<Tuple> mdFormatList = db.queryFactory
-    			.select(mdFormat.id, mdFormatLabel.label)
+    			.select(mdFormat.id, mdFormat.name, mdFormatLabel.label)
             	.from(mdFormat)
             	.join(mdFormatLabel).on(mdFormat.id.eq(mdFormatLabel.mdFormatId))
             	.fetch();
     	
     	List<Tuple> subjectList = db.queryFactory
-    			.select(subject.id, subjectLabel.label)
+    			.select(subject.id, subject.name, subjectLabel.label)
             	.from(subject)
             	.join(subjectLabel).on(subject.id.eq(subjectLabel.subjectId))
             	.fetch();
 		
-		return ok(views.html.form.render(create, uuid, todayUS, todayLocal, null, null, null, typeInformationList, creatorsList, rightsList, 
+    	return ok(views.html.form.render(create, uuid, todayUS, todayLocal, null, null, null, typeInformationList, creatorsList, rightsList, 
 				useLimitationList, mdFormatList, null, null, subjectList));
 	}
 	
@@ -163,12 +163,14 @@ public class Add extends Controller {
 			    }
 				byte[] input = byteOutput.toByteArray();
 				
+				
 				inputStream.close();
 				
 				db.queryFactory.insert(mdAttachment)
 					.set(mdAttachment.metadataId, datasetId)
 					.set(mdAttachment.attachmentName, fp.getFilename())
 					.set(mdAttachment.attachmentContent, input)
+					.set(mdAttachment.attachmentMimetype, fp.getContentType())
 					.execute();
 			}
 		}

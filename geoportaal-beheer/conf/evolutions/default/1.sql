@@ -15,7 +15,7 @@ CREATE TABLE gb.constants (
 
 CREATE TABLE gb.metadata ( 
 	id serial NOT NULL,
-	uuid char(50) NOT NULL,
+	uuid char(36) NOT NULL,
 	location char(100) NOT NULL,
 	file_id char(20),
 	title char(50) NOT NULL,
@@ -572,5 +572,5 @@ DROP TABLE gb.status CASCADE
 ;
 DROP TABLE gb.supplier CASCADE
 ;
-DROP SCHEMA gb
+DROP SCHEMA gb CASCADE
 ;
