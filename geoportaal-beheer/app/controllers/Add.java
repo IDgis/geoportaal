@@ -94,7 +94,7 @@ public class Add extends Controller {
 		
 		Integer typeInformationKey = db.queryFactory.select(typeInformation.id)
 			.from(typeInformation)
-			.where(typeInformation.name.eq(dc.getTypeInfo()))
+			.where(typeInformation.name.eq(dc.getTypeInformation()))
 			.fetchFirst();
 		
 		Integer creatorKey = db.queryFactory.select(creator.id)
@@ -114,7 +114,7 @@ public class Add extends Controller {
 		
 		Integer formatKey = db.queryFactory.select(mdFormat.id)
 			.from(mdFormat)
-			.where(mdFormat.name.eq(dc.getFormat()))
+			.where(mdFormat.name.eq(dc.getMdFormat()))
 			.fetchFirst();
 		
 		db.queryFactory.insert(metadata)

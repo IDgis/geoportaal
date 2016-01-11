@@ -139,7 +139,7 @@
 			<label class="col-sm-3 control-label">Type informatie</label>
 			<div class="col-sm-7">
 				<select class="form-control" data-toggle="tooltip" data-placement="top" title="Selecteer het type informatie"
-				name="typeInfo">
+				name="typeInformation">
 					@for(typeInformationOption <- typeInformationList) {
 						<option value="@typeInformationOption.get(typeInformation.name)" 
 						@if(!create && datasetRow.get(metadata.typeInformation) == typeInformationOption.get(typeInformation.id)) {selected}>
@@ -230,7 +230,7 @@
 			<label class="col-sm-3 control-label">Formaat</label>
 			<div class="col-sm-7">
 				<select class="form-control" data-toggle="tooltip" data-placement="top" 
-				title="Selecteer het formaat van de data" name="format">
+				title="Selecteer het formaat van de data" name="mdFormat">
 					@for(mdFormatOption <- mdFormatList) {
 						<option value="@mdFormatOption.get(mdFormat.name)"
 						@if(!create && datasetRow.get(metadata.mdFormat) == mdFormatOption.get(mdFormat.id)) {selected}>

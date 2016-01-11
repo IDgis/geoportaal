@@ -10,11 +10,11 @@ public class DublinCore {
 	private String fileId;
 	private String title;
 	private String description;
-	private String typeInfo;
+	private String typeInformation;
 	private String creator;
 	private String rights;
 	private String useLimitation;
-	private String format;
+	private String mdFormat;
 	private String source;
 	private Date dateSourceCreation;
 	private Date dateSourcePublication;
@@ -27,8 +27,8 @@ public class DublinCore {
 		
 	}
 	
-	public DublinCore(String uuid, String location, String fileId, String title, String description, String typeInfo, String creator, 
-			String rights, String useLimitation, String format, String source, Date dateSourceCreation, Date dateSourcePublication, 
+	public DublinCore(String uuid, String location, String fileId, String title, String description, String typeInformation, String creator, 
+			String rights, String useLimitation, String mdFormat, String source, Date dateSourceCreation, Date dateSourcePublication, 
 			Date dateSourceRevision, Date dateSourceValidFrom, Date dateSourceValidUntil, List<String> subject) {
 		super();
 		this.uuid = uuid;
@@ -36,11 +36,11 @@ public class DublinCore {
 		this.fileId = fileId;
 		this.title = title;
 		this.description = description;
-		this.typeInfo = typeInfo;
+		this.typeInformation = typeInformation;
 		this.creator = creator;
 		this.rights = rights;
 		this.useLimitation = useLimitation;
-		this.format = format;
+		this.mdFormat = mdFormat;
 		this.source = source;
 		this.dateSourceCreation = dateSourceCreation;
 		this.dateSourcePublication = dateSourcePublication;
@@ -79,12 +79,12 @@ public class DublinCore {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	public String getTypeInfo() {
-		return typeInfo;
+	public String getTypeInformation() {
+		return typeInformation;
 	}
 
-	public void setTypeInfo(String typeInfo) {
-		this.typeInfo = typeInfo;
+	public void setTypeInformation(String typeInformation) {
+		this.typeInformation = typeInformation;
 	}
 
 	public String getCreator() {
@@ -106,11 +106,11 @@ public class DublinCore {
 	public void setUseLimitation(String useLimitation) {
 		this.useLimitation = useLimitation;
 	}
-	public String getFormat() {
-		return format;
+	public String getMdFormat() {
+		return mdFormat;
 	}
-	public void setFormat(String format) {
-		this.format = format;
+	public void setMdFormat(String mdFormat) {
+		this.mdFormat = mdFormat;
 	}
 	public String getSource() {
 		return source;
