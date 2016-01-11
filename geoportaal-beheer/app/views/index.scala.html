@@ -1,16 +1,19 @@
 @(datasetRows: java.util.List[com.querydsl.core.Tuple], 
 	supplierList: java.util.List[com.querydsl.core.Tuple],
 	statusList: java.util.List[com.querydsl.core.Tuple],
-	infoFormatList: java.util.List[com.querydsl.core.Tuple],
+	mdFormatList: java.util.List[com.querydsl.core.Tuple],
 	sdf: java.text.SimpleDateFormat
 	)
 
-@import models.QDataset.dataset
+@import play.i18n._
+@import models.QMetadata.metadata
 @import models.QSupplier.supplier
 @import models.QStatus.status
-@import models.QInfoFormat.infoFormat
+@import models.QMdFormat.mdFormat
+@import models.QStatusLabel.statusLabel
+@import models.QMdFormatLabel.mdFormatLabel
 
-@main("Zoeken", routes.Assets.versioned("javascripts/index.js").url) {
+@main(Messages.get("index.header"), routes.Assets.versioned("javascripts/index.js").url) {
 	<div class="welkom">
 		<p>Hier kunt u naar metadata records zoeken en veranderingen doorvoeren.</p>
 	</div>
@@ -27,7 +30,7 @@
 				<select class="form-control" data-toggle="tooltip" data-placement="top" title="Filter op leverancier">
 					<option value="none"></option>
 					@for(supplierOption <- supplierList) {
-						<option value="@supplierOption">@supplierOption.get(supplier.name)</option>
+						<option value="@supplierOption.get(supplier.name)">@supplierOption.get(supplier.name)</option>
 					}
 				</select>
 			</div>
@@ -37,7 +40,7 @@
 			<div class="col-sm-8">
 				<select class="form-control" data-toggle="tooltip" data-placement="top" title="Filter op status">
 					@for(statusOption <- statusList) {
-						<option value="@statusOption.get(status.identification)">@statusOption.get(status.label)</option>
+						<option value="@statusOption.get(status.name)">@statusOption.get(statusLabel.label)</option>
 					}
 				</select>
 			</div>
@@ -46,9 +49,9 @@
 			<label class="col-sm-3 control-label">Formaat</label>
 			<div class="col-sm-8">
 				<select class="form-control" data-toggle="tooltip" data-placement="top" title="Filter op formaat">
-					@for(infoFormatOption <- infoFormatList) {
-						<option value="@infoFormatOption.get(infoFormat.identification)">
-							@infoFormatOption.get(infoFormat.label)
+					@for(infoFormatOption <- mdFormatList) {
+						<option value="@infoFormatOption.get(mdFormat.name)">
+							@infoFormatOption.get(mdFormatLabel.label)
 						</option>
 					}
 				</select>
@@ -88,16 +91,15 @@
 	<form class="form-inline beheer-knoppen" method="get">
 		<div class="form-group">
 			<button class="knop js-status" type="button" data-status="concept">Concept</button>
-			<button class="knop js-status" type="button" data-status="ter goedkeuring">Ter goedkeuring</button>
-			<button class="knop js-status" type="button" data-status="in publicatie">In publicatie</button>
+			<button class="knop js-status" type="button" data-status="approval">Ter goedkeuring</button>
+			<button class="knop js-status" type="button" data-status="published">In publicatie</button>
 			<button id="js-delete" class="knop" type="button">Verwijderen</button>
 			<button class="knop" type="button" id="js-edit-supplier">Leverancier wijzigen</button>
 			<select class="form-control" id="js-edit-supplier-select">
 				<option>--</option>
-				<option>Nienhuis</option>
-				<option>Leverancier 1</option>
-				<option>Leverancier 2</option>
-				<option>Leverancier 3</option>
+				@for(supplierOption <- supplierList) {
+					<option value="@supplierOption.get(supplier.name)">@supplierOption.get(supplier.name)</option>
+				}
 			</select>
 		</div>
 	</form>
@@ -117,20 +119,20 @@
 				@for(datasetRow <- datasetRows) {
 					<tr>
 						<td>
-							<input type="checkbox" class="js-record-checkbox" data-id="@datasetRow.get(dataset.id)">
+							<input type="checkbox" class="js-record-checkbox" data-id="@datasetRow.get(metadata.id)">
 						</td>
 						<td>
 							<a>
 								<span class="action-button glyphicon glyphicon-eye-open" title="Metadata bekijken"></span>
 							</a>
-							<a href="@routes.Edit.edit(datasetRow.get(dataset.uuid))">
+							<a href="@routes.Edit.edit(datasetRow.get(metadata.uuid))">
 								<span class="action-button glyphicon glyphicon-edit" title="Bestand wijzigen"></span>
 							</a>
 						</td>
-						<td>@datasetRow.get(dataset.title)</td>
-						<td>@datasetRow.get(dataset.supplier)</td>
-						<td>@datasetRow.get(dataset.status)</td>
-						<td>@sdf.format(datasetRow.get(dataset.lastRevisionDate).getTime())</td>
+						<td>@datasetRow.get(metadata.title)</td>
+						<td>@datasetRow.get(supplier.name)</td>
+						<td>@datasetRow.get(statusLabel.label)</td>
+						<td>@sdf.format(datasetRow.get(metadata.lastRevisionDate).getTime())</td>
 					</tr>
 				}
 			</tbody>

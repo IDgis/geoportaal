@@ -1,5 +1,6 @@
 package controllers;
 
+import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.sql.DataSource;
 
@@ -12,8 +13,13 @@ import play.db.DB;
 
 @Singleton
 public class Database {
-	DataSource ds = DB.getDataSource();
-	SQLTemplates templates = new PostgreSQLTemplates();
-	Configuration configuration = new Configuration(templates);
-	SQLQueryFactory queryFactory = new SQLQueryFactory(configuration, ds);
+	final DataSource ds;
+	final SQLQueryFactory queryFactory;
+	
+	@Inject public Database() {
+		SQLTemplates templates = PostgreSQLTemplates.builder().printSchema().build();
+		Configuration configuration = new Configuration(templates);
+		ds = DB.getDataSource();
+		queryFactory = new SQLQueryFactory(configuration, ds);
+	}
 }

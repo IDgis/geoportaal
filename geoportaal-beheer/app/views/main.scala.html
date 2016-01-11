@@ -1,5 +1,7 @@
 @(title: String, jsMain: String)(content: Html)
 
+@import play.i18n._
+
 <!DOCTYPE html>
 
 <html lang="en">
@@ -34,7 +36,7 @@
 				</div>
 				<div class="toptaak-element">
 					<div class="toptaak-outer">
-						<div class="@if(title == "Zoeken" || title == "Wijzigen") {toptaak-inner-active} else {toptaak-inner}">
+						<div class="@if(title == Messages.get("index.header") || title == "Wijzigen") {toptaak-inner-active} else {toptaak-inner}">
 							<a class="tabs" href="@routes.Index.index()">
 								<span class="toptaak-titel">
 									Zoeken en wijzigen									

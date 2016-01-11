@@ -1,17 +1,30 @@
 package controllers;
 
 import static models.QCreator.creator;
-import static models.QDataAttachment.dataAttachment;
-import static models.QDataSubject.dataSubject;
-import static models.QDataset.dataset;
-import static models.QInfoFormat.infoFormat;
+import static models.QCreatorLabel.creatorLabel;
+import static models.QMdAttachment.mdAttachment;
+import static models.QMdSubject.mdSubject;
+import static models.QMetadata.metadata;
+import static models.QMdFormat.mdFormat;
+import static models.QMdFormatLabel.mdFormatLabel;
 import static models.QRights.rights;
+import static models.QRightsLabel.rightsLabel;
 import static models.QSubject.subject;
+import static models.QSubjectLabel.subjectLabel;
 import static models.QTypeInformation.typeInformation;
+import static models.QTypeInformationLabel.typeInformationLabel;
 import static models.QUseLimitation.useLimitation;
+import static models.QUseLimitationLabel.useLimitationLabel;
+import static models.QStatus.status;
+import static models.QSupplier.supplier;
 
+import java.io.ByteArrayInputStream;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 
 import javax.inject.Inject;
 
@@ -27,70 +40,92 @@ public class Edit extends Controller {
 		Boolean create = false;
 		
 		Integer datasetId = db.queryFactory
-				.from(dataset)
-				.select(dataset.id)
-				.where(dataset.uuid.eq(datasetUuid))
+				.from(metadata)
+				.select(metadata.id)
+				.where(metadata.uuid.eq(datasetUuid))
 				.fetchFirst();
 		
-		Tuple datasetRow = db.queryFactory.select(dataset.all())
-    			.from(dataset)
-    			.where(dataset.id.eq(datasetId))
+		Tuple datasetRow = db.queryFactory.select(metadata.all())
+    			.from(metadata)
+    			.where(metadata.id.eq(datasetId))
     			.fetchFirst();
     	
-    	List<Tuple> subjectsDataset = db.queryFactory.select(dataSubject.all())
-    			.from(dataSubject)
-    			.where(dataSubject.datasetId.eq(datasetId))
+    	List<Tuple> subjectsDataset = db.queryFactory.select(mdSubject.all())
+    			.from(mdSubject)
+    			.where(mdSubject.metadataId.eq(datasetId))
     			.fetch();
     	
-    	List<Tuple> attachmentsDataset = db.queryFactory.select(dataAttachment.all())
-    			.from(dataAttachment)
-    			.where(dataAttachment.datasetId.eq(datasetId))
+    	List<Tuple> attachmentsDataset = db.queryFactory.select(mdAttachment.all())
+    			.from(mdAttachment)
+    			.where(mdAttachment.metadataId.eq(datasetId))
     			.fetch();
     	
-    	List<Tuple> typeInformationList = db.queryFactory.select(typeInformation.all())
+    	List<Tuple> typeInformationList = db.queryFactory
+    			.select(typeInformation.id, typeInformation.name, typeInformationLabel.label)
         		.from(typeInformation)
+        		.join(typeInformationLabel).on(typeInformation.id.eq(typeInformationLabel.typeInformationId))
         		.fetch();
         	
-    	List<Tuple> creatorsList = db.queryFactory.select(creator.all())
-            	.from(creator)
+    	List<Tuple> creatorsList = db.queryFactory
+	    		.select(creator.id, creator.name, creatorLabel.label)
+	        	.from(creator)
+	        	.join(creatorLabel).on(creator.id.eq(creatorLabel.creatorId))
+	        	.fetch();
+    	
+    	List<Tuple> rightsList = db.queryFactory
+    			.select(rights.id, rights.name, rightsLabel.label)
+            	.from(rights)
+            	.join(rightsLabel).on(rights.id.eq(rightsLabel.rightsId))
             	.fetch();
-        	
-       	List<Tuple> rightsList = db.queryFactory.select(rights.all())
-               	.from(rights)
-               	.fetch();
-        	
-       	List<Tuple> useLimitationList = db.queryFactory.select(useLimitation.all())
-               	.from(useLimitation)
-               	.fetch();
-        	
-        List<Tuple> infoFormatList = db.queryFactory.select(infoFormat.all())
-               	.from(infoFormat)
-               	.fetch();
+    	
+    	List<Tuple> useLimitationList = db.queryFactory
+    			.select(useLimitation.id, useLimitation.name, useLimitationLabel.label)
+            	.from(useLimitation)
+            	.join(useLimitationLabel).on(useLimitation.id.eq(useLimitationLabel.useLimitationId))
+            	.fetch();
+    	
+    	List<Tuple> mdFormatList = db.queryFactory
+    			.select(mdFormat.id, mdFormat.name, mdFormatLabel.label)
+            	.from(mdFormat)
+            	.join(mdFormatLabel).on(mdFormat.id.eq(mdFormatLabel.mdFormatId))
+            	.fetch();
+    	
+    	List<Tuple> subjectList = db.queryFactory
+    			.select(subject.id, subject.name, subjectLabel.label)
+            	.from(subject)
+            	.join(subjectLabel).on(subject.id.eq(subjectLabel.subjectId))
+            	.fetch();
         
         SimpleDateFormat sdfUS = new SimpleDateFormat("yyyy-MM-dd");
         SimpleDateFormat sdfLocal = new SimpleDateFormat("dd-MM-yyyy");
         
-        List<Tuple> subjectList = db.queryFactory.select(subject.all())
-               	.from(subject)
-               	.fetch();
-    	
-    	return ok(views.html.form.render(create, "", "", "", datasetRow, subjectsDataset, attachmentsDataset, typeInformationList, creatorsList, 
-    			rightsList, useLimitationList, infoFormatList, sdfUS, sdfLocal, subjectList));
+        return ok(views.html.form.render(create, "", "", "", datasetRow, subjectsDataset, attachmentsDataset, typeInformationList, creatorsList, 
+    			rightsList, useLimitationList, mdFormatList, sdfUS, sdfLocal, subjectList));
 	}
 	
-	public Result changeStatus(Integer datasetId, String status) {
-		db.queryFactory.update(dataset)
-    		.where(dataset.id.eq(datasetId))
-    		.set(dataset.status, status)
+	public Result changeStatus(Integer datasetId, String statusStr) {
+		Integer statusKey = db.queryFactory.select(status.id)
+			.from(status)
+			.where(status.name.eq(statusStr))
+			.fetchFirst();
+		
+		db.queryFactory.update(metadata)
+    		.where(metadata.id.eq(datasetId))
+    		.set(metadata.status, statusKey)
     		.execute();
     	
     	return redirect(controllers.routes.Index.index());
 	}
 	
-	public Result changeSupplier(Integer datasetId, String supplier) {
-		db.queryFactory.update(dataset)
-    		.where(dataset.id.eq(datasetId))
-    		.set(dataset.supplier, supplier)
+	public Result changeSupplier(Integer datasetId, String supplierStr) {
+		Integer supplierKey = db.queryFactory.select(supplier.id)
+			.from(supplier)
+			.where(supplier.name.eq(supplierStr))
+			.fetchFirst();
+		
+		db.queryFactory.update(metadata)
+    		.where(metadata.id.eq(datasetId))
+    		.set(metadata.supplier, supplierKey)
     		.execute();
     	
     	return redirect(controllers.routes.Index.index());
