@@ -156,7 +156,7 @@ public class MetadataDC extends Controller {
     		.set(metadata.lastRevisionDate, dateToday)
     		.execute();
     	
-		Integer datasetId = db.queryFactory.select(metadata.id)
+		Integer metadataId = db.queryFactory.select(metadata.id)
 				.from(metadata)
 				.where(metadata.uuid.eq(uuid))
 				.fetchFirst();
@@ -182,7 +182,7 @@ public class MetadataDC extends Controller {
 				inputStream.close();
 				
 				db.queryFactory.insert(mdAttachment)
-					.set(mdAttachment.metadataId, datasetId)
+					.set(mdAttachment.metadataId, metadataId)
 					.set(mdAttachment.attachmentName, fp.getFilename())
 					.set(mdAttachment.attachmentContent, input)
 					.set(mdAttachment.attachmentMimetype, fp.getContentType())
@@ -198,7 +198,7 @@ public class MetadataDC extends Controller {
 					.fetchFirst();
 				
 				db.queryFactory.insert(mdSubject)
-					.set(mdSubject.metadataId, datasetId)
+					.set(mdSubject.metadataId, metadataId)
 					.set(mdSubject.subject, subjectKey)
 					.execute();
 			}
@@ -207,13 +207,13 @@ public class MetadataDC extends Controller {
 		return redirect(controllers.routes.Index.index());
 	}
 	
-	public Result renderEditForm(String datasetUuid) {
+	public Result renderEditForm(String metadataUuid) {
 		Boolean create = false;
 		
-		Integer datasetId = db.queryFactory
+		Integer metadataId = db.queryFactory
 				.from(metadata)
 				.select(metadata.id)
-				.where(metadata.uuid.eq(datasetUuid))
+				.where(metadata.uuid.eq(metadataUuid))
 				.fetchFirst();
 		
 		Tuple datasetRow = db.queryFactory.select(metadata.id, metadata.uuid, metadata.location, metadata.fileId, metadata.title, 
@@ -222,17 +222,17 @@ public class MetadataDC extends Controller {
 				metadata.dateSourceValidFrom, metadata.dateSourceValidUntil, creator.name)
     			.from(metadata)
     			.join(creator).on(metadata.creator.eq(creator.id))
-    			.where(metadata.id.eq(datasetId))
+    			.where(metadata.id.eq(metadataId))
     			.fetchFirst();
     	
     	List<Tuple> subjectsDataset = db.queryFactory.select(mdSubject.all())
     			.from(mdSubject)
-    			.where(mdSubject.metadataId.eq(datasetId))
+    			.where(mdSubject.metadataId.eq(metadataId))
     			.fetch();
     	
     	List<Tuple> attachmentsDataset = db.queryFactory.select(mdAttachment.all())
     			.from(mdAttachment)
-    			.where(mdAttachment.metadataId.eq(datasetId))
+    			.where(mdAttachment.metadataId.eq(metadataId))
     			.fetch();
     	
     	List<Tuple> typeInformationList = db.queryFactory
@@ -276,6 +276,127 @@ public class MetadataDC extends Controller {
         
         return ok(views.html.form.render(create, "", "", datasetRow, subjectsDataset, attachmentsDataset, typeInformationList, creatorsList, 
     			rightsList, useLimitationList, mdFormatList, sdfUS, sdfLocal, subjectList));
+	}
+	
+	public Result editSubmit(String metadataUuid) throws IOException {
+		Form<DublinCore> dcForm = Form.form(DublinCore.class);
+		DublinCore dc = dcForm.bindFromRequest().get();
+		
+		Timestamp dateToday = new Timestamp(new Date().getTime());
+		
+		Integer typeInformationKey = db.queryFactory.select(typeInformation.id)
+			.from(typeInformation)
+			.where(typeInformation.name.eq(dc.getTypeInformation()))
+			.fetchFirst();
+		
+		Integer creatorKey = db.queryFactory.select(creator.id)
+			.from(creator)
+			.where(creator.name.eq(dc.getCreator()))
+			.fetchFirst();
+		
+		Integer rightsKey = db.queryFactory.select(rights.id)
+			.from(rights)
+			.where(rights.name.eq(dc.getRights()))
+			.fetchFirst();
+		
+		Integer useLimitationKey = db.queryFactory.select(useLimitation.id)
+			.from(useLimitation)
+			.where(useLimitation.name.eq(dc.getUseLimitation()))
+			.fetchFirst();
+		
+		Integer formatKey = db.queryFactory.select(mdFormat.id)
+			.from(mdFormat)
+			.where(mdFormat.name.eq(dc.getMdFormat()))
+			.fetchFirst();
+		
+		String creatorOtherValue;
+		if(!dc.getCreator().equals("other")) {
+			creatorOtherValue = null;
+		} else {
+			creatorOtherValue = dc.getCreatorOther();
+		}
+		
+		Timestamp dateSourceCreationValue = nullCheckDate(dc.getDateSourceCreation());
+		Timestamp dateSourcePublicationValue = nullCheckDate(dc.getDateSourcePublication());
+		Timestamp dateSourceRevisionValue = nullCheckDate(dc.getDateSourceRevision());
+		Timestamp dateSourceValidFromValue = nullCheckDate(dc.getDateSourceValidFrom());
+		Timestamp dateSourceValidUntilValue = nullCheckDate(dc.getDateSourceValidUntil());
+		
+		db.queryFactory.update(metadata)
+			.where(metadata.uuid.eq(metadataUuid))
+			.set(metadata.location, dc.getLocation())
+    		.set(metadata.fileId, dc.getFileId())
+    		.set(metadata.title, dc.getTitle())
+    		.set(metadata.description, dc.getDescription())
+    		.set(metadata.typeInformation, typeInformationKey)
+    		.set(metadata.creator, creatorKey)
+    		.set(metadata.creatorOther, creatorOtherValue)
+    		.set(metadata.rights, rightsKey)
+    		.set(metadata.useLimitation, useLimitationKey)
+    		.set(metadata.mdFormat, formatKey)
+    		.set(metadata.source, dc.getSource())
+    		.set(metadata.dateSourceCreation, dateSourceCreationValue)
+    		.set(metadata.dateSourcePublication, dateSourcePublicationValue)
+    		.set(metadata.dateSourceRevision, dateSourceRevisionValue)
+    		.set(metadata.dateSourceValidFrom, dateSourceValidFromValue)
+    		.set(metadata.dateSourceValidUntil, dateSourceValidUntilValue)
+    		.set(metadata.lastRevisionUser, session("username"))
+    		.set(metadata.lastRevisionDate, dateToday)
+    		.execute();
+    	
+		Integer metadataId = db.queryFactory.select(metadata.id)
+				.from(metadata)
+				.where(metadata.uuid.eq(metadataUuid))
+				.fetchFirst();
+		
+		play.mvc.Http.MultipartFormData body = request().body().asMultipartFormData();
+		List<FilePart> allFiles = body.getFiles();
+		
+		for(FilePart fp: allFiles) {
+			if(fp != null) {
+				java.io.File file = fp.getFile();
+				InputStream inputStream = new FileInputStream(file);
+				
+				byte[] buffer = new byte[8192];
+				int bytesRead;
+				ByteArrayOutputStream byteOutput = new ByteArrayOutputStream();
+				while((bytesRead = inputStream.read(buffer)) != -1)
+			    {
+					byteOutput.write(buffer, 0, bytesRead);
+			    }
+				byte[] input = byteOutput.toByteArray();
+				
+				
+				inputStream.close();
+				
+				db.queryFactory.insert(mdAttachment)
+					.set(mdAttachment.metadataId, metadataId)
+					.set(mdAttachment.attachmentName, fp.getFilename())
+					.set(mdAttachment.attachmentContent, input)
+					.set(mdAttachment.attachmentMimetype, fp.getContentType())
+					.execute();
+			}
+		}
+		
+		if(dc.getSubject() != null) {
+			db.queryFactory.delete(mdSubject)
+				.where(mdSubject.metadataId.eq(metadataId))
+				.execute();
+				
+			for(String subjectStr : dc.getSubject()) {
+				Integer subjectKey = db.queryFactory.select(subject.id)
+					.from(subject)
+					.where(subject.name.eq(subjectStr))
+					.fetchFirst();
+				
+				db.queryFactory.insert(mdSubject)
+					.set(mdSubject.metadataId, metadataId)
+					.set(mdSubject.subject, subjectKey)
+					.execute();
+			}
+		}
+		
+		return redirect(controllers.routes.Index.index());
 	}
 	
 	public Timestamp nullCheckDate(Date date) {

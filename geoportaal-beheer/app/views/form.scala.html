@@ -36,7 +36,9 @@
 		<p class="welkom">* = verplicht</p>
 	</div>
 	
-	@helper.form(action = routes.MetadataDC.createSubmit(), 'enctype -> "multipart/form-data", 'class -> "form-horizontal beheer-formulier") {
+	@helper.form(action = if(create) {routes.MetadataDC.createSubmit()} else {
+		routes.MetadataDC.editSubmit(datasetRow.get(metadata.uuid))}, 'enctype -> "multipart/form-data", 
+		'class -> "form-horizontal beheer-formulier") {
 		<div class="form-group">
 			<label class="col-sm-3 control-label">Titel*</label>
 			<div class="col-sm-7">
