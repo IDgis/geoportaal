@@ -43,7 +43,6 @@ public class Add extends Controller {
 	
 	public Result add() {
 		Boolean create = true;
-		String uuid = UUID.randomUUID().toString();
 		String todayUS = new SimpleDateFormat("yyyy-MM-dd").format(new Date().getTime());
 		String todayLocal = new SimpleDateFormat("dd-MM-yyyy").format(new Date().getTime());
 		
@@ -83,7 +82,7 @@ public class Add extends Controller {
             	.join(subjectLabel).on(subject.id.eq(subjectLabel.subjectId))
             	.fetch();
 		
-    	return ok(views.html.form.render(create, uuid, todayUS, todayLocal, null, null, null, typeInformationList, creatorsList, rightsList, 
+    	return ok(views.html.form.render(create, todayUS, todayLocal, null, null, null, typeInformationList, creatorsList, rightsList, 
 				useLimitationList, mdFormatList, null, null, subjectList));
 	}
 	
@@ -125,8 +124,10 @@ public class Add extends Controller {
 			creatorOtherValue = dc.getCreatorOther();
 		}
 		
+		String uuid = UUID.randomUUID().toString();
+		
 		db.queryFactory.insert(metadata)
-    		.set(metadata.uuid, dc.getUuid())
+    		.set(metadata.uuid, uuid)
     		.set(metadata.location, dc.getLocation())
     		.set(metadata.fileId, dc.getFileId())
     		.set(metadata.title, dc.getTitle())
@@ -152,7 +153,7 @@ public class Add extends Controller {
     	
 		Integer datasetId = db.queryFactory.select(metadata.id)
 				.from(metadata)
-				.where(metadata.uuid.eq(dc.getUuid()))
+				.where(metadata.uuid.eq(uuid))
 				.fetchFirst();
 		
 		play.mvc.Http.MultipartFormData body = request().body().asMultipartFormData();
