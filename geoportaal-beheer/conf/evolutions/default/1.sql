@@ -3,9 +3,9 @@
 CREATE SCHEMA gb;
 
 CREATE TABLE gb.constants ( 
-	publisher char(50),
-	contributor char(50),
-	language char(50),
+	publisher varchar(50),
+	contributor varchar(50),
+	language varchar(50),
 	west_bound_longitude decimal(10,3),
 	east_bound_longitude decimal(10,3),
 	south_bound_longitude decimal(10,3),
@@ -13,38 +13,40 @@ CREATE TABLE gb.constants (
 )
 ;
 
-CREATE TABLE gb.metadata ( 
+CREATE TABLE gb.creator ( 
 	id serial NOT NULL,
-	uuid char(36) NOT NULL,
-	location char(100) NOT NULL,
-	file_id char(20),
-	title char(50) NOT NULL,
-	description text NOT NULL,
-	type_information integer,
-	creator integer NOT NULL,
-	rights integer,
-	use_limitation integer NOT NULL,
-	md_format integer,
-	source char(50),
-	date_source_creation timestamp,
-	date_source_publication timestamp,
-	date_source_revision timestamp,
-	date_source_valid_from timestamp,
-	date_source_valid_until timestamp,
-	supplier integer NOT NULL,
-	status integer NOT NULL,
-	published boolean NOT NULL,
-	last_revision_user char(50) NOT NULL,
-	last_revision_date timestamp NOT NULL
+	name varchar(20) NOT NULL
+)
+;
+
+CREATE TABLE gb.creator_label ( 
+	id serial NOT NULL,
+	creator_id integer NOT NULL,
+	locale varchar(10) NOT NULL,
+	label varchar(75) NOT NULL
 )
 ;
 
 CREATE TABLE gb.md_attachment ( 
 	id serial NOT NULL,
 	metadata_id integer NOT NULL,
-	attachment_name char(200) NOT NULL,
+	attachment_name varchar(200) NOT NULL,
 	attachment_content bytea NOT NULL,
 	attachment_mimetype text NOT NULL
+)
+;
+
+CREATE TABLE gb.md_format ( 
+	id serial NOT NULL,
+	name varchar(30) NOT NULL
+)
+;
+
+CREATE TABLE gb.md_format_label ( 
+	id serial NOT NULL,
+	md_format_id integer NOT NULL,
+	locale varchar(10) NOT NULL,
+	label varchar(30) NOT NULL
 )
 ;
 
@@ -55,221 +57,165 @@ CREATE TABLE gb.md_subject (
 )
 ;
 
-CREATE TABLE gb.type_information ( 
+CREATE TABLE gb.metadata ( 
 	id serial NOT NULL,
-	name char(20) NOT NULL
-)
-;
-
-CREATE TABLE gb.creator ( 
-	id serial NOT NULL,
-	name char(20) NOT NULL
+	uuid char(36) NOT NULL,
+	location varchar(100) NOT NULL,
+	file_id varchar(20),
+	title varchar(50) NOT NULL,
+	description text NOT NULL,
+	type_information integer,
+	creator integer NOT NULL,
+	creator_other varchar(30),
+	rights integer,
+	use_limitation integer NOT NULL,
+	md_format integer,
+	source varchar(50),
+	date_source_creation timestamp NOT NULL,
+	date_source_publication timestamp,
+	date_source_revision timestamp,
+	date_source_valid_from timestamp,
+	date_source_valid_until timestamp,
+	supplier integer NOT NULL,
+	status integer NOT NULL,
+	published boolean NOT NULL,
+	last_revision_user varchar(50) NOT NULL,
+	last_revision_date timestamp NOT NULL
 )
 ;
 
 CREATE TABLE gb.rights ( 
 	id serial NOT NULL,
-	name char(30) NOT NULL
-)
-;
-
-CREATE TABLE gb.use_limitation ( 
-	id serial NOT NULL,
-	name char(10) NOT NULL
-)
-;
-
-CREATE TABLE gb.md_format ( 
-	id serial NOT NULL,
-	name char(30) NOT NULL
-)
-;
-
-CREATE TABLE gb.subject ( 
-	id serial NOT NULL,
-	name char(50) NOT NULL
-)
-;
-
-CREATE TABLE gb.status ( 
-	id serial NOT NULL,
-	name char(20) NOT NULL
-)
-;
-
-CREATE TABLE gb.supplier ( 
-	id serial NOT NULL,
-	name char(30) NOT NULL
-)
-;
-
-CREATE TABLE gb.type_information_label ( 
-	id serial NOT NULL,
-	type_information_id integer NOT NULL,
-	locale char(10) NOT NULL,
-	label char(20) NOT NULL
-)
-;
-
-CREATE TABLE gb.creator_label ( 
-	id serial NOT NULL,
-	creator_id integer NOT NULL,
-	locale char(10) NOT NULL,
-	label char(75) NOT NULL
+	name varchar(30) NOT NULL
 )
 ;
 
 CREATE TABLE gb.rights_label ( 
 	id serial NOT NULL,
 	rights_id integer NOT NULL,
-	locale char(10) NOT NULL,
-	label char(50) NOT NULL
+	locale varchar(10) NOT NULL,
+	label varchar(50) NOT NULL
 )
 ;
 
-CREATE TABLE gb.use_limitation_label ( 
+CREATE TABLE gb.status ( 
 	id serial NOT NULL,
-	use_limitation_id integer NOT NULL,
-	locale char(10) NOT NULL,
-	label char(60) NOT NULL
-)
-;
-
-CREATE TABLE gb.md_format_label ( 
-	id serial NOT NULL,
-	md_format_id integer NOT NULL,
-	locale char(10) NOT NULL,
-	label char(30) NOT NULL
-)
-;
-
-CREATE TABLE gb.subject_label ( 
-	id serial NOT NULL,
-	subject_id integer NOT NULL,
-	locale char(10) NOT NULL,
-	label char(50) NOT NULL
+	name varchar(20) NOT NULL
 )
 ;
 
 CREATE TABLE gb.status_label ( 
 	id serial NOT NULL,
 	status_id integer NOT NULL,
-	locale char(10) NOT NULL,
-	label char(20) NOT NULL
+	locale varchar(10) NOT NULL,
+	label varchar(20) NOT NULL
+)
+;
+
+CREATE TABLE gb.subject ( 
+	id serial NOT NULL,
+	name varchar(50) NOT NULL
+)
+;
+
+CREATE TABLE gb.subject_label ( 
+	id serial NOT NULL,
+	subject_id integer NOT NULL,
+	locale varchar(10) NOT NULL,
+	label varchar(50) NOT NULL
+)
+;
+
+CREATE TABLE gb.supplier ( 
+	id serial NOT NULL,
+	name varchar(30) NOT NULL
+)
+;
+
+CREATE TABLE gb.type_information ( 
+	id serial NOT NULL,
+	name varchar(20) NOT NULL
+)
+;
+
+CREATE TABLE gb.type_information_label ( 
+	id serial NOT NULL,
+	type_information_id integer NOT NULL,
+	locale varchar(10) NOT NULL,
+	label varchar(20) NOT NULL
+)
+;
+
+CREATE TABLE gb.use_limitation ( 
+	id serial NOT NULL,
+	name varchar(10) NOT NULL
+)
+;
+
+CREATE TABLE gb.use_limitation_label ( 
+	id serial NOT NULL,
+	use_limitation_id integer NOT NULL,
+	locale varchar(10) NOT NULL,
+	label varchar(60) NOT NULL
 )
 ;
 
 
-ALTER TABLE gb.metadata
-	ADD CONSTRAINT UQ_dataset_uuid UNIQUE (uuid)
-;
-ALTER TABLE gb.md_attachment
-	ADD CONSTRAINT UQ_md_attachment_metadata_id_name UNIQUE (metadata_id, attachment_name)
-;
-ALTER TABLE gb.md_subject
-	ADD CONSTRAINT UQ_md_subject_metadata_id_subject UNIQUE (metadata_id, subject)
-;
-ALTER TABLE gb.type_information
-	ADD CONSTRAINT UQ_type_information_name UNIQUE (name)
-;
 ALTER TABLE gb.creator
 	ADD CONSTRAINT UQ_creator_name UNIQUE (name)
-;
-ALTER TABLE gb.rights
-	ADD CONSTRAINT UQ_rights_name UNIQUE (name)
-;
-ALTER TABLE gb.use_limitation
-	ADD CONSTRAINT UQ_use_limitation_name UNIQUE (name)
-;
-ALTER TABLE gb.md_format
-	ADD CONSTRAINT UQ_info_format_name UNIQUE (name)
-;
-ALTER TABLE gb.subject
-	ADD CONSTRAINT UQ_subject_name UNIQUE (name)
-;
-ALTER TABLE gb.status
-	ADD CONSTRAINT UQ_status_name UNIQUE (name)
-;
-ALTER TABLE gb.supplier
-	ADD CONSTRAINT UQ_supplier_name UNIQUE (name)
-;
-ALTER TABLE gb.type_information_label
-	ADD CONSTRAINT UQ_type_information_label_type_information_id_locale UNIQUE (type_information_id, locale)
 ;
 ALTER TABLE gb.creator_label
 	ADD CONSTRAINT UQ_creator_label_creator_id_locale UNIQUE (creator_id, locale)
 ;
-ALTER TABLE gb.rights_label
-	ADD CONSTRAINT UQ_rights_label_rights_id_locale UNIQUE (rights_id, locale)
+ALTER TABLE gb.md_attachment
+	ADD CONSTRAINT UQ_md_attachment_metadata_id_name UNIQUE (metadata_id, attachment_name)
 ;
-ALTER TABLE gb.use_limitation_label
-	ADD CONSTRAINT UQ_use_limitation_label_use_limitation_id_locale UNIQUE (use_limitation_id, locale)
+ALTER TABLE gb.md_format
+	ADD CONSTRAINT UQ_info_format_name UNIQUE (name)
 ;
 ALTER TABLE gb.md_format_label
 	ADD CONSTRAINT UQ_md_format_label_md_format_id_locale UNIQUE (md_format_id, locale)
 ;
-ALTER TABLE gb.subject_label
-	ADD CONSTRAINT UQ_subject_label_subject_id_locale UNIQUE (subject_id, locale)
+ALTER TABLE gb.md_subject
+	ADD CONSTRAINT UQ_md_subject_metadata_id_subject UNIQUE (metadata_id, subject)
+;
+ALTER TABLE gb.metadata
+	ADD CONSTRAINT UQ_dataset_uuid UNIQUE (uuid)
+;
+ALTER TABLE gb.rights
+	ADD CONSTRAINT UQ_rights_name UNIQUE (name)
+;
+ALTER TABLE gb.rights_label
+	ADD CONSTRAINT UQ_rights_label_rights_id_locale UNIQUE (rights_id, locale)
+;
+ALTER TABLE gb.status
+	ADD CONSTRAINT UQ_status_name UNIQUE (name)
 ;
 ALTER TABLE gb.status_label
 	ADD CONSTRAINT UQ_status_label_status_id_locale UNIQUE (status_id, locale)
 ;
-ALTER TABLE gb.metadata ADD CONSTRAINT PK_dataset 
-	PRIMARY KEY (id)
+ALTER TABLE gb.subject
+	ADD CONSTRAINT UQ_subject_name UNIQUE (name)
 ;
-
-
-ALTER TABLE gb.md_attachment ADD CONSTRAINT PK_data_attachment 
-	PRIMARY KEY (id)
+ALTER TABLE gb.subject_label
+	ADD CONSTRAINT UQ_subject_label_subject_id_locale UNIQUE (subject_id, locale)
 ;
-
-
-ALTER TABLE gb.md_subject ADD CONSTRAINT PK_data_subject 
-	PRIMARY KEY (id)
+ALTER TABLE gb.supplier
+	ADD CONSTRAINT UQ_supplier_name UNIQUE (name)
 ;
-
-
-ALTER TABLE gb.type_information ADD CONSTRAINT PK_type_information 
-	PRIMARY KEY (id)
+ALTER TABLE gb.type_information
+	ADD CONSTRAINT UQ_type_information_name UNIQUE (name)
 ;
-
-
+ALTER TABLE gb.type_information_label
+	ADD CONSTRAINT UQ_type_information_label_type_information_id_locale UNIQUE (type_information_id, locale)
+;
+ALTER TABLE gb.use_limitation
+	ADD CONSTRAINT UQ_use_limitation_name UNIQUE (name)
+;
+ALTER TABLE gb.use_limitation_label
+	ADD CONSTRAINT UQ_use_limitation_label_use_limitation_id_locale UNIQUE (use_limitation_id, locale)
+;
 ALTER TABLE gb.creator ADD CONSTRAINT PK_creator 
-	PRIMARY KEY (id)
-;
-
-
-ALTER TABLE gb.rights ADD CONSTRAINT PK_rights 
-	PRIMARY KEY (id)
-;
-
-
-ALTER TABLE gb.use_limitation ADD CONSTRAINT PK_use_limitation 
-	PRIMARY KEY (id)
-;
-
-
-ALTER TABLE gb.md_format ADD CONSTRAINT PK_md_format 
-	PRIMARY KEY (id)
-;
-
-
-ALTER TABLE gb.subject ADD CONSTRAINT PK_subject 
-	PRIMARY KEY (id)
-;
-
-
-ALTER TABLE gb.status ADD CONSTRAINT PK_status 
-	PRIMARY KEY (id)
-;
-
-
-ALTER TABLE gb.supplier ADD CONSTRAINT PK_supplier 
-	PRIMARY KEY (id)
-;
-
-
-ALTER TABLE gb.type_information_label ADD CONSTRAINT PK_type_information_label 
 	PRIMARY KEY (id)
 ;
 
@@ -279,12 +225,12 @@ ALTER TABLE gb.creator_label ADD CONSTRAINT PK_creator_label
 ;
 
 
-ALTER TABLE gb.rights_label ADD CONSTRAINT PK_rights_label 
+ALTER TABLE gb.md_attachment ADD CONSTRAINT PK_data_attachment 
 	PRIMARY KEY (id)
 ;
 
 
-ALTER TABLE gb.use_limitation_label ADD CONSTRAINT PK_use_limitation_label 
+ALTER TABLE gb.md_format ADD CONSTRAINT PK_md_format 
 	PRIMARY KEY (id)
 ;
 
@@ -294,7 +240,27 @@ ALTER TABLE gb.md_format_label ADD CONSTRAINT PK_md_format_label
 ;
 
 
-ALTER TABLE gb.subject_label ADD CONSTRAINT PK_subject_label 
+ALTER TABLE gb.md_subject ADD CONSTRAINT PK_data_subject 
+	PRIMARY KEY (id)
+;
+
+
+ALTER TABLE gb.metadata ADD CONSTRAINT PK_dataset 
+	PRIMARY KEY (id)
+;
+
+
+ALTER TABLE gb.rights ADD CONSTRAINT PK_rights 
+	PRIMARY KEY (id)
+;
+
+
+ALTER TABLE gb.rights_label ADD CONSTRAINT PK_rights_label 
+	PRIMARY KEY (id)
+;
+
+
+ALTER TABLE gb.status ADD CONSTRAINT PK_status 
 	PRIMARY KEY (id)
 ;
 
@@ -304,7 +270,65 @@ ALTER TABLE gb.status_label ADD CONSTRAINT PK_status_label
 ;
 
 
+ALTER TABLE gb.subject ADD CONSTRAINT PK_subject 
+	PRIMARY KEY (id)
+;
 
+
+ALTER TABLE gb.subject_label ADD CONSTRAINT PK_subject_label 
+	PRIMARY KEY (id)
+;
+
+
+ALTER TABLE gb.supplier ADD CONSTRAINT PK_supplier 
+	PRIMARY KEY (id)
+;
+
+
+ALTER TABLE gb.type_information ADD CONSTRAINT PK_type_information 
+	PRIMARY KEY (id)
+;
+
+
+ALTER TABLE gb.type_information_label ADD CONSTRAINT PK_type_information_label 
+	PRIMARY KEY (id)
+;
+
+
+ALTER TABLE gb.use_limitation ADD CONSTRAINT PK_use_limitation 
+	PRIMARY KEY (id)
+;
+
+
+ALTER TABLE gb.use_limitation_label ADD CONSTRAINT PK_use_limitation_label 
+	PRIMARY KEY (id)
+;
+
+
+
+
+ALTER TABLE gb.creator_label ADD CONSTRAINT FK_creator_label_creator 
+	FOREIGN KEY (creator_id) REFERENCES gb.creator (id)
+;
+
+ALTER TABLE gb.md_attachment ADD CONSTRAINT FK_md_attachment_metadata 
+	FOREIGN KEY (metadata_id) REFERENCES gb.metadata (id)
+ON DELETE CASCADE ON UPDATE CASCADE
+;
+
+ALTER TABLE gb.md_format_label ADD CONSTRAINT FK_md_format_label_md_format 
+	FOREIGN KEY (md_format_id) REFERENCES gb.md_format (id)
+;
+
+ALTER TABLE gb.md_subject ADD CONSTRAINT FK_md_subject_metadata 
+	FOREIGN KEY (metadata_id) REFERENCES gb.metadata (id)
+ON DELETE CASCADE ON UPDATE CASCADE
+;
+
+ALTER TABLE gb.md_subject ADD CONSTRAINT FK_md_subject_subject 
+	FOREIGN KEY (subject) REFERENCES gb.subject (id)
+ON DELETE NO ACTION ON UPDATE NO ACTION
+;
 
 ALTER TABLE gb.metadata ADD CONSTRAINT FK_metadata_creator 
 	FOREIGN KEY (creator) REFERENCES gb.creator (id)
@@ -341,47 +365,24 @@ ALTER TABLE gb.metadata ADD CONSTRAINT FK_metadata_use_limitation
 ON DELETE NO ACTION ON UPDATE NO ACTION
 ;
 
-ALTER TABLE gb.md_attachment ADD CONSTRAINT FK_md_attachment_metadata 
-	FOREIGN KEY (metadata_id) REFERENCES gb.metadata (id)
-ON DELETE CASCADE ON UPDATE CASCADE
-;
-
-ALTER TABLE gb.md_subject ADD CONSTRAINT FK_md_subject_metadata 
-	FOREIGN KEY (metadata_id) REFERENCES gb.metadata (id)
-ON DELETE CASCADE ON UPDATE CASCADE
-;
-
-ALTER TABLE gb.md_subject ADD CONSTRAINT FK_md_subject_subject 
-	FOREIGN KEY (subject) REFERENCES gb.subject (id)
-ON DELETE NO ACTION ON UPDATE NO ACTION
-;
-
-ALTER TABLE gb.type_information_label ADD CONSTRAINT FK_type_information_label_type_information 
-	FOREIGN KEY (type_information_id) REFERENCES gb.type_information (id)
-;
-
-ALTER TABLE gb.creator_label ADD CONSTRAINT FK_creator_label_creator 
-	FOREIGN KEY (creator_id) REFERENCES gb.creator (id)
-;
-
 ALTER TABLE gb.rights_label ADD CONSTRAINT FK_rights_label_rights 
 	FOREIGN KEY (rights_id) REFERENCES gb.rights (id)
 ;
 
-ALTER TABLE gb.use_limitation_label ADD CONSTRAINT FK_use_limitation_label_use_limitation 
-	FOREIGN KEY (use_limitation_id) REFERENCES gb.use_limitation (id)
-;
-
-ALTER TABLE gb.md_format_label ADD CONSTRAINT FK_md_format_label_md_format 
-	FOREIGN KEY (md_format_id) REFERENCES gb.md_format (id)
+ALTER TABLE gb.status_label ADD CONSTRAINT FK_status_label_status 
+	FOREIGN KEY (status_id) REFERENCES gb.status (id)
 ;
 
 ALTER TABLE gb.subject_label ADD CONSTRAINT FK_subject_label_subject 
 	FOREIGN KEY (subject_id) REFERENCES gb.subject (id)
 ;
 
-ALTER TABLE gb.status_label ADD CONSTRAINT FK_status_label_status 
-	FOREIGN KEY (status_id) REFERENCES gb.status (id)
+ALTER TABLE gb.type_information_label ADD CONSTRAINT FK_type_information_label_type_information 
+	FOREIGN KEY (type_information_id) REFERENCES gb.type_information (id)
+;
+
+ALTER TABLE gb.use_limitation_label ADD CONSTRAINT FK_use_limitation_label_use_limitation 
+	FOREIGN KEY (use_limitation_id) REFERENCES gb.use_limitation (id)
 ;
 
 INSERT INTO gb.constants VALUES
@@ -550,27 +551,41 @@ INSERT INTO gb.supplier VALUES
 
 DROP TABLE gb.constants CASCADE
 ;
-DROP TABLE gb.metadata CASCADE
+DROP TABLE gb.creator CASCADE
+;
+DROP TABLE gb.creator_label CASCADE
 ;
 DROP TABLE gb.md_attachment CASCADE
 ;
+DROP TABLE gb.md_format CASCADE
+;
+DROP TABLE gb.md_format_label CASCADE
+;
 DROP TABLE gb.md_subject CASCADE
 ;
-DROP TABLE gb.type_information CASCADE
-;
-DROP TABLE gb.creator CASCADE
+DROP TABLE gb.metadata CASCADE
 ;
 DROP TABLE gb.rights CASCADE
 ;
-DROP TABLE gb.use_limitation CASCADE
-;
-DROP TABLE gb.md_format CASCADE
-;
-DROP TABLE gb.subject CASCADE
+DROP TABLE gb.rights_label CASCADE
 ;
 DROP TABLE gb.status CASCADE
 ;
+DROP TABLE gb.status_label CASCADE
+;
+DROP TABLE gb.subject CASCADE
+;
+DROP TABLE gb.subject_label CASCADE
+;
 DROP TABLE gb.supplier CASCADE
+;
+DROP TABLE gb.type_information CASCADE
+;
+DROP TABLE gb.type_information_label CASCADE
+;
+DROP TABLE gb.use_limitation CASCADE
+;
+DROP TABLE gb.use_limitation_label CASCADE
 ;
 DROP SCHEMA gb CASCADE
 ;

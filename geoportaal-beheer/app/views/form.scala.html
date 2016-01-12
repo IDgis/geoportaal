@@ -1,5 +1,4 @@
-@(create: Boolean, 
-	uuid: String, 
+@(create: Boolean,
 	todayUS: String,
 	todayLocal: String,  
 	datasetRow: com.querydsl.core.Tuple, 
@@ -37,7 +36,9 @@
 		<p class="welkom">* = verplicht</p>
 	</div>
 	
-	@helper.form(action = routes.Add.submit(), 'enctype -> "multipart/form-data", 'class -> "form-horizontal beheer-formulier") {
+	@helper.form(action = if(create) {routes.MetadataDC.createSubmit()} else {
+		routes.MetadataDC.editSubmit(datasetRow.get(metadata.uuid))}, 'enctype -> "multipart/form-data", 
+		'class -> "form-horizontal beheer-formulier") {
 		<div class="form-group">
 			<label class="col-sm-3 control-label">Titel*</label>
 			<div class="col-sm-7">
@@ -94,7 +95,7 @@
 			<label class="col-sm-3 control-label">Unieke ID</label>
 			<div class="col-sm-7">
 				<input class="form-control" type="text" data-toggle="tooltip" data-placement="top" title="De unieke ID van de data" 
-				name="uuid" value="@if(create) {@uuid} else {@datasetRow.get(metadata.uuid)}" readonly>
+				value="@if(create) {De id zal gegenereerd worden...} else {@datasetRow.get(metadata.uuid)}" readonly>
 			</div>
 			<div class="col-sm-2">
 				<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement=top type="button" 
@@ -139,7 +140,7 @@
 			<label class="col-sm-3 control-label">Type informatie</label>
 			<div class="col-sm-7">
 				<select class="form-control" data-toggle="tooltip" data-placement="top" title="Selecteer het type informatie"
-				name="typeInfo">
+				name="typeInformation">
 					@for(typeInformationOption <- typeInformationList) {
 						<option value="@typeInformationOption.get(typeInformation.name)" 
 						@if(!create && datasetRow.get(metadata.typeInformation) == typeInformationOption.get(typeInformation.id)) {selected}>
@@ -161,7 +162,7 @@
 				<select id="js-creator-select" class="form-control" data-toggle="tooltip" data-placement="top" 
 				title="Selecteer de eindverantwoordelijke" name="creator">
 					@for(creatorOption <- creatorList) {
-						<option value="@creatorOption.get(creator.name)" 
+						<option value="@creatorOption.get(creator.name)"
 						@if(!create && datasetRow.get(metadata.creator) == creatorOption.get(creator.id)) {selected}>
 							@creatorOption.get(creatorLabel.label)
 						</option>
@@ -178,7 +179,8 @@
 		<div class="form-group" id="js-other-creator">
 			<label class="col-sm-3 control-label"></label>
 			<div class="col-sm-7">
-				<input id="js-other-creator-input" class="form-control" type="text" placeholder="Voer eindverantwoordelijke van bestand in">
+				<input id="js-other-creator-input" class="form-control" type="text" name="creatorOther" 
+				@if(!create) {value="@datasetRow.get(metadata.creatorOther)"} placeholder="Voer eindverantwoordelijke van bestand in">
 			</div>
 			<div class="col-sm-2">
 				<button class="btn btn-default" data-placement="right">
@@ -230,7 +232,7 @@
 			<label class="col-sm-3 control-label">Formaat</label>
 			<div class="col-sm-7">
 				<select class="form-control" data-toggle="tooltip" data-placement="top" 
-				title="Selecteer het formaat van de data" name="format">
+				title="Selecteer het formaat van de data" name="mdFormat">
 					@for(mdFormatOption <- mdFormatList) {
 						<option value="@mdFormatOption.get(mdFormat.name)"
 						@if(!create && datasetRow.get(metadata.mdFormat) == mdFormatOption.get(mdFormat.id)) {selected}>
@@ -261,7 +263,7 @@
 			</div>
 		</div>
 		<div class="form-group">
-			<label class="col-sm-3 control-label">Datum creatie</label>
+			<label class="col-sm-3 control-label">Datum creatie*</label>
 			<div class="col-sm-4">
 				<input class="form-control js-date" type="date" data-toggle="tooltip" data-placement="top" 
 				title="Vul de datum in wanneer de metadata gemaakt is" id="js-date-creation" name="dateSourceCreation"
@@ -282,8 +284,10 @@
 			<div class="col-sm-4">
 				<input class="form-control js-date" type="date" data-toggle="tooltip"  data-placement="top" 
 				title="Vul de datum in wanneer de metadata gepubliceerd is" id="js-date-publication" name="dateSourcePublication"
-				@if(!create) {data-date-value-US="@sdfUS.format(datasetRow.get(metadata.dateSourcePublication).getTime())"} 
-				@if(!create) {data-date-value-local="@sdfLocal.format(datasetRow.get(metadata.dateSourcePublication).getTime())"}>
+				@if(!create && datasetRow.get(metadata.dateSourcePublication) != null) {
+					data-date-value-US="@sdfUS.format(datasetRow.get(metadata.dateSourcePublication).getTime())"} 
+				@if(!create && datasetRow.get(metadata.dateSourcePublication) != null) {
+					data-date-value-local="@sdfLocal.format(datasetRow.get(metadata.dateSourcePublication).getTime())"}>
 				<input type="hidden" id="js-hidden-date-publication">
 			</div>
 			<div class="col-sm-offset-3 col-sm-2">
@@ -298,8 +302,10 @@
 			<div class="col-sm-4">
 				<input class="form-control js-date" type="date" data-toggle="tooltip" data-placement="top" 
 				title="Vul de datum in wanneer de metadata gewijzigd is" id="js-date-revision" name="dateSourceRevision"
-				@if(!create) {data-date-value-US="@sdfUS.format(datasetRow.get(metadata.dateSourceRevision).getTime())"} 
-				@if(!create) {data-date-value-local="@sdfLocal.format(datasetRow.get(metadata.dateSourceRevision).getTime())"}>
+				@if(!create && datasetRow.get(metadata.dateSourceRevision) != null) {
+					data-date-value-US="@sdfUS.format(datasetRow.get(metadata.dateSourceRevision).getTime())"} 
+				@if(!create && datasetRow.get(metadata.dateSourceRevision) != null) {
+					data-date-value-local="@sdfLocal.format(datasetRow.get(metadata.dateSourceRevision).getTime())"}>
 				<input type="hidden" id="js-hidden-date-revision">
 			</div>
 			<div class="col-sm-offset-3 col-sm-2">
@@ -314,8 +320,10 @@
 			<div class="col-sm-4">
 				<input class="form-control js-date" type="date" data-toggle="tooltip" data-placement="top" 
 				title="Vul de datum in vanaf wanneer de bron geldig is" id="js-date-valid-from" name="dateSourceValidFrom"
-				@if(!create) {data-date-value-US="@sdfUS.format(datasetRow.get(metadata.dateSourceValidFrom).getTime())"} 
-				@if(!create) {data-date-value-local="@sdfLocal.format(datasetRow.get(metadata.dateSourceValidFrom).getTime())"}>
+				@if(!create && datasetRow.get(metadata.dateSourceValidFrom) != null) {
+					data-date-value-US="@sdfUS.format(datasetRow.get(metadata.dateSourceValidFrom).getTime())"} 
+				@if(!create && datasetRow.get(metadata.dateSourceValidFrom) != null) {
+					data-date-value-local="@sdfLocal.format(datasetRow.get(metadata.dateSourceValidFrom).getTime())"}>
 				<input type="hidden" id="js-hidden-date-valid-from">
 			</div>
 			<div class="col-sm-offset-3 col-sm-2">
@@ -330,8 +338,10 @@
 			<div class="col-sm-4">
 				<input class="form-control js-date" type="date" data-toggle="tooltip" data-placement="top" 
 				title="Vul de datum in tot wanneer de bron geldig is" id="js-date-valid-until" name="dateSourceValidUntil"
-				@if(!create) {data-date-value-US="@sdfUS.format(datasetRow.get(metadata.dateSourceValidUntil).getTime())"} 
-				@if(!create) {data-date-value-local="@sdfLocal.format(datasetRow.get(metadata.dateSourceValidUntil).getTime())"}>
+				@if(!create && datasetRow.get(metadata.dateSourceValidUntil) != null) {
+					data-date-value-US="@sdfUS.format(datasetRow.get(metadata.dateSourceValidUntil).getTime())"} 
+				@if(!create && datasetRow.get(metadata.dateSourceValidUntil) != null) {
+					data-date-value-local="@sdfLocal.format(datasetRow.get(metadata.dateSourceValidUntil).getTime())"}>
 				<input type="hidden" id="js-hidden-date-valid-until">
 			</div>
 			<div class="col-sm-offset-3 col-sm-2">
@@ -382,7 +392,7 @@
 		<div class="editor-knoppen">
 			<div class="form-group">
 				<button id="js-save-form" class="knop" type="submit">Opslaan</button>
-				<a class="knop" id="js-cancel-form" href="@routes.Add.cancel()">Annuleren</a>
+				<a class="knop" id="js-cancel-form" href="@routes.MetadataDC.cancel()">Annuleren</a>
 			</div>
 		</div>
 	}

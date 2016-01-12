@@ -1,11 +1,13 @@
 package controllers;
 
+import static models.QMdAttachment.mdAttachment;
 import static models.QMdFormat.mdFormat;
 import static models.QMetadata.metadata;
 import static models.QStatus.status;
 import static models.QSupplier.supplier;
 import static models.QStatusLabel.statusLabel;
 import static models.QMdFormatLabel.mdFormatLabel;
+import static models.QMdSubject.mdSubject;
 
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
@@ -57,12 +59,56 @@ public class Index extends Controller {
     	return ok(views.html.index.render(datasetRows, supplierList, statusList, mdFormatList, sdf));
     }
 	
+	public Result changeStatus(Integer datasetId, String statusStr) {
+		Integer statusKey = db.queryFactory.select(status.id)
+			.from(status)
+			.where(status.name.eq(statusStr))
+			.fetchFirst();
+		
+		db.queryFactory.update(metadata)
+    		.where(metadata.id.eq(datasetId))
+    		.set(metadata.status, statusKey)
+    		.execute();
+    	
+    	return redirect(controllers.routes.Index.index());
+	}
+	
+	public Result changeSupplier(Integer datasetId, String supplierStr) {
+		Integer supplierKey = db.queryFactory.select(supplier.id)
+			.from(supplier)
+			.where(supplier.name.eq(supplierStr))
+			.fetchFirst();
+		
+		db.queryFactory.update(metadata)
+    		.where(metadata.id.eq(datasetId))
+    		.set(metadata.supplier, supplierKey)
+    		.execute();
+    	
+    	return redirect(controllers.routes.Index.index());
+	}
+	
+	public Result deleteMetadata(Integer datasetId) {
+		db.queryFactory.delete(metadata)
+    		.where(metadata.id.eq(datasetId))
+    		.execute();
+    	
+    	db.queryFactory.delete(mdAttachment)
+    		.where(mdAttachment.metadataId.eq(datasetId))
+    		.execute();
+    	
+    	db.queryFactory.delete(mdSubject)
+    		.where(mdSubject.metadataId.eq(datasetId))
+    		.execute();
+		
+		return redirect(controllers.routes.Index.index());
+	}
+	
 	public Result jsRoutes() {
 		return ok (Routes.javascriptRouter ("jsRoutes",
             controllers.routes.javascript.Assets.versioned(),
-			controllers.routes.javascript.Delete.delete(),
-			controllers.routes.javascript.Edit.changeStatus(),
-			controllers.routes.javascript.Edit.changeSupplier()
+			controllers.routes.javascript.Index.deleteMetadata(),
+			controllers.routes.javascript.Index.changeStatus(),
+			controllers.routes.javascript.Index.changeSupplier()
         )).as ("text/javascript");
     }
 }
