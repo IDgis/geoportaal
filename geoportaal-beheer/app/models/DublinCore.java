@@ -12,6 +12,7 @@ public class DublinCore {
 	private String description;
 	private String typeInformation;
 	private String creator;
+	private String creatorOther;
 	private String rights;
 	private String useLimitation;
 	private String mdFormat;
@@ -28,7 +29,7 @@ public class DublinCore {
 	}
 	
 	public DublinCore(String uuid, String location, String fileId, String title, String description, String typeInformation, String creator, 
-			String rights, String useLimitation, String mdFormat, String source, Date dateSourceCreation, Date dateSourcePublication, 
+			String creatorOther, String rights, String useLimitation, String mdFormat, String source, Date dateSourceCreation, Date dateSourcePublication, 
 			Date dateSourceRevision, Date dateSourceValidFrom, Date dateSourceValidUntil, List<String> subject) {
 		super();
 		this.uuid = uuid;
@@ -38,6 +39,7 @@ public class DublinCore {
 		this.description = description;
 		this.typeInformation = typeInformation;
 		this.creator = creator;
+		this.creatorOther = creatorOther;
 		this.rights = rights;
 		this.useLimitation = useLimitation;
 		this.mdFormat = mdFormat;
@@ -94,6 +96,14 @@ public class DublinCore {
 	public void setCreator(String creator) {
 		this.creator = creator;
 	}
+	public String getCreatorOther() {
+		return creatorOther;
+	}
+
+	public void setCreatorOther(String creatorOther) {
+		this.creatorOther = creatorOther;
+	}
+
 	public String getRights() {
 		return rights;
 	}

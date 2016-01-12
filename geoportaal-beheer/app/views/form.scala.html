@@ -161,7 +161,7 @@
 				<select id="js-creator-select" class="form-control" data-toggle="tooltip" data-placement="top" 
 				title="Selecteer de eindverantwoordelijke" name="creator">
 					@for(creatorOption <- creatorList) {
-						<option value="@creatorOption.get(creator.name)" 
+						<option value="@creatorOption.get(creator.name)"
 						@if(!create && datasetRow.get(metadata.creator) == creatorOption.get(creator.id)) {selected}>
 							@creatorOption.get(creatorLabel.label)
 						</option>
@@ -178,7 +178,8 @@
 		<div class="form-group" id="js-other-creator">
 			<label class="col-sm-3 control-label"></label>
 			<div class="col-sm-7">
-				<input id="js-other-creator-input" class="form-control" type="text" placeholder="Voer eindverantwoordelijke van bestand in">
+				<input id="js-other-creator-input" class="form-control" type="text" name="creatorOther" 
+				@if(!create) {value="@datasetRow.get(metadata.creatorOther)"} placeholder="Voer eindverantwoordelijke van bestand in">
 			</div>
 			<div class="col-sm-2">
 				<button class="btn btn-default" data-placement="right">

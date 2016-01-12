@@ -18,6 +18,7 @@ import static models.QUseLimitationLabel.useLimitationLabel;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Timestamp;
@@ -86,7 +87,7 @@ public class Add extends Controller {
 				useLimitationList, mdFormatList, null, null, subjectList));
 	}
 	
-	public Result submit() throws ParseException, IOException {
+	public Result submit() throws IOException {
 		Form<DublinCore> dcForm = Form.form(DublinCore.class);
 		DublinCore dc = dcForm.bindFromRequest().get();
 		
@@ -117,6 +118,13 @@ public class Add extends Controller {
 			.where(mdFormat.name.eq(dc.getMdFormat()))
 			.fetchFirst();
 		
+		String creatorOtherValue;
+		if(!dc.getCreator().equals("other")) {
+			creatorOtherValue = null;
+		} else {
+			creatorOtherValue = dc.getCreatorOther();
+		}
+		
 		db.queryFactory.insert(metadata)
     		.set(metadata.uuid, dc.getUuid())
     		.set(metadata.location, dc.getLocation())
@@ -125,6 +133,7 @@ public class Add extends Controller {
     		.set(metadata.description, dc.getDescription())
     		.set(metadata.typeInformation, typeInformationKey)
     		.set(metadata.creator, creatorKey)
+    		.set(metadata.creatorOther, creatorOtherValue)
     		.set(metadata.rights, rightsKey)
     		.set(metadata.useLimitation, useLimitationKey)
     		.set(metadata.mdFormat, formatKey)

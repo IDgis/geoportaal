@@ -115,16 +115,18 @@ require([
 			domAttr.set(inputAttachment, 'value', '');
 		});
 		
-		var handleOtherCreator = on(dom.byId('js-creator-select'), 'change', function(e) {
+		var creatorSelect = dom.byId('js-creator-select');
+		if(domAttr.get(creatorSelect, 'value') === 'other') {
+			domStyle.set(dom.byId('js-other-creator'), 'display', 'block');
+		} else {
+			domStyle.set(dom.byId('js-other-creator'), 'display', 'none');
+		}
+		
+		var handleOtherCreator = on(creatorSelect, 'change', function(e) {
 			if(domAttr.get(this, 'value') === 'other') {
 				domStyle.set(dom.byId('js-other-creator'), 'display', 'block');
-				domAttr.remove(dom.byId('js-creator-select'), 'name');
-				domAttr.set(dom.byId('js-other-creator-input'), 'name', 'creator');
 			} else {
-				domAttr.set(dom.byId('js-other-creator-input'), 'value', '');
 				domStyle.set(dom.byId('js-other-creator'), 'display', 'none');
-				domAttr.remove(dom.byId('js-other-creator-input'), 'name');
-				domAttr.set(dom.byId('js-creator-select'), 'name', 'creator');
 			}
 		});
 		

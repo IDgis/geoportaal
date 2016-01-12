@@ -3,28 +3,23 @@ package controllers;
 import static models.QCreator.creator;
 import static models.QCreatorLabel.creatorLabel;
 import static models.QMdAttachment.mdAttachment;
-import static models.QMdSubject.mdSubject;
-import static models.QMetadata.metadata;
 import static models.QMdFormat.mdFormat;
 import static models.QMdFormatLabel.mdFormatLabel;
+import static models.QMdSubject.mdSubject;
+import static models.QMetadata.metadata;
 import static models.QRights.rights;
 import static models.QRightsLabel.rightsLabel;
+import static models.QStatus.status;
 import static models.QSubject.subject;
 import static models.QSubjectLabel.subjectLabel;
+import static models.QSupplier.supplier;
 import static models.QTypeInformation.typeInformation;
 import static models.QTypeInformationLabel.typeInformationLabel;
 import static models.QUseLimitation.useLimitation;
 import static models.QUseLimitationLabel.useLimitationLabel;
-import static models.QStatus.status;
-import static models.QSupplier.supplier;
 
-import java.io.ByteArrayInputStream;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 
 import javax.inject.Inject;
 
@@ -45,8 +40,12 @@ public class Edit extends Controller {
 				.where(metadata.uuid.eq(datasetUuid))
 				.fetchFirst();
 		
-		Tuple datasetRow = db.queryFactory.select(metadata.all())
+		Tuple datasetRow = db.queryFactory.select(metadata.id, metadata.uuid, metadata.location, metadata.fileId, metadata.title, 
+				metadata.description, metadata.typeInformation, metadata.creator, metadata.creatorOther, metadata.rights, metadata.useLimitation,
+				metadata.mdFormat, metadata.source, metadata.dateSourceCreation, metadata.dateSourcePublication, metadata.dateSourceRevision,
+				metadata.dateSourceValidFrom, metadata.dateSourceValidUntil, creator.name)
     			.from(metadata)
+    			.join(creator).on(metadata.creator.eq(creator.id))
     			.where(metadata.id.eq(datasetId))
     			.fetchFirst();
     	
