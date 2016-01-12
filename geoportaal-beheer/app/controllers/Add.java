@@ -90,6 +90,7 @@ public class Add extends Controller {
 		Form<DublinCore> dcForm = Form.form(DublinCore.class);
 		DublinCore dc = dcForm.bindFromRequest().get();
 		
+		String uuid = UUID.randomUUID().toString();
 		Timestamp dateToday = new Timestamp(new Date().getTime());
 		
 		Integer typeInformationKey = db.queryFactory.select(typeInformation.id)
@@ -124,7 +125,11 @@ public class Add extends Controller {
 			creatorOtherValue = dc.getCreatorOther();
 		}
 		
-		String uuid = UUID.randomUUID().toString();
+		Timestamp dateSourceCreationValue = nullCheckDate(dc.getDateSourceCreation());
+		Timestamp dateSourcePublicationValue = nullCheckDate(dc.getDateSourcePublication());
+		Timestamp dateSourceRevisionValue = nullCheckDate(dc.getDateSourceRevision());
+		Timestamp dateSourceValidFromValue = nullCheckDate(dc.getDateSourceValidFrom());
+		Timestamp dateSourceValidUntilValue = nullCheckDate(dc.getDateSourceValidUntil());
 		
 		db.queryFactory.insert(metadata)
     		.set(metadata.uuid, uuid)
@@ -139,11 +144,11 @@ public class Add extends Controller {
     		.set(metadata.useLimitation, useLimitationKey)
     		.set(metadata.mdFormat, formatKey)
     		.set(metadata.source, dc.getSource())
-    		.set(metadata.dateSourceCreation, new Timestamp(dc.getDateSourceCreation().getTime()))
-    		.set(metadata.dateSourcePublication, new Timestamp(dc.getDateSourcePublication().getTime()))
-    		.set(metadata.dateSourceRevision, new Timestamp(dc.getDateSourceRevision().getTime()))
-    		.set(metadata.dateSourceValidFrom, new Timestamp(dc.getDateSourceValidFrom().getTime()))
-    		.set(metadata.dateSourceValidUntil, new Timestamp(dc.getDateSourceValidUntil().getTime()))
+    		.set(metadata.dateSourceCreation, dateSourceCreationValue)
+    		.set(metadata.dateSourcePublication, dateSourcePublicationValue)
+    		.set(metadata.dateSourceRevision, dateSourceRevisionValue)
+    		.set(metadata.dateSourceValidFrom, dateSourceValidFromValue)
+    		.set(metadata.dateSourceValidUntil, dateSourceValidUntilValue)
     		.set(metadata.supplier, 1)
     		.set(metadata.status, 2)
     		.set(metadata.published, false)
@@ -200,6 +205,18 @@ public class Add extends Controller {
 		}
 		
 		return redirect(controllers.routes.Index.index());
+	}
+	
+	public Timestamp nullCheckDate(Date date) {
+		Timestamp timestamp;
+		
+		if(date == null) {
+			timestamp = null;
+		} else {
+			timestamp = new Timestamp(date.getTime());
+		}
+		
+		return timestamp;
 	}
 	
 	public Result cancel() {

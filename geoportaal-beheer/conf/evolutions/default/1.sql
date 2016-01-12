@@ -71,7 +71,7 @@ CREATE TABLE gb.metadata (
 	use_limitation integer NOT NULL,
 	md_format integer,
 	source varchar(50),
-	date_source_creation timestamp,
+	date_source_creation timestamp NOT NULL,
 	date_source_publication timestamp,
 	date_source_revision timestamp,
 	date_source_valid_from timestamp,
