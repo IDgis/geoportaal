@@ -31,7 +31,7 @@ import play.mvc.Result;
 public class Edit extends Controller {
 	@Inject Database db;
 	
-	public Result edit(String datasetUuid) {
+	public Result renderEditForm(String datasetUuid) {
 		Boolean create = false;
 		
 		Integer datasetId = db.queryFactory

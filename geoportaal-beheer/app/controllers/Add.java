@@ -18,11 +18,9 @@ import static models.QUseLimitationLabel.useLimitationLabel;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Timestamp;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -41,7 +39,7 @@ import play.mvc.Result;
 public class Add extends Controller {
 	@Inject Database db;
 	
-	public Result add() {
+	public Result renderCreateForm() {
 		Boolean create = true;
 		String todayUS = new SimpleDateFormat("yyyy-MM-dd").format(new Date().getTime());
 		String todayLocal = new SimpleDateFormat("dd-MM-yyyy").format(new Date().getTime());
@@ -86,7 +84,7 @@ public class Add extends Controller {
 				useLimitationList, mdFormatList, null, null, subjectList));
 	}
 	
-	public Result submit() throws IOException {
+	public Result createSubmit() throws IOException {
 		Form<DublinCore> dcForm = Form.form(DublinCore.class);
 		DublinCore dc = dcForm.bindFromRequest().get();
 		

@@ -36,7 +36,7 @@
 		<p class="welkom">* = verplicht</p>
 	</div>
 	
-	@helper.form(action = routes.Add.submit(), 'enctype -> "multipart/form-data", 'class -> "form-horizontal beheer-formulier") {
+	@helper.form(action = routes.Add.createSubmit(), 'enctype -> "multipart/form-data", 'class -> "form-horizontal beheer-formulier") {
 		<div class="form-group">
 			<label class="col-sm-3 control-label">Titel*</label>
 			<div class="col-sm-7">
