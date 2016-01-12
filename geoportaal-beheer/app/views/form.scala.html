@@ -36,7 +36,7 @@
 		<p class="welkom">* = verplicht</p>
 	</div>
 	
-	@helper.form(action = routes.Add.createSubmit(), 'enctype -> "multipart/form-data", 'class -> "form-horizontal beheer-formulier") {
+	@helper.form(action = routes.MetadataDC.createSubmit(), 'enctype -> "multipart/form-data", 'class -> "form-horizontal beheer-formulier") {
 		<div class="form-group">
 			<label class="col-sm-3 control-label">Titel*</label>
 			<div class="col-sm-7">
@@ -282,8 +282,10 @@
 			<div class="col-sm-4">
 				<input class="form-control js-date" type="date" data-toggle="tooltip"  data-placement="top" 
 				title="Vul de datum in wanneer de metadata gepubliceerd is" id="js-date-publication" name="dateSourcePublication"
-				@if(!create) {data-date-value-US="@sdfUS.format(datasetRow.get(metadata.dateSourcePublication).getTime())"} 
-				@if(!create) {data-date-value-local="@sdfLocal.format(datasetRow.get(metadata.dateSourcePublication).getTime())"}>
+				@if(!create && datasetRow.get(metadata.dateSourcePublication) != null) {
+					data-date-value-US="@sdfUS.format(datasetRow.get(metadata.dateSourcePublication).getTime())"} 
+				@if(!create && datasetRow.get(metadata.dateSourcePublication) != null) {
+					data-date-value-local="@sdfLocal.format(datasetRow.get(metadata.dateSourcePublication).getTime())"}>
 				<input type="hidden" id="js-hidden-date-publication">
 			</div>
 			<div class="col-sm-offset-3 col-sm-2">
@@ -298,8 +300,10 @@
 			<div class="col-sm-4">
 				<input class="form-control js-date" type="date" data-toggle="tooltip" data-placement="top" 
 				title="Vul de datum in wanneer de metadata gewijzigd is" id="js-date-revision" name="dateSourceRevision"
-				@if(!create) {data-date-value-US="@sdfUS.format(datasetRow.get(metadata.dateSourceRevision).getTime())"} 
-				@if(!create) {data-date-value-local="@sdfLocal.format(datasetRow.get(metadata.dateSourceRevision).getTime())"}>
+				@if(!create && datasetRow.get(metadata.dateSourceRevision) != null) {
+					data-date-value-US="@sdfUS.format(datasetRow.get(metadata.dateSourceRevision).getTime())"} 
+				@if(!create && datasetRow.get(metadata.dateSourceRevision) != null) {
+					data-date-value-local="@sdfLocal.format(datasetRow.get(metadata.dateSourceRevision).getTime())"}>
 				<input type="hidden" id="js-hidden-date-revision">
 			</div>
 			<div class="col-sm-offset-3 col-sm-2">
@@ -314,8 +318,10 @@
 			<div class="col-sm-4">
 				<input class="form-control js-date" type="date" data-toggle="tooltip" data-placement="top" 
 				title="Vul de datum in vanaf wanneer de bron geldig is" id="js-date-valid-from" name="dateSourceValidFrom"
-				@if(!create) {data-date-value-US="@sdfUS.format(datasetRow.get(metadata.dateSourceValidFrom).getTime())"} 
-				@if(!create) {data-date-value-local="@sdfLocal.format(datasetRow.get(metadata.dateSourceValidFrom).getTime())"}>
+				@if(!create && datasetRow.get(metadata.dateSourceValidFrom) != null) {
+					data-date-value-US="@sdfUS.format(datasetRow.get(metadata.dateSourceValidFrom).getTime())"} 
+				@if(!create && datasetRow.get(metadata.dateSourceValidFrom) != null) {
+					data-date-value-local="@sdfLocal.format(datasetRow.get(metadata.dateSourceValidFrom).getTime())"}>
 				<input type="hidden" id="js-hidden-date-valid-from">
 			</div>
 			<div class="col-sm-offset-3 col-sm-2">
@@ -330,8 +336,10 @@
 			<div class="col-sm-4">
 				<input class="form-control js-date" type="date" data-toggle="tooltip" data-placement="top" 
 				title="Vul de datum in tot wanneer de bron geldig is" id="js-date-valid-until" name="dateSourceValidUntil"
-				@if(!create) {data-date-value-US="@sdfUS.format(datasetRow.get(metadata.dateSourceValidUntil).getTime())"} 
-				@if(!create) {data-date-value-local="@sdfLocal.format(datasetRow.get(metadata.dateSourceValidUntil).getTime())"}>
+				@if(!create && datasetRow.get(metadata.dateSourceValidUntil) != null) {
+					data-date-value-US="@sdfUS.format(datasetRow.get(metadata.dateSourceValidUntil).getTime())"} 
+				@if(!create && datasetRow.get(metadata.dateSourceValidUntil) != null) {
+					data-date-value-local="@sdfLocal.format(datasetRow.get(metadata.dateSourceValidUntil).getTime())"}>
 				<input type="hidden" id="js-hidden-date-valid-until">
 			</div>
 			<div class="col-sm-offset-3 col-sm-2">
@@ -382,7 +390,7 @@
 		<div class="editor-knoppen">
 			<div class="form-group">
 				<button id="js-save-form" class="knop" type="submit">Opslaan</button>
-				<a class="knop" id="js-cancel-form" href="@routes.Add.cancel()">Annuleren</a>
+				<a class="knop" id="js-cancel-form" href="@routes.MetadataDC.cancel()">Annuleren</a>
 			</div>
 		</div>
 	}

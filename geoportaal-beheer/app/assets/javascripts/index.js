@@ -43,7 +43,7 @@ require([
 			array.forEach(recordsChecked, function(item) {
 				var datasetId = domAttr.get(item, 'data-id');
 				
-				xhr(jsRoutes.controllers.Delete.delete(datasetId).url)
+				xhr(jsRoutes.controllers.Index.deleteMetadata(datasetId).url)
 					.then(function() {
 						document.location.reload();
 					});
@@ -58,7 +58,7 @@ require([
 			array.forEach(recordsChecked, function(item) {
 				var datasetId = domAttr.get(item, 'data-id');
 				
-				xhr(jsRoutes.controllers.Edit.changeStatus(datasetId, status).url)
+				xhr(jsRoutes.controllers.Index.changeStatus(datasetId, status).url)
 					.then(function() {
 						document.location.reload();
 					});
@@ -77,7 +77,7 @@ require([
 			array.forEach(recordsChecked, function(item) {
 				var datasetId = domAttr.get(item, 'data-id');
 				
-				xhr(jsRoutes.controllers.Edit.changeSupplier(datasetId, supplier).url)
+				xhr(jsRoutes.controllers.Index.changeSupplier(datasetId, supplier).url)
 					.then(function() {
 						document.location.reload();
 					});
