@@ -11,26 +11,29 @@ apt-get -qy update
 apt-get -qy install \
 	byobu \
 	wget \
+	lftp \
 	zookeeper \
 	zookeeper-bin \
 	zookeeperd \
-	maven
-	# docker-engine
+	maven \
+	docker-engine \
+	db-util \
+	vsftpd
 apt-get -qy upgrade
 
 # Configure the docker daemon:
-# cp /vagrant/scripts/docker-settings /etc/default/docker
-# mkdir -p /etc/systemd/system/docker.service.d
-# cp /vagrant/scripts/docker.conf /etc/systemd/system/docker.service.d/
+  cp /vagrant/geoportaal/scripts/docker-settings /etc/default/docker
+  mkdir -p /etc/systemd/system/docker.service.d
+  cp /vagrant/geoportaal/scripts/docker.conf /etc/systemd/system/docker.service.d/
 
-# systemctl daemon-reload
-# service docker restart
+  systemctl daemon-reload
+  service docker restart
 
-# cp /vagrant/scripts/docker-env.sh /etc/profile.d/
+  cp /vagrant/geoportaal/scripts/docker-env.sh /etc/profile.d/
 
 # Install docker compose:
-# curl -L https://github.com/docker/compose/releases/download/1.5.2/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
-# chmod a+x /usr/local/bin/docker-compose
+  curl -L https://github.com/docker/compose/releases/download/1.5.2/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
+  chmod a+x /usr/local/bin/docker-compose
 
 # Setup zookeeper and exhibitor: 
 if [[ ! -e /opt/exhibitor ]]; then
@@ -91,3 +94,20 @@ if [ $(sudo -u postgres psql --list -qA | grep geoportaal-beheer | wc -l) -eq 0 
 	
 	sudo -u postgres createdb -l en_US.UTF-8 -E UTF-8 geoportaal-beheer
 fi
+
+# Install a FTP server and configure it:
+sudo cp /vagrant/geoportaal/scripts/vsftpd.conf /etc/vsftpd.conf
+mkdir /etc/vsftpd
+cd /etc/vsftpd
+echo user >> vusers.txt
+echo password >> vusers.txt
+db_load -T -t hash -f vusers.txt vsftpd-virtual-user.db
+chmod 600 vsftpd-virtual-user.db
+rm vusers.txt
+touch /etc/pam.d/vsftpd.virtual
+echo auth       required     pam_userdb.so db=/etc/vsftpd/vsftpd-virtual-user >> /etc/pam.d/vsftpd.virtual
+echo account    required     pam_userdb.so db=/etc/vsftpd/vsftpd-virtual-user >> /etc/pam.d/vsftpd.virtual
+echo session    required     pam_loginuid.so >> /etc/pam.d/vsftpd.virtual
+mkdir -p /home/vftp/user
+chown -R ftp:ftp /home/vftp
+service vsftpd restart
