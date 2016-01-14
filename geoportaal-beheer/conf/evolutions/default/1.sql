@@ -98,6 +98,12 @@ CREATE TABLE gb.rights_label (
 )
 ;
 
+CREATE TABLE gb.role ( 
+	id serial NOT NULL,
+	role varchar(20) NOT NULL
+)
+;
+
 CREATE TABLE gb.status ( 
 	id serial NOT NULL,
 	name varchar(20) NOT NULL
@@ -160,6 +166,14 @@ CREATE TABLE gb.use_limitation_label (
 )
 ;
 
+CREATE TABLE gb.user ( 
+	id serial NOT NULL,
+	username varchar(20) NOT NULL,
+	password varchar(20) NOT NULL,
+	role_id integer NOT NULL
+)
+;
+
 
 ALTER TABLE gb.creator
 	ADD CONSTRAINT UQ_creator_name UNIQUE (name)
@@ -188,6 +202,9 @@ ALTER TABLE gb.rights
 ALTER TABLE gb.rights_label
 	ADD CONSTRAINT UQ_rights_label_rights_id_locale UNIQUE (rights_id, locale)
 ;
+ALTER TABLE gb.role
+	ADD CONSTRAINT UQ_role_role UNIQUE (role)
+;
 ALTER TABLE gb.status
 	ADD CONSTRAINT UQ_status_name UNIQUE (name)
 ;
@@ -214,6 +231,9 @@ ALTER TABLE gb.use_limitation
 ;
 ALTER TABLE gb.use_limitation_label
 	ADD CONSTRAINT UQ_use_limitation_label_use_limitation_id_locale UNIQUE (use_limitation_id, locale)
+;
+ALTER TABLE gb.user
+	ADD CONSTRAINT UQ_user_username_password UNIQUE (username, password)
 ;
 ALTER TABLE gb.creator ADD CONSTRAINT PK_creator 
 	PRIMARY KEY (id)
@@ -260,6 +280,11 @@ ALTER TABLE gb.rights_label ADD CONSTRAINT PK_rights_label
 ;
 
 
+ALTER TABLE gb.role ADD CONSTRAINT PK_role 
+	PRIMARY KEY (id)
+;
+
+
 ALTER TABLE gb.status ADD CONSTRAINT PK_status 
 	PRIMARY KEY (id)
 ;
@@ -301,6 +326,11 @@ ALTER TABLE gb.use_limitation ADD CONSTRAINT PK_use_limitation
 
 
 ALTER TABLE gb.use_limitation_label ADD CONSTRAINT PK_use_limitation_label 
+	PRIMARY KEY (id)
+;
+
+
+ALTER TABLE gb.user ADD CONSTRAINT PK_user 
 	PRIMARY KEY (id)
 ;
 
@@ -383,6 +413,10 @@ ALTER TABLE gb.type_information_label ADD CONSTRAINT FK_type_information_label_t
 
 ALTER TABLE gb.use_limitation_label ADD CONSTRAINT FK_use_limitation_label_use_limitation 
 	FOREIGN KEY (use_limitation_id) REFERENCES gb.use_limitation (id)
+;
+
+ALTER TABLE gb.user ADD CONSTRAINT FK_user_role 
+	FOREIGN KEY (role_id) REFERENCES gb.role (id)
 ;
 
 INSERT INTO gb.constants VALUES
@@ -545,7 +579,13 @@ INSERT INTO gb.supplier VALUES
 	(1, 'Nienhuis'),
 	(2, 'Eilers'),
 	(3, 'Jurjens');
-
+	
+INSERT INTO gb.role VALUES
+	(1, 'admin'),
+	(2, 'supplier');
+	
+INSERT INTO gb.user VALUES
+	(1, 'Nienhuis', 'Nienhuis', 1);
 	
 # --- !Downs
 
@@ -569,6 +609,8 @@ DROP TABLE gb.rights CASCADE
 ;
 DROP TABLE gb.rights_label CASCADE
 ;
+DROP TABLE gb.role CASCADE
+;
 DROP TABLE gb.status CASCADE
 ;
 DROP TABLE gb.status_label CASCADE
@@ -586,6 +628,8 @@ DROP TABLE gb.type_information_label CASCADE
 DROP TABLE gb.use_limitation CASCADE
 ;
 DROP TABLE gb.use_limitation_label CASCADE
+;
+DROP TABLE gb.user CASCADE
 ;
 DROP SCHEMA gb CASCADE
 ;
