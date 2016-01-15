@@ -169,7 +169,7 @@ CREATE TABLE gb.use_limitation_label (
 CREATE TABLE gb.user ( 
 	id serial NOT NULL,
 	username varchar(20) NOT NULL,
-	password varchar(20) NOT NULL,
+	password varchar(60) NOT NULL,
 	role_id integer NOT NULL
 )
 ;
@@ -585,7 +585,7 @@ INSERT INTO gb.role VALUES
 	(2, 'supplier');
 	
 INSERT INTO gb.user VALUES
-	(1, 'Nienhuis', 'Nienhuis', 1);
+	(1, 'Nienhuis', '$2a$10$E2aoL9BSQf8gvOBXZeFEiuyUWASnm8alqRnnI7Pt7dIKulzBqve9q', 1);
 	
 # --- !Downs
 
