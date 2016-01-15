@@ -1,5 +1,14 @@
 package controllers;
 
+import static models.QUser.user;
+import static models.QRole.role1;
+
+import java.util.List;
+
+import javax.inject.Inject;
+
+import com.querydsl.core.Tuple;
+
 import play.Play;
 import play.data.Form;
 import play.mvc.Controller;
@@ -8,10 +17,8 @@ import play.mvc.Result;
 import play.data.validation.Constraints;
 
 public class User extends Controller {
+	@Inject Database db;
 	
-	private static String configUsername = Play.application().configuration().getString("geoportaal.admin.username");
-	private static String configPassword = Play.application().configuration().getString("geoportaal.admin.password");
-
 	public Result login (final String r) {
 		final Form<Login> loginForm = Form.form(Login.class).fill(new Login(r));
 		
@@ -20,6 +27,9 @@ public class User extends Controller {
 	
 	public Result authenticate() {
 		final Form<Login> loginForm = Form.form(Login.class).bindFromRequest ();
+		System.out.println("autenthicate");
+		
+		validate(loginForm);
 		
 		if (loginForm.hasErrors()) {
 			return badRequest(views.html.login.render(loginForm));
@@ -32,6 +42,18 @@ public class User extends Controller {
 			} else {
 				return redirect(routes.Index.index ());
 			}
+		}
+	}
+	
+	public void validate(Form<Login> loginForm) {		
+		String dbPassword = db.queryFactory
+			.select(user.password)
+			.from(user)
+			.where(user.username.eq(loginForm.get().username))
+			.fetchOne();
+		
+		if(dbPassword == null || !dbPassword.equals(loginForm.get().password)) {
+			loginForm.reject("Ongeldige gebruikersnaam of wachtwoord");
 		}
 	}
 	
@@ -55,7 +77,7 @@ public class User extends Controller {
 			this.returnUrl = returnUrl;
 		}
 
-		public String getUsername() {
+		public String getUsername() {			
 			return username;
 		}
 
@@ -77,14 +99,6 @@ public class User extends Controller {
 
 		public void setReturnUrl(final String returnUrl) {
 			this.returnUrl = returnUrl;
-		}
-		
-		public String validate() {
-			if (!configUsername.equals(username) || !configPassword.equals(password)) {
-				return "Ongeldige gebruikersnaam of wachtwoord";
-			}
-			
-			return null;
 		}
 	}
 }
