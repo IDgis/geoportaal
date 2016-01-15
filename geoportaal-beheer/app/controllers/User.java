@@ -7,6 +7,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
 import com.querydsl.core.Tuple;
 
 import play.Play;
@@ -51,7 +53,8 @@ public class User extends Controller {
 			.where(user.username.eq(loginForm.get().username))
 			.fetchOne();
 		
-		if(dbPassword == null || !dbPassword.equals(loginForm.get().password)) {
+		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+		if(dbPassword == null || !encoder.matches(loginForm.get().password, dbPassword)) {
 			loginForm.reject("Ongeldige gebruikersnaam of wachtwoord");
 		}
 	}
