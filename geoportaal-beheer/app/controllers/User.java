@@ -27,7 +27,6 @@ public class User extends Controller {
 	
 	public Result authenticate() {
 		final Form<Login> loginForm = Form.form(Login.class).bindFromRequest ();
-		System.out.println("autenthicate");
 		
 		validate(loginForm);
 		
