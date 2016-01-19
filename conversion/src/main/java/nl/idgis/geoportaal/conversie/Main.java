@@ -31,7 +31,7 @@ public class Main {
 		File xmlDirectory = getFileFromArray(args);
 		File csvFile = new File(new File(OUTPUT_DIR) + "/csv_overview.csv");
 		BufferedWriter writer = new BufferedWriter(new FileWriter(csvFile), 2048);
-		final String header = "\"title\";\"creator\";\"subject\";\"description\";\"publisher\";\"contributor\";\"date\";\"issued\";\"valid_start\";\"valid_end\";\"type\";\"format\";\"identifier\";\"references\";\"relation (id)\";\"source\";\"language\";\"relation (attachment)\";\"rights\";\"temporal_start\";\"temportal_end\";\"bbox_lowercorner\";\"bbox_uppercorner\"";
+		final String header = "\"title\";\"creator\";\"subject\";\"description\";\"publisher\";\"contributor\";\"date\";\"issued\";\"valid_start\";\"valid_end\";\"type\";\"format\";\"identifier\";\"references\";\"relation_id\";\"source\";\"language\";\"relation_attachment\";\"rights\";\"temporal_start\";\"temportal_end\";\"bbox_lowercorner\";\"bbox_uppercorner\"";
 		writer.write(header);
 		
 		int i = 0;
