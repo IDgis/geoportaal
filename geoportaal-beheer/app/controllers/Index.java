@@ -104,7 +104,7 @@ public class Index extends Controller {
 	}
 	
 	public Result search() {
-		return ok();
+		return redirect(controllers.routes.Index.index());
 	}
 	
 	public Result jsRoutes() {
