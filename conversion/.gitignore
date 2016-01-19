@@ -1,0 +1,8 @@
+bin
+build
+csv
+csvfiles
+/.gradle
+/.classpath
+/.project
+/.settings
