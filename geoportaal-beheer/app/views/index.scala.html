@@ -17,7 +17,8 @@
 	<div class="welkom">
 		<p>Hier kunt u naar metadata records zoeken en veranderingen doorvoeren.</p>
 	</div>
-	<form class="form-horizontal" method="get">
+	
+	@helper.form(action = routes.Index.search(), 'class -> "form-horizontal") {
 		<div class="form-group">
 			<label class="col-sm-3 control-label">Tekst</label>
 			<div class="col-sm-8">
@@ -79,7 +80,7 @@
  				<a class="knop" id="help-button">Help</a>
 			</div>
 		</div>
-	</form>
+	}
 	<div class="alle-records">
 		<input type="checkbox" class="checkalles">
 		<span>Alle records selecteren</span>

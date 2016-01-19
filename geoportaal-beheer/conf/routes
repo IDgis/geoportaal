@@ -15,6 +15,7 @@ GET		/editStatus/:datasetId		controllers.Index.changeStatus(datasetId: Integer, 
 GET		/editSupplier/:datasetId	controllers.Index.changeSupplier(datasetId: Integer, supplier: String)
 GET		/cancel						controllers.MetadataDC.cancel()
 GET		/delete/:datasetId			controllers.Index.deleteMetadata(datasetId: Integer)
+POST	/search						controllers.Index.search()
 GET		/routes.js					controllers.Index.jsRoutes()
 
 # Map static resources from the /public folder to the /assets URL path

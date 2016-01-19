@@ -103,6 +103,10 @@ public class Index extends Controller {
 		return redirect(controllers.routes.Index.index());
 	}
 	
+	public Result search() {
+		return ok();
+	}
+	
 	public Result jsRoutes() {
 		return ok (Routes.javascriptRouter ("jsRoutes",
             controllers.routes.javascript.Assets.versioned(),
