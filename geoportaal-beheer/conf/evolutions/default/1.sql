@@ -578,14 +578,36 @@ INSERT INTO gb.status_label VALUES
 INSERT INTO gb.supplier VALUES
 	(1, 'Nienhuis'),
 	(2, 'Eilers'),
-	(3, 'Jurjens');
+	(3, 'Jurjens'),
+	(4, 'Nicolaij'),
+	(5, 'Weijmer'),
+	(6, 'Kalter'),
+	(7, 'Vilsteren'),
+	(8, 'Hoekstra'),
+	(9, 'Maarse'),
+	(10, 'Zandman'),
+	(11, 'Veen'),
+	(12, 'KetsBolkestein'),
+	(13, 'Anker');
 	
 INSERT INTO gb.role VALUES
 	(1, 'admin'),
 	(2, 'supplier');
 	
 INSERT INTO gb.user VALUES
-	(1, 'Nienhuis', '$2a$10$E2aoL9BSQf8gvOBXZeFEiuyUWASnm8alqRnnI7Pt7dIKulzBqve9q', 1);
+	(1, 'Nienhuis', '$2a$10$E2aoL9BSQf8gvOBXZeFEiuyUWASnm8alqRnnI7Pt7dIKulzBqve9q', 1),
+	(2, 'Eilers', '$2a$10$tyCR5vfddnQ7DV3AeK9Y1OmrRo5S0SW73qDLJR033cC57CuPCxJ6C', 1),
+	(3, 'Jurjens', '$2a$10$UL0PEAhtYzfjVJ168wxjWOZHcHUZ5rtj82PbnOl8Va7mvlAUPlF.W', 1),
+	(4, 'Nicolaij', '$2a$10$8cvwrHkmYDkrFyV2FcocdOFCWkq/sel2YipoBKf3xB6afrj8uq962', 2),
+	(5, 'Weijmer', '$2a$10$0TZYHNnnwYdl4Azj/kZ0/u8B8sOeOK1nJ17DS3odUVKw49eCvub5i', 2),
+	(6, 'Kalter', '$2a$10$6lPZ7Dud5J3pUETD9jTbJ.qW1Mki/rImd7iNh5U7xK/L463UG1.wS', 1),
+	(7, 'Vilsteren', '$2a$10$kcLKUlrT2Ddm2SfBOZLVRO3/7hz7/8MG4ajMj3W96EajcZRqCHjiS', 2),
+	(8, 'Hoekstra', '$2a$10$L.aOMzcY6yEwFKDTgIoZk.zErwhwS9uiZKglk/rARJGk8kFZyUeca', 2),
+	(9, 'Maarse', '$2a$10$eonNUq5KLTJTMgCSEPrTkuqnlSbS6U0QKe4VMrQcnJ3KpV.ljrEnG', 2),
+	(10, 'Zandman', '$2a$10$HOooPnYyhIU.dTKm8BiPjumkVS8nyOirXSDElvG.h0Ea93uj5AWHi', 2),
+	(11, 'Veen', '$2a$10$o0F/yi/MEMdJG0MUL3cNvuUd9lzP/Hocz42jg9cPYvoyBKdNOy4km', 2),
+	(12, 'KetsBolkestein', '$2a$10$a7bfS2yWqT8cxq26IuuXIOnfR/ryOMkQxtK9XD4kc8U6N/pGYJ9dO', 2),
+	(13, 'Anker', '$2a$10$OypC58a8.JIknUqX6se64ON4EcoyGlLz4oxRVgZ0mSjq4cwaSPeCC', 2);
 	
 # --- !Downs
 

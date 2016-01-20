@@ -11,6 +11,7 @@ import static models.QRights.rights;
 import static models.QRightsLabel.rightsLabel;
 import static models.QSubject.subject;
 import static models.QSubjectLabel.subjectLabel;
+import static models.QSupplier.supplier;
 import static models.QTypeInformation.typeInformation;
 import static models.QTypeInformationLabel.typeInformationLabel;
 import static models.QUseLimitation.useLimitation;
@@ -129,6 +130,11 @@ public class MetadataDC extends Controller {
 		Timestamp dateSourceValidFromValue = nullCheckDate(dc.getDateSourceValidFrom());
 		Timestamp dateSourceValidUntilValue = nullCheckDate(dc.getDateSourceValidUntil());
 		
+		Integer supplierId = db.queryFactory.select(supplier.id)
+			.from(supplier)
+			.where(supplier.name.eq(session("username")))
+			.fetchFirst();
+		
 		db.queryFactory.insert(metadata)
     		.set(metadata.uuid, uuid)
     		.set(metadata.location, dc.getLocation())
@@ -147,7 +153,7 @@ public class MetadataDC extends Controller {
     		.set(metadata.dateSourceRevision, dateSourceRevisionValue)
     		.set(metadata.dateSourceValidFrom, dateSourceValidFromValue)
     		.set(metadata.dateSourceValidUntil, dateSourceValidUntilValue)
-    		.set(metadata.supplier, 1)
+    		.set(metadata.supplier, supplierId)
     		.set(metadata.status, 2)
     		.set(metadata.published, false)
     		.set(metadata.lastRevisionUser, session("username"))
