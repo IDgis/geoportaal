@@ -186,7 +186,10 @@ public class Index extends Controller {
     	SimpleDateFormat sdfUS = new SimpleDateFormat("yyyy-MM-dd");
         SimpleDateFormat sdfLocal = new SimpleDateFormat("dd-MM-yyyy");
         
-        Timestamp resetTimestampEndSearch = new Timestamp(dateEndSearch.getTime());
+        Timestamp resetTimestampEndSearch = null;
+        if(dateEndSearch != null) {
+        	resetTimestampEndSearch = new Timestamp(dateEndSearch.getTime());
+        }
     	
 		return ok(views.html.index.render(datasetRows, supplierList, statusList, mdFormatList, sdfUS, sdfLocal, textSearch, 
 				supplierSearch, statusSearch, mdFormatSearch, timestampStartSearch, resetTimestampEndSearch));
