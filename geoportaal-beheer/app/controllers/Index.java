@@ -198,7 +198,8 @@ public class Index extends Controller {
 	public Result jsRoutes() {
 		return ok (Routes.javascriptRouter ("jsRoutes",
             controllers.routes.javascript.Assets.versioned(),
-			controllers.routes.javascript.Index.deleteMetadata(),
+            controllers.routes.javascript.Index.index(),
+            controllers.routes.javascript.Index.deleteMetadata(),
 			controllers.routes.javascript.Index.changeStatus(),
 			controllers.routes.javascript.Index.changeSupplier()
         )).as ("text/javascript");
