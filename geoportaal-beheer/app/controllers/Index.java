@@ -186,7 +186,10 @@ public class Index extends Controller {
     	SimpleDateFormat sdfUS = new SimpleDateFormat("yyyy-MM-dd");
         SimpleDateFormat sdfLocal = new SimpleDateFormat("dd-MM-yyyy");
         
-        Timestamp resetTimestampEndSearch = new Timestamp(dateEndSearch.getTime());
+        Timestamp resetTimestampEndSearch = null;
+        if(dateEndSearch != null) {
+        	resetTimestampEndSearch = new Timestamp(dateEndSearch.getTime());
+        }
     	
 		return ok(views.html.index.render(datasetRows, supplierList, statusList, mdFormatList, sdfUS, sdfLocal, textSearch, 
 				supplierSearch, statusSearch, mdFormatSearch, timestampStartSearch, resetTimestampEndSearch));
@@ -195,7 +198,8 @@ public class Index extends Controller {
 	public Result jsRoutes() {
 		return ok (Routes.javascriptRouter ("jsRoutes",
             controllers.routes.javascript.Assets.versioned(),
-			controllers.routes.javascript.Index.deleteMetadata(),
+            controllers.routes.javascript.Index.index(),
+            controllers.routes.javascript.Index.deleteMetadata(),
 			controllers.routes.javascript.Index.changeStatus(),
 			controllers.routes.javascript.Index.changeSupplier()
         )).as ("text/javascript");

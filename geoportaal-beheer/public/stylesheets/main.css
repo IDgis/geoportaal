@@ -47,7 +47,10 @@ div.editor-knoppen {margin-bottom:20px;margin-left:15px;}
 #js-form-approval {display:none;}
 input[type="file"].input-attachment {display:inline;}
 #js-cancel-form {line-height:20px;padding:7.5px 12px;}
+
+#search-button {padding-left:12px;padding-right:12px;position:relative;top:-1px;}
 #help-button {line-height:20px;padding:7.5px 12px;}
+#filter-button {line-height:20px;padding:7.5px 12px;}
 
 #attachment-files-box {margin-bottom:15px;left:-8px;}
 .attachment-file {font-size:14px;}
