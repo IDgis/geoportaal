@@ -118,6 +118,14 @@ require([
 		
 		var removeSavedAttachment = on(win.doc, '.delete-attachment-button:click', function(e) {
 			var attToDel = query(this).parents('.attachment-file')[0];
+			var attachmentName = domAttr.get(query(this).query('~ span')[0], 'innerHTML');
+			var idDelEl = domConstruct.create('input');
+			
+			domAttr.set(idDelEl, 'type', 'hidden');
+			domAttr.set(idDelEl, 'value', attachmentName);
+			domAttr.set(idDelEl,  'name', 'deletedAttachment[]')
+			domConstruct.place(idDelEl, dom.byId('deleted-attachments'));
+			
 			domConstruct.destroy(attToDel);
 		});
 		

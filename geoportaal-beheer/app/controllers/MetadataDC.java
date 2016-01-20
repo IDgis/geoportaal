@@ -353,6 +353,16 @@ public class MetadataDC extends Controller {
 				.where(metadata.uuid.eq(metadataUuid))
 				.fetchFirst();
 		
+		List<String> attToDelete = dc.getDeletedAttachment();
+		if(attToDelete != null) {
+			for(String attachmentName : attToDelete) {
+				db.queryFactory.delete(mdAttachment)
+					.where(mdAttachment.metadataId.eq(metadataId)
+						.and(mdAttachment.attachmentName.eq(attachmentName)))
+					.execute();
+			}
+		}
+		
 		play.mvc.Http.MultipartFormData body = request().body().asMultipartFormData();
 		List<FilePart> allFiles = body.getFiles();
 		

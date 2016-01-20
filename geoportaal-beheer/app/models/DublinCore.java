@@ -22,6 +22,7 @@ public class DublinCore {
 	private Date dateSourceValidFrom;
 	private Date dateSourceValidUntil;
 	private List<String> subject;
+	private List<String> deletedAttachment;
 	
 	public DublinCore() {
 		
@@ -29,7 +30,7 @@ public class DublinCore {
 	
 	public DublinCore(String location, String fileId, String title, String description, String typeInformation, String creator, 
 			String creatorOther, String rights, String useLimitation, String mdFormat, String source, Date dateSourceCreation, Date dateSourcePublication, 
-			Date dateSourceRevision, Date dateSourceValidFrom, Date dateSourceValidUntil, List<String> subject) {
+			Date dateSourceRevision, Date dateSourceValidFrom, Date dateSourceValidUntil, List<String> subject, List<String> deletedAttachment) {
 		super();
 		this.location = location;
 		this.fileId = fileId;
@@ -48,6 +49,7 @@ public class DublinCore {
 		this.dateSourceValidFrom = dateSourceValidFrom;
 		this.dateSourceValidUntil = dateSourceValidUntil;
 		this.subject = subject;
+		this.deletedAttachment = deletedAttachment;
 	}
 	public String getLocation() {
 		return location;
@@ -167,5 +169,13 @@ public class DublinCore {
 
 	public void setSubject(List<String> subject) {
 		this.subject = subject;
+	}
+
+	public List<String> getDeletedAttachment() {
+		return deletedAttachment;
+	}
+
+	public void setDeletedAttachment(List<String> deletedAttachment) {
+		this.deletedAttachment = deletedAttachment;
 	}
 }
