@@ -37,6 +37,8 @@ import play.mvc.Controller;
 import play.mvc.Http.MultipartFormData.FilePart;
 import play.mvc.Result;
 
+import views.html.*;
+
 public class MetadataDC extends Controller {
 	@Inject Database db;
 	
@@ -288,6 +290,11 @@ public class MetadataDC extends Controller {
 		
 		Timestamp dateToday = new Timestamp(new Date().getTime());
 		
+		Integer metadataId = db.queryFactory.select(metadata.id)
+				.from(metadata)
+				.where(metadata.uuid.eq(metadataUuid))
+				.fetchFirst();
+		
 		Integer typeInformationKey = db.queryFactory.select(typeInformation.id)
 			.from(typeInformation)
 			.where(typeInformation.name.eq(dc.getTypeInformation()))
@@ -326,33 +333,30 @@ public class MetadataDC extends Controller {
 		Timestamp dateSourceValidFromValue = nullCheckDate(dc.getDateSourceValidFrom());
 		Timestamp dateSourceValidUntilValue = nullCheckDate(dc.getDateSourceValidUntil());
 		
-		db.queryFactory.update(metadata)
-			.where(metadata.uuid.eq(metadataUuid))
-			.set(metadata.location, dc.getLocation())
-    		.set(metadata.fileId, dc.getFileId())
-    		.set(metadata.title, dc.getTitle())
-    		.set(metadata.description, dc.getDescription())
-    		.set(metadata.typeInformation, typeInformationKey)
-    		.set(metadata.creator, creatorKey)
-    		.set(metadata.creatorOther, creatorOtherValue)
-    		.set(metadata.rights, rightsKey)
-    		.set(metadata.useLimitation, useLimitationKey)
-    		.set(metadata.mdFormat, formatKey)
-    		.set(metadata.source, dc.getSource())
-    		.set(metadata.dateSourceCreation, dateSourceCreationValue)
-    		.set(metadata.dateSourcePublication, dateSourcePublicationValue)
-    		.set(metadata.dateSourceRevision, dateSourceRevisionValue)
-    		.set(metadata.dateSourceValidFrom, dateSourceValidFromValue)
-    		.set(metadata.dateSourceValidUntil, dateSourceValidUntilValue)
-    		.set(metadata.lastRevisionUser, session("username"))
-    		.set(metadata.lastRevisionDate, dateToday)
-    		.execute();
-    	
-		Integer metadataId = db.queryFactory.select(metadata.id)
-				.from(metadata)
-				.where(metadata.uuid.eq(metadataUuid))
-				.fetchFirst();
+		List<String> subjects = dc.getSubject();
 		
+		db.queryFactory.update(metadata)
+		.where(metadata.uuid.eq(metadataUuid))
+		.set(metadata.location, dc.getLocation())
+		.set(metadata.fileId, dc.getFileId())
+		.set(metadata.title, dc.getTitle())
+		.set(metadata.description, dc.getDescription())
+		.set(metadata.typeInformation, typeInformationKey)
+		.set(metadata.creator, creatorKey)
+		.set(metadata.creatorOther, creatorOtherValue)
+		.set(metadata.rights, rightsKey)
+		.set(metadata.useLimitation, useLimitationKey)
+		.set(metadata.mdFormat, formatKey)
+		.set(metadata.source, dc.getSource())
+		.set(metadata.dateSourceCreation, dateSourceCreationValue)
+		.set(metadata.dateSourcePublication, dateSourcePublicationValue)
+		.set(metadata.dateSourceRevision, dateSourceRevisionValue)
+		.set(metadata.dateSourceValidFrom, dateSourceValidFromValue)
+		.set(metadata.dateSourceValidUntil, dateSourceValidUntilValue)
+		.set(metadata.lastRevisionUser, session("username"))
+		.set(metadata.lastRevisionDate, dateToday)
+		.execute();
+	
 		List<String> attToDelete = dc.getDeletedAttachment();
 		if(attToDelete != null) {
 			for(String attachmentName : attToDelete) {
@@ -392,12 +396,12 @@ public class MetadataDC extends Controller {
 			}
 		}
 		
-		if(dc.getSubject() != null) {
+		if(subjects != null) {
 			db.queryFactory.delete(mdSubject)
 				.where(mdSubject.metadataId.eq(metadataId))
 				.execute();
 				
-			for(String subjectStr : dc.getSubject()) {
+			for(String subjectStr : subjects) {
 				Integer subjectKey = db.queryFactory.select(subject.id)
 					.from(subject)
 					.where(subject.name.eq(subjectStr))
@@ -411,6 +415,36 @@ public class MetadataDC extends Controller {
 		}
 		
 		return redirect(controllers.routes.Index.index());
+	}
+	
+	public Result validateForm(String metadataUuid) {
+		Form<DublinCore> dcForm = Form.form(DublinCore.class);
+		DublinCore dc = dcForm.bindFromRequest().get();
+		
+		String title = "";
+		if(dc.getTitle().equals("")) {
+			title = null;
+		} else {
+			title = dc.getTitle();
+		}
+		
+		
+		
+		String description = "";
+		if(dc.getDescription().equals("")) {
+			description = null;
+		} else {
+			description = dc.getDescription();
+		}
+		
+		String location = "";
+		if(dc.getLocation().equals("")) {
+			location = null;
+		} else {
+			location = dc.getLocation();
+		}
+		
+		return ok(validateform.render(title, description, location));
 	}
 	
 	public Timestamp nullCheckDate(Date date) {

@@ -44,10 +44,11 @@ require([
 	'dojo/dom-attr',
 	'dojo/dom-construct',
 	'dojo/dom-style',
+	'dojo/request/xhr',
 	'dojo/NodeList-traverse',
 	
 	'dojo/domReady!'
-	], function(dom, query, on, lang, win, array, domAttr, domConstruct, domStyle) {
+	], function(dom, query, on, lang, win, array, domAttr, domConstruct, domStyle, xhr) {
 		
 		var create = domAttr.get(dom.byId('js-date-creation'), 'data-create');
 		var datesArray = query('input[type=date]');
@@ -142,6 +143,47 @@ require([
 			} else {
 				domStyle.set(dom.byId('js-other-creator'), 'display', 'none');
 			}
+		});
+		
+		var saveRecord = on(dom.byId('js-save-form'), 'click', function(e) {
+			var saveButton = dom.byId('js-save-form');
+			var form = dom.byId('js-form');
+			
+			domConstruct.destroy(dom.byId('js-form-validation-result'));
+			var resultDiv = domConstruct.create('div');
+			domAttr.set(resultDiv, 'id', 'js-form-validation-result');
+			domConstruct.place(resultDiv, dom.byId('js-form-validation'));
+			var result = dom.byId('js-form-validation-result');
+			
+			var id = domAttr.get(this, 'data-id');
+			var formData = new FormData();
+			
+			var titleEl = dom.byId('js-title');
+			var titleVal = domAttr.get(titleEl, 'value');
+			
+			var descriptionEl = dom.byId('js-description');
+			var descriptionVal = domAttr.get(descriptionEl, 'value');
+			
+			var locationEl = dom.byId('js-location');
+			var locationVal = domAttr.get(locationEl, 'value');
+			
+			formData.append('title', titleVal);
+			formData.append('description', descriptionVal);
+			formData.append('location', locationVal);
+			
+			xhr(jsRoutes.controllers.MetadataDC.validateForm(id).url, {
+					handleAs: "html",
+					data: formData,
+					method: "POST"	
+			}).then(function(data) {
+				var nfBoolean = data.indexOf('data-error="true"') > -1;
+				
+				if(nfBoolean) {
+					domConstruct.place(data, result);
+				} else {
+					form.submit();
+				}
+			});
 		});
 		
 		/*
