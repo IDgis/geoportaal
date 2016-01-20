@@ -1,0 +1,24 @@
+@(title: String, description: String, location: String)
+
+@if(title == null) {
+	<div>
+		<div class="alert alert-danger" role="alert" data-error="true">
+			<b>De titel moet ingevuld zijn.</b>
+		</div>
+	</div>
+}
+@if(description == null) {
+	<div>
+		<div class="alert alert-danger" role="alert" data-error="true">
+			<b>De omschrijving moet ingevuld zijn.</b>
+		</div>
+	</div>
+}
+@if(location == null) {
+	<div>
+		<div class="alert alert-danger" role="alert" data-error="true">
+			<b>De locatie moet ingevuld zijn.</b>
+		</div>
+	</div>
+}
+
