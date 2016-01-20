@@ -110,9 +110,23 @@ require([
 			var attachment = query(this).parents('.js-attachment')[0];
 			domConstruct.destroy(attachment);
 		});
+		
 		var emptyAttachment = on(win.doc, '.js-empty-attachment:click', function(e) {
 			var inputAttachment = query(this).siblings('.input-attachment')[0];
 			domAttr.set(inputAttachment, 'value', '');
+		});
+		
+		var removeSavedAttachment = on(win.doc, '.delete-attachment-button:click', function(e) {
+			var attToDel = query(this).parents('.attachment-file')[0];
+			var attachmentName = domAttr.get(query(this).query('~ span')[0], 'innerHTML');
+			var idDelEl = domConstruct.create('input');
+			
+			domAttr.set(idDelEl, 'type', 'hidden');
+			domAttr.set(idDelEl, 'value', attachmentName);
+			domAttr.set(idDelEl,  'name', 'deletedAttachment[]')
+			domConstruct.place(idDelEl, dom.byId('deleted-attachments'));
+			
+			domConstruct.destroy(attToDel);
 		});
 		
 		var creatorSelect = dom.byId('js-creator-select');
