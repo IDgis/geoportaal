@@ -2,23 +2,29 @@ package controllers;
 
 import static models.QMdAttachment.mdAttachment;
 import static models.QMdFormat.mdFormat;
-import static models.QMetadata.metadata;
-import static models.QStatus.status;
-import static models.QSupplier.supplier;
-import static models.QStatusLabel.statusLabel;
 import static models.QMdFormatLabel.mdFormatLabel;
 import static models.QMdSubject.mdSubject;
+import static models.QMetadata.metadata;
+import static models.QStatus.status;
+import static models.QStatusLabel.statusLabel;
+import static models.QSupplier.supplier;
 
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
 import com.querydsl.core.Tuple;
+import com.querydsl.sql.SQLQuery;
 
 import actions.DefaultAuthenticator;
+import models.Search;
 import play.Routes;
+import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
@@ -35,7 +41,8 @@ public class Index extends Controller {
     			.join(status).on(metadata.status.eq(status.id))
     			.join(supplier).on(metadata.supplier.eq(supplier.id))
     			.join(statusLabel).on(status.id.eq(statusLabel.statusId))
-    			.orderBy(metadata.lastRevisionDate.asc())
+    			
+    			.orderBy(metadata.lastRevisionDate.desc())
     			.fetch();
     	
     	List<Tuple> supplierList = db.queryFactory.select(supplier.all())
@@ -54,9 +61,10 @@ public class Index extends Controller {
             	.join(mdFormatLabel).on(mdFormat.id.eq(mdFormatLabel.mdFormatId))
             	.fetch();
     	
-    	SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+    	SimpleDateFormat sdfUS = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat sdfLocal = new SimpleDateFormat("dd-MM-yyyy");
     	
-    	return ok(views.html.index.render(datasetRows, supplierList, statusList, mdFormatList, sdf));
+    	return ok(views.html.index.render(datasetRows, supplierList, statusList, mdFormatList, sdfUS, sdfLocal, "", "none", "none", "none", null, null));
     }
 	
 	public Result changeStatus(Integer datasetId, String statusStr) {
@@ -104,7 +112,85 @@ public class Index extends Controller {
 	}
 	
 	public Result search() {
-		return redirect(controllers.routes.Index.index());
+		Form<Search> searchForm = Form.form(Search.class);
+		Search s = searchForm.bindFromRequest().get();
+		
+		String textSearch = s.getText();
+		String supplierSearch = s.getSupplier();
+		String statusSearch = s.getStatus();
+		String mdFormatSearch = s.getFormat();
+		Date dateStartSearch = s.getDateUpdateStart();
+		Date dateEndSearch = s.getDateUpdateEnd();
+		
+		
+		
+		SQLQuery<Tuple> datasetQuery = db.queryFactory
+    			.select(metadata.id, metadata.uuid, metadata.title, metadata.lastRevisionDate, statusLabel.label, supplier.name, status.name, mdFormat.name)
+    			.from(metadata)
+    			.join(status).on(metadata.status.eq(status.id))
+    			.join(supplier).on(metadata.supplier.eq(supplier.id))
+    			.join(statusLabel).on(status.id.eq(statusLabel.statusId))
+    			.join(mdFormat).on(metadata.mdFormat.eq(mdFormat.id));
+		
+		if(!textSearch.equals("")) {
+			datasetQuery
+				.where(metadata.title.containsIgnoreCase(textSearch)
+						.or(metadata.description.containsIgnoreCase(textSearch)));
+		}
+		
+		if(!supplierSearch.equals("none")) {
+			datasetQuery
+				.where(supplier.name.eq(supplierSearch));
+		}
+		
+		if(!statusSearch.equals("none")) {
+			datasetQuery
+				.where(status.name.eq(statusSearch));
+		}
+		
+		if(!mdFormatSearch.equals("none")) {
+			datasetQuery
+				.where(mdFormat.name.eq(mdFormatSearch));
+		}
+		
+		Timestamp timestampStartSearch = null;
+		Timestamp timestampEndSearch = null;
+		if(dateStartSearch != null && dateEndSearch != null) {
+			timestampStartSearch = new Timestamp(dateStartSearch.getTime());
+			timestampEndSearch = new Timestamp(dateEndSearch.getTime() + 86400000);
+			
+			datasetQuery
+				.where(metadata.lastRevisionDate.after(timestampStartSearch))
+				.where(metadata.lastRevisionDate.before(timestampEndSearch));
+		}
+		
+		List<Tuple> datasetRows = datasetQuery
+    			.orderBy(metadata.lastRevisionDate.desc())
+    			.fetch();
+    	
+    	List<Tuple> supplierList = db.queryFactory.select(supplier.all())
+            	.from(supplier)
+            	.fetch();
+    	
+    	List<Tuple> statusList = db.queryFactory
+    			.select(status.name, statusLabel.label)
+            	.from(status)
+            	.join(statusLabel).on(status.id.eq(statusLabel.statusId))
+            	.fetch();
+    	
+    	List<Tuple> mdFormatList = db.queryFactory
+    			.select(mdFormat.name, mdFormatLabel.label)
+            	.from(mdFormat)
+            	.join(mdFormatLabel).on(mdFormat.id.eq(mdFormatLabel.mdFormatId))
+            	.fetch();
+    	
+    	SimpleDateFormat sdfUS = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat sdfLocal = new SimpleDateFormat("dd-MM-yyyy");
+        
+        Timestamp resetTimestampEndSearch = new Timestamp(dateEndSearch.getTime());
+    	
+		return ok(views.html.index.render(datasetRows, supplierList, statusList, mdFormatList, sdfUS, sdfLocal, textSearch, 
+				supplierSearch, statusSearch, mdFormatSearch, timestampStartSearch, resetTimestampEndSearch));
 	}
 	
 	public Result jsRoutes() {
