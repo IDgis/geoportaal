@@ -35,6 +35,19 @@ require([
 				domAttr.remove(item, 'name');
 				domAttr.set(query(item).query('~ input')[0], 'name', name);
 			});
+			
+			array.forEach(datesArray, function(item) {
+				var dateLocal = domAttr.get(item, 'data-date-value-local');
+				var dateUS = domAttr.get(item, 'data-date-value-US');
+				
+				domAttr.set(item, 'value', dateLocal);
+				domAttr.set(query(item).query('~ input')[0], 'value', dateUS);
+			});
+		} else {
+			array.forEach(datesArray, function(item) {
+				var date = domAttr.get(item, 'data-date-value-US');
+				domAttr.set(item, 'value', date);
+			});
 		}
 		
 		var deleteRecords = on(dom.byId('js-delete'), 'click', function(e) {

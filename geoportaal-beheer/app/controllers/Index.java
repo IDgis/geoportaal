@@ -61,9 +61,10 @@ public class Index extends Controller {
             	.join(mdFormatLabel).on(mdFormat.id.eq(mdFormatLabel.mdFormatId))
             	.fetch();
     	
-    	SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+    	SimpleDateFormat sdfUS = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat sdfLocal = new SimpleDateFormat("dd-MM-yyyy");
     	
-    	return ok(views.html.index.render(datasetRows, supplierList, statusList, mdFormatList, sdf));
+    	return ok(views.html.index.render(datasetRows, supplierList, statusList, mdFormatList, sdfUS, sdfLocal, "", "none", "none", "none", null, null));
     }
 	
 	public Result changeStatus(Integer datasetId, String statusStr) {
@@ -121,6 +122,8 @@ public class Index extends Controller {
 		Date dateStartSearch = s.getDateUpdateStart();
 		Date dateEndSearch = s.getDateUpdateEnd();
 		
+		
+		
 		SQLQuery<Tuple> datasetQuery = db.queryFactory
     			.select(metadata.id, metadata.uuid, metadata.title, metadata.lastRevisionDate, statusLabel.label, supplier.name, status.name, mdFormat.name)
     			.from(metadata)
@@ -150,9 +153,11 @@ public class Index extends Controller {
 				.where(mdFormat.name.eq(mdFormatSearch));
 		}
 		
+		Timestamp timestampStartSearch = null;
+		Timestamp timestampEndSearch = null;
 		if(dateStartSearch != null && dateEndSearch != null) {
-			Timestamp timestampStartSearch = new Timestamp(dateStartSearch.getTime());
-			Timestamp timestampEndSearch = new Timestamp(dateEndSearch.getTime() + 86400000);
+			timestampStartSearch = new Timestamp(dateStartSearch.getTime());
+			timestampEndSearch = new Timestamp(dateEndSearch.getTime() + 86400000);
 			
 			datasetQuery
 				.where(metadata.lastRevisionDate.after(timestampStartSearch))
@@ -179,9 +184,13 @@ public class Index extends Controller {
             	.join(mdFormatLabel).on(mdFormat.id.eq(mdFormatLabel.mdFormatId))
             	.fetch();
     	
-    	SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-		
-		return ok(views.html.index.render(datasetRows, supplierList, statusList, mdFormatList, sdf));
+    	SimpleDateFormat sdfUS = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat sdfLocal = new SimpleDateFormat("dd-MM-yyyy");
+        
+        Timestamp resetTimestampEndSearch = new Timestamp(dateEndSearch.getTime());
+    	
+		return ok(views.html.index.render(datasetRows, supplierList, statusList, mdFormatList, sdfUS, sdfLocal, textSearch, 
+				supplierSearch, statusSearch, mdFormatSearch, timestampStartSearch, resetTimestampEndSearch));
 	}
 	
 	public Result jsRoutes() {
