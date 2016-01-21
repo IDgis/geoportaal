@@ -421,28 +421,39 @@ public class MetadataDC extends Controller {
 		Form<DublinCore> dcForm = Form.form(DublinCore.class);
 		DublinCore dc = dcForm.bindFromRequest().get();
 		
-		String title = "";
+		String title = null;
 		if(dc.getTitle().equals("")) {
 			title = null;
 		} else {
 			title = dc.getTitle();
 		}
 		
-		String description = "";
+		String description = null;
 		if(dc.getDescription().equals("")) {
 			description = null;
 		} else {
 			description = dc.getDescription();
 		}
 		
-		String location = "";
+		String location = null;
 		if(dc.getLocation().equals("")) {
 			location = null;
 		} else {
 			location = dc.getLocation();
 		}
 		
-		return ok(validateform.render(title, description, location, dc.getDateSourceCreation(), dc.getSubject()));
+		String creatorOther = null;
+		if(dc.getCreator() != null) {
+			if(dc.getCreatorOther().equals("")) {
+				creatorOther = null;
+			} else {
+				creatorOther = dc.getCreatorOther();
+			}
+		} else {
+			creatorOther = "";
+		}
+		
+		return ok(validateform.render(title, description, location, creatorOther, dc.getDateSourceCreation(), dc.getSubject()));
 	}
 	
 	public Timestamp nullCheckDate(Date date) {

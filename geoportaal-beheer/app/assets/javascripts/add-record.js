@@ -158,10 +158,17 @@ require([
 			var dateCreationChrome = domAttr.get(dom.byId('js-date-creation'), 'value');
 			var dateCreationRest = domAttr.get(dom.byId('js-hidden-date-creation'), 'value');
 			var subjectList = query('.js-subject-input:checked');
+			var creatorVal = domAttr.get(dom.byId('js-creator-select'), 'value');
 			
 			formData.append('title', titleVal);
 			formData.append('description', descriptionVal);
 			formData.append('location', locationVal);
+			if(creatorVal === 'other') {
+				var otherCreatorVal = domAttr.get(dom.byId('js-other-creator-input'), 'value');
+				
+				formData.append('creator', creatorVal);
+				formData.append('creatorOther', otherCreatorVal);
+			}
 			if(!Modernizr.inputtypes.date) {
 				formData.append('dateSourceCreation', dateCreationRest);
 			} else {
