@@ -1,31 +1,33 @@
 @(title: String, description: String, location: String, dateCreate: java.util.Date)
 
-@if(title == null) {
-	<div>
-		<div class="alert alert-danger" role="alert" data-error="true">
-			<b>De titel moet ingevuld zijn.</b>
+<div id="js-form-validation-result">
+	@if(title == null) {
+		<div>
+			<div class="alert alert-danger" role="alert" data-error="true">
+				<b>De titel moet ingevuld zijn.</b>
+			</div>
 		</div>
-	</div>
-}
-@if(description == null) {
-	<div>
-		<div class="alert alert-danger" role="alert" data-error="true">
-			<b>De omschrijving moet ingevuld zijn.</b>
+	}
+	@if(description == null) {
+		<div>
+			<div class="alert alert-danger" role="alert" data-error="true">
+				<b>De omschrijving moet ingevuld zijn.</b>
+			</div>
 		</div>
-	</div>
-}
-@if(location == null) {
-	<div>
-		<div class="alert alert-danger" role="alert" data-error="true">
-			<b>De locatie moet ingevuld zijn.</b>
+	}
+	@if(location == null) {
+		<div>
+			<div class="alert alert-danger" role="alert" data-error="true">
+				<b>De locatie moet ingevuld zijn.</b>
+			</div>
 		</div>
-	</div>
-}
-
-@if(dateCreate == null) {
-	<div>
-		<div class="alert alert-danger" role="alert" data-error="true">
-			<b>De datum creatie moet ingevuld zijn.</b>
+	}
+	
+	@if(dateCreate == null) {
+		<div>
+			<div class="alert alert-danger" role="alert" data-error="true">
+				<b>De datum creatie moet ingevuld zijn.</b>
+			</div>
 		</div>
-	</div>
-}
+	}
+</div>

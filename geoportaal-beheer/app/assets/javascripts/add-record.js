@@ -176,12 +176,11 @@ require([
 				var nfBoolean = data.indexOf('data-error="true"') > -1;
 				
 				if(nfBoolean) {
-					domConstruct.destroy(dom.byId('js-form-validation-result'));
-					var resultDiv = domConstruct.create('div');
-					domAttr.set(resultDiv, 'id', 'js-form-validation-result');
-					domConstruct.place(resultDiv, dom.byId('js-form-validation'));
-					var result = dom.byId('js-form-validation-result');
+					if(dom.byId('js-form-validation-result')) {
+						domConstruct.destroy(dom.byId('js-form-validation-result'));
+					}
 					
+					var result = dom.byId('js-form-validation');
 					domConstruct.place(data, result);
 				} else {
 					form.submit();
