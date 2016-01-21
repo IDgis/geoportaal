@@ -428,8 +428,6 @@ public class MetadataDC extends Controller {
 			title = dc.getTitle();
 		}
 		
-		
-		
 		String description = "";
 		if(dc.getDescription().equals("")) {
 			description = null;
@@ -444,7 +442,7 @@ public class MetadataDC extends Controller {
 			location = dc.getLocation();
 		}
 		
-		return ok(validateform.render(title, description, location));
+		return ok(validateform.render(title, description, location, dc.getDateSourceCreation()));
 	}
 	
 	public Timestamp nullCheckDate(Date date) {

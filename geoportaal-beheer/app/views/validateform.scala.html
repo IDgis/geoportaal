@@ -1,4 +1,4 @@
-@(title: String, description: String, location: String)
+@(title: String, description: String, location: String, dateCreate: java.util.Date)
 
 @if(title == null) {
 	<div>
@@ -22,3 +22,10 @@
 	</div>
 }
 
+@if(dateCreate == null) {
+	<div>
+		<div class="alert alert-danger" role="alert" data-error="true">
+			<b>De datum creatie moet ingevuld zijn.</b>
+		</div>
+	</div>
+}

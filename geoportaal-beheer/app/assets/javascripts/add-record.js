@@ -152,18 +152,21 @@ require([
 			var id = domAttr.get(this, 'data-id');
 			var formData = new FormData();
 			
-			var titleEl = dom.byId('js-title');
-			var titleVal = domAttr.get(titleEl, 'value');
+			var titleVal = domAttr.get(dom.byId('js-title'), 'value');
+			var descriptionVal = domAttr.get(dom.byId('js-description'), 'value');
+			var locationVal = domAttr.get(dom.byId('js-location'), 'value');
+			var dateCreationChrome = domAttr.get(dom.byId('js-date-creation'), 'value');
+			var dateCreationRest = domAttr.get(dom.byId('js-hidden-date-creation'), 'value');
 			
-			var descriptionEl = dom.byId('js-description');
-			var descriptionVal = domAttr.get(descriptionEl, 'value');
-			
-			var locationEl = dom.byId('js-location');
-			var locationVal = domAttr.get(locationEl, 'value');
 			
 			formData.append('title', titleVal);
 			formData.append('description', descriptionVal);
 			formData.append('location', locationVal);
+			if(!Modernizr.inputtypes.date) {
+				formData.append('dateSourceCreation', dateCreationRest);
+			} else {
+				formData.append('dateSourceCreation', dateCreationChrome);
+			}
 			
 			xhr(jsRoutes.controllers.MetadataDC.validateForm(id).url, {
 					handleAs: "html",
