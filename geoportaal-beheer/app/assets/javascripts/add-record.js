@@ -185,49 +185,4 @@ require([
 				}
 			});
 		});
-		
-		/*
-		var validateForm = on(dom.byId('js-validate-form'), 'click', function(e) {
-			var mandatoryInputs = query('.js-mandatory');
-			var validateCounter = 0;
-			var validateFields = [];
-			var subjectChecked = query('.js-subject-input:checked').length;
-			
-			domStyle.set(dom.byId('js-form-approval'), 'display', 'none');
-			
-			for(var i = 0; i < mandatoryInputs.length; i++) {
-				if(domAttr.get(mandatoryInputs[i], 'value') === '') {
-					validateCounter++;
-					validateFields.push(domAttr.get(mandatoryInputs[i], 'data-field'));
-				}
-			}
-			
-			var textWarning = 'De volgende velden moeten nog ingevuld worden: ';
-			for(var j = 0; j < validateFields.length -1; j++) {
-				textWarning += validateFields[j] + ', ';
-			}
-			for(var k = validateFields.length -1; k < validateFields.length; k++) {
-				textWarning += validateFields[k];
-			}
-			
-			if(validateCounter > 0) {
-				var textWarningElmnt = query('#js-form-warning-fields div b')[0];
-				domAttr.set(textWarningElmnt, 'innerHTML', textWarning);
-				
-				domStyle.set(dom.byId('js-form-warning-fields'), 'display', 'block');
-			} else {
-				domStyle.set(dom.byId('js-form-warning-fields'), 'display', 'none');
-			}
-			
-			if(subjectChecked === 0) {
-				domStyle.set(dom.byId('js-form-warning-subjects'), 'display', 'block');
-			} else {
-				domStyle.set(dom.byId('js-form-warning-subjects'), 'display', 'none');
-			}
-			
-			if(validateCounter === 0 && subjectChecked > 0) {
-				domStyle.set(dom.byId('js-form-approval'), 'display', 'block');
-			}
-		});
-		*/
 });
