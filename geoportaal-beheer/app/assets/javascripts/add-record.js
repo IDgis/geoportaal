@@ -149,27 +149,36 @@ require([
 			var saveButton = dom.byId('js-save-form');
 			var form = dom.byId('js-form');
 			
-			domConstruct.destroy(dom.byId('js-form-validation-result'));
-			var resultDiv = domConstruct.create('div');
-			domAttr.set(resultDiv, 'id', 'js-form-validation-result');
-			domConstruct.place(resultDiv, dom.byId('js-form-validation'));
-			var result = dom.byId('js-form-validation-result');
-			
 			var id = domAttr.get(this, 'data-id');
 			var formData = new FormData();
 			
-			var titleEl = dom.byId('js-title');
-			var titleVal = domAttr.get(titleEl, 'value');
-			
-			var descriptionEl = dom.byId('js-description');
-			var descriptionVal = domAttr.get(descriptionEl, 'value');
-			
-			var locationEl = dom.byId('js-location');
-			var locationVal = domAttr.get(locationEl, 'value');
+			var titleVal = domAttr.get(dom.byId('js-title'), 'value');
+			var descriptionVal = domAttr.get(dom.byId('js-description'), 'value');
+			var locationVal = domAttr.get(dom.byId('js-location'), 'value');
+			var dateCreationChrome = domAttr.get(dom.byId('js-date-creation'), 'value');
+			var dateCreationRest = domAttr.get(dom.byId('js-hidden-date-creation'), 'value');
+			var subjectList = query('.js-subject-input:checked');
+			var creatorVal = domAttr.get(dom.byId('js-creator-select'), 'value');
 			
 			formData.append('title', titleVal);
 			formData.append('description', descriptionVal);
 			formData.append('location', locationVal);
+			if(creatorVal === 'other') {
+				var otherCreatorVal = domAttr.get(dom.byId('js-other-creator-input'), 'value');
+				
+				formData.append('creator', creatorVal);
+				formData.append('creatorOther', otherCreatorVal);
+			}
+			if(!Modernizr.inputtypes.date) {
+				formData.append('dateSourceCreation', dateCreationRest);
+			} else {
+				formData.append('dateSourceCreation', dateCreationChrome);
+			}
+			array.forEach(subjectList, function(item) {
+				var subjectValue = domAttr.get(item, 'value');
+				formData.append('subject[]', subjectValue);
+			});
+			
 			
 			xhr(jsRoutes.controllers.MetadataDC.validateForm(id).url, {
 					handleAs: "html",
@@ -179,55 +188,15 @@ require([
 				var nfBoolean = data.indexOf('data-error="true"') > -1;
 				
 				if(nfBoolean) {
+					if(dom.byId('js-form-validation-result')) {
+						domConstruct.destroy(dom.byId('js-form-validation-result'));
+					}
+					
+					var result = dom.byId('js-form-validation');
 					domConstruct.place(data, result);
 				} else {
 					form.submit();
 				}
 			});
 		});
-		
-		/*
-		var validateForm = on(dom.byId('js-validate-form'), 'click', function(e) {
-			var mandatoryInputs = query('.js-mandatory');
-			var validateCounter = 0;
-			var validateFields = [];
-			var subjectChecked = query('.js-subject-input:checked').length;
-			
-			domStyle.set(dom.byId('js-form-approval'), 'display', 'none');
-			
-			for(var i = 0; i < mandatoryInputs.length; i++) {
-				if(domAttr.get(mandatoryInputs[i], 'value') === '') {
-					validateCounter++;
-					validateFields.push(domAttr.get(mandatoryInputs[i], 'data-field'));
-				}
-			}
-			
-			var textWarning = 'De volgende velden moeten nog ingevuld worden: ';
-			for(var j = 0; j < validateFields.length -1; j++) {
-				textWarning += validateFields[j] + ', ';
-			}
-			for(var k = validateFields.length -1; k < validateFields.length; k++) {
-				textWarning += validateFields[k];
-			}
-			
-			if(validateCounter > 0) {
-				var textWarningElmnt = query('#js-form-warning-fields div b')[0];
-				domAttr.set(textWarningElmnt, 'innerHTML', textWarning);
-				
-				domStyle.set(dom.byId('js-form-warning-fields'), 'display', 'block');
-			} else {
-				domStyle.set(dom.byId('js-form-warning-fields'), 'display', 'none');
-			}
-			
-			if(subjectChecked === 0) {
-				domStyle.set(dom.byId('js-form-warning-subjects'), 'display', 'block');
-			} else {
-				domStyle.set(dom.byId('js-form-warning-subjects'), 'display', 'none');
-			}
-			
-			if(validateCounter === 0 && subjectChecked > 0) {
-				domStyle.set(dom.byId('js-form-approval'), 'display', 'block');
-			}
-		});
-		*/
 });

@@ -1,24 +1,48 @@
-@(title: String, description: String, location: String)
+@(title: String, description: String, location: String, creatorOther: String, dateCreate: java.util.Date, subjectList: java.util.List[String])
 
-@if(title == null) {
-	<div>
-		<div class="alert alert-danger" role="alert" data-error="true">
-			<b>De titel moet ingevuld zijn.</b>
+<div id="js-form-validation-result">
+	@if(title == null) {
+		<div>
+			<div class="alert alert-danger" role="alert" data-error="true">
+				<b>De titel moet ingevuld zijn.</b>
+			</div>
 		</div>
-	</div>
-}
-@if(description == null) {
-	<div>
-		<div class="alert alert-danger" role="alert" data-error="true">
-			<b>De omschrijving moet ingevuld zijn.</b>
+	}
+	@if(description == null) {
+		<div>
+			<div class="alert alert-danger" role="alert" data-error="true">
+				<b>De omschrijving moet ingevuld zijn.</b>
+			</div>
 		</div>
-	</div>
-}
-@if(location == null) {
-	<div>
-		<div class="alert alert-danger" role="alert" data-error="true">
-			<b>De locatie moet ingevuld zijn.</b>
+	}
+	@if(location == null) {
+		<div>
+			<div class="alert alert-danger" role="alert" data-error="true">
+				<b>De locatie moet ingevuld zijn.</b>
+			</div>
 		</div>
-	</div>
-}
-
+	}
+	@if(creatorOther == null) {
+		<div>
+			<div class="alert alert-danger" role="alert" data-error="true">
+				<b>Bij het selecteren van 'andere' bij eindverantwoordelijke moet het invoerveld ingevuld worden.</b>
+			</div>
+		</div>
+	}
+	
+	@if(dateCreate == null) {
+		<div>
+			<div class="alert alert-danger" role="alert" data-error="true">
+				<b>De datum creatie moet ingevuld zijn.</b>
+			</div>
+		</div>
+	}
+	
+	@if(subjectList == null) {
+		<div>
+			<div class="alert alert-danger" role="alert" data-error="true">
+				<b>Er moet minimaal &#233;&#233;n onderwerp aangevinkt zijn.</b>
+			</div>
+		</div>
+	}
+</div>
