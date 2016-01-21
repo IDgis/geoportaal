@@ -157,7 +157,7 @@ require([
 			var locationVal = domAttr.get(dom.byId('js-location'), 'value');
 			var dateCreationChrome = domAttr.get(dom.byId('js-date-creation'), 'value');
 			var dateCreationRest = domAttr.get(dom.byId('js-hidden-date-creation'), 'value');
-			
+			var subjectList = query('.js-subject-input:checked');
 			
 			formData.append('title', titleVal);
 			formData.append('description', descriptionVal);
@@ -167,6 +167,11 @@ require([
 			} else {
 				formData.append('dateSourceCreation', dateCreationChrome);
 			}
+			array.forEach(subjectList, function(item) {
+				var subjectValue = domAttr.get(item, 'value');
+				formData.append('subject[]', subjectValue);
+			});
+			
 			
 			xhr(jsRoutes.controllers.MetadataDC.validateForm(id).url, {
 					handleAs: "html",

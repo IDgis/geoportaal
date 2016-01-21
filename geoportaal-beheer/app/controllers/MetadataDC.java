@@ -442,7 +442,7 @@ public class MetadataDC extends Controller {
 			location = dc.getLocation();
 		}
 		
-		return ok(validateform.render(title, description, location, dc.getDateSourceCreation()));
+		return ok(validateform.render(title, description, location, dc.getDateSourceCreation(), dc.getSubject()));
 	}
 	
 	public Timestamp nullCheckDate(Date date) {
