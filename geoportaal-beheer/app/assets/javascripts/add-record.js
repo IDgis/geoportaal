@@ -149,12 +149,6 @@ require([
 			var saveButton = dom.byId('js-save-form');
 			var form = dom.byId('js-form');
 			
-			domConstruct.destroy(dom.byId('js-form-validation-result'));
-			var resultDiv = domConstruct.create('div');
-			domAttr.set(resultDiv, 'id', 'js-form-validation-result');
-			domConstruct.place(resultDiv, dom.byId('js-form-validation'));
-			var result = dom.byId('js-form-validation-result');
-			
 			var id = domAttr.get(this, 'data-id');
 			var formData = new FormData();
 			
@@ -179,6 +173,12 @@ require([
 				var nfBoolean = data.indexOf('data-error="true"') > -1;
 				
 				if(nfBoolean) {
+					domConstruct.destroy(dom.byId('js-form-validation-result'));
+					var resultDiv = domConstruct.create('div');
+					domAttr.set(resultDiv, 'id', 'js-form-validation-result');
+					domConstruct.place(resultDiv, dom.byId('js-form-validation'));
+					var result = dom.byId('js-form-validation-result');
+					
 					domConstruct.place(data, result);
 				} else {
 					form.submit();
