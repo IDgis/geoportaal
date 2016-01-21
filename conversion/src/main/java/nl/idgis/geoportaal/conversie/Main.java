@@ -6,6 +6,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -22,10 +23,12 @@ import javax.xml.xpath.XPathFactory;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
 
 public class Main {
 
 	private static final String OUTPUT_DIR = "./csvfiles";
+	private static final String XML_ENCODING = "UTF-8";
 	
 	public static void main(String[] args) throws Exception {
 		File xmlDirectory = getFileFromArray(args);
@@ -83,7 +86,7 @@ public class Main {
 		dbf.setNamespaceAware(true);
 		
 		DocumentBuilder db = dbf.newDocumentBuilder();
-		Document d = db.parse(new FileInputStream(xmlFile));
+		Document d = db.parse(new InputSource(new InputStreamReader(new FileInputStream(xmlFile), XML_ENCODING)));
 		
 		// construct namespace context
 		Map<String, String> ns = new HashMap<>();
