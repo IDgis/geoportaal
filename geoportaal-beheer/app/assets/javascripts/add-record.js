@@ -155,8 +155,18 @@ require([
 			var titleVal = domAttr.get(dom.byId('js-title'), 'value');
 			var descriptionVal = domAttr.get(dom.byId('js-description'), 'value');
 			var locationVal = domAttr.get(dom.byId('js-location'), 'value');
+			
 			var dateCreationChrome = domAttr.get(dom.byId('js-date-creation'), 'value');
 			var dateCreationRest = domAttr.get(dom.byId('js-hidden-date-creation'), 'value');
+			var datePublicationChrome = domAttr.get(dom.byId('js-date-publication'), 'value');
+			var datePublicationRest = domAttr.get(dom.byId('js-hidden-date-publication'), 'value');
+			var dateRevisionChrome = domAttr.get(dom.byId('js-date-revision'), 'value');
+			var dateRevisionRest = domAttr.get(dom.byId('js-hidden-date-revision'), 'value');
+			var dateValidFromChrome = domAttr.get(dom.byId('js-date-valid-from'), 'value');
+			var dateValidFromRest = domAttr.get(dom.byId('js-hidden-date-valid-from'), 'value');
+			var dateValidUntilChrome = domAttr.get(dom.byId('js-date-valid-until'), 'value');
+			var dateValidUntilRest = domAttr.get(dom.byId('js-hidden-date-valid-until'), 'value');
+			
 			var subjectList = query('.js-subject-input:checked');
 			var creatorVal = domAttr.get(dom.byId('js-creator-select'), 'value');
 			
@@ -171,8 +181,16 @@ require([
 			}
 			if(!Modernizr.inputtypes.date) {
 				formData.append('dateSourceCreation', dateCreationRest);
+				formData.append('dateSourcePublication', datePublicationRest);
+				formData.append('dateSourceRevision', dateRevisionRest);
+				formData.append('dateSourceValidFrom', dateValidFromRest);
+				formData.append('dateSourceValidUntil', dateValidUntilRest);
 			} else {
 				formData.append('dateSourceCreation', dateCreationChrome);
+				formData.append('dateSourcePublication', datePublicationChrome);
+				formData.append('dateSourceRevision', dateRevisionChrome);
+				formData.append('dateSourceValidFrom', dateValidFromChrome);
+				formData.append('dateSourceValidUntil', dateValidUntilChrome);
 			}
 			array.forEach(subjectList, function(item) {
 				var subjectValue = domAttr.get(item, 'value');

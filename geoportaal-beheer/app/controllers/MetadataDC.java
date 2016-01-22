@@ -22,6 +22,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Timestamp;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -32,7 +33,9 @@ import javax.inject.Inject;
 import com.querydsl.core.Tuple;
 
 import models.DublinCore;
+import play.data.DynamicForm;
 import play.data.Form;
+import play.data.Form.Field;
 import play.mvc.Controller;
 import play.mvc.Http.MultipartFormData.FilePart;
 import play.mvc.Result;
@@ -418,42 +421,96 @@ public class MetadataDC extends Controller {
 	}
 	
 	public Result validateForm(String metadataUuid) {
-		Form<DublinCore> dcForm = Form.form(DublinCore.class);
-		DublinCore dc = dcForm.bindFromRequest().get();
 		
-		String title = null;
-		if(dc.getTitle().equals("")) {
-			title = null;
-		} else {
-			title = dc.getTitle();
-		}
-		
-		String description = null;
-		if(dc.getDescription().equals("")) {
-			description = null;
-		} else {
-			description = dc.getDescription();
-		}
-		
-		String location = null;
-		if(dc.getLocation().equals("")) {
-			location = null;
-		} else {
-			location = dc.getLocation();
-		}
-		
-		String creatorOther = null;
-		if(dc.getCreator() != null) {
-			if(dc.getCreatorOther().equals("")) {
-				creatorOther = null;
-			} else {
-				creatorOther = dc.getCreatorOther();
+		try {
+			DynamicForm requestData = Form.form().bindFromRequest();
+			String dateCreate = requestData.get("dateSourceCreation");
+			String datePublication = requestData.get("dateSourcePublication");
+			String dateRevision = requestData.get("dateSourceRevision");
+			String dateValidFrom = requestData.get("dateSourceValidFrom");
+			String dateValidUntil = requestData.get("dateSourceValidUntil");
+			
+			System.out.println(datePublication);
+			
+			Result dateCreateReturn = validateDate(dateCreate, "De datum creatie is niet correct ingevuld.");
+			if(dateCreateReturn != null) {
+				return dateCreateReturn;
 			}
-		} else {
-			creatorOther = "";
+			
+			Result dateCreatePublication = validateDate(datePublication, "De datum publicatie is niet correct ingevuld.");
+			if(dateCreatePublication != null) {
+				return dateCreatePublication;
+			}
+			
+			Result dateCreateRevision = validateDate(dateRevision, "De datum mutatie is niet correct ingevuld.");
+			if(dateCreateRevision != null) {
+				return dateCreateRevision;
+			}
+			
+			Result dateCreateValidFrom = validateDate(dateValidFrom, "De datum geldig, van is niet correct ingevuld.");
+			if(dateCreateValidFrom != null) {
+				return dateCreateValidFrom;
+			}
+			
+			Result dateCreateValidUntil = validateDate(dateValidUntil, "De datum geldig, tot is niet correct ingevuld.");
+			if(dateCreateValidUntil != null) {
+				return dateCreateValidUntil;
+			}
+			
+			Form<DublinCore> dcForm = Form.form(DublinCore.class);
+			DublinCore dc = dcForm.bindFromRequest().get();
+			
+			String title = null;
+			if(dc.getTitle().equals("")) {
+				title = null;
+			} else {
+				title = dc.getTitle();
+			}
+			
+			String description = null;
+			if(dc.getDescription().equals("")) {
+				description = null;
+			} else {
+				description = dc.getDescription();
+			}
+			
+			String location = null;
+			if(dc.getLocation().equals("")) {
+				location = null;
+			} else {
+				location = dc.getLocation();
+			}
+			
+			String creatorOther = null;
+			if(dc.getCreator() != null) {
+				if(dc.getCreatorOther().equals("")) {
+					creatorOther = null;
+				} else {
+					creatorOther = dc.getCreatorOther();
+				}
+			} else {
+				creatorOther = "";
+			}
+			
+			return ok(validateform.render(title, description, location, creatorOther, dc.getDateSourceCreation(), dc.getSubject()));
+		} catch(IllegalStateException ise) {
+			return ok(bindingerror.render("Er is iets misgegaan. Controleer of de velden correct zijn ingevuld."));
+		}
+	}
+	
+	public Result validateDate(String date, String errorMessage) {
+		if(date.equals("")) {
+			return null;
 		}
 		
-		return ok(validateform.render(title, description, location, creatorOther, dc.getDateSourceCreation(), dc.getSubject()));
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		sdf.setLenient(false);
+		try {
+			sdf.parse(date);
+			return null;
+		} catch(ParseException pe) {
+			return ok(bindingerror.render(errorMessage));
+		}
 	}
 	
 	public Timestamp nullCheckDate(Date date) {

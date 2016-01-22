@@ -1,0 +1,11 @@
+@(message: String)
+
+<div id="js-form-validation-result">
+	@if(message != null) {
+		<div>
+			<div class="alert alert-danger" role="alert" data-error="true">
+				<b>@message</b>
+			</div>
+		</div>
+	}
+</div>
