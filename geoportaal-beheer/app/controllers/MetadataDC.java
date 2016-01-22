@@ -430,31 +430,51 @@ public class MetadataDC extends Controller {
 			String dateValidFrom = requestData.get("dateSourceValidFrom");
 			String dateValidUntil = requestData.get("dateSourceValidUntil");
 			
-			System.out.println(datePublication);
+			Boolean dateCreateReturn = validateDate(dateCreate);
+			Boolean datePublicationReturn = validateDate(datePublication);
+			Boolean dateRevisionReturn = validateDate(dateRevision);
+			Boolean dateValidFromReturn = validateDate(dateValidFrom);
+			Boolean dateValidUntilReturn = validateDate(dateValidUntil);
 			
-			Result dateCreateReturn = validateDate(dateCreate, "De datum creatie is niet correct ingevuld.");
-			if(dateCreateReturn != null) {
-				return dateCreateReturn;
-			}
-			
-			Result dateCreatePublication = validateDate(datePublication, "De datum publicatie is niet correct ingevuld.");
-			if(dateCreatePublication != null) {
-				return dateCreatePublication;
-			}
-			
-			Result dateCreateRevision = validateDate(dateRevision, "De datum mutatie is niet correct ingevuld.");
-			if(dateCreateRevision != null) {
-				return dateCreateRevision;
-			}
-			
-			Result dateCreateValidFrom = validateDate(dateValidFrom, "De datum geldig, van is niet correct ingevuld.");
-			if(dateCreateValidFrom != null) {
-				return dateCreateValidFrom;
-			}
-			
-			Result dateCreateValidUntil = validateDate(dateValidUntil, "De datum geldig, tot is niet correct ingevuld.");
-			if(dateCreateValidUntil != null) {
-				return dateCreateValidUntil;
+			if(!dateCreateReturn || !datePublicationReturn || !dateRevisionReturn || !dateValidFromReturn || !dateValidUntilReturn) {
+				String dateCreateMsg = null;
+				String datePublicationMsg = null;
+				String dateRevisionMsg = null;
+				String dateValidFromMsg = null;
+				String dateValidUntilMsg = null;
+				
+				if(!dateCreateReturn) {
+					dateCreateMsg = "De datum creatie is niet correct ingevuld.";
+				} else {
+					dateCreateMsg = null;
+				}
+				
+				if(!datePublicationReturn) {
+					datePublicationMsg = "De datum publicatie is niet correct ingevuld.";
+				} else {
+					datePublicationMsg = null;
+				}
+				
+				if(!dateRevisionReturn) {
+					dateRevisionMsg = "De datum mutatie is niet correct ingevuld.";
+				} else {
+					dateRevisionMsg = null;
+				}
+				
+				if(!dateValidFromReturn) {
+					dateValidFromMsg = "De datum geldig, van is niet correct ingevuld.";
+				} else {
+					dateValidFromMsg = null;
+				}
+				
+				if(!dateValidUntilReturn) {
+					dateValidUntilMsg = "De datum geldig, tot is niet correct ingevuld.";
+				} else {
+					dateValidUntilMsg = null;
+				}
+				
+				return ok(bindingerror.render(null, dateCreateMsg, datePublicationMsg, dateRevisionMsg, dateValidFromMsg, dateValidUntilMsg, null, null));
+				
 			}
 			
 			Form<DublinCore> dcForm = Form.form(DublinCore.class);
@@ -494,22 +514,22 @@ public class MetadataDC extends Controller {
 			
 			return ok(validateform.render(title, description, location, creatorOther, dc.getDateSourceCreation(), dc.getSubject()));
 		} catch(IllegalStateException ise) {
-			return ok(bindingerror.render("Er is iets misgegaan. Controleer of de velden correct zijn ingevuld."));
+			return ok(bindingerror.render("Er is iets misgegaan. Controleer of de velden correct zijn ingevuld.", null, null, null, null, null, null, null));
 		}
 	}
 	
-	public Result validateDate(String date, String errorMessage) {
+	public Boolean validateDate(String date) {
 		if(date.equals("")) {
-			return null;
+			return true;
 		}
 		
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		sdf.setLenient(false);
 		try {
 			sdf.parse(date);
-			return null;
+			return true;
 		} catch(ParseException pe) {
-			return ok(bindingerror.render(errorMessage));
+			return false;
 		}
 	}
 	
