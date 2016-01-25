@@ -1,0 +1,42 @@
+apply plugin: 'java'
+apply plugin: 'maven-publish'
+
+version = '1.0'
+
+import org.apache.tools.ant.filters.ReplaceTokens
+
+publishing {
+	repositories.maven {
+			name 'idgis'
+			url 'http://nexus.idgis.eu/content/repositories/releases/'
+			credentials {
+				username nexusUser 
+				password nexusPassword
+			}
+	}
+	
+	publications {
+		mavenJava(MavenPublication) {
+			groupId 'nl.idgis.geoportaal'
+			artifact jar
+		}
+	}
+	
+	processResources {
+		from(sourceSets.main.resources.srcDirs) {
+			include '**/*.xsl'
+			filter ReplaceTokens, tokens: [
+				"project.name": project.name,
+				"project.version": project.version
+			]
+		}
+	}
+	
+	jar {
+		eachFile {
+			it.path = "META-INF/resources/webjars/${project.name}/${project.version}/${it.path}"
+		}
+		
+		includeEmptyDirs = false
+	}
+}
