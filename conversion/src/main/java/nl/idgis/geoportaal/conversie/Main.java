@@ -27,7 +27,7 @@ import org.xml.sax.InputSource;
 
 public class Main {
 
-	private static final String OUTPUT_DIR = "./csvfiles";
+	private static final String OUTPUT_DIR = "./csv";
 	private static final String XML_ENCODING = "UTF-8";
 	
 	public static void main(String[] args) throws Exception {
