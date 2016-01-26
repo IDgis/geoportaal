@@ -3,6 +3,7 @@ package nl.idgis.geoportaal.conversie;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -26,13 +27,11 @@ import org.xml.sax.InputSource;
 
 public class Main {
 
-	private static final String INPUT_DIR = "C:\\Users\\Sandro\\git\\geoportaal\\conversion\\xml_files";
-	private static final String OUTPUT_DIR = "./csv";
 	private static final String XML_ENCODING = "UTF-8";
 	
 	public static void main(String[] args) throws Exception {
-		File xmlDirectory = new File(INPUT_DIR);
-		File csvFile = new File(new File(OUTPUT_DIR) + "/conversion_input.csv");
+		File xmlDirectory = getFileFromArray(args, 0);
+		File csvFile = new File(getFileFromArray(args, 1) + "/conversion_input.csv");
 		BufferedWriter writer = new BufferedWriter(new FileWriter(csvFile), 2048);
 		final String header = "\"file_name\";\"title\";\"creator\";\"subject\";\"description\";\"publisher\";\"contributor\";\"date\";\"issued\";\"valid_start\";\"valid_end\";\"type\";\"format\";\"identifier\";\"references\";\"relation_id\";\"source\";\"language\";\"relation_attachment\";\"rights\";\"temporal_start\";\"temportal_end\";\"bbox_lowercorner\";\"bbox_uppercorner\"";
 		writer.write(header);
@@ -182,5 +181,17 @@ public class Main {
 				writer.write("," + elementFinal);
 			}
 		}
+	}
+	
+	private static File getFileFromArray(String[] array, Integer numberParam) throws FileNotFoundException {
+		if (array.length != 2)
+			throw new IllegalArgumentException("aantal argumenten is niet gelijk aan 2");
+
+		File file = new File(array[numberParam]);
+
+		if (!file.exists())
+			throw new FileNotFoundException(file.getAbsolutePath());
+		
+		return file;
 	}
 }

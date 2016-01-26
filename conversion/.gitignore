@@ -1,8 +1,8 @@
 bin
 build
-csv
 xml_files
 /.gradle
 /.classpath
 /.project
 /.settings
+*.csv
