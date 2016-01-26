@@ -94,12 +94,31 @@ public class Index extends Controller {
 		    			.join(status).on(metadata.status.eq(status.id))
 		    			.join(supplier).on(metadata.supplier.eq(supplier.id))
 		    			.join(statusLabel).on(status.id.eq(statusLabel.statusId))
-		    			.join(mdFormat).on(metadata.mdFormat.eq(mdFormat.id));
+		    			.join(typeInformation).on(metadata.typeInformation.eq(typeInformation.id))
+    					.join(typeInformationLabel).on(typeInformation.id.eq(typeInformationLabel.id))
+    					.join(creator).on(metadata.creator.eq(creator.id))
+    					.join(creatorLabel).on(creator.id.eq(creatorLabel.id))
+    					.join(rights).on(metadata.rights.eq(rights.id))
+    					.join(rightsLabel).on(rights.id.eq(rightsLabel.id))
+    					.join(useLimitation).on(metadata.useLimitation.eq(useLimitation.id))
+    					.join(useLimitationLabel).on(useLimitation.id.eq(useLimitationLabel.id))
+		    			.join(mdFormat).on(metadata.mdFormat.eq(mdFormat.id))
+		    			.join(mdFormatLabel).on(mdFormat.id.eq(mdFormatLabel.id));
 				
 				if(!"".equals(textSearch)) {
 					datasetQuery
 						.where(metadata.title.containsIgnoreCase(textSearch)
-								.or(metadata.description.containsIgnoreCase(textSearch)));
+							.or(metadata.description.containsIgnoreCase(textSearch))
+							.or(metadata.location.containsIgnoreCase(textSearch))
+							.or(metadata.fileId.containsIgnoreCase(textSearch))
+							.or(metadata.uuid.containsIgnoreCase(textSearch))
+							.or(typeInformationLabel.label.eq(textSearch))
+							.or(creatorLabel.label.eq(textSearch))
+							.or(metadata.creatorOther.containsIgnoreCase(textSearch))
+							.or(rightsLabel.label.eq(textSearch))
+							.or(useLimitationLabel.label.eq(textSearch))
+							.or(mdFormatLabel.label.eq(textSearch))
+							.or(metadata.source.containsIgnoreCase(textSearch)));
 				}
 				
 				if(!"none".equals(supplierSearch)) {
