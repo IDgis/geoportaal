@@ -34,14 +34,14 @@ public class Main {
 		File xmlDirectory = getFileFromArray(args);
 		File csvFile = new File(new File(OUTPUT_DIR) + "/csv_overview.csv");
 		BufferedWriter writer = new BufferedWriter(new FileWriter(csvFile), 2048);
-		final String header = "\"title\";\"creator\";\"subject\";\"description\";\"publisher\";\"contributor\";\"date\";\"issued\";\"valid_start\";\"valid_end\";\"type\";\"format\";\"identifier\";\"references\";\"relation_id\";\"source\";\"language\";\"relation_attachment\";\"rights\";\"temporal_start\";\"temportal_end\";\"bbox_lowercorner\";\"bbox_uppercorner\"";
+		final String header = "\"file_name\";\"title\";\"creator\";\"subject\";\"description\";\"publisher\";\"contributor\";\"date\";\"issued\";\"valid_start\";\"valid_end\";\"type\";\"format\";\"identifier\";\"references\";\"relation_id\";\"source\";\"language\";\"relation_attachment\";\"rights\";\"temporal_start\";\"temportal_end\";\"bbox_lowercorner\";\"bbox_uppercorner\"";
 		writer.write(header);
 		
 		int i = 0;
 		for (File file : xmlDirectory.listFiles()) {
 			System.out.println(i++ + ": " + file.getName());
 			try {
-				convert(writer, file, csvFile);
+				convert(writer, file, csvFile, file.getName());
 			} catch(Exception e) {
 				System.out.println("File is invalid");
 				e.printStackTrace();
@@ -128,11 +128,12 @@ public class Main {
 		return new MetadataDocument(d, xp);
 	}
 
-	private static void convert(BufferedWriter writer, File xmlFile, File csvFile) throws Exception {
+	private static void convert(BufferedWriter writer, File xmlFile, File csvFile, String fileName) throws Exception {
 		writer.newLine();
 		
 		MetadataDocument d = parseDocument(xmlFile);
 		
+		writer.write("\"" + fileName + "\"");
 		writeToCSV(writer, d.getStrings("/rdf:RDF/rdf:Description/dc:title/text()"), true);
 		writeToCSV(writer, d.getStrings("/rdf:RDF/rdf:Description/dc:creator/text()"), false);
 		writeToCSV(writer, d.getStrings("/rdf:RDF/rdf:Description/dc:subject/text()"), false);
@@ -172,11 +173,7 @@ public class Main {
 			String elementFinal = elementNew.replaceAll("[\\\"]", "\'");
 			
 			if(elementList.indexOf(element) == 0) {
-				if(first) {
-					writer.write("\"" + elementFinal);
-				} else {
-					writer.write(";\"" + elementFinal);
-				}
+				writer.write(";\"" + elementFinal);
 			} if(elementList.size() == 1) {
 				writer.write("\"");
 			} else if(elementList.indexOf(element) == elementList.size() - 1) {
