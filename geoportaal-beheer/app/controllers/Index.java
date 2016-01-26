@@ -11,6 +11,7 @@ import static models.QSupplier.supplier;
 
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -21,12 +22,15 @@ import com.querydsl.core.Tuple;
 import com.querydsl.sql.SQLQuery;
 
 import actions.DefaultAuthenticator;
+import models.DublinCore;
 import models.Search;
 import play.Routes;
+import play.data.DynamicForm;
 import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
+import views.html.*;
 
 @Security.Authenticated(DefaultAuthenticator.class)
 public class Index extends Controller {
@@ -110,18 +114,48 @@ public class Index extends Controller {
 		return redirect(controllers.routes.Index.index());
 	}
 	
+	public Result validateForm() {
+		
+		try {
+			DynamicForm requestData = Form.form().bindFromRequest();
+			String dateSearchStart = requestData.get("dateUpdateStart");
+			String dateSearchEnd = requestData.get("dateUpdateEnd");
+			
+			Boolean dateSearchStartReturn = validateDate(dateSearchStart);
+			Boolean dateSearchEndReturn = validateDate(dateSearchEnd);
+			
+			String dateSearchStartMsg = null;
+			String dateSearchEndMsg = null;
+			
+			if(!dateSearchStartReturn || !dateSearchEndReturn) {
+				if(!dateSearchStartReturn) {
+					dateSearchStartMsg = "De update datum, van is niet correct ingevuld.";
+				} else {
+					dateSearchStartMsg = null;
+				}
+				
+				if(!dateSearchEndReturn) {
+					dateSearchEndMsg = "De update datum, tot is niet correct ingevuld.";
+				} else {
+					dateSearchEndMsg = null;
+				}
+			}
+			
+			return ok(bindingerror.render(null, null, null, null, null, null, dateSearchStartMsg, dateSearchEndMsg));
+		} catch(IllegalStateException ise) {
+				return ok(bindingerror.render("Er is iets misgegaan. Controleer of de velden correct zijn ingevuld.", null, null, null, null, null, null, null));
+			}
+	}
+	
 	public Result search() {
 		Form<Search> searchForm = Form.form(Search.class);
 		Search s = searchForm.bindFromRequest().get();
-		
 		String textSearch = s.getText();
 		String supplierSearch = s.getSupplier();
 		String statusSearch = s.getStatus();
 		String mdFormatSearch = s.getFormat();
 		Date dateStartSearch = s.getDateUpdateStart();
 		Date dateEndSearch = s.getDateUpdateEnd();
-		
-		
 		
 		SQLQuery<Tuple> datasetQuery = db.queryFactory
     			.select(metadata.id, metadata.uuid, metadata.title, metadata.lastRevisionDate, statusLabel.label, supplier.name, status.name, mdFormat.name)
@@ -195,13 +229,29 @@ public class Index extends Controller {
 				supplierSearch, statusSearch, mdFormatSearch, timestampStartSearch, resetTimestampEndSearch));
 	}
 	
+	public Boolean validateDate(String date) {
+		if(date.equals("")) {
+			return true;
+		}
+		
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		sdf.setLenient(false);
+		try {
+			sdf.parse(date);
+			return true;
+		} catch(ParseException pe) {
+			return false;
+		}
+	}
+	
 	public Result jsRoutes() {
 		return ok (Routes.javascriptRouter ("jsRoutes",
             controllers.routes.javascript.Assets.versioned(),
             controllers.routes.javascript.Index.deleteMetadata(),
 			controllers.routes.javascript.Index.changeStatus(),
 			controllers.routes.javascript.Index.changeSupplier(),
-			controllers.routes.javascript.MetadataDC.validateForm()
+			controllers.routes.javascript.MetadataDC.validateForm(),
+			controllers.routes.javascript.Index.validateForm()
         )).as ("text/javascript");
     }
 }

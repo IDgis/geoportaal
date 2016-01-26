@@ -1,0 +1,69 @@
+@(genericMsg: String, createMsg: String, publicationMsg: String, revisionMsg: String, validFromMsg: String, validUntilMsg: String, searchStartMsg: String,
+	searchEndMsg: String
+)
+
+<div id="js-form-validation-result">
+	@if(genericMsg != null) {
+		<div>
+			<div class="alert alert-danger" role="alert" data-error="true">
+				<b>@genericMsg</b>
+			</div>
+		</div>
+	}
+	
+	@if(createMsg != null) {
+		<div>
+			<div class="alert alert-danger" role="alert" data-error="true">
+				<b>@createMsg</b>
+			</div>
+		</div>
+	}
+	
+	@if(publicationMsg != null) {
+		<div>
+			<div class="alert alert-danger" role="alert" data-error="true">
+				<b>@publicationMsg</b>
+			</div>
+		</div>
+	}
+	
+	@if(revisionMsg != null) {
+		<div>
+			<div class="alert alert-danger" role="alert" data-error="true">
+				<b>@revisionMsg</b>
+			</div>
+		</div>
+	}
+	
+	@if(validFromMsg != null) {
+		<div>
+			<div class="alert alert-danger" role="alert" data-error="true">
+				<b>@validFromMsg</b>
+			</div>
+		</div>
+	}
+	
+	@if(validUntilMsg != null) {
+		<div>
+			<div class="alert alert-danger" role="alert" data-error="true">
+				<b>@validUntilMsg</b>
+			</div>
+		</div>
+	}
+	
+	@if(searchStartMsg != null) {
+		<div>
+			<div class="alert alert-danger" role="alert" data-error="true">
+				<b>@searchStartMsg</b>
+			</div>
+		</div>
+	}
+	
+	@if(searchEndMsg != null) {
+		<div>
+			<div class="alert alert-danger" role="alert" data-error="true">
+				<b>@searchEndMsg</b>
+			</div>
+		</div>
+	}
+</div>

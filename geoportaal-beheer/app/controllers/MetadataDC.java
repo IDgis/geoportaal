@@ -22,6 +22,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Timestamp;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -32,7 +33,9 @@ import javax.inject.Inject;
 import com.querydsl.core.Tuple;
 
 import models.DublinCore;
+import play.data.DynamicForm;
 import play.data.Form;
+import play.data.Form.Field;
 import play.mvc.Controller;
 import play.mvc.Http.MultipartFormData.FilePart;
 import play.mvc.Result;
@@ -418,42 +421,116 @@ public class MetadataDC extends Controller {
 	}
 	
 	public Result validateForm(String metadataUuid) {
-		Form<DublinCore> dcForm = Form.form(DublinCore.class);
-		DublinCore dc = dcForm.bindFromRequest().get();
 		
-		String title = null;
-		if(dc.getTitle().equals("")) {
-			title = null;
-		} else {
-			title = dc.getTitle();
-		}
-		
-		String description = null;
-		if(dc.getDescription().equals("")) {
-			description = null;
-		} else {
-			description = dc.getDescription();
-		}
-		
-		String location = null;
-		if(dc.getLocation().equals("")) {
-			location = null;
-		} else {
-			location = dc.getLocation();
-		}
-		
-		String creatorOther = null;
-		if(dc.getCreator() != null) {
-			if(dc.getCreatorOther().equals("")) {
-				creatorOther = null;
-			} else {
-				creatorOther = dc.getCreatorOther();
+		try {
+			DynamicForm requestData = Form.form().bindFromRequest();
+			String dateCreate = requestData.get("dateSourceCreation");
+			String datePublication = requestData.get("dateSourcePublication");
+			String dateRevision = requestData.get("dateSourceRevision");
+			String dateValidFrom = requestData.get("dateSourceValidFrom");
+			String dateValidUntil = requestData.get("dateSourceValidUntil");
+			
+			Boolean dateCreateReturn = validateDate(dateCreate);
+			Boolean datePublicationReturn = validateDate(datePublication);
+			Boolean dateRevisionReturn = validateDate(dateRevision);
+			Boolean dateValidFromReturn = validateDate(dateValidFrom);
+			Boolean dateValidUntilReturn = validateDate(dateValidUntil);
+			
+			if(!dateCreateReturn || !datePublicationReturn || !dateRevisionReturn || !dateValidFromReturn || !dateValidUntilReturn) {
+				String dateCreateMsg = null;
+				String datePublicationMsg = null;
+				String dateRevisionMsg = null;
+				String dateValidFromMsg = null;
+				String dateValidUntilMsg = null;
+				
+				if(!dateCreateReturn) {
+					dateCreateMsg = "De datum creatie is niet correct ingevuld.";
+				} else {
+					dateCreateMsg = null;
+				}
+				
+				if(!datePublicationReturn) {
+					datePublicationMsg = "De datum publicatie is niet correct ingevuld.";
+				} else {
+					datePublicationMsg = null;
+				}
+				
+				if(!dateRevisionReturn) {
+					dateRevisionMsg = "De datum mutatie is niet correct ingevuld.";
+				} else {
+					dateRevisionMsg = null;
+				}
+				
+				if(!dateValidFromReturn) {
+					dateValidFromMsg = "De datum geldig, van is niet correct ingevuld.";
+				} else {
+					dateValidFromMsg = null;
+				}
+				
+				if(!dateValidUntilReturn) {
+					dateValidUntilMsg = "De datum geldig, tot is niet correct ingevuld.";
+				} else {
+					dateValidUntilMsg = null;
+				}
+				
+				return ok(bindingerror.render(null, dateCreateMsg, datePublicationMsg, dateRevisionMsg, dateValidFromMsg, dateValidUntilMsg, null, null));
+				
 			}
-		} else {
-			creatorOther = "";
+			
+			Form<DublinCore> dcForm = Form.form(DublinCore.class);
+			DublinCore dc = dcForm.bindFromRequest().get();
+			
+			String title = null;
+			if(dc.getTitle().equals("")) {
+				title = null;
+			} else {
+				title = dc.getTitle();
+			}
+			
+			String description = null;
+			if(dc.getDescription().equals("")) {
+				description = null;
+			} else {
+				description = dc.getDescription();
+			}
+			
+			String location = null;
+			if(dc.getLocation().equals("")) {
+				location = null;
+			} else {
+				location = dc.getLocation();
+			}
+			
+			String creatorOther = null;
+			if(dc.getCreator() != null) {
+				if(dc.getCreatorOther().equals("")) {
+					creatorOther = null;
+				} else {
+					creatorOther = dc.getCreatorOther();
+				}
+			} else {
+				creatorOther = "";
+			}
+			
+			return ok(validateform.render(title, description, location, creatorOther, dc.getDateSourceCreation(), dc.getSubject()));
+		} catch(IllegalStateException ise) {
+			return ok(bindingerror.render("Er is iets misgegaan. Controleer of de velden correct zijn ingevuld.", null, null, null, null, null, null, null));
+		}
+	}
+	
+	public Boolean validateDate(String date) {
+		if(date.equals("")) {
+			return true;
 		}
 		
-		return ok(validateform.render(title, description, location, creatorOther, dc.getDateSourceCreation(), dc.getSubject()));
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		sdf.setLenient(false);
+		try {
+			sdf.parse(date);
+			return true;
+		} catch(ParseException pe) {
+			return false;
+		}
 	}
 	
 	public Timestamp nullCheckDate(Date date) {
