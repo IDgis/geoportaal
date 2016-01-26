@@ -409,6 +409,113 @@ public class Index extends Controller {
 		}
 	}
 	
+<<<<<<< Upstream, based on origin/master
+=======
+	public Result search() {
+		Form<Search> searchForm = Form.form(Search.class);
+		Search s = searchForm.bindFromRequest().get();
+		String textSearch = s.getText();
+		String supplierSearch = s.getSupplier();
+		String statusSearch = s.getStatus();
+		String mdFormatSearch = s.getFormat();
+		Date dateStartSearch = s.getDateUpdateStart();
+		Date dateEndSearch = s.getDateUpdateEnd();
+		
+		return q.withTransaction(tx -> {
+			SQLQuery<Tuple> datasetQuery = tx.select(metadata.id, metadata.uuid, metadata.title, metadata.lastRevisionDate, statusLabel.label, supplier.name, 
+					status.name, mdFormat.name)
+	    			.from(metadata)
+	    			.join(status).on(metadata.status.eq(status.id))
+    				.join(statusLabel).on(status.id.eq(statusLabel.statusId))
+    				.join(supplier).on(metadata.supplier.eq(supplier.id))
+    				.join(typeInformation).on(metadata.typeInformation.eq(typeInformation.id))
+    				.join(typeInformationLabel).on(typeInformation.id.eq(typeInformationLabel.id))
+    				.join(creator).on(metadata.creator.eq(creator.id))
+    				.join(creatorLabel).on(creator.id.eq(creatorLabel.id))
+    				.join(rights).on(metadata.rights.eq(rights.id))
+    				.join(rightsLabel).on(rights.id.eq(rightsLabel.id))
+    				.join(useLimitation).on(metadata.useLimitation.eq(useLimitation.id))
+    				.join(useLimitationLabel).on(useLimitation.id.eq(useLimitationLabel.id))
+    				.join(mdFormat).on(metadata.mdFormat.eq(mdFormat.id))
+    				.join(mdFormatLabel).on(mdFormat.id.eq(mdFormatLabel.id));
+			
+			if(!textSearch.equals("")) {
+			datasetQuery
+				.where(metadata.title.containsIgnoreCase(textSearch)
+						.or(metadata.description.containsIgnoreCase(textSearch))
+						.or(metadata.location.containsIgnoreCase(textSearch))
+						.or(metadata.fileId.containsIgnoreCase(textSearch))
+						.or(metadata.uuid.containsIgnoreCase(textSearch))
+						.or(mdAttachment.attachmentName.equalsIgnoreCase(textSearch))
+						.or(typeInformationLabel.label.equalsIgnoreCase(textSearch))
+						.or(creatorLabel.label.equalsIgnoreCase(textSearch))
+						.or(metadata.creatorOther.containsIgnoreCase(textSearch))
+						.or(rightsLabel.label.equalsIgnoreCase(textSearch))
+						.or(useLimitationLabel.label.equalsIgnoreCase(textSearch))
+						.or(mdFormatLabel.label.equalsIgnoreCase(textSearch))
+						.or(metadata.source.containsIgnoreCase(textSearch))
+						.or(subjectLabel.label.equalsIgnoreCase(textSearch)));
+		}
+			
+			if(!supplierSearch.equals("none")) {
+				datasetQuery
+					.where(supplier.name.eq(supplierSearch));
+			}
+			
+			if(!statusSearch.equals("none")) {
+				datasetQuery
+					.where(status.name.eq(statusSearch));
+			}
+			
+			if(!mdFormatSearch.equals("none")) {
+				datasetQuery
+					.where(mdFormat.name.eq(mdFormatSearch));
+			}
+			
+			Timestamp timestampStartSearch = null;
+			Timestamp timestampEndSearch = null;
+			if(dateStartSearch != null && dateEndSearch != null) {
+				timestampStartSearch = new Timestamp(dateStartSearch.getTime());
+				timestampEndSearch = new Timestamp(dateEndSearch.getTime() + 86400000);
+				
+				datasetQuery
+					.where(metadata.lastRevisionDate.after(timestampStartSearch))
+					.where(metadata.lastRevisionDate.before(timestampEndSearch));
+			}
+			
+			List<Tuple> datasetRows = datasetQuery
+	    			.limit(200)
+					.orderBy(metadata.lastRevisionDate.desc())
+	    			.fetch();
+	    	
+	    	List<Tuple> supplierList = tx.select(supplier.all())
+	            	.from(supplier)
+	            	.fetch();
+	    	
+	    	List<Tuple> statusList = tx.select(status.name, statusLabel.label)
+	            	.from(status)
+	            	.join(statusLabel).on(status.id.eq(statusLabel.statusId))
+	            	.fetch();
+	    	
+	    	List<Tuple> mdFormatList = tx.select(mdFormat.name, mdFormatLabel.label)
+	            	.from(mdFormat)
+	            	.join(mdFormatLabel).on(mdFormat.id.eq(mdFormatLabel.mdFormatId))
+	            	.fetch();
+	    	
+	    	SimpleDateFormat sdfUS = new SimpleDateFormat("yyyy-MM-dd");
+	        SimpleDateFormat sdfLocal = new SimpleDateFormat("dd-MM-yyyy");
+	        
+	        Timestamp resetTimestampEndSearch = null;
+	        if(dateEndSearch != null) {
+	        	resetTimestampEndSearch = new Timestamp(dateEndSearch.getTime());
+	        }
+	    	
+			return ok(views.html.index.render(datasetRows, supplierList, statusList, mdFormatList, sdfUS, sdfLocal, textSearch, 
+					supplierSearch, statusSearch, mdFormatSearch, timestampStartSearch, resetTimestampEndSearch));
+		});
+	}
+	
+>>>>>>> d40141a Added attachment and subject to text search query
 	public Boolean validateDate(String date) {
 		if("".equals(date)) {
 			return true;
