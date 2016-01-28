@@ -7,6 +7,8 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -33,7 +35,7 @@ public class Main {
 		File xmlDirectory = getFileFromArray(args, 0);
 		File csvFile = new File(getFileFromArray(args, 1) + "/conversion_input.csv");
 		BufferedWriter writer = new BufferedWriter(new FileWriter(csvFile), 2048);
-		final String header = "\"file_name\";\"title\";\"creator\";\"subject\";\"description\";\"publisher\";\"contributor\";\"date\";\"issued\";\"valid_start\";\"valid_end\";\"type\";\"format\";\"identifier\";\"references\";\"relation_id\";\"source\";\"language\";\"relation_attachment\";\"rights\";\"temporal_start\";\"temportal_end\";\"bbox_lowercorner\";\"bbox_uppercorner\"";
+		final String header = "\"file_name\";\"title\";\"creator\";\"subject\";\"description\";\"publisher\";\"contributor\";\"date\";\"issued\";\"valid_start\";\"valid_end\";\"type\";\"format\";\"identifier\";\"references\";\"relation_id\";\"source\";\"language\";\"relation_attachment\";\"http_status_code\";\"rights\";\"temporal_start\";\"temportal_end\";\"bbox_lowercorner\";\"bbox_uppercorner\"";
 		writer.write(header);
 		
 		int i = 0;
@@ -150,7 +152,11 @@ public class Main {
 		writeToCSV(writer, d.getStrings("/rdf:RDF/rdf:Description/dcterms:relation/text()"), false);
 		writeToCSV(writer, d.getStrings("/rdf:RDF/rdf:Description/dc:source/text()"), false);
 		writeToCSV(writer, d.getStrings("/rdf:RDF/rdf:Description/dc:language/text()"), false);
-		writeToCSV(writer, d.getStrings("/rdf:RDF/rdf:Description/dc:relation/text()"), false);
+		
+		List<String> httpURLs = d.getStrings("/rdf:RDF/rdf:Description/dc:relation/text()");
+		writeToCSV(writer, httpURLs, false);
+		writeToCSV(writer, retrieveStatusCodes(httpURLs), false);
+		
 		writeToCSV(writer, d.getStrings("/rdf:RDF/rdf:Description/dc:rights/text()"), false);
 		writeToCSV(writer, d.getStrings("/rdf:RDF/rdf:Description/dcterms:temporal/start/text()"), false);
 		writeToCSV(writer, d.getStrings("/rdf:RDF/rdf:Description/dcterms:temporal/end/text()"), false);
@@ -158,6 +164,33 @@ public class Main {
 		writeToCSV(writer, d.getStrings("/rdf:RDF/rdf:Description/ows:WGS84BoundingBox/ows:UpperCorner/text()"), false);
 	}
 	
+	private static List<String> retrieveStatusCodes(List<String> httpURLsStrings) {
+		List<String> httpStatusCodes = new ArrayList<>();
+		
+		if(httpURLsStrings.isEmpty())
+			return httpStatusCodes;
+		
+		String[] httpURLs = httpURLsStrings.get(0).split("\\s+");
+		
+		for(String httpURL : httpURLs)
+			httpStatusCodes.add(requestStatusCode(httpURL));
+		
+		return httpStatusCodes;
+	}
+
+	private static String requestStatusCode(String httpURL) {
+		HttpURLConnection.setFollowRedirects(false);
+		int responseCode = 0;
+		try {
+			HttpURLConnection con = (HttpURLConnection) new URL(httpURL).openConnection();
+			con.setRequestMethod("HEAD");
+			responseCode = con.getResponseCode();
+		} catch (Exception e) {
+			return e.getClass().getName() + ": " + e.getMessage();
+		}
+		return Integer.toString(responseCode);
+	}
+
 	private static void writeToCSV(BufferedWriter writer, List<String> elementList, Boolean first) throws IOException {
 		if(elementList.size() == 0) {
 			if(first) {
@@ -166,20 +199,21 @@ public class Main {
 				writer.write(";\"\"");
 			}
 		}
-		
-		for(String element : elementList) {
+
+		for(int i = 0; i < elementList.size(); i++) {
+			String element = elementList.get(i);
 			String elementNew = element.replaceAll("[\\t\\n\\r]", " ");
 			String elementFinal = elementNew.replaceAll("[\\\"]", "\'");
 			
 			boolean firstOfList = false;
-			if(elementList.indexOf(element) == 0) {
+			if(i == 0) {
 				writer.write(";\"" + elementFinal);
 				firstOfList = true;
 			}
 			
 			if(elementList.size() == 1) {
 				writer.write("\"");
-			} else if(elementList.indexOf(element) == elementList.size() - 1) {
+			} else if(i == elementList.size() - 1) {
 				writer.write("," + elementFinal + "\"");
 			} else if(!firstOfList) {
 				writer.write("," + elementFinal);
