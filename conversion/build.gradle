@@ -8,3 +8,9 @@ repositories { mavenCentral() }
 buildscript {
 	repositories { mavenCentral() }
 }
+
+jar {
+	manifest {
+		attributes 'Main-Class': 'nl.idgis.geoportaal.conversie.Main'
+	}
+}
