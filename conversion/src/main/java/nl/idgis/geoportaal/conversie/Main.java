@@ -24,6 +24,8 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathFactory;
 
 import org.w3c.dom.Document;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
@@ -35,7 +37,7 @@ public class Main {
 		File xmlDirectory = getFileFromArray(args, 0);
 		File csvFile = new File(getFileFromArray(args, 1) + "/conversion_input.csv");
 		BufferedWriter writer = new BufferedWriter(new FileWriter(csvFile), 2048);
-		final String header = "\"file_name\";\"title\";\"creator\";\"subject\";\"description\";\"publisher\";\"contributor\";\"date\";\"issued\";\"valid_start\";\"valid_end\";\"type\";\"format\";\"identifier\";\"references\";\"relation_id\";\"source\";\"language\";\"relation_attachment\";\"http_status_code\";\"rights\";\"temporal_start\";\"temportal_end\";\"bbox_lowercorner\";\"bbox_uppercorner\"";
+		final String header = "\"file_name\";\"title\";\"creator\";\"subject\";\"description\";\"publisher\";\"contributor\";\"date\";\"issued\";\"valid_start\";\"valid_end\";\"type\";\"format\";\"identifier\";\"references\";\"relation_id\";\"source\";\"language\";\"relation_attachment\";\"http_status_code\";\"rights_file\";\"rights_use\";\"temporal_start\";\"temportal_end\";\"bbox_lowercorner\";\"bbox_uppercorner\"";
 		writer.write(header);
 		
 		int i = 0;
@@ -65,19 +67,43 @@ public class Main {
 		}
 		
 		List<String> getStrings(String path) throws Exception {
-			if(!path.endsWith("text()")) {
-				throw new RuntimeException("path should end with text()");
-			}
-			
+			return getStrings(path, null, null, false);
+		}
+		
+		// Only add nodes when attribute has specific value
+		List<String> getStrings(String path, String attributeName, String attributeValue, boolean shouldAttrValMatch) throws Exception {
 			List<String> retval = new ArrayList<>();
 			
 			NodeList nl = (NodeList)xp.evaluate(path, d, XPathConstants.NODESET);
 			
 			for(int i = 0; i < nl.getLength(); i++) {
-				retval.add(nl.item(i).getNodeValue());
+				Node item = nl.item(i);
+				String text = item.getTextContent();
+				
+				if(hasAttributeMatch(item, attributeName, attributeValue) == shouldAttrValMatch)
+					retval.add(text);
 			}
 			
 			return retval;
+		}
+
+		private boolean hasAttributeMatch(Node item, String attributeName, String attributeValue) {
+			if(attributeName == null || attributeValue == null)
+				return false;
+			
+			NamedNodeMap attributes = item.getAttributes();
+			if(attributes == null)
+				return false;
+			
+			Node attribute = attributes.getNamedItem(attributeName);
+			if(attribute == null)
+				return false;
+			
+			String attributeFoundValue = attribute.getNodeValue();
+			if(attributeValue == null || !attributeFoundValue.equals(attributeValue))
+				return false;
+			
+			return true;
 		}
 	}
 	
@@ -134,34 +160,37 @@ public class Main {
 		
 		MetadataDocument d = parseDocument(xmlFile);
 		
-		writer.write("\"" + fileName + "\"");
-		writeToCSV(writer, d.getStrings("/rdf:RDF/rdf:Description/dc:title/text()"), true);
-		writeToCSV(writer, d.getStrings("/rdf:RDF/rdf:Description/dc:creator/text()"), false);
-		writeToCSV(writer, d.getStrings("/rdf:RDF/rdf:Description/dc:subject/text()"), false);
-		writeToCSV(writer, d.getStrings("/rdf:RDF/rdf:Description/dc:description/text()"), false);
-		writeToCSV(writer, d.getStrings("/rdf:RDF/rdf:Description/dc:publisher/text()"), false);
-		writeToCSV(writer, d.getStrings("/rdf:RDF/rdf:Description/dc:contributor/text()"), false);
-		writeToCSV(writer, d.getStrings("/rdf:RDF/rdf:Description/dc:date/text()"), false);
-		writeToCSV(writer, d.getStrings("/rdf:RDF/rdf:Description/dcterms:issued/text()"), false);
-		writeToCSV(writer, d.getStrings("/rdf:RDF/rdf:Description/dcterms:valid/start/text()"), false);
-		writeToCSV(writer, d.getStrings("/rdf:RDF/rdf:Description/dcterms:valid/end/text()"), false);
-		writeToCSV(writer, d.getStrings("/rdf:RDF/rdf:Description/dc:type/text()"), false);
-		writeToCSV(writer, d.getStrings("/rdf:RDF/rdf:Description/dc:format/text()"), false);
-		writeToCSV(writer, d.getStrings("/rdf:RDF/rdf:Description/dc:identifier/text()"), false);
-		writeToCSV(writer, d.getStrings("/rdf:RDF/rdf:Description/dcterms:references/text()"), false);
-		writeToCSV(writer, d.getStrings("/rdf:RDF/rdf:Description/dcterms:relation/text()"), false);
-		writeToCSV(writer, d.getStrings("/rdf:RDF/rdf:Description/dc:source/text()"), false);
-		writeToCSV(writer, d.getStrings("/rdf:RDF/rdf:Description/dc:language/text()"), false);
+		final String dataType = "rdf:datatype";
 		
-		List<String> httpURLs = d.getStrings("/rdf:RDF/rdf:Description/dc:relation/text()");
+		writer.write("\"" + fileName + "\"");
+		writeToCSV(writer, d.getStrings("/rdf:RDF/rdf:Description/dc:title"), true);
+		writeToCSV(writer, d.getStrings("/rdf:RDF/rdf:Description/dc:creator"), false);
+		writeToCSV(writer, d.getStrings("/rdf:RDF/rdf:Description/dc:subject", dataType, "theme:provisa", false), false);
+		writeToCSV(writer, d.getStrings("/rdf:RDF/rdf:Description/dc:description"), false);
+		writeToCSV(writer, d.getStrings("/rdf:RDF/rdf:Description/dc:publisher"), false);
+		writeToCSV(writer, d.getStrings("/rdf:RDF/rdf:Description/dc:contributor"), false);
+		writeToCSV(writer, d.getStrings("/rdf:RDF/rdf:Description/dc:date"), false);
+		writeToCSV(writer, d.getStrings("/rdf:RDF/rdf:Description/dcterms:issued"), false);
+		writeToCSV(writer, d.getStrings("/rdf:RDF/rdf:Description/dcterms:valid/start"), false);
+		writeToCSV(writer, d.getStrings("/rdf:RDF/rdf:Description/dcterms:valid/end"), false);
+		writeToCSV(writer, d.getStrings("/rdf:RDF/rdf:Description/dc:type"), false);
+		writeToCSV(writer, d.getStrings("/rdf:RDF/rdf:Description/dc:format"), false);
+		writeToCSV(writer, d.getStrings("/rdf:RDF/rdf:Description/dc:identifier"), false);
+		writeToCSV(writer, d.getStrings("/rdf:RDF/rdf:Description/dcterms:references"), false);
+		writeToCSV(writer, d.getStrings("/rdf:RDF/rdf:Description/dcterms:relation"), false);
+		writeToCSV(writer, d.getStrings("/rdf:RDF/rdf:Description/dc:source"), false);
+		writeToCSV(writer, d.getStrings("/rdf:RDF/rdf:Description/dc:language"), false);
+		
+		List<String> httpURLs = d.getStrings("/rdf:RDF/rdf:Description/dc:relation");
 		writeToCSV(writer, httpURLs, false);
 		writeToCSV(writer, retrieveStatusCodes(httpURLs), false);
 		
-		writeToCSV(writer, d.getStrings("/rdf:RDF/rdf:Description/dc:rights/text()"), false);
-		writeToCSV(writer, d.getStrings("/rdf:RDF/rdf:Description/dcterms:temporal/start/text()"), false);
-		writeToCSV(writer, d.getStrings("/rdf:RDF/rdf:Description/dcterms:temporal/end/text()"), false);
-		writeToCSV(writer, d.getStrings("/rdf:RDF/rdf:Description/ows:WGS84BoundingBox/ows:LowerCorner/text()"), false);
-		writeToCSV(writer, d.getStrings("/rdf:RDF/rdf:Description/ows:WGS84BoundingBox/ows:UpperCorner/text()"), false);
+		writeToCSV(writer, d.getStrings("/rdf:RDF/rdf:Description/dc:rights", dataType, "gebruiksrestricties", false), false);
+		writeToCSV(writer, d.getStrings("/rdf:RDF/rdf:Description/dc:rights", dataType, "gebruiksrestricties", true), false);
+		writeToCSV(writer, d.getStrings("/rdf:RDF/rdf:Description/dcterms:temporal/start"), false);
+		writeToCSV(writer, d.getStrings("/rdf:RDF/rdf:Description/dcterms:temporal/end"), false);
+		writeToCSV(writer, d.getStrings("/rdf:RDF/rdf:Description/ows:WGS84BoundingBox/ows:LowerCorner"), false);
+		writeToCSV(writer, d.getStrings("/rdf:RDF/rdf:Description/ows:WGS84BoundingBox/ows:UpperCorner"), false);
 	}
 	
 	private static List<String> retrieveStatusCodes(List<String> httpURLsStrings) {
