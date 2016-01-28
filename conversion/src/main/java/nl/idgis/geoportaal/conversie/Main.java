@@ -171,13 +171,17 @@ public class Main {
 			String elementNew = element.replaceAll("[\\t\\n\\r]", " ");
 			String elementFinal = elementNew.replaceAll("[\\\"]", "\'");
 			
+			boolean firstOfList = false;
 			if(elementList.indexOf(element) == 0) {
 				writer.write(";\"" + elementFinal);
-			} if(elementList.size() == 1) {
+				firstOfList = true;
+			}
+			
+			if(elementList.size() == 1) {
 				writer.write("\"");
 			} else if(elementList.indexOf(element) == elementList.size() - 1) {
 				writer.write("," + elementFinal + "\"");
-			} else {
+			} else if(!firstOfList) {
 				writer.write("," + elementFinal);
 			}
 		}
