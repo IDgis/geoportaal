@@ -423,38 +423,102 @@ public class Index extends Controller {
 		
 		return q.withTransaction(tx -> {
 			SQLQuery<Tuple> datasetQuery = tx.select(metadata.id, metadata.uuid, metadata.title, metadata.lastRevisionDate, statusLabel.label, supplier.name, 
-					status.name, mdFormat.name)
-	    			.from(metadata)
-	    			.join(status).on(metadata.status.eq(status.id))
-    				.join(statusLabel).on(status.id.eq(statusLabel.statusId))
-    				.join(supplier).on(metadata.supplier.eq(supplier.id))
-    				.join(typeInformation).on(metadata.typeInformation.eq(typeInformation.id))
-    				.join(typeInformationLabel).on(typeInformation.id.eq(typeInformationLabel.id))
-    				.join(creator).on(metadata.creator.eq(creator.id))
-    				.join(creatorLabel).on(creator.id.eq(creatorLabel.id))
-    				.join(rights).on(metadata.rights.eq(rights.id))
-    				.join(rightsLabel).on(rights.id.eq(rightsLabel.id))
-    				.join(useLimitation).on(metadata.useLimitation.eq(useLimitation.id))
-    				.join(useLimitationLabel).on(useLimitation.id.eq(useLimitationLabel.id))
-    				.join(mdFormat).on(metadata.mdFormat.eq(mdFormat.id))
-    				.join(mdFormatLabel).on(mdFormat.id.eq(mdFormatLabel.id));
+				status.name, mdFormat.name)
+	    		.from(metadata)
+	    		.join(mdAttachment).on(metadata.id.eq(mdAttachment.metadataId))
+    			.join(typeInformation).on(metadata.typeInformation.eq(typeInformation.id))
+    			.join(typeInformationLabel).on(typeInformation.id.eq(typeInformationLabel.id))
+    			.join(creator).on(metadata.creator.eq(creator.id))
+    			.join(creatorLabel).on(creator.id.eq(creatorLabel.id))
+    			.join(rights).on(metadata.rights.eq(rights.id))
+    			.join(rightsLabel).on(rights.id.eq(rightsLabel.id))
+    			.join(useLimitation).on(metadata.useLimitation.eq(useLimitation.id))
+    			.join(useLimitationLabel).on(useLimitation.id.eq(useLimitationLabel.id))
+    			.join(mdFormat).on(metadata.mdFormat.eq(mdFormat.id))
+    			.join(mdFormatLabel).on(mdFormat.id.eq(mdFormatLabel.id))
+    			.join(mdSubject).on(metadata.id.eq(mdSubject.metadataId))
+    			.join(subject).on(mdSubject.subject.eq(subject.id))
+    			.join(subjectLabel).on(subject.id.eq(subjectLabel.id))
+    			.join(status).on(metadata.status.eq(status.id))
+    			.join(statusLabel).on(status.id.eq(statusLabel.statusId))
+    			.join(supplier).on(metadata.supplier.eq(supplier.id));
 			
-			if(!textSearch.equals("")) {
-			datasetQuery
-				.where(metadata.title.containsIgnoreCase(textSearch)
-						.or(metadata.description.containsIgnoreCase(textSearch))
-						.or(metadata.location.containsIgnoreCase(textSearch))
-						.or(metadata.fileId.containsIgnoreCase(textSearch))
-						.or(metadata.uuid.containsIgnoreCase(textSearch))
-						.or(mdAttachment.attachmentName.equalsIgnoreCase(textSearch))
-						.or(typeInformationLabel.label.equalsIgnoreCase(textSearch))
-						.or(creatorLabel.label.equalsIgnoreCase(textSearch))
-						.or(metadata.creatorOther.containsIgnoreCase(textSearch))
-						.or(rightsLabel.label.equalsIgnoreCase(textSearch))
-						.or(useLimitationLabel.label.equalsIgnoreCase(textSearch))
-						.or(mdFormatLabel.label.equalsIgnoreCase(textSearch))
-						.or(metadata.source.containsIgnoreCase(textSearch))
-						.or(subjectLabel.label.equalsIgnoreCase(textSearch)));
+			String[] textSearchArray = textSearch.split(" ");
+		List<String> textSearchList = new ArrayList<String>();
+		for(String word : textSearchArray) {
+			if(!word.isEmpty()) {
+				textSearchList.add(word.toLowerCase());
+			}
+		}
+		
+		/*
+		 .select(metadata.all())
+					.from(metadata)
+					.where(metadata.id.eq(
+							SQLExpressions.select(metadata3.id.max()).from(metadata3)))
+		 */
+		
+		SQLQuery<Tuple> fullTextQuery = db.queryFactory
+					.select(metadata.id,
+							Expressions.stringTemplate("to_tsvector('dutch', {0}) || "
+								+ "to_tsvector('dutch', coalesce((string_agg({1}, ' ')), '') || "
+								+ "to_tsvector('dutch', coalesce((string_agg({2}, ' ')), '') || "
+								+ "to_tsvector('dutch', coalesce((string_agg({3}, ' ')), '') || "
+								+ "to_tsvector('dutch', coalesce((string_agg({4}, ' ')), '') || "
+								+ "to_tsvector('dutch', coalesce((string_agg({5}, ' ')), '') || "
+								+ "to_tsvector('dutch', coalesce((string_agg({6}, ' ')), '') || "
+								+ "to_tsvector('dutch', coalesce((string_agg({7}, ' ')), '') || "
+								+ "to_tsvector('dutch', coalesce((string_agg({8}, ' ')), '') || "
+								+ "to_tsvector('dutch', coalesce((string_agg({9}, ' ')), '') ||"
+								+ "to_tsvector('dutch', coalesce((string_agg({10}, ' ')), '') || "
+								+ "to_tsvector('dutch', coalesce((string_agg({11}, ' ')), '') || "
+								+ "to_tsvector('dutch', coalesce((string_agg({12}, ' ')), '') ||"
+								+ "to_tsvector('dutch', coalesce((string_agg({13}, ' ')), ''))",
+								metadata.title, metadata.description, metadata.location, metadata.fileId, metadata.uuid, mdAttachment.attachmentName, 
+								typeInformationLabel.label, creatorLabel.label, metadata.creatorOther, rightsLabel.label, useLimitationLabel.label,
+								mdFormatLabel.label, metadata.source, subjectLabel.label))
+					.from(metadata)
+					.join(mdAttachment).on(metadata.id.eq(mdAttachment.metadataId))
+					.join(typeInformation).on(metadata.typeInformation.eq(typeInformation.id))
+	    			.join(typeInformationLabel).on(typeInformation.id.eq(typeInformationLabel.id))
+	    			.join(creator).on(metadata.creator.eq(creator.id))
+	    			.join(creatorLabel).on(creator.id.eq(creatorLabel.id))
+					.join(rights).on(metadata.rights.eq(rights.id))
+	    			.join(rightsLabel).on(rights.id.eq(rightsLabel.id))
+	    			.join(useLimitation).on(metadata.useLimitation.eq(useLimitation.id))
+	    			.join(useLimitationLabel).on(useLimitation.id.eq(useLimitationLabel.id))
+	    			.join(mdFormat).on(metadata.mdFormat.eq(mdFormat.id))
+	    			.join(mdFormatLabel).on(mdFormat.id.eq(mdFormatLabel.id))
+	    			.join(mdSubject).on(metadata.id.eq(mdSubject.metadataId))
+	    			.join(subject).on(mdSubject.subject.eq(subject.id))
+	    			.join(subjectLabel).on(subject.id.eq(subjectLabel.id))
+	    			.groupBy(metadata.id, metadata.title, metadata.description, metadata.location, metadata.fileId, metadata.uuid, typeInformationLabel.label,
+	    					creatorLabel.label, metadata.creatorOther, rightsLabel.label, useLimitationLabel.label, mdFormatLabel.label, metadata.source)
+					;
+		
+		List<Tuple> searchRecord = fullTextQuery.fetch();
+		for(Tuple searchField : searchRecord) {
+			System.out.println(searchField);
+		}
+		
+		if(!textSearchList.isEmpty()) {
+			for(String word : textSearchList) {
+				datasetQuery
+					.where(metadata.title.toLowerCase().containsIgnoreCase(word)
+						.or(metadata.description.toLowerCase().containsIgnoreCase(word))
+						.or(metadata.location.toLowerCase().containsIgnoreCase(word))
+						.or(metadata.fileId.toLowerCase().containsIgnoreCase(word))
+						.or(metadata.uuid.toLowerCase().containsIgnoreCase(word))
+						.or(mdAttachment.attachmentName.toLowerCase().containsIgnoreCase(word))
+						.or(typeInformationLabel.label.toLowerCase().containsIgnoreCase(word))
+						.or(creatorLabel.label.toLowerCase().containsIgnoreCase(word))
+						.or(metadata.creatorOther.toLowerCase().containsIgnoreCase(word))
+						.or(rightsLabel.label.toLowerCase().containsIgnoreCase(word))
+						.or(useLimitationLabel.label.toLowerCase().containsIgnoreCase(word))
+						.or(mdFormatLabel.label.toLowerCase().containsIgnoreCase(word))
+						.or(metadata.source.toLowerCase().containsIgnoreCase(word))
+						.or(subjectLabel.label.toLowerCase().containsIgnoreCase(word)));
+			}
 		}
 			
 			if(!supplierSearch.equals("none")) {
