@@ -59,3 +59,4 @@ input[type="file"].input-attachment {display:inline;}
 .attachment-file {font-size:14px;}
 
 .action-button {font-size:18px;}
+#btn-search-hide {margin-top:10px;margin-bottom:10px;position:relative;right:-12px;}

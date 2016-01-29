@@ -50,6 +50,21 @@ require([
 			});
 		}
 		
+		var searchHide = on(dom.byId('btn-search-hide'), 'click', function(e) {
+			var searchStatus = domAttr.get(this, 'data-search-status');
+			var searchBlock = dom.byId('search-block');
+			
+			if(searchStatus === 'true') {
+				domStyle.set(searchBlock, 'display', 'none');
+				domAttr.set(this, 'data-search-status', 'false');
+				domAttr.set(dom.byId('btn-search-hide-text'), 'innerHTML', 'Zoekblok uitklappen');
+			} else {
+				domStyle.set(searchBlock, 'display', 'block');
+				domAttr.set(this, 'data-search-status', 'true');
+				domAttr.set(dom.byId('btn-search-hide-text'), 'innerHTML', 'Zoekblok dichtklappen');
+			}
+		});
+		
 		var deleteRecords = on(dom.byId('js-delete'), 'click', function(e) {
 			var recordsChecked = query('.js-record-checkbox:checked');
 			

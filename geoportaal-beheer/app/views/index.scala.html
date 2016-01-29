@@ -25,91 +25,92 @@
 		<p>Hier kunt u naar metadata records zoeken en veranderingen doorvoeren.</p>
 	</div>
 	
-	@helper.form(action = routes.Index.search(), 'class -> "form-horizontal", 'id -> "js-form") {
-		<div class="form-group">
-			<label class="col-sm-3 control-label">Tekst</label>
-			<div class="col-sm-8">
-				<input class="form-control" type="text" data-toggle="tooltip" data-placement="top" title="Zoek op een woord" name="text"
-				@if(!textSearch.equals("")) {value="@textSearch"}>
-			</div>
-		</div>
-		<div class="form-group">
-			<label class="col-sm-3 control-label">Leverancier</label>
-			<div class="col-sm-8">
-				<select class="form-control" data-toggle="tooltip" data-placement="top" title="Filter op leverancier" name="supplier">
-					<option value="none"></option>
-					@for(supplierOption <- supplierList) {
-						<option value="@supplierOption.get(supplier.name)" 
-							@if(supplierOption.get(supplier.name).equals(supplierSearch)) {selected}>
-								@supplierOption.get(supplier.name)
-						</option>
-					}
-				</select>
-			</div>
-		</div>
-		<div class="form-group">
-			<label class="col-sm-3 control-label">Status</label>
-			<div class="col-sm-8">
-				<select class="form-control" data-toggle="tooltip" data-placement="top" title="Filter op status" name="status">
-					@for(statusOption <- statusList) {
-						<option value="@statusOption.get(status.name)"
-							@if(statusOption.get(status.name).equals(statusSearch)) {selected}>
-								@statusOption.get(statusLabel.label)
-						</option>
-					}
-				</select>
-			</div>
-		</div>
-		<div class="form-group">
-			<label class="col-sm-3 control-label">Formaat</label>
-			<div class="col-sm-8">
-				<select class="form-control" data-toggle="tooltip" data-placement="top" title="Filter op formaat" name="format">
-					@for(mdFormatOption <- mdFormatList) {
-						<option value="@mdFormatOption.get(mdFormat.name)"
-							@if(mdFormatOption.get(mdFormat.name).equals(mdFormatSearch)) {selected}>
-								@mdFormatOption.get(mdFormatLabel.label)
-						</option>
-					}
-				</select>
-			</div>
-		</div>
-		<div class="form-group">
-			<label class="col-sm-3 control-label">Update datum tussen</label>
-			<div class="col-sm-4">
-				<input class="form-control js-date" id="js-date-update-start" type="date" data-toggle="tooltip" data-placement="top" 
-				title="Zoek op begindatum" name="dateUpdateStart"
-				@if(dateStart != null) {data-date-value-US="@sdfUS.format(dateStart.getTime())"} 
-				@if(dateStart != null) {data-date-value-local="@sdfLocal.format(dateStart.getTime())"}>
-				<input type="hidden" id="js-hidden-date-update-start">
-			</div>
-		</div>
-		<div class="form-group">
-			<label class="col-sm-3 control-label">en</label>
-			<div class="col-sm-4">
-				<input class="form-control js-date" id="js-date-update-end" type="date" data-toggle="tooltip" data-placement="top" 
-				title="Zoek op einddatum" name="dateUpdateEnd"
-				@if(dateEnd != null) {data-date-value-US="@sdfUS.format(dateEnd.getTime())"} 
-				@if(dateEnd != null) {data-date-value-local="@sdfLocal.format(dateEnd.getTime())"}>
-				<input type="hidden" id="js-hidden-date-update-end">
-			</div>
-		</div>
-		<div class="col-sm-offset-3" id="js-form-validation"></div>
-		<div class="form-group">
- 			<div class="col-sm-offset-3 col-sm-7">
- 				<button class="knop" id="search-button" type="button">Zoek</button>
- 				@if(!textSearch.equals("") || !supplierSearch.equals("none") || !statusSearch.equals("none") || !mdFormatSearch.equals("none") ||
- 					dateStart != null || dateEnd != null) {
- 					<a class="knop" id="filter-button" href="@routes.Index.index()">Filter opheffen</a>
- 				}
-			</div>
-		</div>
-	}
-	<div class="alle-records">
-		<input type="checkbox" class="checkalles">
-		<span>Alle records selecteren</span>
+	<div id="btn-search-hide" class="col-sm-11" data-search-status="true">
+		<button class="btn btn-sm btn-default pull-right" id="btn-search-hide-text">Zoekblok dichtklappen</button>
 	</div>
 	
-	<div class="geselecteerde-records">
+	<div id="search-block">
+		@helper.form(action = routes.Index.search(), 'class -> "form-horizontal", 'id -> "js-form") {
+				<div class="form-group">
+					<label class="col-sm-3 control-label">Tekst</label>
+					<div class="col-sm-8">
+						<input class="form-control" type="text" data-toggle="tooltip" data-placement="top" title="Zoek op een woord" name="text"
+						@if(!textSearch.equals("")) {value="@textSearch"}>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-sm-3 control-label">Leverancier</label>
+					<div class="col-sm-8">
+						<select class="form-control" data-toggle="tooltip" data-placement="top" title="Filter op leverancier" name="supplier">
+							<option value="none"></option>
+							@for(supplierOption <- supplierList) {
+								<option value="@supplierOption.get(supplier.name)" 
+									@if(supplierOption.get(supplier.name).equals(supplierSearch)) {selected}>
+										@supplierOption.get(supplier.name)
+								</option>
+							}
+						</select>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-sm-3 control-label">Status</label>
+					<div class="col-sm-8">
+						<select class="form-control" data-toggle="tooltip" data-placement="top" title="Filter op status" name="status">
+							@for(statusOption <- statusList) {
+								<option value="@statusOption.get(status.name)"
+									@if(statusOption.get(status.name).equals(statusSearch)) {selected}>
+										@statusOption.get(statusLabel.label)
+								</option>
+							}
+						</select>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-sm-3 control-label">Formaat</label>
+					<div class="col-sm-8">
+						<select class="form-control" data-toggle="tooltip" data-placement="top" title="Filter op formaat" name="format">
+							@for(mdFormatOption <- mdFormatList) {
+								<option value="@mdFormatOption.get(mdFormat.name)"
+									@if(mdFormatOption.get(mdFormat.name).equals(mdFormatSearch)) {selected}>
+										@mdFormatOption.get(mdFormatLabel.label)
+								</option>
+							}
+						</select>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-sm-3 control-label">Update datum tussen</label>
+					<div class="col-sm-4">
+						<input class="form-control js-date" id="js-date-update-start" type="date" data-toggle="tooltip" data-placement="top" 
+						title="Zoek op begindatum" name="dateUpdateStart"
+						@if(dateStart != null) {data-date-value-US="@sdfUS.format(dateStart.getTime())"} 
+						@if(dateStart != null) {data-date-value-local="@sdfLocal.format(dateStart.getTime())"}>
+						<input type="hidden" id="js-hidden-date-update-start">
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-sm-3 control-label">en</label>
+					<div class="col-sm-4">
+						<input class="form-control js-date" id="js-date-update-end" type="date" data-toggle="tooltip" data-placement="top" 
+						title="Zoek op einddatum" name="dateUpdateEnd"
+						@if(dateEnd != null) {data-date-value-US="@sdfUS.format(dateEnd.getTime())"} 
+						@if(dateEnd != null) {data-date-value-local="@sdfLocal.format(dateEnd.getTime())"}>
+						<input type="hidden" id="js-hidden-date-update-end">
+					</div>
+				</div>
+				<div class="col-sm-offset-3" id="js-form-validation"></div>
+				<div class="form-group">
+		 			<div class="col-sm-offset-3 col-sm-7">
+		 				<button class="knop" id="search-button" type="button">Zoek</button>
+		 				@if(!textSearch.equals("") || !supplierSearch.equals("none") || !statusSearch.equals("none") || !mdFormatSearch.equals("none") ||
+		 					dateStart != null || dateEnd != null) {
+		 					<a class="knop" id="filter-button" href="@routes.Index.index()">Filter opheffen</a>
+		 				}
+					</div>
+				</div>
+		}
+	</div>
+	<div class="geselecteerde-records col-sm-12">
 		<span>Acties voor geselecteerde records:</span>
 	</div>
 	<form class="form-inline beheer-knoppen" method="get">
