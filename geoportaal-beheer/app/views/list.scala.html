@@ -1,0 +1,44 @@
+@(datasetRows: java.util.List[com.querydsl.core.Tuple],
+	sdfLocal: java.text.SimpleDateFormat)
+
+@import models.QMetadata.metadata
+@import models.QSupplier.supplier
+@import models.QStatusLabel.statusLabel
+
+<div class="overzicht-records">
+	<table class="col-sm-offset-0 table table-bordered">
+		<tbody>
+			<tr>
+				<th>
+					<input type="checkbox" class="checkalles">
+				</th>
+				<th>Actie</th>
+				<th>Titel</th>
+				<th>Leverancier</th>
+				<th>Status</th>
+				<th>Datum</th>
+			</tr>
+			@for(datasetRow <- datasetRows) {
+				@if(datasetRows.indexOf(datasetRow) > -1 && datasetRows.indexOf(datasetRow) < 20) {	
+					<tr>
+						<td>
+							<input type="checkbox" class="js-record-checkbox" data-id="@datasetRow.get(metadata.id)">
+						</td>
+						<td>
+							<a>
+								<span class="action-button glyphicon glyphicon-eye-open" title="Metadata bekijken"></span>
+							</a>
+							<a href="@routes.MetadataDC.renderEditForm(datasetRow.get(metadata.uuid))">
+								<span class="action-button glyphicon glyphicon-edit" title="Bestand wijzigen"></span>
+							</a>
+						</td>
+						<td>@datasetRow.get(metadata.title)</td>
+						<td>@datasetRow.get(supplier.name)</td>
+						<td>@datasetRow.get(statusLabel.label)</td>
+						<td>@sdfLocal.format(datasetRow.get(metadata.lastRevisionDate).getTime())</td>
+					</tr>
+				}
+			}
+		</tbody>
+	</table>
+</div>
