@@ -1,5 +1,7 @@
 @(datasetRows: java.util.List[com.querydsl.core.Tuple],
-	sdfLocal: java.text.SimpleDateFormat)
+	sdfLocal: java.text.SimpleDateFormat,
+	start: Integer,
+	end: Integer)
 
 @import models.QMetadata.metadata
 @import models.QSupplier.supplier
@@ -20,7 +22,169 @@
 			</tr>
 			@for(datasetRow <- datasetRows) {
 				@if(datasetRows.indexOf(datasetRow) > -1 && datasetRows.indexOf(datasetRow) < 20) {	
-					<tr>
+					<tr class="js-index-page-1">
+						<td>
+							<input type="checkbox" class="js-record-checkbox" data-id="@datasetRow.get(metadata.id)">
+						</td>
+						<td>
+							<a>
+								<span class="action-button glyphicon glyphicon-eye-open" title="Metadata bekijken"></span>
+							</a>
+							<a href="@routes.MetadataDC.renderEditForm(datasetRow.get(metadata.uuid))">
+								<span class="action-button glyphicon glyphicon-edit" title="Bestand wijzigen"></span>
+							</a>
+						</td>
+						<td>@datasetRow.get(metadata.title)</td>
+						<td>@datasetRow.get(supplier.name)</td>
+						<td>@datasetRow.get(statusLabel.label)</td>
+						<td>@sdfLocal.format(datasetRow.get(metadata.lastRevisionDate).getTime())</td>
+					</tr>
+				} @if(datasetRows.indexOf(datasetRow) > 19 && datasetRows.indexOf(datasetRow) < 40) {	
+					<tr class="js-index-page-2">
+						<td>
+							<input type="checkbox" class="js-record-checkbox" data-id="@datasetRow.get(metadata.id)">
+						</td>
+						<td>
+							<a>
+								<span class="action-button glyphicon glyphicon-eye-open" title="Metadata bekijken"></span>
+							</a>
+							<a href="@routes.MetadataDC.renderEditForm(datasetRow.get(metadata.uuid))">
+								<span class="action-button glyphicon glyphicon-edit" title="Bestand wijzigen"></span>
+							</a>
+						</td>
+						<td>@datasetRow.get(metadata.title)</td>
+						<td>@datasetRow.get(supplier.name)</td>
+						<td>@datasetRow.get(statusLabel.label)</td>
+						<td>@sdfLocal.format(datasetRow.get(metadata.lastRevisionDate).getTime())</td>
+					</tr>
+				} @if(datasetRows.indexOf(datasetRow) > 39 && datasetRows.indexOf(datasetRow) < 60) {	
+					<tr class="js-index-page-3">
+						<td>
+							<input type="checkbox" class="js-record-checkbox" data-id="@datasetRow.get(metadata.id)">
+						</td>
+						<td>
+							<a>
+								<span class="action-button glyphicon glyphicon-eye-open" title="Metadata bekijken"></span>
+							</a>
+							<a href="@routes.MetadataDC.renderEditForm(datasetRow.get(metadata.uuid))">
+								<span class="action-button glyphicon glyphicon-edit" title="Bestand wijzigen"></span>
+							</a>
+						</td>
+						<td>@datasetRow.get(metadata.title)</td>
+						<td>@datasetRow.get(supplier.name)</td>
+						<td>@datasetRow.get(statusLabel.label)</td>
+						<td>@sdfLocal.format(datasetRow.get(metadata.lastRevisionDate).getTime())</td>
+					</tr>
+				} @if(datasetRows.indexOf(datasetRow) > 59 && datasetRows.indexOf(datasetRow) < 80) {	
+					<tr class="js-index-page-4">
+						<td>
+							<input type="checkbox" class="js-record-checkbox" data-id="@datasetRow.get(metadata.id)">
+						</td>
+						<td>
+							<a>
+								<span class="action-button glyphicon glyphicon-eye-open" title="Metadata bekijken"></span>
+							</a>
+							<a href="@routes.MetadataDC.renderEditForm(datasetRow.get(metadata.uuid))">
+								<span class="action-button glyphicon glyphicon-edit" title="Bestand wijzigen"></span>
+							</a>
+						</td>
+						<td>@datasetRow.get(metadata.title)</td>
+						<td>@datasetRow.get(supplier.name)</td>
+						<td>@datasetRow.get(statusLabel.label)</td>
+						<td>@sdfLocal.format(datasetRow.get(metadata.lastRevisionDate).getTime())</td>
+					</tr>
+				} @if(datasetRows.indexOf(datasetRow) > 79 && datasetRows.indexOf(datasetRow) < 100) {	
+					<tr class="js-index-page-5">
+						<td>
+							<input type="checkbox" class="js-record-checkbox" data-id="@datasetRow.get(metadata.id)">
+						</td>
+						<td>
+							<a>
+								<span class="action-button glyphicon glyphicon-eye-open" title="Metadata bekijken"></span>
+							</a>
+							<a href="@routes.MetadataDC.renderEditForm(datasetRow.get(metadata.uuid))">
+								<span class="action-button glyphicon glyphicon-edit" title="Bestand wijzigen"></span>
+							</a>
+						</td>
+						<td>@datasetRow.get(metadata.title)</td>
+						<td>@datasetRow.get(supplier.name)</td>
+						<td>@datasetRow.get(statusLabel.label)</td>
+						<td>@sdfLocal.format(datasetRow.get(metadata.lastRevisionDate).getTime())</td>
+					</tr>
+				} @if(datasetRows.indexOf(datasetRow) > 99 && datasetRows.indexOf(datasetRow) < 120) {	
+					<tr class="js-index-page-6">
+						<td>
+							<input type="checkbox" class="js-record-checkbox" data-id="@datasetRow.get(metadata.id)">
+						</td>
+						<td>
+							<a>
+								<span class="action-button glyphicon glyphicon-eye-open" title="Metadata bekijken"></span>
+							</a>
+							<a href="@routes.MetadataDC.renderEditForm(datasetRow.get(metadata.uuid))">
+								<span class="action-button glyphicon glyphicon-edit" title="Bestand wijzigen"></span>
+							</a>
+						</td>
+						<td>@datasetRow.get(metadata.title)</td>
+						<td>@datasetRow.get(supplier.name)</td>
+						<td>@datasetRow.get(statusLabel.label)</td>
+						<td>@sdfLocal.format(datasetRow.get(metadata.lastRevisionDate).getTime())</td>
+					</tr>
+				} @if(datasetRows.indexOf(datasetRow) > 119 && datasetRows.indexOf(datasetRow) < 140) {	
+					<tr class="js-index-page-7">
+						<td>
+							<input type="checkbox" class="js-record-checkbox" data-id="@datasetRow.get(metadata.id)">
+						</td>
+						<td>
+							<a>
+								<span class="action-button glyphicon glyphicon-eye-open" title="Metadata bekijken"></span>
+							</a>
+							<a href="@routes.MetadataDC.renderEditForm(datasetRow.get(metadata.uuid))">
+								<span class="action-button glyphicon glyphicon-edit" title="Bestand wijzigen"></span>
+							</a>
+						</td>
+						<td>@datasetRow.get(metadata.title)</td>
+						<td>@datasetRow.get(supplier.name)</td>
+						<td>@datasetRow.get(statusLabel.label)</td>
+						<td>@sdfLocal.format(datasetRow.get(metadata.lastRevisionDate).getTime())</td>
+					</tr>
+				} @if(datasetRows.indexOf(datasetRow) > 139 && datasetRows.indexOf(datasetRow) < 160) {	
+					<tr class="js-index-page-8">
+						<td>
+							<input type="checkbox" class="js-record-checkbox" data-id="@datasetRow.get(metadata.id)">
+						</td>
+						<td>
+							<a>
+								<span class="action-button glyphicon glyphicon-eye-open" title="Metadata bekijken"></span>
+							</a>
+							<a href="@routes.MetadataDC.renderEditForm(datasetRow.get(metadata.uuid))">
+								<span class="action-button glyphicon glyphicon-edit" title="Bestand wijzigen"></span>
+							</a>
+						</td>
+						<td>@datasetRow.get(metadata.title)</td>
+						<td>@datasetRow.get(supplier.name)</td>
+						<td>@datasetRow.get(statusLabel.label)</td>
+						<td>@sdfLocal.format(datasetRow.get(metadata.lastRevisionDate).getTime())</td>
+					</tr>
+				} @if(datasetRows.indexOf(datasetRow) > 159 && datasetRows.indexOf(datasetRow) < 180) {	
+					<tr class="js-index-page-9">
+						<td>
+							<input type="checkbox" class="js-record-checkbox" data-id="@datasetRow.get(metadata.id)">
+						</td>
+						<td>
+							<a>
+								<span class="action-button glyphicon glyphicon-eye-open" title="Metadata bekijken"></span>
+							</a>
+							<a href="@routes.MetadataDC.renderEditForm(datasetRow.get(metadata.uuid))">
+								<span class="action-button glyphicon glyphicon-edit" title="Bestand wijzigen"></span>
+							</a>
+						</td>
+						<td>@datasetRow.get(metadata.title)</td>
+						<td>@datasetRow.get(supplier.name)</td>
+						<td>@datasetRow.get(statusLabel.label)</td>
+						<td>@sdfLocal.format(datasetRow.get(metadata.lastRevisionDate).getTime())</td>
+					</tr>
+				} @if(datasetRows.indexOf(datasetRow) > 179 && datasetRows.indexOf(datasetRow) < 200) {	
+					<tr class="js-index-page-10">
 						<td>
 							<input type="checkbox" class="js-record-checkbox" data-id="@datasetRow.get(metadata.id)">
 						</td>
@@ -42,3 +206,48 @@
 		</tbody>
 	</table>
 </div>
+<nav id="list-pager">
+ 	<ul class="pagination">
+   		@if(datasetRows.size() > 0) {
+   			<li class="active" id="js-page-status-1">
+   				<a class="js-index-page-btn" id="js-index-page-btn-1" data-page="1">1</a>
+   			</li>
+   		} @if(datasetRows.size() > 20) {
+   			<li id="js-page-status-2">
+   				<a class="js-index-page-btn" id="js-index-page-btn-2" data-page="2">2</a>
+   			</li>
+   		} @if(datasetRows.size() > 40) {
+   			<li>
+   				<a class="js-index-page-btn" id="js-index-page-btn-3">3</a>
+   			</li>
+   		} @if(datasetRows.size() > 60) {
+   			<li>
+   				<a class="js-index-page-btn" id="js-index-page-btn-4">4</a>
+   			</li>
+   		} @if(datasetRows.size() > 80) {
+   			<li>
+   				<a class="js-index-page-btn" id="js-index-page-btn-5">5</a>
+   			</li>
+   		} @if(datasetRows.size() > 100) {
+   			<li>
+   				<a class="js-index-page-btn" id="js-index-page-btn-6">6</a>
+   			</li>
+   		} @if(datasetRows.size() > 120) {
+   			<li>
+   				<a class="js-index-page-btn" id="js-index-page-btn-7">7</a>
+   			</li>
+   		} @if(datasetRows.size() > 140) {
+   			<li>
+   				<a class="js-index-page-btn" id="js-index-page-btn-8">8</a>
+   			</li>
+   		} @if(datasetRows.size() > 160) {
+   			<li>
+   				<a class="js-index-page-btn" id="js-index-page-btn-9">9</a>
+   			</li>
+   		} @if(datasetRows.size() > 180) {
+   			<li>
+   				<a class="js-index-page-btn" id="js-index-page-btn-10">10</a>
+   			</li>
+   		}
+ 	</ul>
+</nav>

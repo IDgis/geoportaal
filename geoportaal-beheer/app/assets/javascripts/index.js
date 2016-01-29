@@ -65,6 +65,42 @@ require([
 			}
 		});
 		
+		var indexPager = on(win.doc, '.js-index-page-btn:click', function(e) {
+			var dataPage = domAttr.get(this, 'data-page');
+			var pageOne = query('.js-index-page-1');
+			var pageTwo = query('.js-index-page-2');
+			var pageThree = query('.js-index-page-3');
+			var pageFour = query('.js-index-page-4');
+			var pageFive = query('.js-index-page-5');
+			var pageSix = query('.js-index-page-6');
+			var pageSeven = query('.js-index-page-7');
+			var pageEight = query('.js-index-page-8');
+			var pageNine = query('.js-index-page-9');
+			var pageTen = query('.js-index-page-10');
+			
+			if(dataPage === '1') {
+				array.forEach(pageOne, function(item) {
+					domStyle.set(item, 'display', 'table-row');
+				});
+				array.forEach(pageTwo, function(item) {
+					domStyle.set(item, 'display', 'none');
+				});
+				
+				domAttr.set(dom.byId('js-page-status-1'), 'class', 'active');
+				domAttr.set(dom.byId('js-page-status-2'), 'class', '');
+			} if (dataPage === '2') {
+				array.forEach(pageOne, function(item) {
+					domStyle.set(item, 'display', 'none');
+				});
+				array.forEach(pageTwo, function(item) {
+					domStyle.set(item, 'display', 'table-row');
+				});
+				
+				domAttr.set(dom.byId('js-page-status-1'), 'class', '');
+				domAttr.set(dom.byId('js-page-status-2'), 'class', 'active');
+			}
+		});
+		
 		var deleteRecords = on(dom.byId('js-delete'), 'click', function(e) {
 			var recordsChecked = query('.js-record-checkbox:checked');
 			
