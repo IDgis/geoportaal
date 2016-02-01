@@ -22,7 +22,7 @@
 			</tr>
 			@for(datasetRow <- datasetRows) {
 				@if(datasetRows.indexOf(datasetRow) > -1 && datasetRows.indexOf(datasetRow) < 20) {	
-					<tr class="js-index-page-1">
+					<tr class="js-index-page js-index-page-1">
 						<td>
 							<input type="checkbox" class="js-record-checkbox" data-id="@datasetRow.get(metadata.id)">
 						</td>
@@ -40,7 +40,7 @@
 						<td>@sdfLocal.format(datasetRow.get(metadata.lastRevisionDate).getTime())</td>
 					</tr>
 				} @if(datasetRows.indexOf(datasetRow) > 19 && datasetRows.indexOf(datasetRow) < 40) {	
-					<tr class="js-index-page-2">
+					<tr class="js-index-page js-index-page-2">
 						<td>
 							<input type="checkbox" class="js-record-checkbox" data-id="@datasetRow.get(metadata.id)">
 						</td>
@@ -58,7 +58,7 @@
 						<td>@sdfLocal.format(datasetRow.get(metadata.lastRevisionDate).getTime())</td>
 					</tr>
 				} @if(datasetRows.indexOf(datasetRow) > 39 && datasetRows.indexOf(datasetRow) < 60) {	
-					<tr class="js-index-page-3">
+					<tr class="js-index-page js-index-page-3">
 						<td>
 							<input type="checkbox" class="js-record-checkbox" data-id="@datasetRow.get(metadata.id)">
 						</td>
@@ -76,7 +76,7 @@
 						<td>@sdfLocal.format(datasetRow.get(metadata.lastRevisionDate).getTime())</td>
 					</tr>
 				} @if(datasetRows.indexOf(datasetRow) > 59 && datasetRows.indexOf(datasetRow) < 80) {	
-					<tr class="js-index-page-4">
+					<tr class="js-index-page js-index-page-4">
 						<td>
 							<input type="checkbox" class="js-record-checkbox" data-id="@datasetRow.get(metadata.id)">
 						</td>
@@ -94,7 +94,7 @@
 						<td>@sdfLocal.format(datasetRow.get(metadata.lastRevisionDate).getTime())</td>
 					</tr>
 				} @if(datasetRows.indexOf(datasetRow) > 79 && datasetRows.indexOf(datasetRow) < 100) {	
-					<tr class="js-index-page-5">
+					<tr class="js-index-page js-index-page-5">
 						<td>
 							<input type="checkbox" class="js-record-checkbox" data-id="@datasetRow.get(metadata.id)">
 						</td>
@@ -112,7 +112,7 @@
 						<td>@sdfLocal.format(datasetRow.get(metadata.lastRevisionDate).getTime())</td>
 					</tr>
 				} @if(datasetRows.indexOf(datasetRow) > 99 && datasetRows.indexOf(datasetRow) < 120) {	
-					<tr class="js-index-page-6">
+					<tr class="js-index-page js-index-page-6">
 						<td>
 							<input type="checkbox" class="js-record-checkbox" data-id="@datasetRow.get(metadata.id)">
 						</td>
@@ -130,7 +130,7 @@
 						<td>@sdfLocal.format(datasetRow.get(metadata.lastRevisionDate).getTime())</td>
 					</tr>
 				} @if(datasetRows.indexOf(datasetRow) > 119 && datasetRows.indexOf(datasetRow) < 140) {	
-					<tr class="js-index-page-7">
+					<tr class="js-index-page js-index-page-7">
 						<td>
 							<input type="checkbox" class="js-record-checkbox" data-id="@datasetRow.get(metadata.id)">
 						</td>
@@ -148,7 +148,7 @@
 						<td>@sdfLocal.format(datasetRow.get(metadata.lastRevisionDate).getTime())</td>
 					</tr>
 				} @if(datasetRows.indexOf(datasetRow) > 139 && datasetRows.indexOf(datasetRow) < 160) {	
-					<tr class="js-index-page-8">
+					<tr class="js-index-page js-index-page-8">
 						<td>
 							<input type="checkbox" class="js-record-checkbox" data-id="@datasetRow.get(metadata.id)">
 						</td>
@@ -166,7 +166,7 @@
 						<td>@sdfLocal.format(datasetRow.get(metadata.lastRevisionDate).getTime())</td>
 					</tr>
 				} @if(datasetRows.indexOf(datasetRow) > 159 && datasetRows.indexOf(datasetRow) < 180) {	
-					<tr class="js-index-page-9">
+					<tr class="js-index-page js-index-page-9">
 						<td>
 							<input type="checkbox" class="js-record-checkbox" data-id="@datasetRow.get(metadata.id)">
 						</td>
@@ -184,7 +184,7 @@
 						<td>@sdfLocal.format(datasetRow.get(metadata.lastRevisionDate).getTime())</td>
 					</tr>
 				} @if(datasetRows.indexOf(datasetRow) > 179 && datasetRows.indexOf(datasetRow) < 200) {	
-					<tr class="js-index-page-10">
+					<tr class="js-index-page js-index-page-10">
 						<td>
 							<input type="checkbox" class="js-record-checkbox" data-id="@datasetRow.get(metadata.id)">
 						</td>
@@ -209,44 +209,44 @@
 <nav id="list-pager">
  	<ul class="pagination">
    		@if(datasetRows.size() > 0) {
-   			<li class="active" id="js-page-status-1">
+   			<li class="js-page-status active" id="js-page-status-1">
    				<a class="js-index-page-btn" id="js-index-page-btn-1" data-page="1">1</a>
    			</li>
    		} @if(datasetRows.size() > 20) {
-   			<li id="js-page-status-2">
+   			<li class="js-page-status" id="js-page-status-2">
    				<a class="js-index-page-btn" id="js-index-page-btn-2" data-page="2">2</a>
    			</li>
    		} @if(datasetRows.size() > 40) {
-   			<li>
-   				<a class="js-index-page-btn" id="js-index-page-btn-3">3</a>
+   			<li class="js-page-status" id="js-page-status-3">
+   				<a class="js-index-page-btn" id="js-index-page-btn-3" data-page="3">3</a>
    			</li>
    		} @if(datasetRows.size() > 60) {
-   			<li>
-   				<a class="js-index-page-btn" id="js-index-page-btn-4">4</a>
+   			<li class="js-page-status" id="js-page-status-4">
+   				<a class="js-index-page-btn" id="js-index-page-btn-4" data-page="4">4</a>
    			</li>
    		} @if(datasetRows.size() > 80) {
-   			<li>
-   				<a class="js-index-page-btn" id="js-index-page-btn-5">5</a>
+   			<li class="js-page-status" id="js-page-status-5">
+   				<a class="js-index-page-btn" id="js-index-page-btn-5" data-page="5">5</a>
    			</li>
    		} @if(datasetRows.size() > 100) {
-   			<li>
-   				<a class="js-index-page-btn" id="js-index-page-btn-6">6</a>
+   			<li class="js-page-status" id="js-page-status-6">
+   				<a class="js-index-page-btn" id="js-index-page-btn-6" data-page="6">6</a>
    			</li>
    		} @if(datasetRows.size() > 120) {
-   			<li>
-   				<a class="js-index-page-btn" id="js-index-page-btn-7">7</a>
+   			<li class="js-page-status" id="js-page-status-7">
+   				<a class="js-index-page-btn" id="js-index-page-btn-7" data-page="7">7</a>
    			</li>
    		} @if(datasetRows.size() > 140) {
-   			<li>
-   				<a class="js-index-page-btn" id="js-index-page-btn-8">8</a>
+   			<li class="js-page-status" id="js-page-status-8">
+   				<a class="js-index-page-btn" id="js-index-page-btn-8" data-page="8">8</a>
    			</li>
    		} @if(datasetRows.size() > 160) {
-   			<li>
-   				<a class="js-index-page-btn" id="js-index-page-btn-9">9</a>
+   			<li class="js-page-status" id="js-page-status-9">
+   				<a class="js-index-page-btn" id="js-index-page-btn-9" data-page="9">9</a>
    			</li>
    		} @if(datasetRows.size() > 180) {
-   			<li>
-   				<a class="js-index-page-btn" id="js-index-page-btn-10">10</a>
+   			<li class="js-page-status" id="js-page-status-10">
+   				<a class="js-index-page-btn" id="js-index-page-btn-10" data-page="10">10</a>
    			</li>
    		}
  	</ul>

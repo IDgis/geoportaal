@@ -67,6 +67,7 @@ require([
 		
 		var indexPager = on(win.doc, '.js-index-page-btn:click', function(e) {
 			var dataPage = domAttr.get(this, 'data-page');
+			
 			var pageOne = query('.js-index-page-1');
 			var pageTwo = query('.js-index-page-2');
 			var pageThree = query('.js-index-page-3');
@@ -78,28 +79,39 @@ require([
 			var pageNine = query('.js-index-page-9');
 			var pageTen = query('.js-index-page-10');
 			
-			if(dataPage === '1') {
-				array.forEach(pageOne, function(item) {
-					domStyle.set(item, 'display', 'table-row');
-				});
-				array.forEach(pageTwo, function(item) {
-					domStyle.set(item, 'display', 'none');
-				});
-				
-				domAttr.set(dom.byId('js-page-status-1'), 'class', 'active');
-				domAttr.set(dom.byId('js-page-status-2'), 'class', '');
-			} if (dataPage === '2') {
-				array.forEach(pageOne, function(item) {
-					domStyle.set(item, 'display', 'none');
-				});
-				array.forEach(pageTwo, function(item) {
-					domStyle.set(item, 'display', 'table-row');
-				});
-				
-				domAttr.set(dom.byId('js-page-status-1'), 'class', '');
-				domAttr.set(dom.byId('js-page-status-2'), 'class', 'active');
-			}
+			if(dataPage === '1') {setPage(1, pageOne);}
+			if(dataPage === '2') {setPage(2, pageTwo);}
+			if(dataPage === '3') {setPage(3, pageThree);}
+			if(dataPage === '4') {setPage(4, pageFour);}
+			if(dataPage === '5') {setPage(5, pageFive);}
+			if(dataPage === '6') {setPage(6, pageSix);}
+			if(dataPage === '7') {setPage(7, pageSeven);}
+			if(dataPage === '8') {setPage(8, pageEight);}
+			if(dataPage === '9') {setPage(9, pageNine);}
+			if(dataPage === '10') {setPage(10, pageTen);}
 		});
+		
+		function setPage(page, pageArray) {
+			var allPages = query('.js-index-page');
+			var allButtons = query('.js-page-status');
+			
+			if(pageArray.length !== 0) {
+				array.forEach(allPages, function(item) {domStyle.set(item, 'display', 'none');});
+				array.forEach(pageArray, function(item) {domStyle.set(item, 'display', 'table-row');});
+				array.forEach(allButtons, function(item) {domAttr.set(item, 'class', 'js-page-status');});
+				
+				if(page === 1) {domAttr.set(dom.byId('js-page-status-1'), 'class', 'js-page-status active');}
+				if(page === 2) {domAttr.set(dom.byId('js-page-status-2'), 'class', 'js-page-status active');}
+				if(page === 3) {domAttr.set(dom.byId('js-page-status-3'), 'class', 'js-page-status active');}
+				if(page === 4) {domAttr.set(dom.byId('js-page-status-4'), 'class', 'js-page-status active');}
+				if(page === 5) {domAttr.set(dom.byId('js-page-status-5'), 'class', 'js-page-status active');}
+				if(page === 6) {domAttr.set(dom.byId('js-page-status-6'), 'class', 'js-page-status active');}
+				if(page === 7) {domAttr.set(dom.byId('js-page-status-7'), 'class', 'js-page-status active');}
+				if(page === 8) {domAttr.set(dom.byId('js-page-status-8'), 'class', 'js-page-status active');}
+				if(page === 9) {domAttr.set(dom.byId('js-page-status-9'), 'class', 'js-page-status active');}
+				if(page === 10) {domAttr.set(dom.byId('js-page-status-10'), 'class', 'js-page-status active');}
+			}	
+		}
 		
 		var deleteRecords = on(dom.byId('js-delete'), 'click', function(e) {
 			var recordsChecked = query('.js-record-checkbox:checked');
