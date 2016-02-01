@@ -39,7 +39,7 @@ a.tabs {height:100%;width:100%;display:block;background-position:15px 15px;width
 form.beheer-knoppen {margin-top:20px;margin-bottom:20px;margin-left:20px;}
 div.overzicht-records {margin-top:20px;margin-bottom:20px;margin-left:20px;}
 div.alle-records {margin-top:20px;margin-bottom:20px;margin-left:20px;}
-div.geselecteerde-records {margin-top:20px;margin-bottom:20px;margin-left:20px;}
+div.label-actions-selected-records {margin-top:20px;margin-bottom:20px;margin-left:20px;position:relative;left:-13px;}
 div.editor-knoppen {margin-bottom:20px;margin-left:15px;}
 
 #js-form-warning-fields, #js-form-warning-subjects {display:none;}
