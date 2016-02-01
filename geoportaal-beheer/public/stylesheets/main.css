@@ -59,3 +59,15 @@ input[type="file"].input-attachment {display:inline;}
 .attachment-file {font-size:14px;}
 
 .action-button {font-size:18px;}
+#btn-search-hide {margin-top:10px;margin-bottom:10px;position:relative;right:-12px;}
+#list-pager {position:relative;left:18px;top:-25px;}
+
+.js-index-page-2 {display:none;}
+.js-index-page-3 {display:none;}
+.js-index-page-4 {display:none;}
+.js-index-page-5 {display:none;}
+.js-index-page-6 {display:none;}
+.js-index-page-7 {display:none;}
+.js-index-page-8 {display:none;}
+.js-index-page-9 {display:none;}
+.js-index-page-10 {display:none;}
