@@ -1,7 +1,5 @@
 @(datasetRows: java.util.List[com.querydsl.core.Tuple],
-	sdfLocal: java.text.SimpleDateFormat,
-	start: Integer,
-	end: Integer)
+	sdfLocal: java.text.SimpleDateFormat)
 
 @import models.QMetadata.metadata
 @import models.QSupplier.supplier
@@ -12,7 +10,7 @@
 		<tbody>
 			<tr>
 				<th>
-					<input type="checkbox" id="js-check-all" data-page="1">
+					<input type="checkbox" id="js-check-all" class="js-check" data-page="1">
 				</th>
 				<th>Actie</th>
 				<th>Titel</th>
@@ -24,7 +22,7 @@
 				@if(datasetRows.indexOf(datasetRow) > -1 && datasetRows.indexOf(datasetRow) < 20) {	
 					<tr class="js-index-page js-index-page-1">
 						<td>
-							<input type="checkbox" class="js-record-checkbox" data-id="@datasetRow.get(metadata.id)">
+							<input type="checkbox" class="js-check js-record-checkbox" data-id="@datasetRow.get(metadata.id)">
 						</td>
 						<td>
 							<a>
@@ -42,7 +40,7 @@
 				} @if(datasetRows.indexOf(datasetRow) > 19 && datasetRows.indexOf(datasetRow) < 40) {	
 					<tr class="js-index-page js-index-page-2">
 						<td>
-							<input type="checkbox" class="js-record-checkbox" data-id="@datasetRow.get(metadata.id)">
+							<input type="checkbox" class="js-check js-record-checkbox" data-id="@datasetRow.get(metadata.id)">
 						</td>
 						<td>
 							<a>
@@ -60,7 +58,7 @@
 				} @if(datasetRows.indexOf(datasetRow) > 39 && datasetRows.indexOf(datasetRow) < 60) {	
 					<tr class="js-index-page js-index-page-3">
 						<td>
-							<input type="checkbox" class="js-record-checkbox" data-id="@datasetRow.get(metadata.id)">
+							<input type="checkbox" class="js-check js-record-checkbox" data-id="@datasetRow.get(metadata.id)">
 						</td>
 						<td>
 							<a>
@@ -78,7 +76,7 @@
 				} @if(datasetRows.indexOf(datasetRow) > 59 && datasetRows.indexOf(datasetRow) < 80) {	
 					<tr class="js-index-page js-index-page-4">
 						<td>
-							<input type="checkbox" class="js-record-checkbox" data-id="@datasetRow.get(metadata.id)">
+							<input type="checkbox" class="js-check js-record-checkbox" data-id="@datasetRow.get(metadata.id)">
 						</td>
 						<td>
 							<a>
@@ -96,7 +94,7 @@
 				} @if(datasetRows.indexOf(datasetRow) > 79 && datasetRows.indexOf(datasetRow) < 100) {	
 					<tr class="js-index-page js-index-page-5">
 						<td>
-							<input type="checkbox" class="js-record-checkbox" data-id="@datasetRow.get(metadata.id)">
+							<input type="checkbox" class="js-check js-record-checkbox" data-id="@datasetRow.get(metadata.id)">
 						</td>
 						<td>
 							<a>
@@ -114,7 +112,7 @@
 				} @if(datasetRows.indexOf(datasetRow) > 99 && datasetRows.indexOf(datasetRow) < 120) {	
 					<tr class="js-index-page js-index-page-6">
 						<td>
-							<input type="checkbox" class="js-record-checkbox" data-id="@datasetRow.get(metadata.id)">
+							<input type="checkbox" class="js-check js-record-checkbox" data-id="@datasetRow.get(metadata.id)">
 						</td>
 						<td>
 							<a>
@@ -132,7 +130,7 @@
 				} @if(datasetRows.indexOf(datasetRow) > 119 && datasetRows.indexOf(datasetRow) < 140) {	
 					<tr class="js-index-page js-index-page-7">
 						<td>
-							<input type="checkbox" class="js-record-checkbox" data-id="@datasetRow.get(metadata.id)">
+							<input type="checkbox" class="js-check js-record-checkbox" data-id="@datasetRow.get(metadata.id)">
 						</td>
 						<td>
 							<a>
@@ -150,7 +148,7 @@
 				} @if(datasetRows.indexOf(datasetRow) > 139 && datasetRows.indexOf(datasetRow) < 160) {	
 					<tr class="js-index-page js-index-page-8">
 						<td>
-							<input type="checkbox" class="js-record-checkbox" data-id="@datasetRow.get(metadata.id)">
+							<input type="checkbox" class="js-check js-record-checkbox" data-id="@datasetRow.get(metadata.id)">
 						</td>
 						<td>
 							<a>
@@ -168,7 +166,7 @@
 				} @if(datasetRows.indexOf(datasetRow) > 159 && datasetRows.indexOf(datasetRow) < 180) {	
 					<tr class="js-index-page js-index-page-9">
 						<td>
-							<input type="checkbox" class="js-record-checkbox" data-id="@datasetRow.get(metadata.id)">
+							<input type="checkbox" class="js-check js-record-checkbox" data-id="@datasetRow.get(metadata.id)">
 						</td>
 						<td>
 							<a>
@@ -186,7 +184,7 @@
 				} @if(datasetRows.indexOf(datasetRow) > 179 && datasetRows.indexOf(datasetRow) < 200) {	
 					<tr class="js-index-page js-index-page-10">
 						<td>
-							<input type="checkbox" class="js-record-checkbox" data-id="@datasetRow.get(metadata.id)">
+							<input type="checkbox" class="js-check js-record-checkbox" data-id="@datasetRow.get(metadata.id)">
 						</td>
 						<td>
 							<a>

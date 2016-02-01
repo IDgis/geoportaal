@@ -71,3 +71,7 @@ input[type="file"].input-attachment {display:inline;}
 .js-index-page-8 {display:none;}
 .js-index-page-9 {display:none;}
 .js-index-page-10 {display:none;}
+
+.js-page-status {cursor:pointer;}
+
+#perm-delete-checkbox {margin-top:15px;}

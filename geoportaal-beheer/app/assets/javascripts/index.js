@@ -65,7 +65,7 @@ require([
 			}
 		});
 		
-		var recordsCheckbox = query('.js-record-checkbox');
+		var allRecords = query('.js-record-checkbox');
 		var checkAll = on(dom.byId('js-check-all'), 'click', function(e) {
 			var pageCheck = domAttr.get(this, 'data-page');
 			
@@ -93,22 +93,22 @@ require([
 		});
 		
 		function setCheckAll(start, end) {
-			if(recordsCheckbox.length < end) {
-				var realEnd = recordsCheckbox.length;
+			if(allRecords.length < end) {
+				var realEnd = allRecords.length;
 			} else {
 				var realEnd = end;
 			}
 			
 			for(var i = start; i < realEnd; i++) {
 				if(domAttr.get(dom.byId('js-check-all'), 'checked')) {
-					domAttr.set(recordsCheckbox[i], 'checked', true);
+					domAttr.set(allRecords[i], 'checked', true);
 				} else {
-					domAttr.set(recordsCheckbox[i], 'checked', false);
+					domAttr.set(allRecords[i], 'checked', false);
 				}
 			}
 		}
 		
-		var checkGeneral = on(win.doc, '.js-record-checkbox:click', function(e) {
+		var checkGeneral = on(win.doc, '.js-record-checkbox:change', function(e) {
 			var pageCheck = domAttr.get(dom.byId('js-check-all'), 'data-page');
 			
 			if(pageCheck === '1') {
@@ -135,15 +135,15 @@ require([
 		});
 		
 		function setCheckGeneral(start, end) {
-			if(recordsCheckbox.length < end) {
-				var realEnd = recordsCheckbox.length;
+			if(allRecords.length < end) {
+				var realEnd = allRecords.length;
 			} else {
 				var realEnd = end;
 			}
 			
 			var count = start;
 			for(var j = start; j < realEnd; j++) {
-				if(domAttr.get(recordsCheckbox[j], 'checked')) {
+				if(domAttr.get(allRecords[j], 'checked')) {
 					count++;
 				}
 			}
@@ -240,6 +240,11 @@ require([
 				}
 			}	
 		}
+		
+		var changeRecords = on(win.doc, '.js-check:change', function(e) {
+			var recordsChecked = query('.js-record-checkbox:checked');
+			domAttr.set(dom.byId('js-delete-records-count'), 'innerHTML', recordsChecked.length);
+		});
 		
 		var deleteRecords = on(dom.byId('js-delete'), 'click', function(e) {
 			var recordsChecked = query('.js-record-checkbox:checked');
