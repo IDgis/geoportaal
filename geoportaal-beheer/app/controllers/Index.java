@@ -22,7 +22,6 @@ import com.querydsl.core.Tuple;
 import com.querydsl.sql.SQLQuery;
 
 import actions.DefaultAuthenticator;
-import models.DublinCore;
 import models.Search;
 import play.Routes;
 import play.data.DynamicForm;
@@ -44,6 +43,7 @@ public class Index extends Controller {
     			.join(status).on(metadata.status.eq(status.id))
     			.join(supplier).on(metadata.supplier.eq(supplier.id))
     			.join(statusLabel).on(status.id.eq(statusLabel.statusId))
+    			.limit(200)
     			.orderBy(metadata.lastRevisionDate.desc())
     			.fetch();
     	
@@ -197,7 +197,8 @@ public class Index extends Controller {
 		}
 		
 		List<Tuple> datasetRows = datasetQuery
-    			.orderBy(metadata.lastRevisionDate.desc())
+    			.limit(200)
+				.orderBy(metadata.lastRevisionDate.desc())
     			.fetch();
     	
     	List<Tuple> supplierList = db.queryFactory.select(supplier.all())
