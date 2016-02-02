@@ -245,16 +245,17 @@ require([
 			var recordsChecked = query('.js-record-checkbox:checked');
 			domAttr.set(dom.byId('js-delete-records-count'), 'innerHTML', recordsChecked.length);
 			domAttr.set(dom.byId('js-supplier-records-count'), 'innerHTML', recordsChecked.length);
+			
+			domAttr.remove(dom.byId('js-delete-execute'), 'disabled');
+			domAttr.remove(dom.byId('edit-supplier-select'), 'disabled');
+			if(recordsChecked.length === 0) {
+				domAttr.set(dom.byId('js-delete-execute'), 'disabled', 'disabled');
+				domAttr.set(dom.byId('edit-supplier-select'), 'disabled', 'disabled');
+			}
 		});
 		
 		var deleteRecords = on(dom.byId('js-delete'), 'click', function(e) {
 			var recordsChecked = query('.js-record-checkbox:checked');
-			
-			domAttr.remove(dom.byId('js-delete-execute'), 'disabled');
-			if(recordsChecked.length === 0) {
-				domAttr.set(dom.byId('js-delete-execute'), 'disabled', 'disabled');
-			}
-			
 			domConstruct.empty(dom.byId('js-delete-records'));
 			
 			array.forEach(recordsChecked, function(item) {
