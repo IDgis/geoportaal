@@ -98,11 +98,16 @@ public class Index extends Controller {
 				.where(supplier.name.eq(supplierName))
 				.fetchOne();
 			
-			tx.update(metadata)
+			Long count = tx.update(metadata)
 	    		.where(metadata.uuid.in(changeRecords))
 	    		.set(metadata.supplier, supplierKey)
 	    		.execute();
 	    	
+			Integer finalCount = count.intValue();
+			if(!finalCount.equals(changeRecords.size())) {
+				throw new Exception("Changing supplier: different amount of affected rows than expected");
+			}
+			
 	    	return redirect(controllers.routes.Index.index());
 		});
 	}
