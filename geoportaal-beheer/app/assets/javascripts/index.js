@@ -248,16 +248,16 @@ require([
 		
 		var deleteRecords = on(dom.byId('js-delete'), 'click', function(e) {
 			var recordsChecked = query('.js-record-checkbox:checked');
+			domConstruct.empty(dom.byId('js-delete-records'));
 			
 			array.forEach(recordsChecked, function(item) {
-				var datasetId = domAttr.get(item, 'data-id');
-				
-				xhr(jsRoutes.controllers.Index.deleteMetadata(datasetId).url)
-					.then(function() {
-						document.location.reload();
-					});
+				var metadataUuid = domAttr.get(item, 'data-uuid');
+				var input = domConstruct.create('input');
+				domAttr.set(input, 'type', 'hidden');
+				domAttr.set(input, 'name', 'recordsToDel[]');
+				domAttr.set(input, 'value', metadataUuid);
+				domConstruct.place(input, dom.byId('js-delete-records'), 'last');
 			});
-			
 		});
 		
 		var changeStatus = on(win.doc, '.js-status:click', function(e) {
@@ -265,7 +265,7 @@ require([
 			var status = domAttr.get(this, 'data-status');
 			
 			array.forEach(recordsChecked, function(item) {
-				var datasetId = domAttr.get(item, 'data-id');
+				var datasetId = domAttr.get(item, 'data-uuid');
 				
 				xhr(jsRoutes.controllers.Index.changeStatus(datasetId, status).url)
 					.then(function() {

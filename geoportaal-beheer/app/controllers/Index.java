@@ -1,9 +1,7 @@
 package controllers;
 
-import static models.QMdAttachment.mdAttachment;
 import static models.QMdFormat.mdFormat;
 import static models.QMdFormatLabel.mdFormatLabel;
-import static models.QMdSubject.mdSubject;
 import static models.QMetadata.metadata;
 import static models.QStatus.status;
 import static models.QStatusLabel.statusLabel;
@@ -15,13 +13,16 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import javax.inject.Inject;
 
 import com.querydsl.core.Tuple;
+import com.querydsl.sql.ProjectableSQLQuery;
 import com.querydsl.sql.SQLQuery;
 
 import actions.DefaultAuthenticator;
+import models.Delete;
 import models.Search;
 import play.Routes;
 import play.data.DynamicForm;
@@ -29,12 +30,15 @@ import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
+import util.QueryDSL;
+import util.QueryDSL.Transaction;
 import views.html.*;
 
 @Security.Authenticated(DefaultAuthenticator.class)
 public class Index extends Controller {
 	@Inject ZooKeeper zk;
 	@Inject Database db;
+	@Inject QueryDSL q;
 	
 	public Result index() throws SQLException {
 		List<Tuple> datasetRows = db.queryFactory
@@ -43,6 +47,7 @@ public class Index extends Controller {
     			.join(status).on(metadata.status.eq(status.id))
     			.join(supplier).on(metadata.supplier.eq(supplier.id))
     			.join(statusLabel).on(status.id.eq(statusLabel.statusId))
+    			.where(metadata.status.notIn(5))
     			.limit(200)
     			.orderBy(metadata.lastRevisionDate.desc())
     			.fetch();
@@ -69,14 +74,14 @@ public class Index extends Controller {
         return ok(views.html.index.render(datasetRows, supplierList, statusList, mdFormatList, sdfUS, sdfLocal, "", "none", "none", "none", null, null));
     }
 	
-	public Result changeStatus(Integer datasetId, String statusStr) {
+	public Result changeStatus(String metadataUuid, String statusStr) {
 		Integer statusKey = db.queryFactory.select(status.id)
 			.from(status)
 			.where(status.name.eq(statusStr))
 			.fetchFirst();
 		
 		db.queryFactory.update(metadata)
-    		.where(metadata.id.eq(datasetId))
+    		.where(metadata.uuid.eq(metadataUuid))
     		.set(metadata.status, statusKey)
     		.execute();
     	
@@ -97,19 +102,25 @@ public class Index extends Controller {
     	return redirect(controllers.routes.Index.index());
 	}
 	
-	public Result deleteMetadata(Integer datasetId) {
-		db.queryFactory.delete(metadata)
-    		.where(metadata.id.eq(datasetId))
-    		.execute();
-    	
-    	db.queryFactory.delete(mdAttachment)
-    		.where(mdAttachment.metadataId.eq(datasetId))
-    		.execute();
-    	
-    	db.queryFactory.delete(mdSubject)
-    		.where(mdSubject.metadataId.eq(datasetId))
-    		.execute();
+	public Result deleteMetadata() {
+		Form<Delete> deleteForm = Form.form(Delete.class);
+		Delete d = deleteForm.bindFromRequest().get();
+		List<String> deleteRecords = d.getRecordsToDel();
+		String permDel = d.getPermDel();
 		
+		if(permDel != null) {
+			db.queryFactory
+				.delete(metadata)
+				.where(metadata.uuid.in(deleteRecords))
+				.execute();
+		} else {
+			db.queryFactory
+				.update(metadata)
+				.where(metadata.uuid.in(deleteRecords))
+				.set(metadata.status, 5)
+				.execute();
+		}
+				
 		return redirect(controllers.routes.Index.index());
 	}
 	
@@ -142,8 +153,8 @@ public class Index extends Controller {
 			
 			return ok(bindingerror.render(null, null, null, null, null, null, dateSearchStartMsg, dateSearchEndMsg));
 		} catch(IllegalStateException ise) {
-				return ok(bindingerror.render("Er is iets misgegaan. Controleer of de velden correct zijn ingevuld.", null, null, null, null, null, null, null));
-			}
+			return ok(bindingerror.render("Er is iets misgegaan. Controleer of de velden correct zijn ingevuld.", null, null, null, null, null, null, null));
+		}
 	}
 	
 	public Result search() {
