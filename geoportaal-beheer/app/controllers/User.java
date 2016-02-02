@@ -16,10 +16,11 @@ import play.data.Form;
 import play.mvc.Controller;
 import play.Routes;
 import play.mvc.Result;
+import util.QueryDSL;
 import play.data.validation.Constraints;
 
 public class User extends Controller {
-	@Inject Database db;
+	@Inject QueryDSL q;
 	
 	public Result login (final String r) {
 		final Form<Login> loginForm = Form.form(Login.class).fill(new Login(r));
@@ -47,16 +48,20 @@ public class User extends Controller {
 	}
 	
 	public void validate(Form<Login> loginForm) {		
-		String dbPassword = db.queryFactory
-			.select(user.password)
-			.from(user)
-			.where(user.username.eq(loginForm.get().username))
-			.fetchOne();
-		
-		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-		if(dbPassword == null || !encoder.matches(loginForm.get().password, dbPassword)) {
-			loginForm.reject("Ongeldige gebruikersnaam of wachtwoord");
-		}
+		q.withTransaction(tx -> {
+			String dbPassword = tx
+				.select(user.password)
+				.from(user)
+				.where(user.username.eq(loginForm.get().username))
+				.fetchOne();
+			
+			BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+			if(dbPassword == null || !encoder.matches(loginForm.get().password, dbPassword)) {
+				loginForm.reject("Ongeldige gebruikersnaam of wachtwoord");
+			}
+			
+			return "";
+		});
 	}
 	
 	public Result logout () {
