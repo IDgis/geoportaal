@@ -109,14 +109,25 @@ public class Index extends Controller {
 		
 		return q.withTransaction(tx -> {
 			if(permDel != null) {
-				tx.delete(metadata)
+				Long count = tx.delete(metadata)
 					.where(metadata.uuid.in(deleteRecords))
 					.execute();
+				
+				Integer finalCount = count.intValue();
+				if(!finalCount.equals(deleteRecords.size())) {
+					throw new Exception("Deleting records: different amount of affected rows than expected");
+				}
 			} else {
-				tx.update(metadata)
+				Long count = tx.update(metadata)
 					.where(metadata.uuid.in(deleteRecords))
 					.set(metadata.status, 5)
 					.execute();
+				
+				Integer finalCount = count.intValue();
+				System.out.println(!finalCount.equals(deleteRecords.size()));
+				if(!finalCount.equals(deleteRecords.size())) {
+					throw new Exception("Change status to deleted: different amount of affected rows than expected");
+				}
 			}
 			
 			return redirect(controllers.routes.Index.index());
