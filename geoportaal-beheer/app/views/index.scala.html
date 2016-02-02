@@ -110,15 +110,15 @@
 				</div>
 		}
 	</div>
-	<div class="geselecteerde-records col-sm-12">
+	<div class="label-actions-selected-records col-sm-12">
 		<span>Acties voor geselecteerde records:</span>
 	</div>
-	<form class="form-inline beheer-knoppen" method="get">
+	<div class="form-inline beheer-knoppen" method="get">
 		<div class="form-group">
 			<button class="knop js-status" type="button" data-status="concept">Concept</button>
 			<button class="knop js-status" type="button" data-status="approval">Ter goedkeuring</button>
 			<button class="knop js-status" type="button" data-status="published">In publicatie</button>
-			<button id="js-delete" class="knop" type="button">Verwijderen</button>
+			<button class="knop" id="js-delete" type="button" data-toggle="modal" data-target="#delete-modal">Verwijderen</button>
 			<button class="knop" type="button" id="js-edit-supplier">Leverancier wijzigen</button>
 			<select class="form-control" id="js-edit-supplier-select">
 				<option>--</option>
@@ -127,6 +127,34 @@
 				}
 			</select>
 		</div>
-	</form>
-	@views.html.list(datasetRows, sdfLocal, -1, 20)
+	</div>
+	@views.html.list(datasetRows, sdfLocal)
+	
+	@helper.form(action = routes.Index.deleteMetadata()) {
+		<div id="js-delete-records">
+		</div>
+		<div class="modal fade" id="delete-modal">
+	  		<div class="modal-dialog">
+	    		<div class="modal-content">
+	      			<div class="modal-header">
+	        			<button type="button" class="close" data-dismiss="modal">
+	        				<span>&times;</span>
+	        			</button>
+	        			<h4 class="modal-title">Verwijderen statische kaarten</h4>
+	      			</div>
+	      			<div class="modal-body">
+	        			<p>Er worden <b><span id="js-delete-records-count">0</span></b> records verwijderd. Weet u zeker dat u deze actie wilt uitvoeren?</p>
+	        			<p id="perm-delete-checkbox">
+	        				<input type="checkbox" name="permDel" value="true">
+	        				<span>Definitief verwijderen</span>
+	        			</p>
+	      			</div>
+	      			<div class="modal-footer">
+	        			<button type="button" class="btn btn-default" data-dismiss="modal">Annuleren</button>
+	        			<button type="submit" class="btn btn-primary">Uitvoeren</button>
+	      			</div>
+	    		</div>
+	  		</div>
+		</div>
+	}
 }

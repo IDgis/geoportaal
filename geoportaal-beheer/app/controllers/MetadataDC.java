@@ -35,59 +35,54 @@ import com.querydsl.core.Tuple;
 import models.DublinCore;
 import play.data.DynamicForm;
 import play.data.Form;
-import play.data.Form.Field;
 import play.mvc.Controller;
 import play.mvc.Http.MultipartFormData.FilePart;
 import play.mvc.Result;
-
+import util.QueryDSL;
 import views.html.*;
 
 public class MetadataDC extends Controller {
-	@Inject Database db;
+	@Inject QueryDSL q;
 	
 	public Result renderCreateForm() {
 		Boolean create = true;
 		String todayUS = new SimpleDateFormat("yyyy-MM-dd").format(new Date().getTime());
 		String todayLocal = new SimpleDateFormat("dd-MM-yyyy").format(new Date().getTime());
 		
-		List<Tuple> typeInformationList = db.queryFactory
-			.select(typeInformation.id, typeInformation.name, typeInformationLabel.label)
-    		.from(typeInformation)
-    		.join(typeInformationLabel).on(typeInformation.id.eq(typeInformationLabel.typeInformationId))
-    		.fetch();
-    	
-    	List<Tuple> creatorsList = db.queryFactory
-    		.select(creator.id, creator.name, creatorLabel.label)
-        	.from(creator)
-        	.join(creatorLabel).on(creator.id.eq(creatorLabel.creatorId))
-        	.fetch();
-    	
-    	List<Tuple> rightsList = db.queryFactory
-    			.select(rights.id, rights.name, rightsLabel.label)
+		return q.withTransaction(tx -> {
+			List<Tuple> typeInformationList = tx.select(typeInformation.id, typeInformation.name, typeInformationLabel.label)
+	    		.from(typeInformation)
+	    		.join(typeInformationLabel).on(typeInformation.id.eq(typeInformationLabel.typeInformationId))
+	    		.fetch();
+	    	
+	    	List<Tuple> creatorsList = tx.select(creator.id, creator.name, creatorLabel.label)
+	        	.from(creator)
+	        	.join(creatorLabel).on(creator.id.eq(creatorLabel.creatorId))
+	        	.fetch();
+	    	
+	    	List<Tuple> rightsList = tx.select(rights.id, rights.name, rightsLabel.label)
             	.from(rights)
             	.join(rightsLabel).on(rights.id.eq(rightsLabel.rightsId))
             	.fetch();
-    	
-    	List<Tuple> useLimitationList = db.queryFactory
-    			.select(useLimitation.id, useLimitation.name, useLimitationLabel.label)
+	    	
+	    	List<Tuple> useLimitationList = tx.select(useLimitation.id, useLimitation.name, useLimitationLabel.label)
             	.from(useLimitation)
             	.join(useLimitationLabel).on(useLimitation.id.eq(useLimitationLabel.useLimitationId))
             	.fetch();
-    	
-    	List<Tuple> mdFormatList = db.queryFactory
-    			.select(mdFormat.id, mdFormat.name, mdFormatLabel.label)
+	    	
+	    	List<Tuple> mdFormatList = tx.select(mdFormat.id, mdFormat.name, mdFormatLabel.label)
             	.from(mdFormat)
             	.join(mdFormatLabel).on(mdFormat.id.eq(mdFormatLabel.mdFormatId))
             	.fetch();
-    	
-    	List<Tuple> subjectList = db.queryFactory
-    			.select(subject.id, subject.name, subjectLabel.label)
+	    	
+	    	List<Tuple> subjectList = tx.select(subject.id, subject.name, subjectLabel.label)
             	.from(subject)
             	.join(subjectLabel).on(subject.id.eq(subjectLabel.subjectId))
             	.fetch();
-		
-    	return ok(views.html.form.render(create, todayUS, todayLocal, null, null, null, typeInformationList, creatorsList, rightsList, 
-				useLimitationList, mdFormatList, null, null, subjectList));
+			
+	    	return ok(views.html.form.render(create, todayUS, todayLocal, null, null, null, typeInformationList, creatorsList, rightsList, 
+					useLimitationList, mdFormatList, null, null, subjectList));
+		});
 	}
 	
 	public Result createSubmit() throws IOException {
@@ -97,194 +92,191 @@ public class MetadataDC extends Controller {
 		String uuid = UUID.randomUUID().toString();
 		Timestamp dateToday = new Timestamp(new Date().getTime());
 		
-		Integer typeInformationKey = db.queryFactory.select(typeInformation.id)
-			.from(typeInformation)
-			.where(typeInformation.name.eq(dc.getTypeInformation()))
-			.fetchFirst();
-		
-		Integer creatorKey = db.queryFactory.select(creator.id)
-			.from(creator)
-			.where(creator.name.eq(dc.getCreator()))
-			.fetchFirst();
-		
-		Integer rightsKey = db.queryFactory.select(rights.id)
-			.from(rights)
-			.where(rights.name.eq(dc.getRights()))
-			.fetchFirst();
-		
-		Integer useLimitationKey = db.queryFactory.select(useLimitation.id)
-			.from(useLimitation)
-			.where(useLimitation.name.eq(dc.getUseLimitation()))
-			.fetchFirst();
-		
-		Integer formatKey = db.queryFactory.select(mdFormat.id)
-			.from(mdFormat)
-			.where(mdFormat.name.eq(dc.getMdFormat()))
-			.fetchFirst();
-		
-		String creatorOtherValue;
-		if(!dc.getCreator().equals("other")) {
-			creatorOtherValue = null;
-		} else {
-			creatorOtherValue = dc.getCreatorOther();
-		}
-		
-		Timestamp dateSourceCreationValue = nullCheckDate(dc.getDateSourceCreation());
-		Timestamp dateSourcePublicationValue = nullCheckDate(dc.getDateSourcePublication());
-		Timestamp dateSourceRevisionValue = nullCheckDate(dc.getDateSourceRevision());
-		Timestamp dateSourceValidFromValue = nullCheckDate(dc.getDateSourceValidFrom());
-		Timestamp dateSourceValidUntilValue = nullCheckDate(dc.getDateSourceValidUntil());
-		
-		Integer supplierId = db.queryFactory.select(supplier.id)
-			.from(supplier)
-			.where(supplier.name.eq(session("username")))
-			.fetchFirst();
-		
-		db.queryFactory.insert(metadata)
-    		.set(metadata.uuid, uuid)
-    		.set(metadata.location, dc.getLocation())
-    		.set(metadata.fileId, dc.getFileId())
-    		.set(metadata.title, dc.getTitle())
-    		.set(metadata.description, dc.getDescription())
-    		.set(metadata.typeInformation, typeInformationKey)
-    		.set(metadata.creator, creatorKey)
-    		.set(metadata.creatorOther, creatorOtherValue)
-    		.set(metadata.rights, rightsKey)
-    		.set(metadata.useLimitation, useLimitationKey)
-    		.set(metadata.mdFormat, formatKey)
-    		.set(metadata.source, dc.getSource())
-    		.set(metadata.dateSourceCreation, dateSourceCreationValue)
-    		.set(metadata.dateSourcePublication, dateSourcePublicationValue)
-    		.set(metadata.dateSourceRevision, dateSourceRevisionValue)
-    		.set(metadata.dateSourceValidFrom, dateSourceValidFromValue)
-    		.set(metadata.dateSourceValidUntil, dateSourceValidUntilValue)
-    		.set(metadata.supplier, supplierId)
-    		.set(metadata.status, 2)
-    		.set(metadata.published, false)
-    		.set(metadata.lastRevisionUser, session("username"))
-    		.set(metadata.lastRevisionDate, dateToday)
-    		.execute();
-    	
-		Integer metadataId = db.queryFactory.select(metadata.id)
-				.from(metadata)
-				.where(metadata.uuid.eq(uuid))
+		return q.withTransaction(tx -> {
+			Integer typeInformationKey = tx.select(typeInformation.id)
+				.from(typeInformation)
+				.where(typeInformation.name.eq(dc.getTypeInformation()))
 				.fetchFirst();
-		
-		play.mvc.Http.MultipartFormData body = request().body().asMultipartFormData();
-		List<FilePart> allFiles = body.getFiles();
-		
-		for(FilePart fp: allFiles) {
-			if(fp != null) {
-				java.io.File file = fp.getFile();
-				InputStream inputStream = new FileInputStream(file);
-				
-				byte[] buffer = new byte[8192];
-				int bytesRead;
-				ByteArrayOutputStream byteOutput = new ByteArrayOutputStream();
-				while((bytesRead = inputStream.read(buffer)) != -1)
-			    {
-					byteOutput.write(buffer, 0, bytesRead);
-			    }
-				byte[] input = byteOutput.toByteArray();
-				
-				
-				inputStream.close();
-				
-				db.queryFactory.insert(mdAttachment)
-					.set(mdAttachment.metadataId, metadataId)
-					.set(mdAttachment.attachmentName, fp.getFilename())
-					.set(mdAttachment.attachmentContent, input)
-					.set(mdAttachment.attachmentMimetype, fp.getContentType())
-					.execute();
+			
+			Integer creatorKey = tx.select(creator.id)
+				.from(creator)
+				.where(creator.name.eq(dc.getCreator()))
+				.fetchFirst();
+			
+			Integer rightsKey = tx.select(rights.id)
+				.from(rights)
+				.where(rights.name.eq(dc.getRights()))
+				.fetchFirst();
+			
+			Integer useLimitationKey = tx.select(useLimitation.id)
+				.from(useLimitation)
+				.where(useLimitation.name.eq(dc.getUseLimitation()))
+				.fetchFirst();
+			
+			Integer formatKey = tx.select(mdFormat.id)
+				.from(mdFormat)
+				.where(mdFormat.name.eq(dc.getMdFormat()))
+				.fetchFirst();
+			
+			String creatorOtherValue;
+			if(!dc.getCreator().equals("other")) {
+				creatorOtherValue = null;
+			} else {
+				creatorOtherValue = dc.getCreatorOther();
 			}
-		}
-		
-		if(dc.getSubject() != null) {
-			for(String subjectStr : dc.getSubject()) {
-				Integer subjectKey = db.queryFactory.select(subject.id)
-					.from(subject)
-					.where(subject.name.eq(subjectStr))
+			
+			Timestamp dateSourceCreationValue = nullCheckDate(dc.getDateSourceCreation());
+			Timestamp dateSourcePublicationValue = nullCheckDate(dc.getDateSourcePublication());
+			Timestamp dateSourceRevisionValue = nullCheckDate(dc.getDateSourceRevision());
+			Timestamp dateSourceValidFromValue = nullCheckDate(dc.getDateSourceValidFrom());
+			Timestamp dateSourceValidUntilValue = nullCheckDate(dc.getDateSourceValidUntil());
+			
+			Integer supplierId = tx.select(supplier.id)
+				.from(supplier)
+				.where(supplier.name.eq(session("username")))
+				.fetchFirst();
+			
+			tx.insert(metadata)
+	    		.set(metadata.uuid, uuid)
+	    		.set(metadata.location, dc.getLocation())
+	    		.set(metadata.fileId, dc.getFileId())
+	    		.set(metadata.title, dc.getTitle())
+	    		.set(metadata.description, dc.getDescription())
+	    		.set(metadata.typeInformation, typeInformationKey)
+	    		.set(metadata.creator, creatorKey)
+	    		.set(metadata.creatorOther, creatorOtherValue)
+	    		.set(metadata.rights, rightsKey)
+	    		.set(metadata.useLimitation, useLimitationKey)
+	    		.set(metadata.mdFormat, formatKey)
+	    		.set(metadata.source, dc.getSource())
+	    		.set(metadata.dateSourceCreation, dateSourceCreationValue)
+	    		.set(metadata.dateSourcePublication, dateSourcePublicationValue)
+	    		.set(metadata.dateSourceRevision, dateSourceRevisionValue)
+	    		.set(metadata.dateSourceValidFrom, dateSourceValidFromValue)
+	    		.set(metadata.dateSourceValidUntil, dateSourceValidUntilValue)
+	    		.set(metadata.supplier, supplierId)
+	    		.set(metadata.status, 2)
+	    		.set(metadata.published, false)
+	    		.set(metadata.lastRevisionUser, session("username"))
+	    		.set(metadata.lastRevisionDate, dateToday)
+	    		.execute();
+	    	
+			Integer metadataId = tx.select(metadata.id)
+					.from(metadata)
+					.where(metadata.uuid.eq(uuid))
 					.fetchFirst();
-				
-				db.queryFactory.insert(mdSubject)
-					.set(mdSubject.metadataId, metadataId)
-					.set(mdSubject.subject, subjectKey)
-					.execute();
+			
+			play.mvc.Http.MultipartFormData body = request().body().asMultipartFormData();
+			List<FilePart> allFiles = body.getFiles();
+			
+			for(FilePart fp: allFiles) {
+				if(fp != null) {
+					java.io.File file = fp.getFile();
+					InputStream inputStream = new FileInputStream(file);
+					
+					byte[] buffer = new byte[8192];
+					int bytesRead;
+					ByteArrayOutputStream byteOutput = new ByteArrayOutputStream();
+					while((bytesRead = inputStream.read(buffer)) != -1)
+				    {
+						byteOutput.write(buffer, 0, bytesRead);
+				    }
+					byte[] input = byteOutput.toByteArray();
+					
+					
+					inputStream.close();
+					
+					tx.insert(mdAttachment)
+						.set(mdAttachment.metadataId, metadataId)
+						.set(mdAttachment.attachmentName, fp.getFilename())
+						.set(mdAttachment.attachmentContent, input)
+						.set(mdAttachment.attachmentMimetype, fp.getContentType())
+						.execute();
+				}
 			}
-		}
-		
-		return redirect(controllers.routes.Index.index());
+			
+			if(dc.getSubject() != null) {
+				for(String subjectStr : dc.getSubject()) {
+					Integer subjectKey = tx.select(subject.id)
+						.from(subject)
+						.where(subject.name.eq(subjectStr))
+						.fetchFirst();
+					
+					tx.insert(mdSubject)
+						.set(mdSubject.metadataId, metadataId)
+						.set(mdSubject.subject, subjectKey)
+						.execute();
+				}
+			}
+			
+			return redirect(controllers.routes.Index.index());
+		});
 	}
 	
 	public Result renderEditForm(String metadataUuid) {
 		Boolean create = false;
 		
-		Integer metadataId = db.queryFactory
-				.from(metadata)
-				.select(metadata.id)
-				.where(metadata.uuid.eq(metadataUuid))
-				.fetchFirst();
-		
-		Tuple datasetRow = db.queryFactory.select(metadata.id, metadata.uuid, metadata.location, metadata.fileId, metadata.title, 
-				metadata.description, metadata.typeInformation, metadata.creator, metadata.creatorOther, metadata.rights, metadata.useLimitation,
-				metadata.mdFormat, metadata.source, metadata.dateSourceCreation, metadata.dateSourcePublication, metadata.dateSourceRevision,
-				metadata.dateSourceValidFrom, metadata.dateSourceValidUntil, creator.name)
-    			.from(metadata)
-    			.join(creator).on(metadata.creator.eq(creator.id))
-    			.where(metadata.id.eq(metadataId))
-    			.fetchFirst();
-    	
-    	List<Tuple> subjectsDataset = db.queryFactory.select(mdSubject.all())
-    			.from(mdSubject)
-    			.where(mdSubject.metadataId.eq(metadataId))
-    			.fetch();
-    	
-    	List<Tuple> attachmentsDataset = db.queryFactory.select(mdAttachment.all())
-    			.from(mdAttachment)
-    			.where(mdAttachment.metadataId.eq(metadataId))
-    			.fetch();
-    	
-    	List<Tuple> typeInformationList = db.queryFactory
-    			.select(typeInformation.id, typeInformation.name, typeInformationLabel.label)
-        		.from(typeInformation)
-        		.join(typeInformationLabel).on(typeInformation.id.eq(typeInformationLabel.typeInformationId))
-        		.fetch();
-        	
-    	List<Tuple> creatorsList = db.queryFactory
-	    		.select(creator.id, creator.name, creatorLabel.label)
-	        	.from(creator)
-	        	.join(creatorLabel).on(creator.id.eq(creatorLabel.creatorId))
-	        	.fetch();
-    	
-    	List<Tuple> rightsList = db.queryFactory
-    			.select(rights.id, rights.name, rightsLabel.label)
-            	.from(rights)
-            	.join(rightsLabel).on(rights.id.eq(rightsLabel.rightsId))
-            	.fetch();
-    	
-    	List<Tuple> useLimitationList = db.queryFactory
-    			.select(useLimitation.id, useLimitation.name, useLimitationLabel.label)
-            	.from(useLimitation)
-            	.join(useLimitationLabel).on(useLimitation.id.eq(useLimitationLabel.useLimitationId))
-            	.fetch();
-    	
-    	List<Tuple> mdFormatList = db.queryFactory
-    			.select(mdFormat.id, mdFormat.name, mdFormatLabel.label)
-            	.from(mdFormat)
-            	.join(mdFormatLabel).on(mdFormat.id.eq(mdFormatLabel.mdFormatId))
-            	.fetch();
-    	
-    	List<Tuple> subjectList = db.queryFactory
-    			.select(subject.id, subject.name, subjectLabel.label)
-            	.from(subject)
-            	.join(subjectLabel).on(subject.id.eq(subjectLabel.subjectId))
-            	.fetch();
-        
-        SimpleDateFormat sdfUS = new SimpleDateFormat("yyyy-MM-dd");
-        SimpleDateFormat sdfLocal = new SimpleDateFormat("dd-MM-yyyy");
-        
-        return ok(views.html.form.render(create, "", "", datasetRow, subjectsDataset, attachmentsDataset, typeInformationList, creatorsList, 
-    			rightsList, useLimitationList, mdFormatList, sdfUS, sdfLocal, subjectList));
+		return q.withTransaction(tx -> {
+			Integer metadataId = tx.from(metadata)
+					.select(metadata.id)
+					.where(metadata.uuid.eq(metadataUuid))
+					.fetchFirst();
+			
+			Tuple datasetRow = tx.select(metadata.id, metadata.uuid, metadata.location, metadata.fileId, metadata.title, 
+								metadata.description, metadata.typeInformation, metadata.creator, metadata.creatorOther, metadata.rights, metadata.useLimitation,
+								metadata.mdFormat, metadata.source, metadata.dateSourceCreation, metadata.dateSourcePublication, metadata.dateSourceRevision,
+								metadata.dateSourceValidFrom, metadata.dateSourceValidUntil, creator.name)
+	    			.from(metadata)
+	    			.join(creator).on(metadata.creator.eq(creator.id))
+	    			.where(metadata.id.eq(metadataId))
+	    			.fetchFirst();
+	    	
+	    	List<Tuple> subjectsDataset = tx.select(mdSubject.all())
+	    			.from(mdSubject)
+	    			.where(mdSubject.metadataId.eq(metadataId))
+	    			.fetch();
+	    	
+	    	List<Tuple> attachmentsDataset = tx.select(mdAttachment.all())
+	    			.from(mdAttachment)
+	    			.where(mdAttachment.metadataId.eq(metadataId))
+	    			.fetch();
+	    	
+	    	List<Tuple> typeInformationList = tx.select(typeInformation.id, typeInformation.name, typeInformationLabel.label)
+	        		.from(typeInformation)
+	        		.join(typeInformationLabel).on(typeInformation.id.eq(typeInformationLabel.typeInformationId))
+	        		.fetch();
+	        	
+	    	List<Tuple> creatorsList = tx.select(creator.id, creator.name, creatorLabel.label)
+		        	.from(creator)
+		        	.join(creatorLabel).on(creator.id.eq(creatorLabel.creatorId))
+		        	.fetch();
+	    	
+	    	List<Tuple> rightsList = tx.select(rights.id, rights.name, rightsLabel.label)
+	            	.from(rights)
+	            	.join(rightsLabel).on(rights.id.eq(rightsLabel.rightsId))
+	            	.fetch();
+	    	
+	    	List<Tuple> useLimitationList = tx.select(useLimitation.id, useLimitation.name, useLimitationLabel.label)
+	            	.from(useLimitation)
+	            	.join(useLimitationLabel).on(useLimitation.id.eq(useLimitationLabel.useLimitationId))
+	            	.fetch();
+	    	
+	    	List<Tuple> mdFormatList = tx.select(mdFormat.id, mdFormat.name, mdFormatLabel.label)
+	            	.from(mdFormat)
+	            	.join(mdFormatLabel).on(mdFormat.id.eq(mdFormatLabel.mdFormatId))
+	            	.fetch();
+	    	
+	    	List<Tuple> subjectList = tx.select(subject.id, subject.name, subjectLabel.label)
+	            	.from(subject)
+	            	.join(subjectLabel).on(subject.id.eq(subjectLabel.subjectId))
+	            	.fetch();
+	        
+	        SimpleDateFormat sdfUS = new SimpleDateFormat("yyyy-MM-dd");
+	        SimpleDateFormat sdfLocal = new SimpleDateFormat("dd-MM-yyyy");
+	        
+	        return ok(views.html.form.render(create, "", "", datasetRow, subjectsDataset, attachmentsDataset, typeInformationList, creatorsList, 
+	    			rightsList, useLimitationList, mdFormatList, sdfUS, sdfLocal, subjectList));
+		});
 	}
 	
 	public Result editSubmit(String metadataUuid) throws IOException {
@@ -293,131 +285,133 @@ public class MetadataDC extends Controller {
 		
 		Timestamp dateToday = new Timestamp(new Date().getTime());
 		
-		Integer metadataId = db.queryFactory.select(metadata.id)
-				.from(metadata)
-				.where(metadata.uuid.eq(metadataUuid))
-				.fetchFirst();
-		
-		Integer typeInformationKey = db.queryFactory.select(typeInformation.id)
-			.from(typeInformation)
-			.where(typeInformation.name.eq(dc.getTypeInformation()))
-			.fetchFirst();
-		
-		Integer creatorKey = db.queryFactory.select(creator.id)
-			.from(creator)
-			.where(creator.name.eq(dc.getCreator()))
-			.fetchFirst();
-		
-		Integer rightsKey = db.queryFactory.select(rights.id)
-			.from(rights)
-			.where(rights.name.eq(dc.getRights()))
-			.fetchFirst();
-		
-		Integer useLimitationKey = db.queryFactory.select(useLimitation.id)
-			.from(useLimitation)
-			.where(useLimitation.name.eq(dc.getUseLimitation()))
-			.fetchFirst();
-		
-		Integer formatKey = db.queryFactory.select(mdFormat.id)
-			.from(mdFormat)
-			.where(mdFormat.name.eq(dc.getMdFormat()))
-			.fetchFirst();
-		
-		String creatorOtherValue;
-		if(!dc.getCreator().equals("other")) {
-			creatorOtherValue = null;
-		} else {
-			creatorOtherValue = dc.getCreatorOther();
-		}
-		
-		Timestamp dateSourceCreationValue = nullCheckDate(dc.getDateSourceCreation());
-		Timestamp dateSourcePublicationValue = nullCheckDate(dc.getDateSourcePublication());
-		Timestamp dateSourceRevisionValue = nullCheckDate(dc.getDateSourceRevision());
-		Timestamp dateSourceValidFromValue = nullCheckDate(dc.getDateSourceValidFrom());
-		Timestamp dateSourceValidUntilValue = nullCheckDate(dc.getDateSourceValidUntil());
-		
-		List<String> subjects = dc.getSubject();
-		
-		db.queryFactory.update(metadata)
-		.where(metadata.uuid.eq(metadataUuid))
-		.set(metadata.location, dc.getLocation())
-		.set(metadata.fileId, dc.getFileId())
-		.set(metadata.title, dc.getTitle())
-		.set(metadata.description, dc.getDescription())
-		.set(metadata.typeInformation, typeInformationKey)
-		.set(metadata.creator, creatorKey)
-		.set(metadata.creatorOther, creatorOtherValue)
-		.set(metadata.rights, rightsKey)
-		.set(metadata.useLimitation, useLimitationKey)
-		.set(metadata.mdFormat, formatKey)
-		.set(metadata.source, dc.getSource())
-		.set(metadata.dateSourceCreation, dateSourceCreationValue)
-		.set(metadata.dateSourcePublication, dateSourcePublicationValue)
-		.set(metadata.dateSourceRevision, dateSourceRevisionValue)
-		.set(metadata.dateSourceValidFrom, dateSourceValidFromValue)
-		.set(metadata.dateSourceValidUntil, dateSourceValidUntilValue)
-		.set(metadata.lastRevisionUser, session("username"))
-		.set(metadata.lastRevisionDate, dateToday)
-		.execute();
-	
-		List<String> attToDelete = dc.getDeletedAttachment();
-		if(attToDelete != null) {
-			for(String attachmentName : attToDelete) {
-				db.queryFactory.delete(mdAttachment)
-					.where(mdAttachment.metadataId.eq(metadataId)
-						.and(mdAttachment.attachmentName.eq(attachmentName)))
-					.execute();
-			}
-		}
-		
-		play.mvc.Http.MultipartFormData body = request().body().asMultipartFormData();
-		List<FilePart> allFiles = body.getFiles();
-		
-		for(FilePart fp: allFiles) {
-			if(fp != null) {
-				java.io.File file = fp.getFile();
-				InputStream inputStream = new FileInputStream(file);
-				
-				byte[] buffer = new byte[8192];
-				int bytesRead;
-				ByteArrayOutputStream byteOutput = new ByteArrayOutputStream();
-				while((bytesRead = inputStream.read(buffer)) != -1)
-			    {
-					byteOutput.write(buffer, 0, bytesRead);
-			    }
-				byte[] input = byteOutput.toByteArray();
-				
-				
-				inputStream.close();
-				
-				db.queryFactory.insert(mdAttachment)
-					.set(mdAttachment.metadataId, metadataId)
-					.set(mdAttachment.attachmentName, fp.getFilename())
-					.set(mdAttachment.attachmentContent, input)
-					.set(mdAttachment.attachmentMimetype, fp.getContentType())
-					.execute();
-			}
-		}
-		
-		if(subjects != null) {
-			db.queryFactory.delete(mdSubject)
-				.where(mdSubject.metadataId.eq(metadataId))
-				.execute();
-				
-			for(String subjectStr : subjects) {
-				Integer subjectKey = db.queryFactory.select(subject.id)
-					.from(subject)
-					.where(subject.name.eq(subjectStr))
+		return q.withTransaction(tx -> {
+			Integer metadataId = tx.select(metadata.id)
+					.from(metadata)
+					.where(metadata.uuid.eq(metadataUuid))
 					.fetchFirst();
-				
-				db.queryFactory.insert(mdSubject)
-					.set(mdSubject.metadataId, metadataId)
-					.set(mdSubject.subject, subjectKey)
-					.execute();
+			
+			Integer typeInformationKey = tx.select(typeInformation.id)
+				.from(typeInformation)
+				.where(typeInformation.name.eq(dc.getTypeInformation()))
+				.fetchFirst();
+			
+			Integer creatorKey = tx.select(creator.id)
+				.from(creator)
+				.where(creator.name.eq(dc.getCreator()))
+				.fetchFirst();
+			
+			Integer rightsKey = tx.select(rights.id)
+				.from(rights)
+				.where(rights.name.eq(dc.getRights()))
+				.fetchFirst();
+			
+			Integer useLimitationKey = tx.select(useLimitation.id)
+				.from(useLimitation)
+				.where(useLimitation.name.eq(dc.getUseLimitation()))
+				.fetchFirst();
+			
+			Integer formatKey = tx.select(mdFormat.id)
+				.from(mdFormat)
+				.where(mdFormat.name.eq(dc.getMdFormat()))
+				.fetchFirst();
+			
+			String creatorOtherValue;
+			if(!dc.getCreator().equals("other")) {
+				creatorOtherValue = null;
+			} else {
+				creatorOtherValue = dc.getCreatorOther();
 			}
-		}
+			
+			Timestamp dateSourceCreationValue = nullCheckDate(dc.getDateSourceCreation());
+			Timestamp dateSourcePublicationValue = nullCheckDate(dc.getDateSourcePublication());
+			Timestamp dateSourceRevisionValue = nullCheckDate(dc.getDateSourceRevision());
+			Timestamp dateSourceValidFromValue = nullCheckDate(dc.getDateSourceValidFrom());
+			Timestamp dateSourceValidUntilValue = nullCheckDate(dc.getDateSourceValidUntil());
+			
+			List<String> subjects = dc.getSubject();
+			
+			tx.update(metadata)
+			.where(metadata.uuid.eq(metadataUuid))
+			.set(metadata.location, dc.getLocation())
+			.set(metadata.fileId, dc.getFileId())
+			.set(metadata.title, dc.getTitle())
+			.set(metadata.description, dc.getDescription())
+			.set(metadata.typeInformation, typeInformationKey)
+			.set(metadata.creator, creatorKey)
+			.set(metadata.creatorOther, creatorOtherValue)
+			.set(metadata.rights, rightsKey)
+			.set(metadata.useLimitation, useLimitationKey)
+			.set(metadata.mdFormat, formatKey)
+			.set(metadata.source, dc.getSource())
+			.set(metadata.dateSourceCreation, dateSourceCreationValue)
+			.set(metadata.dateSourcePublication, dateSourcePublicationValue)
+			.set(metadata.dateSourceRevision, dateSourceRevisionValue)
+			.set(metadata.dateSourceValidFrom, dateSourceValidFromValue)
+			.set(metadata.dateSourceValidUntil, dateSourceValidUntilValue)
+			.set(metadata.lastRevisionUser, session("username"))
+			.set(metadata.lastRevisionDate, dateToday)
+			.execute();
 		
-		return redirect(controllers.routes.Index.index());
+			List<String> attToDelete = dc.getDeletedAttachment();
+			if(attToDelete != null) {
+				for(String attachmentName : attToDelete) {
+					tx.delete(mdAttachment)
+						.where(mdAttachment.metadataId.eq(metadataId)
+							.and(mdAttachment.attachmentName.eq(attachmentName)))
+						.execute();
+				}
+			}
+			
+			play.mvc.Http.MultipartFormData body = request().body().asMultipartFormData();
+			List<FilePart> allFiles = body.getFiles();
+			
+			for(FilePart fp: allFiles) {
+				if(fp != null) {
+					java.io.File file = fp.getFile();
+					InputStream inputStream = new FileInputStream(file);
+					
+					byte[] buffer = new byte[8192];
+					int bytesRead;
+					ByteArrayOutputStream byteOutput = new ByteArrayOutputStream();
+					while((bytesRead = inputStream.read(buffer)) != -1)
+				    {
+						byteOutput.write(buffer, 0, bytesRead);
+				    }
+					byte[] input = byteOutput.toByteArray();
+					
+					
+					inputStream.close();
+					
+					tx.insert(mdAttachment)
+						.set(mdAttachment.metadataId, metadataId)
+						.set(mdAttachment.attachmentName, fp.getFilename())
+						.set(mdAttachment.attachmentContent, input)
+						.set(mdAttachment.attachmentMimetype, fp.getContentType())
+						.execute();
+				}
+			}
+			
+			if(subjects != null) {
+				tx.delete(mdSubject)
+					.where(mdSubject.metadataId.eq(metadataId))
+					.execute();
+					
+				for(String subjectStr : subjects) {
+					Integer subjectKey = tx.select(subject.id)
+						.from(subject)
+						.where(subject.name.eq(subjectStr))
+						.fetchFirst();
+					
+					tx.insert(mdSubject)
+						.set(mdSubject.metadataId, metadataId)
+						.set(mdSubject.subject, subjectKey)
+						.execute();
+				}
+			}
+			
+			return redirect(controllers.routes.Index.index());
+		});
 	}
 	
 	public Result validateForm(String metadataUuid) {
