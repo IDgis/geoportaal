@@ -244,6 +244,7 @@ require([
 		var changeRecords = on(win.doc, '.js-check:change', function(e) {
 			var recordsChecked = query('.js-record-checkbox:checked');
 			domAttr.set(dom.byId('js-delete-records-count'), 'innerHTML', recordsChecked.length);
+			domAttr.set(dom.byId('js-supplier-records-count'), 'innerHTML', recordsChecked.length);
 		});
 		
 		var deleteRecords = on(dom.byId('js-delete'), 'click', function(e) {
@@ -299,7 +300,11 @@ require([
 			});
 			
 			var supplierForm = dom.byId('js-supplier-form');
-			supplierForm.submit();
+			if(recordsChecked.length > 20) {
+				$('#supplier-modal').modal({})
+			} else {
+				supplierForm.submit();
+			}
 		});
 		
 		var searchRecords = on(dom.byId('search-button'), 'click', function(e) {
