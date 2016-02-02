@@ -22,6 +22,7 @@ import com.querydsl.sql.SQLQuery;
 import actions.DefaultAuthenticator;
 import models.Delete;
 import models.Search;
+import models.Supplier;
 import play.Routes;
 import play.data.DynamicForm;
 import play.data.Form;
@@ -85,18 +86,28 @@ public class Index extends Controller {
 		});
 	}
 	
-	public Result changeSupplier(Integer datasetId, String supplierStr) {
+	public Result changeSupplier() {
+		Form<Supplier> supplierForm = Form.form(Supplier.class);
+		Supplier s = supplierForm.bindFromRequest().get();
+		List<String> changeRecords = s.getRecordsChange();
+		String supplierName = s.getSupplier();
+		
 		return q.withTransaction(tx -> {
 			Integer supplierKey = tx.select(supplier.id)
 				.from(supplier)
-				.where(supplier.name.eq(supplierStr))
-				.fetchFirst();
+				.where(supplier.name.eq(supplierName))
+				.fetchOne();
 			
-			tx.update(metadata)
-	    		.where(metadata.id.eq(datasetId))
+			Long count = tx.update(metadata)
+	    		.where(metadata.uuid.in(changeRecords))
 	    		.set(metadata.supplier, supplierKey)
 	    		.execute();
 	    	
+			Integer finalCount = count.intValue();
+			if(!finalCount.equals(changeRecords.size())) {
+				throw new Exception("Changing supplier: different amount of affected rows than expected");
+			}
+			
 	    	return redirect(controllers.routes.Index.index());
 		});
 	}
@@ -124,7 +135,6 @@ public class Index extends Controller {
 					.execute();
 				
 				Integer finalCount = count.intValue();
-				System.out.println(!finalCount.equals(deleteRecords.size()));
 				if(!finalCount.equals(deleteRecords.size())) {
 					throw new Exception("Change status to deleted: different amount of affected rows than expected");
 				}

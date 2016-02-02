@@ -35,8 +35,8 @@ div.tabs:after {content:'';display:block;clear:both;}
 a.tabs {height:100%;width:100%;display:block;background-position:15px 15px;width:155px !important;height:80px !important;
 	background-repeat:no-repeat;background-size:35px;}
 
-#js-edit-supplier-select {display:none;}
-form.beheer-knoppen {margin-top:20px;margin-bottom:20px;margin-left:20px;}
+#edit-supplier-select {display:none;width:unset;}
+.admin-buttons {margin-top:20px;margin-bottom:20px;margin-left:20px;}
 div.overzicht-records {margin-top:20px;margin-bottom:20px;margin-left:20px;}
 div.alle-records {margin-top:20px;margin-bottom:20px;margin-left:20px;}
 div.label-actions-selected-records {margin-top:20px;margin-bottom:20px;margin-left:20px;position:relative;left:-13px;}

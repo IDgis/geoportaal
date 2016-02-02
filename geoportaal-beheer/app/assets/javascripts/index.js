@@ -244,6 +244,14 @@ require([
 		var changeRecords = on(win.doc, '.js-check:change', function(e) {
 			var recordsChecked = query('.js-record-checkbox:checked');
 			domAttr.set(dom.byId('js-delete-records-count'), 'innerHTML', recordsChecked.length);
+			domAttr.set(dom.byId('js-supplier-records-count'), 'innerHTML', recordsChecked.length);
+			
+			domAttr.remove(dom.byId('js-delete-execute'), 'disabled');
+			domAttr.remove(dom.byId('edit-supplier-select'), 'disabled');
+			if(recordsChecked.length === 0) {
+				domAttr.set(dom.byId('js-delete-execute'), 'disabled', 'disabled');
+				domAttr.set(dom.byId('edit-supplier-select'), 'disabled', 'disabled');
+			}
 		});
 		
 		var deleteRecords = on(dom.byId('js-delete'), 'click', function(e) {
@@ -276,22 +284,28 @@ require([
 		});
 		
 		var displaySupplierSelect = on(dom.byId('js-edit-supplier'), 'click', function(e) {
-			domStyle.set(dom.byId('js-edit-supplier-select'), 'display', 'inline');
+			domStyle.set(dom.byId('edit-supplier-select'), 'display', 'inline');
 		});
 		
-		var changeSupplier = on(dom.byId('js-edit-supplier-select'), 'change', function(e) {
+		var changeSupplier = on(dom.byId('edit-supplier-select'), 'change', function(e) {
 			var recordsChecked = query('.js-record-checkbox:checked');
-			var supplier = domAttr.get(this, 'value');
+			domConstruct.empty(dom.byId('js-supplier-records'));
 			
 			array.forEach(recordsChecked, function(item) {
-				var datasetId = domAttr.get(item, 'data-id');
-				
-				xhr(jsRoutes.controllers.Index.changeSupplier(datasetId, supplier).url)
-					.then(function() {
-						document.location.reload();
-					});
+				var metadataUuid = domAttr.get(item, 'data-uuid');
+				var input = domConstruct.create('input');
+				domAttr.set(input, 'type', 'hidden');
+				domAttr.set(input, 'name', 'recordsChange[]');
+				domAttr.set(input, 'value', metadataUuid);
+				domConstruct.place(input, dom.byId('js-supplier-records'), 'last');
 			});
 			
+			var supplierForm = dom.byId('js-supplier-form');
+			if(recordsChecked.length > 20) {
+				$('#supplier-modal').modal({})
+			} else {
+				supplierForm.submit();
+			}
 		});
 		
 		var searchRecords = on(dom.byId('search-button'), 'click', function(e) {
