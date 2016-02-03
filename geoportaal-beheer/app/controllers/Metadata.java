@@ -96,27 +96,27 @@ public class Metadata extends Controller {
 			Integer typeInformationKey = tx.select(typeInformation.id)
 				.from(typeInformation)
 				.where(typeInformation.name.eq(dc.getTypeInformation()))
-				.fetchFirst();
+				.fetchOne();
 			
 			Integer creatorKey = tx.select(creator.id)
 				.from(creator)
 				.where(creator.name.eq(dc.getCreator()))
-				.fetchFirst();
+				.fetchOne();
 			
 			Integer rightsKey = tx.select(rights.id)
 				.from(rights)
 				.where(rights.name.eq(dc.getRights()))
-				.fetchFirst();
+				.fetchOne();
 			
 			Integer useLimitationKey = tx.select(useLimitation.id)
 				.from(useLimitation)
 				.where(useLimitation.name.eq(dc.getUseLimitation()))
-				.fetchFirst();
+				.fetchOne();
 			
 			Integer formatKey = tx.select(mdFormat.id)
 				.from(mdFormat)
 				.where(mdFormat.name.eq(dc.getMdFormat()))
-				.fetchFirst();
+				.fetchOne();
 			
 			String creatorOtherValue;
 			if(!dc.getCreator().equals("other")) {
@@ -134,7 +134,7 @@ public class Metadata extends Controller {
 			Integer supplierId = tx.select(supplier.id)
 				.from(supplier)
 				.where(supplier.name.eq(session("username")))
-				.fetchFirst();
+				.fetchOne();
 			
 			tx.insert(metadata)
 	    		.set(metadata.uuid, uuid)
@@ -164,7 +164,7 @@ public class Metadata extends Controller {
 			Integer metadataId = tx.select(metadata.id)
 					.from(metadata)
 					.where(metadata.uuid.eq(uuid))
-					.fetchFirst();
+					.fetchOne();
 			
 			play.mvc.Http.MultipartFormData body = request().body().asMultipartFormData();
 			List<FilePart> allFiles = body.getFiles();
@@ -200,7 +200,7 @@ public class Metadata extends Controller {
 					Integer subjectKey = tx.select(subject.id)
 						.from(subject)
 						.where(subject.name.eq(subjectStr))
-						.fetchFirst();
+						.fetchOne();
 					
 					tx.insert(mdSubject)
 						.set(mdSubject.metadataId, metadataId)
@@ -220,7 +220,7 @@ public class Metadata extends Controller {
 			Integer metadataId = tx.from(metadata)
 					.select(metadata.id)
 					.where(metadata.uuid.eq(metadataUuid))
-					.fetchFirst();
+					.fetchOne();
 			
 			Tuple datasetRow = tx.select(metadata.id, metadata.uuid, metadata.location, metadata.fileId, metadata.title, 
 								metadata.description, metadata.typeInformation, metadata.creator, metadata.creatorOther, metadata.rights, metadata.useLimitation,
@@ -229,7 +229,7 @@ public class Metadata extends Controller {
 	    			.from(metadata)
 	    			.join(creator).on(metadata.creator.eq(creator.id))
 	    			.where(metadata.id.eq(metadataId))
-	    			.fetchFirst();
+	    			.fetchOne();
 	    	
 	    	List<Tuple> subjectsDataset = tx.select(mdSubject.all())
 	    			.from(mdSubject)
@@ -289,32 +289,32 @@ public class Metadata extends Controller {
 			Integer metadataId = tx.select(metadata.id)
 					.from(metadata)
 					.where(metadata.uuid.eq(metadataUuid))
-					.fetchFirst();
+					.fetchOne();
 			
 			Integer typeInformationKey = tx.select(typeInformation.id)
 				.from(typeInformation)
 				.where(typeInformation.name.eq(dc.getTypeInformation()))
-				.fetchFirst();
+				.fetchOne();
 			
 			Integer creatorKey = tx.select(creator.id)
 				.from(creator)
 				.where(creator.name.eq(dc.getCreator()))
-				.fetchFirst();
+				.fetchOne();
 			
 			Integer rightsKey = tx.select(rights.id)
 				.from(rights)
 				.where(rights.name.eq(dc.getRights()))
-				.fetchFirst();
+				.fetchOne();
 			
 			Integer useLimitationKey = tx.select(useLimitation.id)
 				.from(useLimitation)
 				.where(useLimitation.name.eq(dc.getUseLimitation()))
-				.fetchFirst();
+				.fetchOne();
 			
 			Integer formatKey = tx.select(mdFormat.id)
 				.from(mdFormat)
 				.where(mdFormat.name.eq(dc.getMdFormat()))
-				.fetchFirst();
+				.fetchOne();
 			
 			String creatorOtherValue;
 			if(!dc.getCreator().equals("other")) {
@@ -401,7 +401,7 @@ public class Metadata extends Controller {
 					Integer subjectKey = tx.select(subject.id)
 						.from(subject)
 						.where(subject.name.eq(subjectStr))
-						.fetchFirst();
+						.fetchOne();
 					
 					tx.insert(mdSubject)
 						.set(mdSubject.metadataId, metadataId)
