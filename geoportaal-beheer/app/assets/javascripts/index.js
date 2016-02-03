@@ -263,17 +263,23 @@ require([
 		
 		var changeStatus = on(win.doc, '.js-status:click', function(e) {
 			var recordsChecked = query('.js-record-checkbox:checked');
-			var status = domAttr.get(this, 'data-status');
+			domConstruct.empty(dom.byId('js-status-records'));
 			
 			array.forEach(recordsChecked, function(item) {
-				var datasetId = domAttr.get(item, 'data-uuid');
-				
-				xhr(jsRoutes.controllers.Index.changeStatus(datasetId, status).url)
-					.then(function() {
-						document.location.reload();
-					});
+				var metadataUuid = domAttr.get(item, 'data-uuid');
+				var input = domConstruct.create('input');
+				domAttr.set(input, 'type', 'hidden');
+				domAttr.set(input, 'name', 'recordsChange[]');
+				domAttr.set(input, 'value', metadataUuid);
+				domConstruct.place(input, dom.byId('js-status-records'), 'last');
 			});
 			
+			var statusForm = dom.byId('js-status-form');
+			if(recordsChecked.length > 20) {
+				$('#status-modal').modal({})
+			} else {
+				statusForm.submit();
+			}
 		});
 		
 		var displaySupplierSelect = on(dom.byId('js-edit-supplier'), 'click', function(e) {
@@ -283,6 +289,8 @@ require([
 		var changeSupplier = on(dom.byId('edit-supplier-select'), 'change', function(e) {
 			var recordsChecked = query('.js-record-checkbox:checked');
 			domConstruct.empty(dom.byId('js-supplier-records'));
+			var supplierValue = domAttr.get(dom.byId('edit-supplier-select'), 'value');
+			//domAttr.set(dom.byId('js-supplier-value'), 'value', supplierValue);
 			
 			array.forEach(recordsChecked, function(item) {
 				var metadataUuid = domAttr.get(item, 'data-uuid');

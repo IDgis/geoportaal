@@ -70,8 +70,10 @@ public class Index extends Controller {
 		});
     }
 	
-	public Result changeStatus(String metadataUuid, String statusStr) {
+	public Result changeStatus() {
+		
 		return q.withTransaction(tx -> {
+			/*
 			Integer statusKey = tx.select(status.id)
 				.from(status)
 				.where(status.name.eq(statusStr))
@@ -82,8 +84,10 @@ public class Index extends Controller {
 	    		.set(metadata.status, statusKey)
 	    		.execute();
 	    	
+	    	*/
 	    	return redirect(controllers.routes.Index.index());
 		});
+		
 	}
 	
 	public Result changeSupplier() {
@@ -93,20 +97,22 @@ public class Index extends Controller {
 		String supplierName = s.getSupplier();
 		
 		return q.withTransaction(tx -> {
-			if(changeRecords != null) {
+			if(changeRecords != null && supplierName != null) {
 				Integer supplierKey = tx.select(supplier.id)
 					.from(supplier)
 					.where(supplier.name.eq(supplierName))
 					.fetchOne();
 				
-				Long count = tx.update(metadata)
-		    		.where(metadata.uuid.in(changeRecords))
-		    		.set(metadata.supplier, supplierKey)
-		    		.execute();
-		    	
-				Integer finalCount = count.intValue();
-				if(!finalCount.equals(changeRecords.size())) {
-					throw new Exception("Changing supplier: different amount of affected rows than expected");
+				if(supplierKey != null) {
+					Long count = tx.update(metadata)
+			    		.where(metadata.uuid.in(changeRecords))
+			    		.set(metadata.supplier, supplierKey)
+			    		.execute();
+			    	
+					Integer finalCount = count.intValue();
+					if(!finalCount.equals(changeRecords.size())) {
+						throw new Exception("Changing supplier: different amount of affected rows than expected");
+					}
 				}
 			}
 			
