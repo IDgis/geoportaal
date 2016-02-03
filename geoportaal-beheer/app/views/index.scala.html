@@ -123,7 +123,7 @@
 				<button class="knop js-status" type="button" data-status="published">In publicatie</button>
 				<button class="knop" id="js-delete" type="button" data-toggle="modal" data-target="#delete-modal">Verwijderen</button>
 				<button class="knop" type="button" id="js-edit-supplier">Leverancier wijzigen</button>
-				<select class="form-control" id="edit-supplier-select" name="supplier" disabled="disabled">
+				<select class="form-control" id="edit-supplier-select" name="supplier">
 					<option>--</option>
 					@for(supplierOption <- supplierList) {
 						<option value="@supplierOption.get(supplier.name)">@supplierOption.get(supplier.name)</option>
@@ -140,7 +140,7 @@
 			        			<h4 class="modal-title">Wijzigen leverancier statische kaarten</h4>
 			      			</div>
 			      			<div class="modal-body">
-			        			<p>Er worden bij <b><span id="js-supplier-records-count">21</span></b> records de leverancier gewijzigd. 
+			        			<p>Er worden bij <b><span id="js-supplier-records-count">0</span></b> records de leverancier gewijzigd. 
 			        				Weet u zeker dat u deze actie wilt uitvoeren?</p>
 			      			</div>
 			      			<div class="modal-footer">
@@ -176,7 +176,7 @@
 	      			</div>
 	      			<div class="modal-footer">
 	        			<button type="button" class="btn btn-default" data-dismiss="modal">Annuleren</button>
-	        			<button type="submit" class="btn btn-primary" id="js-delete-execute" disabled="disabled">Uitvoeren</button>
+	        			<button type="submit" class="btn btn-primary" id="js-delete-execute">Uitvoeren</button>
 	      			</div>
 	    		</div>
 	  		</div>

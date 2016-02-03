@@ -93,19 +93,21 @@ public class Index extends Controller {
 		String supplierName = s.getSupplier();
 		
 		return q.withTransaction(tx -> {
-			Integer supplierKey = tx.select(supplier.id)
-				.from(supplier)
-				.where(supplier.name.eq(supplierName))
-				.fetchOne();
-			
-			Long count = tx.update(metadata)
-	    		.where(metadata.uuid.in(changeRecords))
-	    		.set(metadata.supplier, supplierKey)
-	    		.execute();
-	    	
-			Integer finalCount = count.intValue();
-			if(!finalCount.equals(changeRecords.size())) {
-				throw new Exception("Changing supplier: different amount of affected rows than expected");
+			if(changeRecords != null) {
+				Integer supplierKey = tx.select(supplier.id)
+					.from(supplier)
+					.where(supplier.name.eq(supplierName))
+					.fetchOne();
+				
+				Long count = tx.update(metadata)
+		    		.where(metadata.uuid.in(changeRecords))
+		    		.set(metadata.supplier, supplierKey)
+		    		.execute();
+		    	
+				Integer finalCount = count.intValue();
+				if(!finalCount.equals(changeRecords.size())) {
+					throw new Exception("Changing supplier: different amount of affected rows than expected");
+				}
 			}
 			
 	    	return redirect(controllers.routes.Index.index());
@@ -119,24 +121,26 @@ public class Index extends Controller {
 		String permDel = d.getPermDel();
 		
 		return q.withTransaction(tx -> {
-			if(permDel != null) {
-				Long count = tx.delete(metadata)
-					.where(metadata.uuid.in(deleteRecords))
-					.execute();
-				
-				Integer finalCount = count.intValue();
-				if(!finalCount.equals(deleteRecords.size())) {
-					throw new Exception("Deleting records: different amount of affected rows than expected");
-				}
-			} else {
-				Long count = tx.update(metadata)
-					.where(metadata.uuid.in(deleteRecords))
-					.set(metadata.status, 5)
-					.execute();
-				
-				Integer finalCount = count.intValue();
-				if(!finalCount.equals(deleteRecords.size())) {
-					throw new Exception("Change status to deleted: different amount of affected rows than expected");
+			if(deleteRecords != null) {
+				if(permDel != null) {
+					Long count = tx.delete(metadata)
+						.where(metadata.uuid.in(deleteRecords))
+						.execute();
+					
+					Integer finalCount = count.intValue();
+					if(!finalCount.equals(deleteRecords.size())) {
+						throw new Exception("Deleting records: different amount of affected rows than expected");
+					}
+				} else {
+					Long count = tx.update(metadata)
+						.where(metadata.uuid.in(deleteRecords))
+						.set(metadata.status, 5)
+						.execute();
+					
+					Integer finalCount = count.intValue();
+					if(!finalCount.equals(deleteRecords.size())) {
+						throw new Exception("Change status to deleted: different amount of affected rows than expected");
+					}
 				}
 			}
 			
