@@ -1,5 +1,6 @@
 package util;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 
 import javax.inject.Inject;
@@ -25,19 +26,38 @@ public class QueryDSL {
 		t = PostgreSQLTemplates.builder().printSchema().build();
 	}
 	
+	@FunctionalInterface
 	public interface TransactionCallable<A> {
 		A call(SQLQueryFactory tx) throws Exception;
 	}
 	
-	public <T> T withTransaction(TransactionCallable<T> f) {
-		return d.withTransaction(c -> {
-			try {				
-				return f.call(new SQLQueryFactory(t, () -> c));
-			} catch(SQLException e) {
-				throw e;
+	@FunctionalInterface
+	public interface TransactionRunnable {
+		void run(SQLQueryFactory tx) throws Exception;
+	}
+	
+	private SQLQueryFactory factory(Connection c) {
+		return new SQLQueryFactory(t, () -> c);
+	}
+	
+	public void withTransaction(TransactionRunnable f) {
+		d.withTransaction(c -> {
+			try {
+				f.run(factory(c));
 			} catch(Exception e) {
 				throw new SQLException(e);
 			}
 		});
 	}
+	
+	public <T> T withTransaction(TransactionCallable<T> f) {
+		return d.withTransaction(c -> {
+			try {				
+				return f.call(factory(c));
+			} catch(Exception e) {
+				throw new SQLException(e);
+			}
+		});
+	}
+
 }

@@ -59,8 +59,6 @@ public class User extends Controller {
 			if(dbPassword == null || !encoder.matches(loginForm.get().password, dbPassword)) {
 				loginForm.reject("Ongeldige gebruikersnaam of wachtwoord");
 			}
-			
-			return "";
 		});
 	}
 	
