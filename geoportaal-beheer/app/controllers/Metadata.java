@@ -331,35 +331,47 @@ public class Metadata extends Controller {
 			
 			List<String> subjects = dc.getSubject();
 			
-			tx.update(metadata)
-			.where(metadata.uuid.eq(metadataUuid))
-			.set(metadata.location, dc.getLocation())
-			.set(metadata.fileId, dc.getFileId())
-			.set(metadata.title, dc.getTitle())
-			.set(metadata.description, dc.getDescription())
-			.set(metadata.typeInformation, typeInformationKey)
-			.set(metadata.creator, creatorKey)
-			.set(metadata.creatorOther, creatorOtherValue)
-			.set(metadata.rights, rightsKey)
-			.set(metadata.useLimitation, useLimitationKey)
-			.set(metadata.mdFormat, formatKey)
-			.set(metadata.source, dc.getSource())
-			.set(metadata.dateSourceCreation, dateSourceCreationValue)
-			.set(metadata.dateSourcePublication, dateSourcePublicationValue)
-			.set(metadata.dateSourceRevision, dateSourceRevisionValue)
-			.set(metadata.dateSourceValidFrom, dateSourceValidFromValue)
-			.set(metadata.dateSourceValidUntil, dateSourceValidUntilValue)
-			.set(metadata.lastRevisionUser, session("username"))
-			.set(metadata.lastRevisionDate, dateToday)
-			.execute();
+			Long metadataCount = tx.update(metadata)
+				.where(metadata.uuid.eq(metadataUuid))
+				.set(metadata.location, dc.getLocation())
+				.set(metadata.fileId, dc.getFileId())
+				.set(metadata.title, dc.getTitle())
+				.set(metadata.description, dc.getDescription())
+				.set(metadata.typeInformation, typeInformationKey)
+				.set(metadata.creator, creatorKey)
+				.set(metadata.creatorOther, creatorOtherValue)
+				.set(metadata.rights, rightsKey)
+				.set(metadata.useLimitation, useLimitationKey)
+				.set(metadata.mdFormat, formatKey)
+				.set(metadata.source, dc.getSource())
+				.set(metadata.dateSourceCreation, dateSourceCreationValue)
+				.set(metadata.dateSourcePublication, dateSourcePublicationValue)
+				.set(metadata.dateSourceRevision, dateSourceRevisionValue)
+				.set(metadata.dateSourceValidFrom, dateSourceValidFromValue)
+				.set(metadata.dateSourceValidUntil, dateSourceValidUntilValue)
+				.set(metadata.lastRevisionUser, session("username"))
+				.set(metadata.lastRevisionDate, dateToday)
+				.execute();
+			
+			Integer metadataFinalCount = metadataCount.intValue();
+			if(!metadataFinalCount.equals(1)) {
+				throw new Exception("Updating metadata: different amount of affected rows than expected");
+			}
 		
 			List<String> attToDelete = dc.getDeletedAttachment();
+			Integer attachmentsCount = 0;
 			if(attToDelete != null) {
 				for(String attachmentName : attToDelete) {
 					tx.delete(mdAttachment)
 						.where(mdAttachment.metadataId.eq(metadataId)
 							.and(mdAttachment.attachmentName.eq(attachmentName)))
 						.execute();
+					
+					attachmentsCount++;
+				}
+				
+				if(!attachmentsCount.equals(attToDelete.size())) {
+					throw new Exception("Deleting attachments: different amount of affected rows than expected");
 				}
 			}
 			
@@ -393,9 +405,19 @@ public class Metadata extends Controller {
 			}
 			
 			if(subjects != null) {
-				tx.delete(mdSubject)
+				List<Integer> existingSubjects = tx.select(mdSubject.id)
+					.from(mdSubject)
+					.where(mdSubject.metadataId.eq(metadataId))
+					.fetch();
+				
+				Long subjectsCount = tx.delete(mdSubject)
 					.where(mdSubject.metadataId.eq(metadataId))
 					.execute();
+				
+				Integer subjectsFinalCount = subjectsCount.intValue();
+				if(!subjectsFinalCount.equals(existingSubjects.size())) {
+					throw new Exception("Updating subjects: different amount of affected rows than expected");
+				}
 					
 				for(String subjectStr : subjects) {
 					Integer subjectKey = tx.select(subject.id)
