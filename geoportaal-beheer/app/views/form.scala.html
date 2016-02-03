@@ -36,8 +36,8 @@
 		<p class="welkom">* = verplicht</p>
 	</div>
 	
-	@helper.form(action = if(create) {routes.MetadataDC.createSubmit()} else {
-		routes.MetadataDC.editSubmit(datasetRow.get(metadata.uuid))}, 'enctype -> "multipart/form-data", 
+	@helper.form(action = if(create) {routes.Metadata.createSubmit()} else {
+		routes.Metadata.editSubmit(datasetRow.get(metadata.uuid))}, 'enctype -> "multipart/form-data", 
 		'class -> "form-horizontal beheer-formulier", 'id -> "js-form") {
 		<div class="form-group">
 			<label class="col-sm-3 control-label">Titel*</label>
@@ -382,7 +382,7 @@
 		<div class="editor-knoppen">
 			<div class="form-group">
 				<button id="js-save-form" class="knop" type="button" @if(create) {data-id="create"} else {data-id=@datasetRow.get(metadata.uuid)}>Opslaan</button>
-				<a class="knop" id="js-cancel-form" href="@routes.MetadataDC.cancel()">Annuleren</a>
+				<a class="knop" id="js-cancel-form" href="@routes.Metadata.cancel()">Annuleren</a>
 			</div>
 		</div>
 	}

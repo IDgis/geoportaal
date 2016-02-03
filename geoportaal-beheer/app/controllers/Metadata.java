@@ -41,7 +41,7 @@ import play.mvc.Result;
 import util.QueryDSL;
 import views.html.*;
 
-public class MetadataDC extends Controller {
+public class Metadata extends Controller {
 	@Inject QueryDSL q;
 	
 	public Result renderCreateForm() {

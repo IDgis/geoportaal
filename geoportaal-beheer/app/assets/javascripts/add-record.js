@@ -198,7 +198,7 @@ require([
 			});
 			
 			
-			xhr(jsRoutes.controllers.MetadataDC.validateForm(id).url, {
+			xhr(jsRoutes.controllers.Metadata.validateForm(id).url, {
 					handleAs: "html",
 					data: formData,
 					method: "POST"	

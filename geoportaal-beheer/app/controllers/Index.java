@@ -281,7 +281,7 @@ public class Index extends Controller {
             controllers.routes.javascript.Index.deleteMetadata(),
 			controllers.routes.javascript.Index.changeStatus(),
 			controllers.routes.javascript.Index.changeSupplier(),
-			controllers.routes.javascript.MetadataDC.validateForm(),
+			controllers.routes.javascript.Metadata.validateForm(),
 			controllers.routes.javascript.Index.validateForm()
         )).as ("text/javascript");
     }
