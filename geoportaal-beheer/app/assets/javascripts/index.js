@@ -243,6 +243,7 @@ require([
 		
 		var changeRecords = on(win.doc, '.js-check:change', function(e) {
 			var recordsChecked = query('.js-record-checkbox:checked');
+			domAttr.set(dom.byId('js-status-records-count'), 'innerHTML', recordsChecked.length);
 			domAttr.set(dom.byId('js-delete-records-count'), 'innerHTML', recordsChecked.length);
 			domAttr.set(dom.byId('js-supplier-records-count'), 'innerHTML', recordsChecked.length);
 		});
@@ -264,6 +265,8 @@ require([
 		var changeStatus = on(win.doc, '.js-status:click', function(e) {
 			var recordsChecked = query('.js-record-checkbox:checked');
 			domConstruct.empty(dom.byId('js-status-records'));
+			var statusValue = domAttr.get(this, 'data-status');
+			domAttr.set(dom.byId('js-status-value'), 'value', statusValue);
 			
 			array.forEach(recordsChecked, function(item) {
 				var metadataUuid = domAttr.get(item, 'data-uuid');
@@ -290,7 +293,7 @@ require([
 			var recordsChecked = query('.js-record-checkbox:checked');
 			domConstruct.empty(dom.byId('js-supplier-records'));
 			var supplierValue = domAttr.get(dom.byId('edit-supplier-select'), 'value');
-			//domAttr.set(dom.byId('js-supplier-value'), 'value', supplierValue);
+			domAttr.set(dom.byId('js-supplier-value'), 'value', supplierValue);
 			
 			array.forEach(recordsChecked, function(item) {
 				var metadataUuid = domAttr.get(item, 'data-uuid');

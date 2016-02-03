@@ -22,6 +22,7 @@ import com.querydsl.sql.SQLQuery;
 import actions.DefaultAuthenticator;
 import models.Delete;
 import models.Search;
+import models.Status;
 import models.Supplier;
 import play.Routes;
 import play.data.DynamicForm;
@@ -71,20 +72,31 @@ public class Index extends Controller {
     }
 	
 	public Result changeStatus() {
+		Form<models.Status> statusForm = Form.form(models.Status.class);
+		models.Status s = statusForm.bindFromRequest().get();
+		List<String> changeRecords = s.getRecordsChange();
+		String statusName = s.getStatus();
 		
 		return q.withTransaction(tx -> {
-			/*
-			Integer statusKey = tx.select(status.id)
-				.from(status)
-				.where(status.name.eq(statusStr))
-				.fetchFirst();
+			if(changeRecords != null && statusName != null) {
+				Integer statusKey = tx.select(status.id)
+					.from(status)
+					.where(status.name.eq(statusName))
+					.fetchOne();
 			
-			tx.update(metadata)
-	    		.where(metadata.uuid.eq(metadataUuid))
-	    		.set(metadata.status, statusKey)
-	    		.execute();
+				if(statusKey != null) {
+					Long count = tx.update(metadata)
+			    		.where(metadata.uuid.in(changeRecords))
+			    		.set(metadata.status, statusKey)
+			    		.execute();
+					
+					Integer finalCount = count.intValue();
+					if(!finalCount.equals(changeRecords.size())) {
+						throw new Exception("Changing status: different amount of affected rows than expected");
+					}
+				}
+			}
 	    	
-	    	*/
 	    	return redirect(controllers.routes.Index.index());
 		});
 		
