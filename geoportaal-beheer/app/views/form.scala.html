@@ -146,6 +146,7 @@
 				name="typeInformation">
 					@for(typeInformationOption <- typeInformationList) {
 						<option value="@typeInformationOption.get(typeInformation.name)" 
+						@if(create && typeInformationOption.get(typeInformation.name) == "map") {selected}
 						@if(!create && datasetRow.get(metadata.typeInformation) == typeInformationOption.get(typeInformation.id)) {selected}>
 							@typeInformationOption.get(typeInformationLabel.label)
 						</option>
