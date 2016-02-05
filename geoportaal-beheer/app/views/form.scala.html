@@ -357,21 +357,43 @@
 		</div>
 		<div class="form-group" data-toggle="tooltip" data-placement="top" title="Vink de onderwerpen aan die van toepassing zijn op de data">
 			<label class="col-sm-3 control-label">ISO onderwerp*</label>
-			<div class="col-sm-4">
-				@for(subjectOption <- subjectList) {
-					<div>
-						<input type="checkbox" class="js-subject-input" name="subject[]" value="@subjectOption.get(subject.name)" 
-							@if(subjectsDataset != null) {
-								@for(subjectChecked <- subjectsDataset) {
-									@if(subjectChecked.get(mdSubject.subject) == subjectOption.get(subject.id)) {checked}
-								}
-							}
-						>
-						<span>@subjectOption.get(subjectLabel.label)</span>
-					</div>
-				}
+			<div class="col-sm-7">
+				<div class="col-sm-6">
+					@for(subjectOption <- subjectList) {
+						@if(subjectOption.get(subject.id) < 11) {
+							<div>
+								<label class="checkbox-inline">
+									<input type="checkbox" class="js-subject-input" name="subject[]" value="@subjectOption.get(subject.name)" 
+										@if(subjectsDataset != null) {
+											@for(subjectChecked <- subjectsDataset) {
+												@if(subjectChecked.get(mdSubject.subject) == subjectOption.get(subject.id)) {checked}
+											}
+										}
+									>@subjectOption.get(subjectLabel.label)
+								</label>
+							</div>
+						}
+					}
+				</div>
+				<div class="col-sm-6">
+					@for(subjectOption <- subjectList) {
+						@if(subjectOption.get(subject.id) > 10) {	
+							<div>
+								<label class="checkbox-inline">
+									<input type="checkbox" class="js-subject-input" name="subject[]" value="@subjectOption.get(subject.name)" 
+										@if(subjectsDataset != null) {
+											@for(subjectChecked <- subjectsDataset) {
+												@if(subjectChecked.get(mdSubject.subject) == subjectOption.get(subject.id)) {checked}
+											}
+										}
+									>@subjectOption.get(subjectLabel.label)
+								</label>
+							</div>
+						}
+					}
+				</div>
 			</div>
-			<div class="col-sm-offset-3 col-sm-2">
+			<div class="col-sm-2">
 				<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" 
 				data-content="Term Name: subject">
 					<span class="glyphicon glyphicon-info-sign"></span>
