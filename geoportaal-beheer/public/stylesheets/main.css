@@ -32,8 +32,7 @@ p.alineastart {margin-top:20px;}
 
 div.tabs {margin-left:auto;margin-right:auto;width:40%;}
 div.tabs:after {content:'';display:block;clear:both;}
-a.tabs {height:100%;width:100%;display:block;background-position:15px 15px;width:155px !important;height:80px !important;
-	background-repeat:no-repeat;background-size:35px;}
+a.tabs {height:100%;width:100%;display:block;}
 
 #edit-supplier-select {display:none;width:unset;}
 .admin-buttons {margin-top:20px;margin-bottom:20px;margin-left:20px;}
@@ -75,3 +74,6 @@ input[type="file"].input-attachment {display:inline;}
 .js-page-status {cursor:pointer;}
 
 #perm-delete-checkbox {margin-top:15px;}
+
+.add-icon {background-position:22px 15px;width:150px !important;height:80px !important;background-repeat:no-repeat;background-size:25px;}
+.search-icon {background-position:25px 15px;width:150px !important;height:80px !important;background-repeat:no-repeat;background-size:25px;}

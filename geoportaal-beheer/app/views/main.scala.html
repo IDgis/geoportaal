@@ -26,7 +26,8 @@
 				<div class="toptaak-element">
 					<div class="toptaak-outer">
 						<div class="@if(title == "Geoportaal: toevoegen metadata") {toptaak-inner-active} else {toptaak-inner}">
-							<a class="tabs" href="@routes.Metadata.renderCreateForm()">
+							<a class="tabs add-icon" href="@routes.Metadata.renderCreateForm()" 
+							style="background-image:url(@routes.Assets.versioned("images/add.png"))">
 								<span class="toptaak-titel">
 									Toevoegen
 								</span>
@@ -37,7 +38,8 @@
 				<div class="toptaak-element">
 					<div class="toptaak-outer">
 						<div class="@if(title == Messages.get("index.header") || title == "Geoportaal: wijzigen metadata") {toptaak-inner-active} else {toptaak-inner}">
-							<a class="tabs" href="@routes.Index.index()">
+							<a class="tabs search-icon" href="@routes.Index.index()"
+							style="background-image:url(@routes.Assets.versioned("images/search.png"))">
 								<span class="toptaak-titel">
 									Zoeken en wijzigen									
 								</span>
