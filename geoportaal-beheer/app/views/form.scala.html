@@ -32,8 +32,7 @@
 
 @main(if(create) {"Geoportaal: toevoegen metadata"} else {"Geoportaal: wijzigen metadata"}, routes.Assets.versioned("javascripts/add-record.js").url) {
 	<div class="welkom">
-		<p class="welkom">Vul de velden zo volledig mogelijk in.</p>
-		<p class="welkom">* = verplicht</p>
+		<p class="welkom">Vul de velden zo volledig mogelijk in (* = verplicht)</p>
 	</div>
 	
 	@helper.form(action = if(create) {routes.Metadata.createSubmit()} else {
