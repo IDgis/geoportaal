@@ -1,16 +1,26 @@
 buildscript {
-    repositories {
-        jcenter()
-    }
-
-    dependencies {
-        classpath 'org.ajoberstar:gradle-git:1.3.2'
-    }
+	repositories {
+		jcenter()
+		
+		maven {
+			name 'idgis'
+			url 'http://nexus.idgis.eu/content/repositories/releases/'
+			credentials {
+				username nexusUser 
+				password nexusPassword
+			}
+		}
+	}
+	
+	dependencies {
+		classpath 'org.ajoberstar:gradle-git:1.3.2'
+		classpath 'nl.idgis:gradle-play-docker-plugin:0.0.1'
+	}
 }
 
 import nl.idgis.gradle.querydsl.QueryDSLPlugin
 import nl.idgis.gradle.play.PlayJavaPlugin
-import nl.idgis.gradle.docker.DockerPlugin
+import nl.idgis.gradle.play.DockerPlugin
 
 apply plugin: 'eclipse'
 apply plugin: PlayJavaPlugin
