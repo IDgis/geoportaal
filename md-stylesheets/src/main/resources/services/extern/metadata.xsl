@@ -1140,11 +1140,15 @@
 					<xsl:variable name="uuidDataMD" select="../@uuidref"/>
 					<xsl:for-each select="../../srv:coupledResource/srv:SV_CoupledResource[srv:identifier/gco:CharacterString = $uuidDataMD]">
 						<xsl:if test="gco:ScopedName != ''">
-							<li>
-								<a href="http://{substring-after(../../srv:operatesOn/@xlink:href,'http://')}">
-									<xsl:value-of select="gco:ScopedName"/>
-								</a>
-							</li>
+							<xsl:for-each select="../../srv:operatesOn[@uuidref = $uuidDataMD]">
+								<li>
+									<a href="http://{substring-after(@xlink:href,'http://')}">
+										<xsl:for-each select="../srv:coupledResource/srv:SV_CoupledResource/srv:identifier[gco:CharacterString= $uuidDataMD]">
+											<xsl:value-of select="../gco:ScopedName"/>
+										</xsl:for-each>
+									</a>
+								</li>
+							</xsl:for-each>
 						</xsl:if>
 					</xsl:for-each>
 				</xsl:when>
@@ -1152,11 +1156,15 @@
 					<xsl:variable name="uuidDataMD" select="../@uuidref"/>
 					<xsl:for-each select="../../srv:coupledResource/srv:SV_CoupledResource[srv:identifier/gco:CharacterString = $uuidDataMD]">
 						<xsl:if test="gco:ScopedName != ''">
-							<li>
-								<a href="https://{substring-after(../../srv:operatesOn/@xlink:href,'https://')}">
-									<xsl:value-of select="gco:ScopedName"/>
-								</a>
-							</li>
+							<xsl:for-each select="../../srv:operatesOn[@uuidref = $uuidDataMD]">
+								<li>
+									<a href="https://{substring-after(@xlink:href,'https://')}">
+										<xsl:for-each select="../srv:coupledResource/srv:SV_CoupledResource/srv:identifier[gco:CharacterString= $uuidDataMD]">
+											<xsl:value-of select="../gco:ScopedName"/>
+										</xsl:for-each>
+									</a>
+								</li>
+							</xsl:for-each>
 						</xsl:if>
 					</xsl:for-each>
 				</xsl:when>
@@ -1164,9 +1172,13 @@
   					<xsl:variable name="uuidDataMD" select="../@uuidref"/>
 					<xsl:for-each select="../../srv:coupledResource/srv:SV_CoupledResource[srv:identifier/gco:CharacterString = $uuidDataMD]">
 						<xsl:if test="gco:ScopedName != ''">
-							<li>
-								<xsl:value-of select="gco:ScopedName"/>
-							</li>
+							<xsl:for-each select="../../srv:operatesOn[@uuidref = $uuidDataMD]">
+								<li>
+									<xsl:for-each select="../srv:coupledResource/srv:SV_CoupledResource/srv:identifier[gco:CharacterString= $uuidDataMD]">
+										<xsl:value-of select="../gco:ScopedName"/>
+									</xsl:for-each>
+								</li>
+							</xsl:for-each>
 						</xsl:if>
 					</xsl:for-each>
 				</xsl:otherwise>
