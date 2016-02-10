@@ -132,11 +132,11 @@
 					.col-md-7 {width: 58.33333333%;position: relative;float: left;min-height: 1px;padding-right: 15px;padding-left: 15px;}
 					.pull-right {float: right !important;}
 					
-					.watIcon {background-image:url("/webjars/@project.name@/@project.version@/id.png");background-position:25px 15px;width:60px !important;height:80px !important;background-repeat:no-repeat;background-size:14px;}
-					.wieIcon {background-image:url("/webjars/@project.name@/@project.version@/user.png");background-position:15px 15px;width:60px !important;height:80px !important;background-repeat:no-repeat;background-size:35px;}
-					.waarIcon {background-image:url("/webjars/@project.name@/@project.version@/world.png");background-position:10px 15px;width:60px !important;height:80px !important;background-repeat:no-repeat;background-size:35px;}
-					.wanneerIcon {background-image:url("/webjars/@project.name@/@project.version@/time.png");background-position:10px 15px;width:60px !important;height:80px !important;background-repeat:no-repeat;background-size:35px;}
-					.detailsIcon {background-image:url("/webjars/@project.name@/@project.version@/detail.png");background-position:10px 15px;width:60px !important;height:80px !important;background-repeat:no-repeat;background-size:35px;}
+					.watIcon {background-image:url("/META-INF/resources/webjars/md-stylesheets/1.0/id.png");background-position:25px 15px;width:60px !important;height:80px !important;background-repeat:no-repeat;background-size:14px;}
+					.wieIcon {background-image:url("/META-INF/resources/webjars/md-stylesheets/1.0/user.png");background-position:15px 15px;width:60px !important;height:80px !important;background-repeat:no-repeat;background-size:35px;}
+					.waarIcon {background-image:url("/META-INF/resources/webjars/md-stylesheets/1.0/world.png");background-position:10px 15px;width:60px !important;height:80px !important;background-repeat:no-repeat;background-size:35px;}
+					.wanneerIcon {background-image:url("/META-INF/resources/webjars/md-stylesheets/1.0/time.png");background-position:10px 15px;width:60px !important;height:80px !important;background-repeat:no-repeat;background-size:35px;}
+					.detailsIcon {background-image:url("/META-INF/resources/webjars/md-stylesheets/1.0/detail.png");background-position:10px 15px;width:60px !important;height:80px !important;background-repeat:no-repeat;background-size:35px;}
 					
 					<!-- 
 					#abstract {max-height:180px;overflow: hidden;}
@@ -200,7 +200,7 @@
 			<body>
 				<div class="logo">
 					<a href="http://www.overijssel.nl">
-						<img src="/webjars/@project.name@/@project.version@/logo_overijssel.png" class="img-responsive" alt="Responsive image"></img>
+						<img src="/META-INF/resources/webjars/md-stylesheets/1.0/logo_overijssel.png" class="img-responsive" alt="Responsive image"></img>
 					</a>
 				</div>
 				<div class="titelbalk">
@@ -365,6 +365,7 @@
 			<div class="blok">
 				<xsl:apply-templates select="gmd:identificationInfo/gmd:MD_DataIdentification/gmd:citation/gmd:CI_Citation/gmd:alternateTitle/gco:CharacterString"/>
 				<xsl:apply-templates select="gmd:identificationInfo/gmd:MD_DataIdentification/gmd:status/gmd:MD_ProgressCode/@codeListValue"/>
+				<xsl:apply-templates select="gmd:distributionInfo/gmd:MD_Distribution/gmd:transferOptions/gmd:MD_DigitalTransferOptions/gmd:onLine"/>
 				<xsl:apply-templates select="gmd:identificationInfo/gmd:MD_DataIdentification/gmd:citation/gmd:CI_Citation/gmd:edition/gco:CharacterString"/>
 			</div>
 			
@@ -1251,6 +1252,12 @@
 				</xsl:otherwise>
 			</xsl:choose>
 		</xsl:if>
+  	</xsl:template>
+  	<xsl:template match="gmd:MD_Metadata/gmd:distributionInfo/gmd:MD_Distribution/gmd:transferOptions/gmd:MD_DigitalTransferOptions/gmd:onLine">
+  		<p>
+  			<b><xsl:value-of select="gmd:CI_OnlineResource/gmd:protocol/gco:CharacterString"/>: </b>
+  			<xsl:value-of select="gmd:CI_OnlineResource/gmd:linkage/gmd:URL"/>
+  		</p>
   	</xsl:template>
   	<xsl:template match="gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:citation/gmd:CI_Citation/gmd:edition/gco:CharacterString">
   		<xsl:if test=". != ''">
