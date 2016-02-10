@@ -12,42 +12,48 @@
         <link rel="stylesheet" media="screen" href="@routes.Assets.versioned("stylesheets/main.css")">
     </head>
     <body>
-        <div class="logo">
-			<a>
-				<img src="@routes.Assets.versioned("images/logo_overijssel.png")"></img>
-			</a>
-			<a class="btn btn-default pull-right" href="@routes.User.logout()">Uitloggen</a>
-		</div>
-		<div class="titelbalk">
-			<h1 class="header">@title</h1>
-		</div>
-		<div class="grid">
-			<div class="tabs">
-				<div class="toptaak-element">
-					<div class="toptaak-outer">
-						<div class="@if(title == "Toevoegen") {toptaak-inner-active} else {toptaak-inner}">
-							<a class="tabs" href="@routes.Metadata.renderCreateForm()">
-								<span class="toptaak-titel">
-									Toevoegen
-								</span>
-							</a>
+        <div class="page">
+	        <div class="logo">
+				<a>
+					<img src="@routes.Assets.versioned("images/logo_overijssel.png")"></img>
+				</a>
+				<a class="btn btn-default pull-right" href="@routes.User.logout()">Uitloggen</a>
+			</div>
+			<div class="titelbalk">
+				<h1 class="header">@title</h1>
+			</div>
+			<div class="grid">
+				<div class="tabs">
+					<a href="@routes.Index.index()">
+						<div class="toptaak-element" id="js-element-index">
+							<div class="toptaak-outer">
+								<div class="@if(title == Messages.get("index.header") || title == "Geoportaal: wijzigen metadata") {toptaak-inner-active} else {toptaak-inner}">
+									<div class="tab-element search-icon" style="background-image:url(@routes.Assets.versioned("images/search.png"))">
+										<span class="toptaak-titel">
+											Zoeken en wijzigen									
+										</span>
+									</div>
+								</div>
+							</div>
 						</div>
-					</div>
-				</div>
-				<div class="toptaak-element">
-					<div class="toptaak-outer">
-						<div class="@if(title == Messages.get("index.header") || title == "Wijzigen") {toptaak-inner-active} else {toptaak-inner}">
-							<a class="tabs" href="@routes.Index.index()">
-								<span class="toptaak-titel">
-									Zoeken en wijzigen									
-								</span>
-							</a>
+					</a>
+					<a href="@routes.Metadata.renderCreateForm()">
+						<div class="toptaak-element" id="js-element-create">
+							<div class="toptaak-outer">
+								<div class="@if(title == "Geoportaal: toevoegen metadata") {toptaak-inner-active} else {toptaak-inner}">
+									<div class="tab-element add-icon" style="background-image:url(@routes.Assets.versioned("images/add.png"))">
+										<span class="toptaak-titel">
+											Toevoegen
+										</span>
+									</div>
+								</div>
+							</div>
 						</div>
-					</div>
+					</a>
 				</div>
 			</div>
-		</div>
-        @content
+	        @content
+        </div>
         <script src="@routes.Assets.versioned("lib/jquery/jquery.js")" type="text/javascript"></script>
         <script src="@routes.Assets.versioned("lib/jquery-ui/jquery-ui.js")" type="text/javascript"></script>
         <script src="@routes.Assets.versioned("lib/modernizr/modernizr.js")" type="text/javascript"></script>

@@ -30,10 +30,9 @@
 @import models.QMdFormatLabel.mdFormatLabel
 @import models.QSubjectLabel.subjectLabel
 
-@main(if(create) {"Toevoegen"} else {"Wijzigen"}, routes.Assets.versioned("javascripts/add-record.js").url) {
+@main(if(create) {"Geoportaal: toevoegen metadata"} else {"Geoportaal: wijzigen metadata"}, routes.Assets.versioned("javascripts/add-record.js").url) {
 	<div class="welkom">
-		<p class="welkom">Vul de velden zo volledig mogelijk in.</p>
-		<p class="welkom">* = verplicht</p>
+		<p class="welkom">Vul de velden zo volledig mogelijk in (* = verplicht)</p>
 	</div>
 	
 	@helper.form(action = if(create) {routes.Metadata.createSubmit()} else {
@@ -55,7 +54,7 @@
 		<div class="form-group">
 			<label class="col-sm-3 control-label">Omschrijving*</label>
 			<div class="col-sm-7">
-				<textarea class="form-control js-mandatory" id="js-description" rows="4" data-toggle="tooltip" data-placement="top" data-field="omschrijving"
+				<textarea class="form-control js-mandatory" id="js-description" rows="8" data-toggle="tooltip" data-placement="top" data-field="omschrijving"
 				title="Vul de omschrijving in" name="description">@if(!create) {@datasetRow.get(metadata.description)}</textarea>
 			</div>
 			<div class="col-sm-2">
@@ -79,7 +78,7 @@
 			</div>
 		</div>
 		<div class="form-group">
-			<label class="col-sm-3 control-label">Kenmerk</label>
+			<label class="col-sm-3 control-label">Nummer</label>
 			<div class="col-sm-7">
 				<input class="form-control" type="text" data-toggle="tooltip" data-placement="top" 
 				title="Vul het kenmerk in" name="fileId" value="@if(!create) {@datasetRow.get(metadata.fileId)}">
@@ -147,6 +146,7 @@
 				name="typeInformation">
 					@for(typeInformationOption <- typeInformationList) {
 						<option value="@typeInformationOption.get(typeInformation.name)" 
+						@if(create && typeInformationOption.get(typeInformation.name) == "map") {selected}
 						@if(!create && datasetRow.get(metadata.typeInformation) == typeInformationOption.get(typeInformation.id)) {selected}>
 							@typeInformationOption.get(typeInformationLabel.label)
 						</option>
@@ -165,6 +165,7 @@
 			<div class="col-sm-7">
 				<select id="js-creator-select" class="form-control" data-toggle="tooltip" data-placement="top" 
 				title="Selecteer de eindverantwoordelijke" name="creator">
+					<option value="none"></option>
 					@for(creatorOption <- creatorList) {
 						<option value="@creatorOption.get(creator.name)"
 						@if(!create && datasetRow.get(metadata.creator) == creatorOption.get(creator.id)) {selected}>
@@ -233,7 +234,7 @@
 			</div>
 		</div>
 		<div class="form-group">
-			<label class="col-sm-3 control-label">Formaat</label>
+			<label class="col-sm-3 control-label">Formaat applicatie</label>
 			<div class="col-sm-7">
 				<select class="form-control" data-toggle="tooltip" data-placement="top" 
 				title="Selecteer het formaat van de data" name="mdFormat">
@@ -253,7 +254,7 @@
 			</div>
 		</div>
 		<div class="form-group">
-			<label class="col-sm-3 control-label">Bron</label>
+			<label class="col-sm-3 control-label">Bron (leverancier)</label>
 			<div class="col-sm-7">
 				<input class="form-control" type="text" data-toggle="tooltip" data-placement="top" 
 				title="Vul de persoon of organisatie waar de bron vandaan komt" name="source" 
@@ -357,21 +358,43 @@
 		</div>
 		<div class="form-group" data-toggle="tooltip" data-placement="top" title="Vink de onderwerpen aan die van toepassing zijn op de data">
 			<label class="col-sm-3 control-label">ISO onderwerp*</label>
-			<div class="col-sm-4">
-				@for(subjectOption <- subjectList) {
-					<div>
-						<input type="checkbox" class="js-subject-input" name="subject[]" value="@subjectOption.get(subject.name)" 
-							@if(subjectsDataset != null) {
-								@for(subjectChecked <- subjectsDataset) {
-									@if(subjectChecked.get(mdSubject.subject) == subjectOption.get(subject.id)) {checked}
-								}
-							}
-						>
-						<span>@subjectOption.get(subjectLabel.label)</span>
-					</div>
-				}
+			<div class="col-sm-7">
+				<div class="col-sm-6">
+					@for(subjectOption <- subjectList) {
+						@if(subjectOption.get(subject.id) < 11) {
+							<div>
+								<label class="checkbox-inline">
+									<input type="checkbox" class="js-subject-input" name="subject[]" value="@subjectOption.get(subject.name)" 
+										@if(subjectsDataset != null) {
+											@for(subjectChecked <- subjectsDataset) {
+												@if(subjectChecked.get(mdSubject.subject) == subjectOption.get(subject.id)) {checked}
+											}
+										}
+									>@subjectOption.get(subjectLabel.label)
+								</label>
+							</div>
+						}
+					}
+				</div>
+				<div class="col-sm-6">
+					@for(subjectOption <- subjectList) {
+						@if(subjectOption.get(subject.id) > 10) {	
+							<div>
+								<label class="checkbox-inline">
+									<input type="checkbox" class="js-subject-input" name="subject[]" value="@subjectOption.get(subject.name)" 
+										@if(subjectsDataset != null) {
+											@for(subjectChecked <- subjectsDataset) {
+												@if(subjectChecked.get(mdSubject.subject) == subjectOption.get(subject.id)) {checked}
+											}
+										}
+									>@subjectOption.get(subjectLabel.label)
+								</label>
+							</div>
+						}
+					}
+				</div>
 			</div>
-			<div class="col-sm-offset-3 col-sm-2">
+			<div class="col-sm-2">
 				<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" 
 				data-content="Term Name: subject">
 					<span class="glyphicon glyphicon-info-sign"></span>

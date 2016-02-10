@@ -517,8 +517,15 @@ public class Metadata extends Controller {
 				location = dc.getLocation();
 			}
 			
+			String creator = null;
 			String creatorOther = null;
-			if(dc.getCreator() != null) {
+			if(dc.getCreator().equals("none")) {
+				creator = null;
+			} else {
+				creator = dc.getCreator();
+			}
+			
+			if(dc.getCreator().equals("other")) {
 				if(dc.getCreatorOther().equals("")) {
 					creatorOther = null;
 				} else {
@@ -528,7 +535,7 @@ public class Metadata extends Controller {
 				creatorOther = "";
 			}
 			
-			return ok(validateform.render(title, description, location, creatorOther, dc.getDateSourceCreation(), dc.getSubject()));
+			return ok(validateform.render(title, description, location, creator, creatorOther, dc.getDateSourceCreation(), dc.getSubject()));
 		} catch(IllegalStateException ise) {
 			return ok(bindingerror.render("Er is iets misgegaan. Controleer of de velden correct zijn ingevuld.", null, null, null, null, null, null, null));
 		}

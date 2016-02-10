@@ -1,4 +1,4 @@
-@(title: String, description: String, location: String, creatorOther: String, dateCreate: java.util.Date, subjectList: java.util.List[String])
+@(title: String, description: String, location: String, creator: String, creatorOther: String, dateCreate: java.util.Date, subjectList: java.util.List[String])
 
 <div id="js-form-validation-result">
 	@if(title == null) {
@@ -19,6 +19,13 @@
 		<div>
 			<div class="alert alert-danger" role="alert" data-error="true">
 				<b>De locatie moet ingevuld zijn.</b>
+			</div>
+		</div>
+	}
+	@if(creator == null) {
+		<div>
+			<div class="alert alert-danger" role="alert" data-error="true">
+				<b>Er moet een eindverantwoordelijke geselecteerd zijn.</b>
 			</div>
 		</div>
 	}
