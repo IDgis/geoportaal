@@ -173,10 +173,11 @@ require([
 			formData.append('title', titleVal);
 			formData.append('description', descriptionVal);
 			formData.append('location', locationVal);
+			formData.append('creator', creatorVal);
+			
 			if(creatorVal === 'other') {
 				var otherCreatorVal = domAttr.get(dom.byId('js-other-creator-input'), 'value');
 				
-				formData.append('creator', creatorVal);
 				formData.append('creatorOther', otherCreatorVal);
 			}
 			if(!Modernizr.inputtypes.date) {

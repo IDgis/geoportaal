@@ -165,6 +165,7 @@
 			<div class="col-sm-7">
 				<select id="js-creator-select" class="form-control" data-toggle="tooltip" data-placement="top" 
 				title="Selecteer de eindverantwoordelijke" name="creator">
+					<option value="none"></option>
 					@for(creatorOption <- creatorList) {
 						<option value="@creatorOption.get(creator.name)"
 						@if(!create && datasetRow.get(metadata.creator) == creatorOption.get(creator.id)) {selected}>
