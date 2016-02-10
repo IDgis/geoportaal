@@ -22,7 +22,6 @@ import com.querydsl.sql.SQLQuery;
 import actions.DefaultAuthenticator;
 import models.Delete;
 import models.Search;
-import models.Status;
 import models.Supplier;
 import play.Routes;
 import play.data.DynamicForm;
@@ -52,6 +51,7 @@ public class Index extends Controller {
 	    	
 	    	List<Tuple> supplierList = tx.select(supplier.all())
 	            	.from(supplier)
+	            	.orderBy(supplier.name.asc())
 	            	.fetch();
 	    	
 	    	List<Tuple> statusList = tx.select(status.name, statusLabel.label)
@@ -257,6 +257,7 @@ public class Index extends Controller {
 	    	
 	    	List<Tuple> supplierList = tx.select(supplier.all())
 	            	.from(supplier)
+	            	.orderBy(supplier.name.asc())
 	            	.fetch();
 	    	
 	    	List<Tuple> statusList = tx.select(status.name, statusLabel.label)
