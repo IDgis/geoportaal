@@ -26,6 +26,7 @@ p.titel {font-weight:bold;font-size:21px;line-height:25px;margin-top:25px;margin
 p.alineastart {margin-top:20px;}
 #knoppen {margin-top:40px;margin-bottom:40px;}
 .knop {background-color:#831625;color:#ffffff;font-weight:bold;padding:6px 12px;border:1px solid transparent;border-radius: 4px;}
+.knop-correctie {position:relative;left:-5px;}
 .knop:hover {text-decoration:none;background-color:#DC0000;color:#ffffff;}
 .knop:focus {background-color:#DC0000;color:#ffffff;text-decoration:none;}
 .help-knop {padding-top:7px;padding-bottom:8px;line-height:20px;}
