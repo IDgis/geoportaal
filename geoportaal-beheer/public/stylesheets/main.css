@@ -1,6 +1,6 @@
 html {overflow-y:scroll;overflow-x:hidden;}
-body {background-color:#FFFFFF;margin:0px auto 20px auto;font-family:Verdana;border-left:1px solid #AAAAAA;border-right:1px solid #AAAAAA;
-	width:1100px;padding:0px 20px;box-sizing:content-box;}
+body {background-color:#FFFFFF;font-family:Verdana;box-sizing:content-box;}
+div.page {margin:0px auto 20px auto;width:1100px;padding:0px 20px;border-left:1px solid #AAAAAA;border-right:1px solid #AAAAAA;}
 
 div {display:block;}
 p {line-height:25px;font-size:16px;margin-top:0;margin-bottom:0;}
@@ -61,7 +61,7 @@ input[type="file"].input-attachment {display:inline;}
 
 .action-button {font-size:18px;}
 #btn-search-hide {margin-top:10px;margin-bottom:10px;position:relative;right:-12px;}
-#list-pager {position:relative;left:18px;top:-25px;}
+#list-pager ul {margin:0;position:relative;left:20px;}
 
 .js-index-page-2 {display:none;}
 .js-index-page-3 {display:none;}

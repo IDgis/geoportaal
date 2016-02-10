@@ -8,72 +8,43 @@
         <link rel="stylesheet" media="screen" href="@routes.Assets.versioned("stylesheets/main.css")">
     </head>
     <body>
-        <div class="logo">
-			<a>
-				<img src="@routes.Assets.versioned("images/logo_overijssel.png")"></img>
-			</a>
-		</div>
-		<div class="titelbalk">
-			<h1 class="header">Inloggen</h1>
-		</div>
-		<div class="welkom">
-			<p>Vul onderstaande velden in om in te loggen.</p>
-		</div>
-		@if(form.hasGlobalErrors) {
-			<div class="alert alert-danger">
-				<strong>Inloggen mislukt</strong> @form.globalError.message
+		<div class="page">	
+			<div class="logo">
+				<a>
+					<img src="@routes.Assets.versioned("images/logo_overijssel.png")"></img>
+				</a>
 			</div>
-		}
-		<form class="form-horizontal" method="POST" role="form" action="@routes.User.authenticate()">
-			<input type="hidden" name="returnUrl" value="@form("returnUrl").value">
-			<fieldset>
-				<div class="form-group col-sm-12">
-					<label class="col-sm-2 control-label">E-mailadres</label>
-					<div class="col-sm-4">
-						<input class="form-control" type="text" autofocus name="username" placeholder="E-mail" value="@form("username").value">
-					</div>
+			<div class="titelbalk">
+				<h1 class="header">Inloggen</h1>
+			</div>
+			<div class="welkom">
+				<p>Vul onderstaande velden in om in te loggen.</p>
+			</div>
+			@if(form.hasGlobalErrors) {
+				<div class="alert alert-danger">
+					<strong>Inloggen mislukt</strong> @form.globalError.message
 				</div>
-				<div class="form-group col-sm-12">
-					<label class="col-sm-2 control-label">Wachtwoord</label>
-					<div class="col-sm-4">
-						<input class="form-control" type="password" name="password" placeholder="Wachtwoord">
-					</div>
-				</div>
-				<div class="col-sm-offset-2 col-sm-10">
-					<button class="knop knop-correctie" type="submit">Inloggen</button>
-				</div>
-			</fieldset>
-		</form>
-	</body>
-</html>
-
-<!-- 
-<html lang="en">
-    <body class="layout-centered">
-        <div class="panel panel-default panel-centered">
-			<div class="panel-body">
-		
-				@if(form.hasGlobalErrors) {
-					<div class="alert alert-danger">
-						<strong>Inloggen mislukt</strong> @form.globalError.message
-					</div>
-				}
-				
-				<form role="form" method="POST" action="@routes.User.authenticate()">
-					<input type="hidden" name="returnUrl" value="@form("returnUrl").value">
-					<fieldset>
-						<div class="form-group">
-							<input class="form-control" type="text" autofocus name="username" placeholder="E-mail" 
-							value="@form("username").value">
+			}
+			<form class="form-horizontal" method="POST" role="form" action="@routes.User.authenticate()">
+				<input type="hidden" name="returnUrl" value="@form("returnUrl").value">
+				<fieldset>
+					<div class="form-group col-sm-12">
+						<label class="col-sm-2 control-label">E-mailadres</label>
+						<div class="col-sm-4">
+							<input class="form-control" type="text" autofocus name="username" placeholder="E-mail" value="@form("username").value">
 						</div>
-						<div class="form-group">
+					</div>
+					<div class="form-group col-sm-12">
+						<label class="col-sm-2 control-label">Wachtwoord</label>
+						<div class="col-sm-4">
 							<input class="form-control" type="password" name="password" placeholder="Wachtwoord">
 						</div>
-						<button class="btn btn-lg btn-success btn-block" href="@routes.Index.index()" type="submit">Inloggen</button>
-					</fieldset>
-				</form>
-			</div>
+					</div>
+					<div class="col-sm-offset-2 col-sm-10">
+						<button class="knop knop-correctie" type="submit">Inloggen</button>
+					</div>
+				</fieldset>
+			</form>
 		</div>
-    </body>
+	</body>
 </html>
- -->
