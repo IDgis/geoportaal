@@ -316,6 +316,50 @@ require([
 			}
 		});
 		
+		var searchRecordsEnter = on(win.doc, '.js-search-input:keypress', function(e) {
+			var code = e.keyCode
+			
+			if(code === 13) {
+				console.log('called');
+				var searchButton = dom.byId('search-button');
+				var form = dom.byId('js-form');
+				
+				var formData = new FormData();
+				
+				var dateStartChrome = domAttr.get(dom.byId('js-date-update-start'), 'value');
+				var dateStartRest = domAttr.get(dom.byId('js-hidden-date-update-start'), 'value');
+				var dateEndChrome = domAttr.get(dom.byId('js-date-update-end'), 'value');
+				var dateEndRest = domAttr.get(dom.byId('js-hidden-date-update-end'), 'value');
+				
+				if(!Modernizr.inputtypes.date) {
+					formData.append('dateUpdateStart', dateStartRest);
+					formData.append('dateUpdateEnd', dateEndRest);
+				} else {
+					formData.append('dateUpdateStart', dateStartChrome);
+					formData.append('dateUpdateEnd', dateEndChrome);
+				}
+				
+				xhr(jsRoutes.controllers.Index.validateForm().url, {
+						handleAs: "html",
+						data: formData,
+						method: "POST"	
+				}).then(function(data) {
+					var nfBoolean = data.indexOf('data-error="true"') > -1;
+					
+					if(nfBoolean) {
+						if(dom.byId('js-form-validation-result')) {
+							domConstruct.destroy(dom.byId('js-form-validation-result'));
+						}
+						
+						var result = dom.byId('js-form-validation');
+						domConstruct.place(data, result);
+					} else {
+						form.submit();
+					}
+				});
+			}
+		});
+		
 		var searchRecords = on(dom.byId('search-button'), 'click', function(e) {
 			var searchButton = dom.byId('search-button');
 			var form = dom.byId('js-form');
