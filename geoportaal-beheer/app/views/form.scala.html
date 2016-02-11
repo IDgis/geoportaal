@@ -14,6 +14,7 @@
 	subjectList: java.util.List[com.querydsl.core.Tuple]
 )
 
+@import play.i18n._
 @import models.QMetadata.metadata
 @import models.QTypeInformation.typeInformation
 @import models.QCreator.creator
@@ -46,7 +47,7 @@
 			</div>
 			<div class="col-sm-2">
 				<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" 
-				data-content="Term Name: title">
+				data-content="@Messages.get("form.title.tooltip")">
 					<span class="glyphicon glyphicon-info-sign"></span>
 				</button>
 			</div>
@@ -59,7 +60,7 @@
 			</div>
 			<div class="col-sm-2">
 				<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" 
-				data-content="Term Name: description">
+				data-content="@Messages.get("form.description.tooltip")">
 					<span class="glyphicon glyphicon-info-sign"></span>
 				</button>
 			</div>
@@ -72,7 +73,7 @@
 			</div>
 			<div class="col-sm-2">
 				<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" 
-				data-content="Het pad naar het bestand op uw PC">
+				data-content="@Messages.get("form.location.tooltip")">
 					<span class="glyphicon glyphicon-info-sign"></span>
 				</button>
 			</div>
@@ -85,7 +86,7 @@
 			</div>
 			<div class="col-sm-2">
 				<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" 
-				data-content="Het kenmerk van de bron">
+				data-content="@Messages.get("form.fileid.tooltip")">
 					<span class="glyphicon glyphicon-info-sign"></span>
 				</button>
 			</div>
@@ -98,7 +99,7 @@
 			</div>
 			<div class="col-sm-2">
 				<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement=top type="button" 
-				data-content="Term name: identifier">
+				data-content="@Messages.get("form.id.tooltip")">
 					<span class="glyphicon glyphicon-info-sign"></span>
 				</button>
 			</div>
@@ -119,7 +120,7 @@
 				</div>
 				<div class="col-sm-2 js-attachment-tooltip">
 					<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" 
-					data-content="Term Name: relation">
+					data-content="@Messages.get("form.attachment.tooltip")">
 						<span class="glyphicon glyphicon-info-sign"></span>
 					</button>
 				</div>
@@ -155,7 +156,7 @@
 			</div>
 			<div class="col-sm-2">
 				<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" 
-				data-content="Term Name: type">
+				data-content="@Messages.get("form.typeinformation.tooltip")">
 					<span class="glyphicon glyphicon-info-sign"></span>
 				</button>
 			</div>
@@ -176,7 +177,7 @@
 			</div>
 			<div class="col-sm-2">
 				<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" 
-				data-content="Term Name: creator">
+				data-content="@Messages.get("form.creator.tooltip")">
 					<span class="glyphicon glyphicon-info-sign"></span>
 				</button>
 			</div>
@@ -208,7 +209,7 @@
 			</div>
 			<div class="col-sm-2">
 				<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" 
-				data-content="Term Name: rights">
+				data-content="@Messages.get("form.rights.tooltip")">
 					<span class="glyphicon glyphicon-info-sign"></span>
 				</button>
 			</div>
@@ -228,7 +229,7 @@
 			</div>
 			<div class="col-sm-2">
 				<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" 
-				data-content="De gebruiksrestricties van het bestand">
+				data-content="@Messages.get("form.uselimitation.tooltip")">
 					<span class="glyphicon glyphicon-info-sign"></span>
 				</button>
 			</div>
@@ -248,7 +249,7 @@
 			</div>
 			<div class="col-sm-2">
 				<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" 
-				data-content="Term Name: format">
+				data-content="@Messages.get("form.format.tooltip")">
 					<span class="glyphicon glyphicon-info-sign"></span>
 				</button>
 			</div>
@@ -262,7 +263,7 @@
 			</div>
 			<div class="col-sm-2">
 				<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" 
-				data-content="Term Name: source">
+				data-content="@Messages.get("form.source.tooltip")">
 					<span class="glyphicon glyphicon-info-sign"></span>
 				</button>
 			</div>
@@ -279,7 +280,7 @@
 			</div>
 			<div class="col-sm-offset-3 col-sm-2">
 				<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" 
-				data-content="Term Name: date">
+				data-content="@Messages.get("form.date.creation.tooltip")">
 					<span class="glyphicon glyphicon-info-sign"></span>
 				</button>
 			</div>
@@ -297,7 +298,7 @@
 			</div>
 			<div class="col-sm-offset-3 col-sm-2">
 				<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" 
-				data-content="Term Name: date">
+				data-content="@Messages.get("form.date.publication.tooltip")">
 					<span class="glyphicon glyphicon-info-sign"></span>
 				</button>
 			</div>
@@ -315,7 +316,7 @@
 			</div>
 			<div class="col-sm-offset-3 col-sm-2">
 				<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" 
-				data-content="Term Name: date">
+				data-content="@Messages.get("form.date.revision.tooltip")">
 					<span class="glyphicon glyphicon-info-sign"></span>
 				</button>
 			</div>
@@ -333,7 +334,7 @@
 			</div>
 			<div class="col-sm-offset-3 col-sm-2">
 				<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" 
-				data-content="Term Name: date">
+				data-content="@Messages.get("form.date.valid.start.tooltip")">
 					<span class="glyphicon glyphicon-info-sign"></span>
 				</button>
 			</div>
@@ -351,7 +352,7 @@
 			</div>
 			<div class="col-sm-offset-3 col-sm-2">
 				<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" 
-				data-content="Term Name: date">
+				data-content="@Messages.get("form.date.valid.end.tooltip")">
 					<span class="glyphicon glyphicon-info-sign"></span>
 				</button>
 			</div>
@@ -396,7 +397,7 @@
 			</div>
 			<div class="col-sm-2">
 				<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" 
-				data-content="Term Name: subject">
+				data-content="@Messages.get("form.subject.tooltip")">
 					<span class="glyphicon glyphicon-info-sign"></span>
 				</button>
 			</div>
