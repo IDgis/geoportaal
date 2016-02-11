@@ -201,6 +201,7 @@
 				name="rights">
 					@for(rightsOption <- rightsList) {
 						<option value="@rightsOption.get(rights.name)"
+						@if(create && rightsOption.get(rights.id) == 2) {selected}
 						@if(!create && datasetRow.get(metadata.rights) == rightsOption.get(rights.id)) {selected}>
 							@rightsOption.get(rightsLabel.label)
 						</option>
