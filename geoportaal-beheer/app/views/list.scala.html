@@ -6,17 +6,17 @@
 @import models.QStatusLabel.statusLabel
 
 <div class="overzicht-records">
-	<table class="col-sm-offset-0 table table-bordered">
+	<table class="col-sm-offset-0 table table-bordered" id="list-table">
 		<tbody>
 			<tr>
-				<th>
+				<th class="col-sm-1">
 					<input type="checkbox" id="js-check-all" class="js-check" data-page="1">
 				</th>
-				<th>Actie</th>
-				<th>Titel</th>
-				<th>Leverancier</th>
-				<th>Status</th>
-				<th>Datum</th>
+				<th class="col-sm-1">Actie</th>
+				<th class="col-sm-4">Titel</th>
+				<th class="col-sm-2">Leverancier</th>
+				<th class="col-sm-2">Status</th>
+				<th class="col-sm-2">Datum</th>
 			</tr>
 			@for(datasetRow <- datasetRows) {
 				@if(datasetRows.indexOf(datasetRow) > -1 && datasetRows.indexOf(datasetRow) < 20) {	
