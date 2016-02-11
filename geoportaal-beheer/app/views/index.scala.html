@@ -33,14 +33,20 @@
 		@helper.form(action = routes.Index.search(), 'class -> "form-horizontal", 'id -> "js-form") {
 				<div class="form-group">
 					<label class="col-sm-3 control-label">Tekst</label>
-					<div class="col-sm-8">
+					<div class="col-sm-7">
 						<input class="form-control" type="text" data-toggle="tooltip" data-placement="top" title="Zoek op een woord" name="text"
 						@if(!textSearch.equals("")) {value="@textSearch"}>
+					</div>
+					<div class="col-sm-2">
+						<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" 
+						data-content="@Messages.get("index.text.tooltip")">
+							<span class="glyphicon glyphicon-info-sign"></span>
+						</button>
 					</div>
 				</div>
 				<div class="form-group">
 					<label class="col-sm-3 control-label">Leverancier</label>
-					<div class="col-sm-8">
+					<div class="col-sm-7">
 						<select class="form-control" data-toggle="tooltip" data-placement="top" title="Filter op leverancier" name="supplier">
 							<option value="none"></option>
 							@for(supplierOption <- supplierList) {
@@ -51,10 +57,16 @@
 							}
 						</select>
 					</div>
+					<div class="col-sm-2">
+						<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" 
+						data-content="@Messages.get("index.supplier.tooltip")">
+							<span class="glyphicon glyphicon-info-sign"></span>
+						</button>
+					</div>
 				</div>
 				<div class="form-group">
 					<label class="col-sm-3 control-label">Status</label>
-					<div class="col-sm-8">
+					<div class="col-sm-7">
 						<select class="form-control" data-toggle="tooltip" data-placement="top" title="Filter op status" name="status">
 							@for(statusOption <- statusList) {
 								<option value="@statusOption.get(status.name)"
@@ -64,10 +76,16 @@
 							}
 						</select>
 					</div>
+					<div class="col-sm-2">
+						<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" 
+						data-content="@Messages.get("index.status.tooltip")">
+							<span class="glyphicon glyphicon-info-sign"></span>
+						</button>
+					</div>
 				</div>
 				<div class="form-group">
 					<label class="col-sm-3 control-label">Formaat</label>
-					<div class="col-sm-8">
+					<div class="col-sm-7">
 						<select class="form-control" data-toggle="tooltip" data-placement="top" title="Filter op formaat" name="format">
 							@for(mdFormatOption <- mdFormatList) {
 								<option value="@mdFormatOption.get(mdFormat.name)"
@@ -76,6 +94,12 @@
 								</option>
 							}
 						</select>
+					</div>
+					<div class="col-sm-2">
+						<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" 
+						data-content="@Messages.get("index.format.tooltip")">
+							<span class="glyphicon glyphicon-info-sign"></span>
+						</button>
 					</div>
 				</div>
 				<div class="form-group">
@@ -87,6 +111,12 @@
 						@if(dateStart != null) {data-date-value-local="@sdfLocal.format(dateStart.getTime())"}>
 						<input type="hidden" id="js-hidden-date-update-start">
 					</div>
+					<div class="col-sm-2">
+						<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" 
+						data-content="@Messages.get("index.date.update.start.tooltip")">
+							<span class="glyphicon glyphicon-info-sign"></span>
+						</button>
+					</div>
 				</div>
 				<div class="form-group">
 					<label class="col-sm-3 control-label">en</label>
@@ -96,6 +126,12 @@
 						@if(dateEnd != null) {data-date-value-US="@sdfUS.format(dateEnd.getTime())"} 
 						@if(dateEnd != null) {data-date-value-local="@sdfLocal.format(dateEnd.getTime())"}>
 						<input type="hidden" id="js-hidden-date-update-end">
+					</div>
+					<div class="col-sm-2">
+						<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" 
+						data-content="@Messages.get("index.date.update.end.tooltip")">
+							<span class="glyphicon glyphicon-info-sign"></span>
+						</button>
 					</div>
 				</div>
 				<div class="col-sm-offset-3" id="js-form-validation"></div>

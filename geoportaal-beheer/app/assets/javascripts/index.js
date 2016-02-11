@@ -1,3 +1,7 @@
+$(function () {
+  $('[data-toggle="popover"]').popover()
+})
+
 if(!Modernizr.inputtypes.date) {
 	$('#js-date-update-start').datepicker({
 		dateFormat: 'dd-mm-yy',
