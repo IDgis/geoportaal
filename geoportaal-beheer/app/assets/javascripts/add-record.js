@@ -98,6 +98,7 @@ require([
 			domAttr.set(buttonNode, 'class', 'knop js-remove-attachment');
 			domAttr.set(buttonNode, 'type', 'button');
 			domAttr.set(buttonNode, 'title', 'Bijlage verwijderen');
+			domAttr.set(buttonNode, 'tabindex', '-1');
 			
 			var spanNode = domConstruct.create("span");
 			domAttr.set(spanNode, 'class', 'glyphicon glyphicon-remove');

@@ -46,7 +46,7 @@
 				title="Vul de titel in" name="title" value="@if(!create) {@datasetRow.get(metadata.title)}">
 			</div>
 			<div class="col-sm-2">
-				<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" 
+				<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" tabindex="-1"
 				data-content="@Messages.get("form.title.tooltip")">
 					<span class="glyphicon glyphicon-info-sign"></span>
 				</button>
@@ -59,7 +59,7 @@
 				title="Vul de omschrijving in" name="description">@if(!create) {@datasetRow.get(metadata.description)}</textarea>
 			</div>
 			<div class="col-sm-2">
-				<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" 
+				<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" tabindex="-1"
 				data-content="@Messages.get("form.description.tooltip")">
 					<span class="glyphicon glyphicon-info-sign"></span>
 				</button>
@@ -72,7 +72,7 @@
 				title="Vul het pad naar het bestand op de computer in" name="location" value="@if(!create) {@datasetRow.get(metadata.location)}">
 			</div>
 			<div class="col-sm-2">
-				<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" 
+				<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" tabindex="-1"
 				data-content="@Messages.get("form.location.tooltip")">
 					<span class="glyphicon glyphicon-info-sign"></span>
 				</button>
@@ -85,7 +85,7 @@
 				title="Vul het kenmerk in" name="fileId" value="@if(!create) {@datasetRow.get(metadata.fileId)}">
 			</div>
 			<div class="col-sm-2">
-				<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" 
+				<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" tabindex="-1"
 				data-content="@Messages.get("form.fileid.tooltip")">
 					<span class="glyphicon glyphicon-info-sign"></span>
 				</button>
@@ -98,7 +98,7 @@
 				value="@if(create) {@Messages.get("form.id.message.create")} else {@datasetRow.get(metadata.uuid)}" readonly>
 			</div>
 			<div class="col-sm-2">
-				<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement=top type="button" 
+				<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement=top type="button" tabindex="-1"
 				data-content="@Messages.get("form.id.tooltip")">
 					<span class="glyphicon glyphicon-info-sign"></span>
 				</button>
@@ -110,16 +110,16 @@
 				<div class="col-sm-7 form-inline js-attachment-input">
 					<input class="input-attachment" type="file" data-toggle="tooltip" data-placement="top" title="Voeg de bijlage(s) toe"
 					name="attachmentName[]">
-					<button class="knop js-add-attachment" type="button" title="Bijlage toevoegen">
+					<button class="knop js-add-attachment" type="button" title="Bijlage toevoegen" tabindex="-1">
 						<span class="glyphicon glyphicon-plus"></span>
 					</button>
-					<button class="knop js-empty-attachment" type="button" title="Bijlage leegmaken">
+					<button class="knop js-empty-attachment" type="button" title="Bijlage leegmaken" tabindex="-1">
 						<span class="glyphicon glyphicon-erase"></span>
 					</button>
 					
 				</div>
 				<div class="col-sm-2 js-attachment-tooltip">
-					<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" 
+					<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" tabindex="-1"
 					data-content="@Messages.get("form.attachment.tooltip")">
 						<span class="glyphicon glyphicon-info-sign"></span>
 					</button>
@@ -155,7 +155,7 @@
 				</select>
 			</div>
 			<div class="col-sm-2">
-				<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" 
+				<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" tabindex="-1"
 				data-content="@Messages.get("form.typeinformation.tooltip")">
 					<span class="glyphicon glyphicon-info-sign"></span>
 				</button>
@@ -176,7 +176,7 @@
 				</select>
 			</div>
 			<div class="col-sm-2">
-				<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" 
+				<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" tabindex="-1"
 				data-content="@Messages.get("form.creator.tooltip")">
 					<span class="glyphicon glyphicon-info-sign"></span>
 				</button>
@@ -209,7 +209,7 @@
 				</select>
 			</div>
 			<div class="col-sm-2">
-				<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" 
+				<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" tabindex="-1"
 				data-content="@Messages.get("form.rights.tooltip")">
 					<span class="glyphicon glyphicon-info-sign"></span>
 				</button>
@@ -229,7 +229,7 @@
 				</select>
 			</div>
 			<div class="col-sm-2">
-				<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" 
+				<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" tabindex="-1"
 				data-content="@Messages.get("form.uselimitation.tooltip")">
 					<span class="glyphicon glyphicon-info-sign"></span>
 				</button>
@@ -249,7 +249,7 @@
 				</select>
 			</div>
 			<div class="col-sm-2">
-				<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" 
+				<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" tabindex="-1"
 				data-content="@Messages.get("form.format.tooltip")">
 					<span class="glyphicon glyphicon-info-sign"></span>
 				</button>
@@ -263,7 +263,7 @@
 				value="@if(!create) {@datasetRow.get(metadata.source)}">
 			</div>
 			<div class="col-sm-2">
-				<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" 
+				<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" tabindex="-1"
 				data-content="@Messages.get("form.source.tooltip")">
 					<span class="glyphicon glyphicon-info-sign"></span>
 				</button>
@@ -280,7 +280,7 @@
 				<input type="hidden" id="js-hidden-date-creation">
 			</div>
 			<div class="col-sm-offset-3 col-sm-2">
-				<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" 
+				<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" tabindex="-1"
 				data-content="@Messages.get("form.date.creation.tooltip")">
 					<span class="glyphicon glyphicon-info-sign"></span>
 				</button>
@@ -298,7 +298,7 @@
 				<input type="hidden" id="js-hidden-date-publication">
 			</div>
 			<div class="col-sm-offset-3 col-sm-2">
-				<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" 
+				<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" tabindex="-1"
 				data-content="@Messages.get("form.date.publication.tooltip")">
 					<span class="glyphicon glyphicon-info-sign"></span>
 				</button>
@@ -316,7 +316,7 @@
 				<input type="hidden" id="js-hidden-date-revision">
 			</div>
 			<div class="col-sm-offset-3 col-sm-2">
-				<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" 
+				<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" tabindex="-1"
 				data-content="@Messages.get("form.date.revision.tooltip")">
 					<span class="glyphicon glyphicon-info-sign"></span>
 				</button>
@@ -334,7 +334,7 @@
 				<input type="hidden" id="js-hidden-date-valid-from">
 			</div>
 			<div class="col-sm-offset-3 col-sm-2">
-				<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" 
+				<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" tabindex="-1"
 				data-content="@Messages.get("form.date.valid.start.tooltip")">
 					<span class="glyphicon glyphicon-info-sign"></span>
 				</button>
@@ -352,7 +352,7 @@
 				<input type="hidden" id="js-hidden-date-valid-until">
 			</div>
 			<div class="col-sm-offset-3 col-sm-2">
-				<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" 
+				<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" tabindex="-1"
 				data-content="@Messages.get("form.date.valid.end.tooltip")">
 					<span class="glyphicon glyphicon-info-sign"></span>
 				</button>
@@ -397,7 +397,7 @@
 				</div>
 			</div>
 			<div class="col-sm-2">
-				<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" 
+				<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" tabindex="-1"
 				data-content="@Messages.get("form.subject.tooltip")">
 					<span class="glyphicon glyphicon-info-sign"></span>
 				</button>
