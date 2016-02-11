@@ -1,5 +1,8 @@
 index.header=Geoportaal: zoeken en wijzigen metadata
 
+# Formulier labels en teksten
+form.id.message.create=De id zal bij het opslaan gegenereerd worden...
+
 # Tooltips index
 index.text.tooltip=Tekst in die je wilt zoeken. Meerdere woorden zijn mogelijk. Vul je niets in, dan wordt alles gekozen als je gaat zoeken.
 index.supplier.tooltip=Leverancier van de data, waarmee de kaart is gemaakt. Vul je niets in, dan wordt alles gekozen als je gaat zoeken.

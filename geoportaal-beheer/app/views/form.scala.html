@@ -95,7 +95,7 @@
 			<label class="col-sm-3 control-label">Unieke ID</label>
 			<div class="col-sm-7">
 				<input class="form-control" type="text" data-toggle="tooltip" data-placement="top" title="De unieke ID van de data" 
-				value="@if(create) {De id zal gegenereerd worden...} else {@datasetRow.get(metadata.uuid)}" readonly>
+				value="@if(create) {@Messages.get("form.id.message.create")} else {@datasetRow.get(metadata.uuid)}" readonly>
 			</div>
 			<div class="col-sm-2">
 				<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement=top type="button" 
