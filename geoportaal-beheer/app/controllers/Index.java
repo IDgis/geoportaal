@@ -6,6 +6,7 @@ import static models.QMetadata.metadata;
 import static models.QStatus.status;
 import static models.QStatusLabel.statusLabel;
 import static models.QSupplier.supplier;
+import static models.QUser.user;
 
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -60,12 +61,27 @@ public class Index extends Controller {
 			
 	        
 	        if(textSearch == null && supplierSearch == null && statusSearch == null && mdFormatSearch == null && dateStartSearch == null && dateEndSearch == null) {
-	        	List<Tuple> datasetRows = tx.select(metadata.id, metadata.uuid, metadata.title, metadata.lastRevisionDate, statusLabel.label, supplier.name)
+	        	SQLQuery<Tuple> datasetQuery = tx.select(metadata.id, metadata.uuid, metadata.title, metadata.lastRevisionDate, statusLabel.label, supplier.name)
 		    			.from(metadata)
 		    			.join(status).on(metadata.status.eq(status.id))
 		    			.join(supplier).on(metadata.supplier.eq(supplier.id))
-		    			.join(statusLabel).on(status.id.eq(statusLabel.statusId))
-		    			.where(metadata.status.notIn(5))
+		    			.join(statusLabel).on(status.id.eq(statusLabel.statusId));
+	        	
+	        	Integer roleId = tx.select(user.roleId)
+	        			.from(user)
+	        			.where(user.username.eq(session("username")))
+	        			.fetchOne();
+	        	 
+	        	Integer supplierId = tx.select(user.id)
+	        			.from(user)
+	        			.where(user.username.eq(session("username")))
+	        			.fetchOne();
+	        	
+	        	if(roleId.equals(2)) {
+	        		datasetQuery.where(metadata.supplier.eq(supplierId));
+	        	}
+	        	
+	        	List<Tuple> datasetRows = datasetQuery.where(metadata.status.notIn(5))
 		    			.limit(200)
 		    			.orderBy(metadata.lastRevisionDate.desc())
 		    			.fetch();
@@ -121,6 +137,20 @@ public class Index extends Controller {
 						.where(metadata.lastRevisionDate.after(timestampStartSearch))
 						.where(metadata.lastRevisionDate.before(timestampEndSearch));
 				}
+				
+				Integer roleId = tx.select(user.roleId)
+	        			.from(user)
+	        			.where(user.username.eq(session("username")))
+	        			.fetchOne();
+	        	 
+	        	Integer supplierId = tx.select(user.id)
+	        			.from(user)
+	        			.where(user.username.eq(session("username")))
+	        			.fetchOne();
+	        	
+	        	if(roleId.equals(2)) {
+	        		datasetQuery.where(metadata.supplier.eq(supplierId));
+	        	}
 				
 				List<Tuple> datasetRows = datasetQuery
 		    			.limit(200)
