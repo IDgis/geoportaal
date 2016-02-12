@@ -209,7 +209,7 @@ public class Metadata extends Controller {
 				}
 			}
 			
-			return redirect(controllers.routes.Index.index());
+			return redirect(controllers.routes.Index.index(null, null, null, null, null, null));
 		});
 	}
 	
@@ -432,7 +432,7 @@ public class Metadata extends Controller {
 				}
 			}
 			
-			return redirect(controllers.routes.Index.index());
+			return redirect(controllers.routes.Index.index(null, null, null, null, null, null));
 		});
 	}
 	
@@ -570,6 +570,6 @@ public class Metadata extends Controller {
 	
 	public Result cancel() {
 
-		return redirect(controllers.routes.Index.index());
+		return redirect(controllers.routes.Index.index(null, null, null, null, null, null));
 	}
 }

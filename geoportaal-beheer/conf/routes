@@ -3,7 +3,7 @@
 # ~~~~
 
 # Home page
-GET     /								controllers.Index.index()
+GET     /		controllers.Index.index(text ?= null, supplier ?= null, status ?= null, format ?= null, dateUpdateStart ?= null, dateUpdateEnd ?= null)
 GET		/user/login						controllers.User.login(r: String)
 GET		/user/logout					controllers.User.logout()
 POST	/user/authenticate				controllers.User.authenticate()

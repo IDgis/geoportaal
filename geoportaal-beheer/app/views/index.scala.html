@@ -140,7 +140,7 @@
 		 				<button class="knop" id="search-button" type="button">Zoek</button>
 		 				@if(!textSearch.equals("") || !supplierSearch.equals("none") || !statusSearch.equals("none") || !mdFormatSearch.equals("none") ||
 		 					dateStart != null || dateEnd != null) {
-		 					<a class="knop" id="filter-button" href="@routes.Index.index()">Filter opheffen</a>
+		 					<a class="knop" id="filter-button" href="@routes.Index.index(null, null, null, null, null, null)">Filter opheffen</a>
 		 				}
 					</div>
 				</div>

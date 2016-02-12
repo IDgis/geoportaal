@@ -37,19 +37,10 @@ public class Index extends Controller {
 	@Inject ZooKeeper zk;
 	@Inject QueryDSL q;
 	
-	public Result index() throws SQLException {
+	public Result index(String textSearch, String supplierSearch, String statusSearch, String mdFormatSearch, String dateStartSearch, 
+			String dateEndSearch) throws SQLException {
 		return q.withTransaction(tx -> {
-			List<Tuple> datasetRows = tx.select(metadata.id, metadata.uuid, metadata.title, metadata.lastRevisionDate, statusLabel.label, supplier.name)
-	    			.from(metadata)
-	    			.join(status).on(metadata.status.eq(status.id))
-	    			.join(supplier).on(metadata.supplier.eq(supplier.id))
-	    			.join(statusLabel).on(status.id.eq(statusLabel.statusId))
-	    			.where(metadata.status.notIn(5))
-	    			.limit(200)
-	    			.orderBy(metadata.lastRevisionDate.desc())
-	    			.fetch();
-	    	
-	    	List<Tuple> supplierList = tx.select(supplier.all())
+			List<Tuple> supplierList = tx.select(supplier.all())
 	            	.from(supplier)
 	            	.orderBy(supplier.name.asc())
 	            	.fetch();
@@ -66,10 +57,104 @@ public class Index extends Controller {
 	    	
 	    	SimpleDateFormat sdfUS = new SimpleDateFormat("yyyy-MM-dd");
 	        SimpleDateFormat sdfLocal = new SimpleDateFormat("dd-MM-yyyy");
+			
 	        
-	        return ok(views.html.index.render(datasetRows, supplierList, statusList, mdFormatList, sdfUS, sdfLocal, "", "none", "none", "none", null, null));
+	        if(textSearch == null && supplierSearch == null && statusSearch == null && mdFormatSearch == null && dateStartSearch == null && dateEndSearch == null) {
+	        	List<Tuple> datasetRows = tx.select(metadata.id, metadata.uuid, metadata.title, metadata.lastRevisionDate, statusLabel.label, supplier.name)
+		    			.from(metadata)
+		    			.join(status).on(metadata.status.eq(status.id))
+		    			.join(supplier).on(metadata.supplier.eq(supplier.id))
+		    			.join(statusLabel).on(status.id.eq(statusLabel.statusId))
+		    			.where(metadata.status.notIn(5))
+		    			.limit(200)
+		    			.orderBy(metadata.lastRevisionDate.desc())
+		    			.fetch();
+		    	
+		    	return ok(views.html.index.render(datasetRows, supplierList, statusList, mdFormatList, sdfUS, sdfLocal, "", "none", "none", "none", null, null));
+	        } else {
+	        	SQLQuery<Tuple> datasetQuery = tx.select(metadata.id, metadata.uuid, metadata.title, metadata.lastRevisionDate, statusLabel.label, supplier.name, 
+						status.name, mdFormat.name)
+		    			.from(metadata)
+		    			.join(status).on(metadata.status.eq(status.id))
+		    			.join(supplier).on(metadata.supplier.eq(supplier.id))
+		    			.join(statusLabel).on(status.id.eq(statusLabel.statusId))
+		    			.join(mdFormat).on(metadata.mdFormat.eq(mdFormat.id));
+				
+				if(!"".equals(textSearch)) {
+					datasetQuery
+						.where(metadata.title.containsIgnoreCase(textSearch)
+								.or(metadata.description.containsIgnoreCase(textSearch)));
+				}
+				
+				if(!"none".equals(supplierSearch)) {
+					datasetQuery
+						.where(supplier.name.eq(supplierSearch));
+				}
+				
+				if(!"none".equals(statusSearch)) {
+					datasetQuery
+						.where(status.name.eq(statusSearch));
+				}
+				
+				if(!"none".equals(mdFormatSearch)) {
+					datasetQuery
+						.where(mdFormat.name.eq(mdFormatSearch));
+				}
+				
+				Date finalDateStartSearch = null;
+				if(!"".equals(dateStartSearch)) {
+					finalDateStartSearch = sdfUS.parse(dateStartSearch);
+				}
+				
+				Date finalDateEndSearch = null;
+				if(!"".equals(dateEndSearch)) {
+					finalDateEndSearch = sdfUS.parse(dateEndSearch);
+				}
+				
+				Timestamp timestampStartSearch = null;
+				Timestamp timestampEndSearch = null;
+				if(finalDateStartSearch != null && finalDateEndSearch != null) {
+					timestampStartSearch = new Timestamp(finalDateStartSearch.getTime());
+					timestampEndSearch = new Timestamp(finalDateEndSearch.getTime() + 86400000);
+					
+					datasetQuery
+						.where(metadata.lastRevisionDate.after(timestampStartSearch))
+						.where(metadata.lastRevisionDate.before(timestampEndSearch));
+				}
+				
+				List<Tuple> datasetRows = datasetQuery
+		    			.limit(200)
+						.orderBy(metadata.lastRevisionDate.desc())
+		    			.fetch();
+				
+				Timestamp resetTimestampEndSearch = null;
+		        if(finalDateEndSearch != null) {
+		        	resetTimestampEndSearch = new Timestamp(finalDateEndSearch.getTime());
+		        }
+		        
+		        return ok(views.html.index.render(datasetRows, supplierList, statusList, mdFormatList, sdfUS, sdfLocal, textSearch, 
+		        		supplierSearch, statusSearch, mdFormatSearch, timestampStartSearch, resetTimestampEndSearch));
+	        }
 		});
     }
+	
+	public Result search() {
+		Form<Search> searchForm = Form.form(Search.class);
+		Search s = searchForm.bindFromRequest().get();
+		String textSearch = s.getText();
+		String supplierSearch = s.getSupplier();
+		String statusSearch = s.getStatus();
+		String mdFormatSearch = s.getFormat();
+		String dateStartSearch = s.getDateUpdateStart();
+		String dateEndSearch = s.getDateUpdateEnd();
+		
+		if("".equals(dateStartSearch) || "".equals(dateEndSearch)) {
+			dateStartSearch = "";
+			dateEndSearch = "";
+		}
+		
+		return redirect(controllers.routes.Index.index(textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch));
+	}
 	
 	public Result changeStatus() {
 		Form<models.Status> statusForm = Form.form(models.Status.class);
@@ -97,7 +182,7 @@ public class Index extends Controller {
 				}
 			}
 	    	
-	    	return redirect(controllers.routes.Index.index());
+			return redirect(controllers.routes.Index.index(null, null, null, null, null, null));
 		});
 		
 	}
@@ -128,7 +213,7 @@ public class Index extends Controller {
 				}
 			}
 			
-	    	return redirect(controllers.routes.Index.index());
+			return redirect(controllers.routes.Index.index(null, null, null, null, null, null));
 		});
 	}
 	
@@ -162,7 +247,7 @@ public class Index extends Controller {
 				}
 			}
 			
-			return redirect(controllers.routes.Index.index());
+			return redirect(controllers.routes.Index.index(null, null, null, null, null, null));
 		});
 	}
 	
@@ -197,90 +282,6 @@ public class Index extends Controller {
 		} catch(IllegalStateException ise) {
 			return ok(bindingerror.render("Er is iets misgegaan. Controleer of de velden correct zijn ingevuld.", null, null, null, null, null, null, null));
 		}
-	}
-	
-	public Result search() {
-		Form<Search> searchForm = Form.form(Search.class);
-		Search s = searchForm.bindFromRequest().get();
-		String textSearch = s.getText();
-		String supplierSearch = s.getSupplier();
-		String statusSearch = s.getStatus();
-		String mdFormatSearch = s.getFormat();
-		Date dateStartSearch = s.getDateUpdateStart();
-		Date dateEndSearch = s.getDateUpdateEnd();
-		
-		return q.withTransaction(tx -> {
-			SQLQuery<Tuple> datasetQuery = tx.select(metadata.id, metadata.uuid, metadata.title, metadata.lastRevisionDate, statusLabel.label, supplier.name, 
-					status.name, mdFormat.name)
-	    			.from(metadata)
-	    			.join(status).on(metadata.status.eq(status.id))
-	    			.join(supplier).on(metadata.supplier.eq(supplier.id))
-	    			.join(statusLabel).on(status.id.eq(statusLabel.statusId))
-	    			.join(mdFormat).on(metadata.mdFormat.eq(mdFormat.id));
-			
-			if(!"".equals(textSearch)) {
-				datasetQuery
-					.where(metadata.title.containsIgnoreCase(textSearch)
-							.or(metadata.description.containsIgnoreCase(textSearch)));
-			}
-			
-			if(!"none".equals(supplierSearch)) {
-				datasetQuery
-					.where(supplier.name.eq(supplierSearch));
-			}
-			
-			if(!"none".equals(statusSearch)) {
-				datasetQuery
-					.where(status.name.eq(statusSearch));
-			}
-			
-			if(!"none".equals(mdFormatSearch)) {
-				datasetQuery
-					.where(mdFormat.name.eq(mdFormatSearch));
-			}
-			
-			Timestamp timestampStartSearch = null;
-			Timestamp timestampEndSearch = null;
-			if(dateStartSearch != null && dateEndSearch != null) {
-				timestampStartSearch = new Timestamp(dateStartSearch.getTime());
-				timestampEndSearch = new Timestamp(dateEndSearch.getTime() + 86400000);
-				
-				datasetQuery
-					.where(metadata.lastRevisionDate.after(timestampStartSearch))
-					.where(metadata.lastRevisionDate.before(timestampEndSearch));
-			}
-			
-			List<Tuple> datasetRows = datasetQuery
-	    			.limit(200)
-					.orderBy(metadata.lastRevisionDate.desc())
-	    			.fetch();
-	    	
-	    	List<Tuple> supplierList = tx.select(supplier.all())
-	            	.from(supplier)
-	            	.orderBy(supplier.name.asc())
-	            	.fetch();
-	    	
-	    	List<Tuple> statusList = tx.select(status.name, statusLabel.label)
-	            	.from(status)
-	            	.join(statusLabel).on(status.id.eq(statusLabel.statusId))
-	            	.fetch();
-	    	
-	    	List<Tuple> mdFormatList = tx.select(mdFormat.name, mdFormatLabel.label)
-	            	.from(mdFormat)
-	            	.join(mdFormatLabel).on(mdFormat.id.eq(mdFormatLabel.mdFormatId))
-	            	.fetch();
-	    	
-	    	SimpleDateFormat sdfUS = new SimpleDateFormat("yyyy-MM-dd");
-	        SimpleDateFormat sdfLocal = new SimpleDateFormat("dd-MM-yyyy");
-	        
-	        Timestamp resetTimestampEndSearch = null;
-	        if(dateEndSearch != null) {
-	        	resetTimestampEndSearch = new Timestamp(dateEndSearch.getTime());
-	        }
-	    	
-			return ok(views.html.index.render(datasetRows, supplierList, statusList, mdFormatList, sdfUS, sdfLocal, textSearch, 
-					supplierSearch, statusSearch, mdFormatSearch, timestampStartSearch, resetTimestampEndSearch));
-		});
 	}
 	
 	public Boolean validateDate(String date) {
