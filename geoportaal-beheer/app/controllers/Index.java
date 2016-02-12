@@ -88,6 +88,16 @@ public class Index extends Controller {
 		    	
 		    	return ok(views.html.index.render(datasetRows, supplierList, statusList, mdFormatList, sdfUS, sdfLocal, "", "none", "none", "none", null, null));
 	        } else {
+	        	Integer roleId = tx.select(user.roleId)
+	        			.from(user)
+	        			.where(user.username.eq(session("username")))
+	        			.fetchOne();
+	        	 
+	        	Integer supplierId = tx.select(user.id)
+	        			.from(user)
+	        			.where(user.username.eq(session("username")))
+	        			.fetchOne();
+	        	
 	        	SQLQuery<Tuple> datasetQuery = tx.select(metadata.id, metadata.uuid, metadata.title, metadata.lastRevisionDate, statusLabel.label, supplier.name, 
 						status.name, mdFormat.name)
 		    			.from(metadata)
@@ -110,6 +120,10 @@ public class Index extends Controller {
 				if(!"none".equals(statusSearch)) {
 					datasetQuery
 						.where(status.name.eq(statusSearch));
+				}
+				
+				if("none".equals(statusSearch)) {
+					datasetQuery.where(metadata.status.notIn(5));
 				}
 				
 				if(!"none".equals(mdFormatSearch)) {
@@ -138,17 +152,7 @@ public class Index extends Controller {
 						.where(metadata.lastRevisionDate.before(timestampEndSearch));
 				}
 				
-				Integer roleId = tx.select(user.roleId)
-	        			.from(user)
-	        			.where(user.username.eq(session("username")))
-	        			.fetchOne();
-	        	 
-	        	Integer supplierId = tx.select(user.id)
-	        			.from(user)
-	        			.where(user.username.eq(session("username")))
-	        			.fetchOne();
-	        	
-	        	if(roleId.equals(2)) {
+				if(roleId.equals(2)) {
 	        		datasetQuery.where(metadata.supplier.eq(supplierId));
 	        	}
 				
