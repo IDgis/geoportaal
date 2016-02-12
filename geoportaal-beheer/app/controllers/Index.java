@@ -58,7 +58,16 @@ public class Index extends Controller {
 	    	
 	    	SimpleDateFormat sdfUS = new SimpleDateFormat("yyyy-MM-dd");
 	        SimpleDateFormat sdfLocal = new SimpleDateFormat("dd-MM-yyyy");
-			
+	        
+	        Integer roleId = tx.select(user.roleId)
+        			.from(user)
+        			.where(user.username.eq(session("username")))
+        			.fetchOne();
+        	 
+        	Integer supplierId = tx.select(user.id)
+        			.from(user)
+        			.where(user.username.eq(session("username")))
+        			.fetchOne();
 	        
 	        if(textSearch == null && supplierSearch == null && statusSearch == null && mdFormatSearch == null && dateStartSearch == null && dateEndSearch == null) {
 	        	SQLQuery<Tuple> datasetQuery = tx.select(metadata.id, metadata.uuid, metadata.title, metadata.lastRevisionDate, statusLabel.label, supplier.name)
@@ -66,16 +75,6 @@ public class Index extends Controller {
 		    			.join(status).on(metadata.status.eq(status.id))
 		    			.join(supplier).on(metadata.supplier.eq(supplier.id))
 		    			.join(statusLabel).on(status.id.eq(statusLabel.statusId));
-	        	
-	        	Integer roleId = tx.select(user.roleId)
-	        			.from(user)
-	        			.where(user.username.eq(session("username")))
-	        			.fetchOne();
-	        	 
-	        	Integer supplierId = tx.select(user.id)
-	        			.from(user)
-	        			.where(user.username.eq(session("username")))
-	        			.fetchOne();
 	        	
 	        	if(roleId.equals(2)) {
 	        		datasetQuery.where(metadata.supplier.eq(supplierId));
@@ -86,18 +85,8 @@ public class Index extends Controller {
 		    			.orderBy(metadata.lastRevisionDate.desc())
 		    			.fetch();
 		    	
-		    	return ok(views.html.index.render(datasetRows, supplierList, statusList, mdFormatList, sdfUS, sdfLocal, "", "none", "none", "none", null, null));
+		    	return ok(views.html.index.render(datasetRows, supplierList, statusList, mdFormatList, sdfUS, sdfLocal, roleId, "", "none", "none", "none", null, null));
 	        } else {
-	        	Integer roleId = tx.select(user.roleId)
-	        			.from(user)
-	        			.where(user.username.eq(session("username")))
-	        			.fetchOne();
-	        	 
-	        	Integer supplierId = tx.select(user.id)
-	        			.from(user)
-	        			.where(user.username.eq(session("username")))
-	        			.fetchOne();
-	        	
 	        	SQLQuery<Tuple> datasetQuery = tx.select(metadata.id, metadata.uuid, metadata.title, metadata.lastRevisionDate, statusLabel.label, supplier.name, 
 						status.name, mdFormat.name)
 		    			.from(metadata)
@@ -170,7 +159,7 @@ public class Index extends Controller {
 		        	resetTimestampEndSearch = new Timestamp(finalDateEndSearch.getTime());
 		        }
 		        
-		        return ok(views.html.index.render(datasetRows, supplierList, statusList, mdFormatList, sdfUS, sdfLocal, textSearch, 
+		        return ok(views.html.index.render(datasetRows, supplierList, statusList, mdFormatList, sdfUS, sdfLocal, roleId, textSearch, 
 		        		supplierSearch, statusSearch, mdFormatSearch, timestampStartSearch, resetTimestampEndSearch));
 	        }
 		});
