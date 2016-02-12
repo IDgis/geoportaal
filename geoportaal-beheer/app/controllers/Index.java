@@ -218,23 +218,23 @@ public class Index extends Controller {
 	    			.join(statusLabel).on(status.id.eq(statusLabel.statusId))
 	    			.join(mdFormat).on(metadata.mdFormat.eq(mdFormat.id));
 			
-			if(!textSearch.equals("")) {
+			if(!"".equals(textSearch)) {
 				datasetQuery
 					.where(metadata.title.containsIgnoreCase(textSearch)
 							.or(metadata.description.containsIgnoreCase(textSearch)));
 			}
 			
-			if(!supplierSearch.equals("none")) {
+			if(!"none".equals(supplierSearch)) {
 				datasetQuery
 					.where(supplier.name.eq(supplierSearch));
 			}
 			
-			if(!statusSearch.equals("none")) {
+			if(!"none".equals(statusSearch)) {
 				datasetQuery
 					.where(status.name.eq(statusSearch));
 			}
 			
-			if(!mdFormatSearch.equals("none")) {
+			if(!"none".equals(mdFormatSearch)) {
 				datasetQuery
 					.where(mdFormat.name.eq(mdFormatSearch));
 			}
@@ -284,7 +284,7 @@ public class Index extends Controller {
 	}
 	
 	public Boolean validateDate(String date) {
-		if(date.equals("")) {
+		if("".equals(date)) {
 			return true;
 		}
 		
