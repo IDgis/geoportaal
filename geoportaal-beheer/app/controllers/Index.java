@@ -6,6 +6,7 @@ import static models.QMetadata.metadata;
 import static models.QStatus.status;
 import static models.QStatusLabel.statusLabel;
 import static models.QSupplier.supplier;
+import static models.QUser.user;
 
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -57,22 +58,36 @@ public class Index extends Controller {
 	    	
 	    	SimpleDateFormat sdfUS = new SimpleDateFormat("yyyy-MM-dd");
 	        SimpleDateFormat sdfLocal = new SimpleDateFormat("dd-MM-yyyy");
-			
+	        
+	        Integer roleId = tx.select(user.roleId)
+        			.from(user)
+        			.where(user.username.eq(session("username")))
+        			.fetchOne();
+        	 
+        	Integer supplierId = tx.select(user.id)
+        			.from(user)
+        			.where(user.username.eq(session("username")))
+        			.fetchOne();
 	        
 	        if(textSearch == null && supplierSearch == null && statusSearch == null && mdFormatSearch == null && dateStartSearch == null && dateEndSearch == null) {
-	        	List<Tuple> datasetRows = tx.select(metadata.id, metadata.uuid, metadata.title, metadata.lastRevisionDate, statusLabel.label, supplier.name)
+	        	SQLQuery<Tuple> datasetQuery = tx.select(metadata.id, metadata.uuid, metadata.title, metadata.status, metadata.lastRevisionDate, statusLabel.label, supplier.name)
 		    			.from(metadata)
 		    			.join(status).on(metadata.status.eq(status.id))
 		    			.join(supplier).on(metadata.supplier.eq(supplier.id))
-		    			.join(statusLabel).on(status.id.eq(statusLabel.statusId))
-		    			.where(metadata.status.notIn(5))
+		    			.join(statusLabel).on(status.id.eq(statusLabel.statusId));
+	        	
+	        	if(roleId.equals(2)) {
+	        		datasetQuery.where(metadata.supplier.eq(supplierId));
+	        	}
+	        	
+	        	List<Tuple> datasetRows = datasetQuery.where(metadata.status.notIn(5))
 		    			.limit(200)
 		    			.orderBy(metadata.lastRevisionDate.desc())
 		    			.fetch();
 		    	
-		    	return ok(views.html.index.render(datasetRows, supplierList, statusList, mdFormatList, sdfUS, sdfLocal, "", "none", "none", "none", null, null));
+		    	return ok(views.html.index.render(datasetRows, supplierList, statusList, mdFormatList, sdfUS, sdfLocal, roleId, "", "none", "none", "none", null, null));
 	        } else {
-	        	SQLQuery<Tuple> datasetQuery = tx.select(metadata.id, metadata.uuid, metadata.title, metadata.lastRevisionDate, statusLabel.label, supplier.name, 
+	        	SQLQuery<Tuple> datasetQuery = tx.select(metadata.id, metadata.uuid, metadata.title, metadata.status, metadata.lastRevisionDate, statusLabel.label, supplier.name, 
 						status.name, mdFormat.name)
 		    			.from(metadata)
 		    			.join(status).on(metadata.status.eq(status.id))
@@ -94,6 +109,14 @@ public class Index extends Controller {
 				if(!"none".equals(statusSearch)) {
 					datasetQuery
 						.where(status.name.eq(statusSearch));
+				}
+				
+				if("none".equals(statusSearch)) {
+					datasetQuery.where(metadata.status.notIn(5));
+				}
+				
+				if(roleId.equals(2) && "deleted".equals(statusSearch)) {
+					datasetQuery.where(metadata.status.notIn(5));
 				}
 				
 				if(!"none".equals(mdFormatSearch)) {
@@ -122,6 +145,10 @@ public class Index extends Controller {
 						.where(metadata.lastRevisionDate.before(timestampEndSearch));
 				}
 				
+				if(roleId.equals(2)) {
+	        		datasetQuery.where(metadata.supplier.eq(supplierId));
+	        	}
+				
 				List<Tuple> datasetRows = datasetQuery
 		    			.limit(200)
 						.orderBy(metadata.lastRevisionDate.desc())
@@ -132,7 +159,7 @@ public class Index extends Controller {
 		        	resetTimestampEndSearch = new Timestamp(finalDateEndSearch.getTime());
 		        }
 		        
-		        return ok(views.html.index.render(datasetRows, supplierList, statusList, mdFormatList, sdfUS, sdfLocal, textSearch, 
+		        return ok(views.html.index.render(datasetRows, supplierList, statusList, mdFormatList, sdfUS, sdfLocal, roleId, textSearch, 
 		        		supplierSearch, statusSearch, mdFormatSearch, timestampStartSearch, resetTimestampEndSearch));
 	        }
 		});

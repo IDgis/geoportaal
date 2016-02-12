@@ -110,10 +110,61 @@ require([
 					domAttr.set(allRecords[i], 'checked', false);
 				}
 			}
+
+			var recordsChecked = query('.js-record-checkbox:checked');
+			var buttons = query('.js-restriction');
+			
+			array.forEach(buttons, function(item) {
+				domStyle.set(item, 'pointer-events', '');
+				domStyle.set(item, 'filter', '');
+				domStyle.set(item, '-webkit-box-shadow', '');
+				domStyle.set(item, 'box-shadow', '');
+				domStyle.set(item, 'opacity', '');
+			});
+			
+			array.forEach(recordsChecked, function(item) {
+				var role = domAttr.get(item, 'data-role');
+				var status = domAttr.get(item, 'data-status');
+				
+				if(role === '2' && status === '4') {
+					array.forEach(buttons, function(item) {
+						domStyle.set(item, 'pointer-events', 'none');
+						domStyle.set(item, 'filter', 'alpha(opacity=65)');
+						domStyle.set(item, '-webkit-box-shadow', 'none');
+						domStyle.set(item, 'box-shadow', 'none');
+						domStyle.set(item, 'opacity', '.65');
+					});
+				}
+			});
 		}
 		
 		var checkGeneral = on(win.doc, '.js-record-checkbox:change', function(e) {
 			var pageCheck = domAttr.get(dom.byId('js-check-all'), 'data-page');
+			var recordsChecked = query('.js-record-checkbox:checked');
+			var buttons = query('.js-restriction');
+			
+			array.forEach(buttons, function(item) {
+				domStyle.set(item, 'pointer-events', '');
+				domStyle.set(item, 'filter', '');
+				domStyle.set(item, '-webkit-box-shadow', '');
+				domStyle.set(item, 'box-shadow', '');
+				domStyle.set(item, 'opacity', '');
+			});
+			
+			array.forEach(recordsChecked, function(item) {
+				var role = domAttr.get(item, 'data-role');
+				var status = domAttr.get(item, 'data-status');
+				
+				if(role === '2' && status === '4') {
+					array.forEach(buttons, function(item) {
+						domStyle.set(item, 'pointer-events', 'none');
+						domStyle.set(item, 'filter', 'alpha(opacity=65)');
+						domStyle.set(item, '-webkit-box-shadow', 'none');
+						domStyle.set(item, 'box-shadow', 'none');
+						domStyle.set(item, 'opacity', '.65');
+					});
+				}
+			});
 			
 			if(pageCheck === '1') {
 				setCheckGeneral(0, 20);

@@ -4,6 +4,7 @@
 	mdFormatList: java.util.List[com.querydsl.core.Tuple],
 	sdfUS: java.text.SimpleDateFormat,
 	sdfLocal: java.text.SimpleDateFormat,
+	roleId: Integer,
 	textSearch: String,
 	supplierSearch: String,
 	statusSearch: String,
@@ -69,10 +70,14 @@
 					<div class="col-sm-7">
 						<select class="form-control" data-toggle="tooltip" data-placement="top" title="Filter op status" name="status">
 							@for(statusOption <- statusList) {
-								<option value="@statusOption.get(status.name)"
-									@if(statusOption.get(status.name).equals(statusSearch)) {selected}>
-										@statusOption.get(statusLabel.label)
-								</option>
+								@if(roleId.equals(2) && statusOption.get(status.name).equals("deleted")) {
+									
+								} else {
+									<option value="@statusOption.get(status.name)"
+										@if(statusOption.get(status.name).equals(statusSearch)) {selected}>
+											@statusOption.get(statusLabel.label)
+									</option>
+								}
 							}
 						</select>
 					</div>
@@ -151,10 +156,12 @@
 	</div>
 	<div class="admin-buttons col-sm-12">
 		<div class="form-group">
-			<button class="knop js-status" type="button" data-status="concept">Concept</button>
-			<button class="knop js-status" type="button" data-status="approval">Ter goedkeuring</button>
-			<button class="knop js-status" type="button" data-status="published">Publiceren</button>
-			<button class="knop" id="js-delete" type="button" data-toggle="modal" data-target="#delete-modal">Verwijderen</button>
+			<button class="knop js-status js-restriction" type="button" data-status="concept">Concept</button>
+			<button class="knop js-status js-restriction" type="button" data-status="approval">Ter goedkeuring</button>
+			@if(!roleId.equals(2)) {
+				<button class="knop js-status" type="button" data-status="published">Publiceren</button>
+			}
+			<button class="knop js-restriction" id="js-delete" type="button" data-toggle="modal" data-target="#delete-modal">Verwijderen</button>
 			<button class="knop" type="button" id="js-edit-supplier">Leverancier wijzigen</button>
 			<select class="form-control" id="edit-supplier-select">
 				<option>--</option>
@@ -165,7 +172,7 @@
 			
 		</div>
 	</div>
-	@views.html.list(datasetRows, sdfLocal)
+	@views.html.list(datasetRows, sdfLocal, roleId)
 	
 	@helper.form(action = routes.Index.changeStatus(), 'id -> "js-status-form") {
 		<div id="js-status-records"></div>
