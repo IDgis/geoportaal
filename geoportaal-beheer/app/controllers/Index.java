@@ -126,6 +126,10 @@ public class Index extends Controller {
 					datasetQuery.where(metadata.status.notIn(5));
 				}
 				
+				if(roleId.equals(2) && "deleted".equals(statusSearch)) {
+					datasetQuery.where(metadata.status.notIn(5));
+				}
+				
 				if(!"none".equals(mdFormatSearch)) {
 					datasetQuery
 						.where(mdFormat.name.eq(mdFormatSearch));
