@@ -9,7 +9,7 @@ Vagrant.configure(2) do |config|
 	config.vm.provision :shell, path: "scripts/provisioning.sh"
 	
 	# Forward the Postgres port:
-	config.vm.network "forwarded_port", guest: 5432, host: 5433
+	config.vm.network "forwarded_port", guest: 5432, host: 5432
 	
 	# Forward the Docker daemon port:
 	config.vm.network "forwarded_port", guest: 2375, host: 2375
@@ -25,9 +25,6 @@ Vagrant.configure(2) do |config|
 	
 	# Forward the apache port:
 	config.vm.network "forwarded_port", guest: 80, host: 80
-	
-	# Set shared directory:
-	config.vm.synced_folder "/Users/Sandro/git", "/vagrant"
 	
 	# Configure VirtualBox:
   	config.vm.provider "virtualbox" do |vb|
