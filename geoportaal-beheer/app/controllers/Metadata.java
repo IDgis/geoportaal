@@ -119,7 +119,7 @@ public class Metadata extends Controller {
 				.fetchOne();
 			
 			String creatorOtherValue;
-			if(!dc.getCreator().equals("other")) {
+			if(!"other".equals(dc.getCreator())) {
 				creatorOtherValue = null;
 			} else {
 				creatorOtherValue = dc.getCreatorOther();
@@ -209,7 +209,7 @@ public class Metadata extends Controller {
 				}
 			}
 			
-			return redirect(controllers.routes.Index.index());
+			return redirect(controllers.routes.Index.index(null, null, null, null, null, null));
 		});
 	}
 	
@@ -317,7 +317,7 @@ public class Metadata extends Controller {
 				.fetchOne();
 			
 			String creatorOtherValue;
-			if(!dc.getCreator().equals("other")) {
+			if(!"other".equals(dc.getCreator())) {
 				creatorOtherValue = null;
 			} else {
 				creatorOtherValue = dc.getCreatorOther();
@@ -432,7 +432,7 @@ public class Metadata extends Controller {
 				}
 			}
 			
-			return redirect(controllers.routes.Index.index());
+			return redirect(controllers.routes.Index.index(null, null, null, null, null, null));
 		});
 	}
 	
@@ -497,21 +497,21 @@ public class Metadata extends Controller {
 			DublinCore dc = dcForm.bindFromRequest().get();
 			
 			String title = null;
-			if(dc.getTitle().equals("")) {
+			if("".equals(dc.getTitle())) {
 				title = null;
 			} else {
 				title = dc.getTitle();
 			}
 			
 			String description = null;
-			if(dc.getDescription().equals("")) {
+			if("".equals(dc.getDescription())) {
 				description = null;
 			} else {
 				description = dc.getDescription();
 			}
 			
 			String location = null;
-			if(dc.getLocation().equals("")) {
+			if("".equals(dc.getLocation())) {
 				location = null;
 			} else {
 				location = dc.getLocation();
@@ -519,14 +519,14 @@ public class Metadata extends Controller {
 			
 			String creator = null;
 			String creatorOther = null;
-			if(dc.getCreator().equals("none")) {
+			if("none".equals(dc.getCreator())) {
 				creator = null;
 			} else {
 				creator = dc.getCreator();
 			}
 			
-			if(dc.getCreator().equals("other")) {
-				if(dc.getCreatorOther().equals("")) {
+			if("other".equals(dc.getCreator())) {
+				if("".equals(dc.getCreatorOther())) {
 					creatorOther = null;
 				} else {
 					creatorOther = dc.getCreatorOther();
@@ -542,7 +542,7 @@ public class Metadata extends Controller {
 	}
 	
 	public Boolean validateDate(String date) {
-		if(date.equals("")) {
+		if("".equals(date)) {
 			return true;
 		}
 		
@@ -570,6 +570,6 @@ public class Metadata extends Controller {
 	
 	public Result cancel() {
 
-		return redirect(controllers.routes.Index.index());
+		return redirect(controllers.routes.Index.index(null, null, null, null, null, null));
 	}
 }

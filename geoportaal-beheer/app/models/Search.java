@@ -8,13 +8,13 @@ public class Search {
 	private String supplier;
 	private String status;
 	private String format;
-	private Date dateUpdateStart;
-	private Date dateUpdateEnd;
+	private String dateUpdateStart;
+	private String dateUpdateEnd;
 	
 	public Search() {
 	}
 	
-	public Search(String text, String supplier, String status, String format, Date dateUpdateStart, Date dateUpdateEnd) {
+	public Search(String text, String supplier, String status, String format, String dateUpdateStart, String dateUpdateEnd) {
 		this.text = text;
 		this.supplier = supplier;
 		this.status = status;
@@ -55,19 +55,19 @@ public class Search {
 		this.format = format;
 	}
 
-	public Date getDateUpdateStart() {
+	public String getDateUpdateStart() {
 		return dateUpdateStart;
 	}
 
-	public void setDateUpdateStart(Date dateUpdateStart) {
+	public void setDateUpdateStart(String dateUpdateStart) {
 		this.dateUpdateStart = dateUpdateStart;
 	}
 
-	public Date getDateUpdateEnd() {
+	public String getDateUpdateEnd() {
 		return dateUpdateEnd;
 	}
 
-	public void setDateUpdateEnd(Date dateUpdateEnd) {
+	public void setDateUpdateEnd(String dateUpdateEnd) {
 		this.dateUpdateEnd = dateUpdateEnd;
 	}
 	
