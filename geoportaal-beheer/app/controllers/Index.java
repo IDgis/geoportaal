@@ -70,7 +70,7 @@ public class Index extends Controller {
         			.fetchOne();
 	        
 	        if(textSearch == null && supplierSearch == null && statusSearch == null && mdFormatSearch == null && dateStartSearch == null && dateEndSearch == null) {
-	        	SQLQuery<Tuple> datasetQuery = tx.select(metadata.id, metadata.uuid, metadata.title, metadata.lastRevisionDate, statusLabel.label, supplier.name)
+	        	SQLQuery<Tuple> datasetQuery = tx.select(metadata.id, metadata.uuid, metadata.title, metadata.status, metadata.lastRevisionDate, statusLabel.label, supplier.name)
 		    			.from(metadata)
 		    			.join(status).on(metadata.status.eq(status.id))
 		    			.join(supplier).on(metadata.supplier.eq(supplier.id))
@@ -87,7 +87,7 @@ public class Index extends Controller {
 		    	
 		    	return ok(views.html.index.render(datasetRows, supplierList, statusList, mdFormatList, sdfUS, sdfLocal, roleId, "", "none", "none", "none", null, null));
 	        } else {
-	        	SQLQuery<Tuple> datasetQuery = tx.select(metadata.id, metadata.uuid, metadata.title, metadata.lastRevisionDate, statusLabel.label, supplier.name, 
+	        	SQLQuery<Tuple> datasetQuery = tx.select(metadata.id, metadata.uuid, metadata.title, metadata.status, metadata.lastRevisionDate, statusLabel.label, supplier.name, 
 						status.name, mdFormat.name)
 		    			.from(metadata)
 		    			.join(status).on(metadata.status.eq(status.id))
