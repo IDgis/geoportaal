@@ -158,7 +158,9 @@
 		<div class="form-group">
 			<button class="knop js-status" type="button" data-status="concept">Concept</button>
 			<button class="knop js-status" type="button" data-status="approval">Ter goedkeuring</button>
-			<button class="knop js-status" type="button" data-status="published">Publiceren</button>
+			@if(!roleId.equals(2)) {
+				<button class="knop js-status" type="button" data-status="published">Publiceren</button>
+			}
 			<button class="knop" id="js-delete" type="button" data-toggle="modal" data-target="#delete-modal">Verwijderen</button>
 			<button class="knop" type="button" id="js-edit-supplier">Leverancier wijzigen</button>
 			<select class="form-control" id="edit-supplier-select">
