@@ -195,6 +195,11 @@ public class Index extends Controller {
 	    			.from(user)
 	    			.where(user.username.eq(session("username")))
 	    			.fetchOne();
+			
+			Integer userId = tx.select(user.id)
+        			.from(user)
+        			.where(user.username.eq(session("username")))
+        			.fetchOne();
 	    	
 			List<String> finalChangeRecords = new ArrayList<String>();
 			if(roleId.equals(2)) {
@@ -205,7 +210,12 @@ public class Index extends Controller {
 			    			.where(metadata.uuid.eq(record))
 			    			.fetchOne();
 		    			
-		    			if(!statusId.equals(4)) {
+		    			Integer supplierId = tx.select(metadata.supplier)
+			    				.from(metadata)
+			    				.where(metadata.uuid.eq(record))
+			    				.fetchOne();
+		    			
+		    			if(!statusId.equals(4) && userId.equals(supplierId)) {
 		    				finalChangeRecords.add(record);
 		    			}
 		    		}
@@ -217,6 +227,8 @@ public class Index extends Controller {
 		    		}
 	    		}
 	    	}
+			
+			System.out.println(finalChangeRecords.size());
 			
 			if(finalChangeRecords != null && statusName != null) {
 				Integer statusKey = tx.select(status.id)
@@ -287,6 +299,11 @@ public class Index extends Controller {
 	    			.from(user)
 	    			.where(user.username.eq(session("username")))
 	    			.fetchOne();
+			
+			Integer userId = tx.select(user.id)
+        			.from(user)
+        			.where(user.username.eq(session("username")))
+        			.fetchOne();
 	    	
 			List<String> finalDeleteRecords = new ArrayList<String>();
 			if(roleId.equals(2)) {
@@ -297,7 +314,12 @@ public class Index extends Controller {
 			    			.where(metadata.uuid.eq(record))
 			    			.fetchOne();
 		    			
-		    			if(!statusId.equals(4)) {
+		    			Integer supplierId = tx.select(metadata.supplier)
+		    				.from(metadata)
+		    				.where(metadata.uuid.eq(record))
+		    				.fetchOne();
+		    			
+		    			if(!statusId.equals(4) && userId.equals(supplierId)) {
 		    				finalDeleteRecords.add(record);
 		    			}
 		    		}
@@ -309,8 +331,6 @@ public class Index extends Controller {
 		    		}
 	    		}
 	    	}
-			
-			System.out.println(finalDeleteRecords.size());
 			
 			if(finalDeleteRecords != null) {
 				if(permDel != null) {
