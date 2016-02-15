@@ -211,12 +211,12 @@ public class Index extends Controller {
 		    		}
 	    		}
 	    	} else {
-	    		for(String record : changeRecords) {
-	    			finalChangeRecords.add(record);
+	    		if(changeRecords != null) {
+		    		for(String record : changeRecords) {
+		    			finalChangeRecords.add(record);
+		    		}
 	    		}
 	    	}
-			
-			System.out.println(finalChangeRecords.size());
 			
 			if(finalChangeRecords != null && statusName != null) {
 				Integer statusKey = tx.select(status.id)
@@ -283,24 +283,53 @@ public class Index extends Controller {
 		String permDel = d.getPermDel();
 		
 		return q.withTransaction(tx -> {
-			if(deleteRecords != null) {
+			Integer roleId = tx.select(user.roleId)
+	    			.from(user)
+	    			.where(user.username.eq(session("username")))
+	    			.fetchOne();
+	    	
+			List<String> finalDeleteRecords = new ArrayList<String>();
+			if(roleId.equals(2)) {
+	    		if(deleteRecords != null) {
+	    			for(String record : deleteRecords) {
+		    			Integer statusId = tx.select(metadata.status)
+			    			.from(metadata)
+			    			.where(metadata.uuid.eq(record))
+			    			.fetchOne();
+		    			
+		    			if(!statusId.equals(4)) {
+		    				finalDeleteRecords.add(record);
+		    			}
+		    		}
+	    		}
+	    	} else {
+	    		if(deleteRecords != null) {
+		    		for(String record : deleteRecords) {
+		    			finalDeleteRecords.add(record);
+		    		}
+	    		}
+	    	}
+			
+			System.out.println(finalDeleteRecords.size());
+			
+			if(finalDeleteRecords != null) {
 				if(permDel != null) {
 					Long count = tx.delete(metadata)
-						.where(metadata.uuid.in(deleteRecords))
+						.where(metadata.uuid.in(finalDeleteRecords))
 						.execute();
 					
 					Integer finalCount = count.intValue();
-					if(!finalCount.equals(deleteRecords.size())) {
+					if(!finalCount.equals(finalDeleteRecords.size())) {
 						throw new Exception("Deleting records: different amount of affected rows than expected");
 					}
 				} else {
 					Long count = tx.update(metadata)
-						.where(metadata.uuid.in(deleteRecords))
+						.where(metadata.uuid.in(finalDeleteRecords))
 						.set(metadata.status, 5)
 						.execute();
 					
 					Integer finalCount = count.intValue();
-					if(!finalCount.equals(deleteRecords.size())) {
+					if(!finalCount.equals(finalDeleteRecords.size())) {
 						throw new Exception("Change status to deleted: different amount of affected rows than expected");
 					}
 				}
