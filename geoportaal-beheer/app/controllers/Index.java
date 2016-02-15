@@ -27,6 +27,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
@@ -122,49 +124,15 @@ public class Index extends Controller {
 		    			.join(statusLabel).on(status.id.eq(statusLabel.statusId))
 		    			.join(supplier).on(metadata.supplier.eq(supplier.id));
 	        	
-	        	/*
-				SQLQuery<Tuple> fullTextQuery = tx.select(metadata.id,
-					Expressions.stringTemplate("to_tsvector('dutch', {0}) || "
-						+ "to_tsvector('dutch', coalesce((string_agg({1}, ' ')), '') || "
-						+ "to_tsvector('dutch', coalesce((string_agg({2}, ' ')), '') || "
-						+ "to_tsvector('dutch', coalesce((string_agg({3}, ' ')), '') || "
-						+ "to_tsvector('dutch', coalesce((string_agg({4}, ' ')), '') || "
-						+ "to_tsvector('dutch', coalesce((string_agg({5}, ' ')), '') || "
-						+ "to_tsvector('dutch', coalesce((string_agg({6}, ' ')), '') || "
-						+ "to_tsvector('dutch', coalesce((string_agg({7}, ' ')), '') || "
-						+ "to_tsvector('dutch', coalesce((string_agg({8}, ' ')), '') || "
-						+ "to_tsvector('dutch', coalesce((string_agg({9}, ' ')), '') ||"
-						+ "to_tsvector('dutch', coalesce((string_agg({10}, ' ')), '') || "
-						+ "to_tsvector('dutch', coalesce((string_agg({11}, ' ')), '') || "
-						+ "to_tsvector('dutch', coalesce((string_agg({12}, ' ')), '') ||"
-						+ "to_tsvector('dutch', coalesce((string_agg({13}, ' ')), ''))",
-							metadata.title, metadata.description, metadata.location, metadata.fileId, metadata.uuid, mdAttachment.attachmentName, 
-							typeInformationLabel.label, creatorLabel.label, metadata.creatorOther, rightsLabel.label, useLimitationLabel.label,
-							mdFormatLabel.label, metadata.source, subjectLabel.label))
-						.from(metadata)
-						.join(mdAttachment).on(metadata.id.eq(mdAttachment.metadataId))
-						.join(typeInformation).on(metadata.typeInformation.eq(typeInformation.id))
-	    				.join(typeInformationLabel).on(typeInformation.id.eq(typeInformationLabel.id))
-	    				.join(creator).on(metadata.creator.eq(creator.id))
-	    				.join(creatorLabel).on(creator.id.eq(creatorLabel.id))
-						.join(rights).on(metadata.rights.eq(rights.id))
-	    				.join(rightsLabel).on(rights.id.eq(rightsLabel.id))
-	    				.join(useLimitation).on(metadata.useLimitation.eq(useLimitation.id))
-	    				.join(useLimitationLabel).on(useLimitation.id.eq(useLimitationLabel.id))
-	    				.join(mdFormat).on(metadata.mdFormat.eq(mdFormat.id))
-	    				.join(mdFormatLabel).on(mdFormat.id.eq(mdFormatLabel.id))
-	    				.join(mdSubject).on(metadata.id.eq(mdSubject.metadataId))
-	    				.join(subject).on(mdSubject.subject.eq(subject.id))
-	    				.join(subjectLabel).on(subject.id.eq(subjectLabel.id))
-	    				.groupBy(metadata.id, metadata.title, metadata.description, metadata.location, metadata.fileId, metadata.uuid, typeInformationLabel.label,
-	    					creatorLabel.label, metadata.creatorOther, rightsLabel.label, useLimitationLabel.label, mdFormatLabel.label, metadata.source);
-		
-				List<Tuple> searchRecord = fullTextQuery.fetch();
-				for(Tuple searchField : searchRecord) {
-					System.out.println(searchField);
-				}
-				*/
-				
+	        	String[] textSearchTerms = textSearch.split("\\s+");
+	        	if(textSearchTerms.length > 0) {
+	        		String tsQuery = 
+	        			Arrays.asList(textSearchTerms).stream()
+	        				.collect(Collectors.joining(" | "));
+	        		
+	        		datasetQuery.where(metadata.tsv.query(tsQuery));
+	        	}
+	        	
 				if(!"none".equals(supplierSearch)) {
 					datasetQuery
 						.where(supplier.name.eq(supplierSearch));

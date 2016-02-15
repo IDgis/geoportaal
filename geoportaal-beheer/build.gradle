@@ -48,6 +48,9 @@ repositories {
 }
 
 dependencies {
+	queryDSLMetaDataExporter project(':querydsl-tsvector')
+	queryDSLMetaDataExporter "org.postgresql:postgresql:9.4-1202-jdbc42"
+
 	// Play default dependencies (Scala version 2.11):
 	play "com.typesafe.play:play-java-jdbc_2.11:2.4.3"		// javaJdbc
 	play "com.typesafe.play:play-cache_2.11:2.4.3"			// cache
@@ -55,6 +58,7 @@ dependencies {
 	play "com.typesafe.play:play-jdbc-evolutions_2.11:2.4.3"	// evolutions
 	
 	// Geoportaal dependencies:
+	play project(':querydsl-tsvector')
 	play "org.webjars:dojo:1.10.4"
 	play "org.webjars:bootstrap:3.3.5"
 	play "org.webjars:jquery:2.1.4"

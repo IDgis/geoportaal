@@ -8,7 +8,17 @@ import org.gradle.play.plugins.PlayPlugin
 import org.gradle.plugins.ide.eclipse.EclipsePlugin
 
 import groovy.sql.Sql
+
+import com.querydsl.sql.Configuration
+import com.querydsl.sql.SQLTemplates
+import com.querydsl.sql.PostgreSQLTemplates
 import com.querydsl.sql.codegen.MetaDataExporter
+import com.mysema.codegen.model.TypeCategory;
+import com.mysema.codegen.model.Type;
+import com.mysema.codegen.model.ClassType;
+import com.querydsl.codegen.TypeMappings
+import com.querydsl.codegen.JavaTypeMappings
+import com.querydsl.codegen.EntityType
 
 /**
  * This plugins adds QueryDSL source generation capabilities to a project.
@@ -32,14 +42,11 @@ class QueryDSLPlugin implements Plugin<Project> {
 		// compiler and one containing database drivers for the metadata generator.
 		project.configurations {
 			queryDSLApt
-			queryDSLDatabaseDriver
+			queryDSLMetaDataExporter
 		}
 
 		// Add default dependencies to the configurations used by this plugin:
 		project.dependencies {
-			// Database drivers used for QueryDSL metadata generation:
-			queryDSLDatabaseDriver "org.postgresql:postgresql:9.4-1202-jdbc42"
-	
 			// APT processor for QueryDSL:
 			queryDSLApt "com.querydsl:querydsl-apt:4.0.6"
 		}	
@@ -49,8 +56,11 @@ class QueryDSLPlugin implements Plugin<Project> {
 		// may not have been configured otherwise.
 		project.afterEvaluate {
 		
+			def queryDSLMetaDataExporterDependencies = project.configurations.queryDSLMetaDataExporter.buildDependencies
+		
 			// Database creation task:
 			def databaseCreationTask = project.task ('queryDSLCreateDatabase') {
+				dependsOn queryDSLMetaDataExporterDependencies
 				ext.srcDir = project.queryDSL.evolutionsDir
 				ext.srcFiles = project.files { srcDir.listFiles () }
 				ext.buildDbName = "build"
@@ -58,9 +68,9 @@ class QueryDSLPlugin implements Plugin<Project> {
 				inputs.files srcFiles
 				
 				doLast {
-					// Load the database drivers:
+					// Add dependencies to classpath:
 					URLClassLoader loader = GroovyObject.class.classLoader
-					project.configurations.queryDSLDatabaseDriver.each { File file ->
+					project.configurations.queryDSLMetaDataExporter.each { File file ->
 						loader.addURL (file.toURL ())
 					}
 					
@@ -104,6 +114,7 @@ class QueryDSLPlugin implements Plugin<Project> {
 			// Metadata generator task:
 			def generateMetadataTask = project.task ('queryDSLGenerateMetadata') {
 				dependsOn databaseCreationTask
+				dependsOn queryDSLMetaDataExporterDependencies
 				
 				ext.packageName = project.queryDSL.packageName
 				ext.targetDir = new File (project.buildDir.absolutePath + File.separator + "queryDSL" + File.separator + "src") 
@@ -111,18 +122,32 @@ class QueryDSLPlugin implements Plugin<Project> {
 				outputs.dir targetDir
 			
 				doLast {	
-					// Load the database drivers:
+					// Add dependencies to classpath:
 					URLClassLoader loader = GroovyObject.class.classLoader
-					project.configurations.queryDSLDatabaseDriver.each { File file ->
+					project.configurations.queryDSLMetaDataExporter.each { File file ->
 						loader.addURL (file.toURL ())
 					}
 					
 					// Generate QueryDSL metamodel
 					def sql = Sql.newInstance ("jdbc:postgresql://localhost:5432/${databaseCreationTask.buildDbName}", "postgres", "postgres", "org.postgresql.Driver")
 					try {
+						def tsVectorClass = loader.loadClass ('nl.idgis.querydsl.TsVector')
+						def tsVectorPathClass = loader.loadClass ('nl.idgis.querydsl.TsVectorPath')
+					
+						SQLTemplates templates = new PostgreSQLTemplates ()
+						Configuration configuration = new Configuration (templates)
+						configuration.registerType ('tsvector', tsVectorClass)
+						
+						TypeMappings typeMappings = new JavaTypeMappings ()
+						Type type = new ClassType (tsVectorClass);
+						typeMappings.register(type, new ClassType (tsVectorPathClass, type));
+					
 						MetaDataExporter exporter = new MetaDataExporter ()
+						exporter.setImports ((String[])['static nl.idgis.querydsl.factory'])
 						exporter.setPackageName packageName
 						exporter.setTargetFolder targetDir
+						exporter.setConfiguration (configuration)
+						exporter.setTypeMappings (typeMappings)
 						exporter.export sql.getConnection ().getMetaData ()   
 					} finally {
 						sql.close ()
