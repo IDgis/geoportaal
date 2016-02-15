@@ -228,8 +228,6 @@ public class Index extends Controller {
 	    		}
 	    	}
 			
-			System.out.println(finalChangeRecords.size());
-			
 			if(finalChangeRecords != null && statusName != null) {
 				Integer statusKey = tx.select(status.id)
 					.from(status)

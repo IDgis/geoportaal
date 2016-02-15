@@ -16,6 +16,7 @@ import static models.QTypeInformation.typeInformation;
 import static models.QTypeInformationLabel.typeInformationLabel;
 import static models.QUseLimitation.useLimitation;
 import static models.QUseLimitationLabel.useLimitationLabel;
+import static models.QUser.user;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
@@ -286,149 +287,161 @@ public class Metadata extends Controller {
 		Timestamp dateToday = new Timestamp(new Date().getTime());
 		
 		return q.withTransaction(tx -> {
-			Integer metadataId = tx.select(metadata.id)
-					.from(metadata)
-					.where(metadata.uuid.eq(metadataUuid))
+			Integer userId = tx.select(user.id)
+        			.from(user)
+        			.where(user.username.eq(session("username")))
+        			.fetchOne();
+			
+			Integer supplierId = tx.select(metadata.supplier)
+    				.from(metadata)
+    				.where(metadata.uuid.eq(metadataUuid))
+    				.fetchOne();
+			
+			if(userId.equals(supplierId)) {
+				Integer metadataId = tx.select(metadata.id)
+						.from(metadata)
+						.where(metadata.uuid.eq(metadataUuid))
+						.fetchOne();
+				
+				Integer typeInformationKey = tx.select(typeInformation.id)
+					.from(typeInformation)
+					.where(typeInformation.name.eq(dc.getTypeInformation()))
 					.fetchOne();
-			
-			Integer typeInformationKey = tx.select(typeInformation.id)
-				.from(typeInformation)
-				.where(typeInformation.name.eq(dc.getTypeInformation()))
-				.fetchOne();
-			
-			Integer creatorKey = tx.select(creator.id)
-				.from(creator)
-				.where(creator.name.eq(dc.getCreator()))
-				.fetchOne();
-			
-			Integer rightsKey = tx.select(rights.id)
-				.from(rights)
-				.where(rights.name.eq(dc.getRights()))
-				.fetchOne();
-			
-			Integer useLimitationKey = tx.select(useLimitation.id)
-				.from(useLimitation)
-				.where(useLimitation.name.eq(dc.getUseLimitation()))
-				.fetchOne();
-			
-			Integer formatKey = tx.select(mdFormat.id)
-				.from(mdFormat)
-				.where(mdFormat.name.eq(dc.getMdFormat()))
-				.fetchOne();
-			
-			String creatorOtherValue;
-			if(!"other".equals(dc.getCreator())) {
-				creatorOtherValue = null;
-			} else {
-				creatorOtherValue = dc.getCreatorOther();
-			}
-			
-			Timestamp dateSourceCreationValue = nullCheckDate(dc.getDateSourceCreation());
-			Timestamp dateSourcePublicationValue = nullCheckDate(dc.getDateSourcePublication());
-			Timestamp dateSourceRevisionValue = nullCheckDate(dc.getDateSourceRevision());
-			Timestamp dateSourceValidFromValue = nullCheckDate(dc.getDateSourceValidFrom());
-			Timestamp dateSourceValidUntilValue = nullCheckDate(dc.getDateSourceValidUntil());
-			
-			List<String> subjects = dc.getSubject();
-			
-			Long metadataCount = tx.update(metadata)
-				.where(metadata.uuid.eq(metadataUuid))
-				.set(metadata.location, dc.getLocation())
-				.set(metadata.fileId, dc.getFileId())
-				.set(metadata.title, dc.getTitle())
-				.set(metadata.description, dc.getDescription())
-				.set(metadata.typeInformation, typeInformationKey)
-				.set(metadata.creator, creatorKey)
-				.set(metadata.creatorOther, creatorOtherValue)
-				.set(metadata.rights, rightsKey)
-				.set(metadata.useLimitation, useLimitationKey)
-				.set(metadata.mdFormat, formatKey)
-				.set(metadata.source, dc.getSource())
-				.set(metadata.dateSourceCreation, dateSourceCreationValue)
-				.set(metadata.dateSourcePublication, dateSourcePublicationValue)
-				.set(metadata.dateSourceRevision, dateSourceRevisionValue)
-				.set(metadata.dateSourceValidFrom, dateSourceValidFromValue)
-				.set(metadata.dateSourceValidUntil, dateSourceValidUntilValue)
-				.set(metadata.lastRevisionUser, session("username"))
-				.set(metadata.lastRevisionDate, dateToday)
-				.execute();
-			
-			Integer metadataFinalCount = metadataCount.intValue();
-			if(!metadataFinalCount.equals(1)) {
-				throw new Exception("Updating metadata: different amount of affected rows than expected");
-			}
-		
-			List<String> attToDelete = dc.getDeletedAttachment();
-			Integer attachmentsCount = 0;
-			if(attToDelete != null) {
-				for(String attachmentName : attToDelete) {
-					tx.delete(mdAttachment)
-						.where(mdAttachment.metadataId.eq(metadataId)
-							.and(mdAttachment.attachmentName.eq(attachmentName)))
-						.execute();
-					
-					attachmentsCount++;
+				
+				Integer creatorKey = tx.select(creator.id)
+					.from(creator)
+					.where(creator.name.eq(dc.getCreator()))
+					.fetchOne();
+				
+				Integer rightsKey = tx.select(rights.id)
+					.from(rights)
+					.where(rights.name.eq(dc.getRights()))
+					.fetchOne();
+				
+				Integer useLimitationKey = tx.select(useLimitation.id)
+					.from(useLimitation)
+					.where(useLimitation.name.eq(dc.getUseLimitation()))
+					.fetchOne();
+				
+				Integer formatKey = tx.select(mdFormat.id)
+					.from(mdFormat)
+					.where(mdFormat.name.eq(dc.getMdFormat()))
+					.fetchOne();
+				
+				String creatorOtherValue;
+				if(!"other".equals(dc.getCreator())) {
+					creatorOtherValue = null;
+				} else {
+					creatorOtherValue = dc.getCreatorOther();
 				}
 				
-				if(!attachmentsCount.equals(attToDelete.size())) {
-					throw new Exception("Deleting attachments: different amount of affected rows than expected");
-				}
-			}
-			
-			play.mvc.Http.MultipartFormData body = request().body().asMultipartFormData();
-			List<FilePart> allFiles = body.getFiles();
-			
-			for(FilePart fp: allFiles) {
-				if(fp != null) {
-					java.io.File file = fp.getFile();
-					InputStream inputStream = new FileInputStream(file);
-					
-					byte[] buffer = new byte[8192];
-					int bytesRead;
-					ByteArrayOutputStream byteOutput = new ByteArrayOutputStream();
-					while((bytesRead = inputStream.read(buffer)) != -1)
-				    {
-						byteOutput.write(buffer, 0, bytesRead);
-				    }
-					byte[] input = byteOutput.toByteArray();
-					
-					
-					inputStream.close();
-					
-					tx.insert(mdAttachment)
-						.set(mdAttachment.metadataId, metadataId)
-						.set(mdAttachment.attachmentName, fp.getFilename())
-						.set(mdAttachment.attachmentContent, input)
-						.set(mdAttachment.attachmentMimetype, fp.getContentType())
-						.execute();
-				}
-			}
-			
-			if(subjects != null) {
-				List<Integer> existingSubjects = tx.select(mdSubject.id)
-					.from(mdSubject)
-					.where(mdSubject.metadataId.eq(metadataId))
-					.fetch();
+				Timestamp dateSourceCreationValue = nullCheckDate(dc.getDateSourceCreation());
+				Timestamp dateSourcePublicationValue = nullCheckDate(dc.getDateSourcePublication());
+				Timestamp dateSourceRevisionValue = nullCheckDate(dc.getDateSourceRevision());
+				Timestamp dateSourceValidFromValue = nullCheckDate(dc.getDateSourceValidFrom());
+				Timestamp dateSourceValidUntilValue = nullCheckDate(dc.getDateSourceValidUntil());
 				
-				Long subjectsCount = tx.delete(mdSubject)
-					.where(mdSubject.metadataId.eq(metadataId))
+				List<String> subjects = dc.getSubject();
+				
+				Long metadataCount = tx.update(metadata)
+					.where(metadata.uuid.eq(metadataUuid))
+					.set(metadata.location, dc.getLocation())
+					.set(metadata.fileId, dc.getFileId())
+					.set(metadata.title, dc.getTitle())
+					.set(metadata.description, dc.getDescription())
+					.set(metadata.typeInformation, typeInformationKey)
+					.set(metadata.creator, creatorKey)
+					.set(metadata.creatorOther, creatorOtherValue)
+					.set(metadata.rights, rightsKey)
+					.set(metadata.useLimitation, useLimitationKey)
+					.set(metadata.mdFormat, formatKey)
+					.set(metadata.source, dc.getSource())
+					.set(metadata.dateSourceCreation, dateSourceCreationValue)
+					.set(metadata.dateSourcePublication, dateSourcePublicationValue)
+					.set(metadata.dateSourceRevision, dateSourceRevisionValue)
+					.set(metadata.dateSourceValidFrom, dateSourceValidFromValue)
+					.set(metadata.dateSourceValidUntil, dateSourceValidUntilValue)
+					.set(metadata.lastRevisionUser, session("username"))
+					.set(metadata.lastRevisionDate, dateToday)
 					.execute();
 				
-				Integer subjectsFinalCount = subjectsCount.intValue();
-				if(!subjectsFinalCount.equals(existingSubjects.size())) {
-					throw new Exception("Updating subjects: different amount of affected rows than expected");
+				Integer metadataFinalCount = metadataCount.intValue();
+				if(!metadataFinalCount.equals(1)) {
+					throw new Exception("Updating metadata: different amount of affected rows than expected");
 				}
+				
+				List<String> attToDelete = dc.getDeletedAttachment();
+				Integer attachmentsCount = 0;
+				if(attToDelete != null) {
+					for(String attachmentName : attToDelete) {
+						tx.delete(mdAttachment)
+							.where(mdAttachment.metadataId.eq(metadataId)
+								.and(mdAttachment.attachmentName.eq(attachmentName)))
+							.execute();
+						
+						attachmentsCount++;
+					}
 					
-				for(String subjectStr : subjects) {
-					Integer subjectKey = tx.select(subject.id)
-						.from(subject)
-						.where(subject.name.eq(subjectStr))
-						.fetchOne();
+					if(!attachmentsCount.equals(attToDelete.size())) {
+						throw new Exception("Deleting attachments: different amount of affected rows than expected");
+					}
+				}
+				
+				play.mvc.Http.MultipartFormData body = request().body().asMultipartFormData();
+				List<FilePart> allFiles = body.getFiles();
+				
+				for(FilePart fp: allFiles) {
+					if(fp != null) {
+						java.io.File file = fp.getFile();
+						InputStream inputStream = new FileInputStream(file);
+						
+						byte[] buffer = new byte[8192];
+						int bytesRead;
+						ByteArrayOutputStream byteOutput = new ByteArrayOutputStream();
+						while((bytesRead = inputStream.read(buffer)) != -1)
+					    {
+							byteOutput.write(buffer, 0, bytesRead);
+					    }
+						byte[] input = byteOutput.toByteArray();
+						
+						
+						inputStream.close();
+						
+						tx.insert(mdAttachment)
+							.set(mdAttachment.metadataId, metadataId)
+							.set(mdAttachment.attachmentName, fp.getFilename())
+							.set(mdAttachment.attachmentContent, input)
+							.set(mdAttachment.attachmentMimetype, fp.getContentType())
+							.execute();
+					}
+				}
+				
+				if(subjects != null) {
+					List<Integer> existingSubjects = tx.select(mdSubject.id)
+						.from(mdSubject)
+						.where(mdSubject.metadataId.eq(metadataId))
+						.fetch();
 					
-					tx.insert(mdSubject)
-						.set(mdSubject.metadataId, metadataId)
-						.set(mdSubject.subject, subjectKey)
+					Long subjectsCount = tx.delete(mdSubject)
+						.where(mdSubject.metadataId.eq(metadataId))
 						.execute();
+					
+					Integer subjectsFinalCount = subjectsCount.intValue();
+					if(!subjectsFinalCount.equals(existingSubjects.size())) {
+						throw new Exception("Updating subjects: different amount of affected rows than expected");
+					}
+						
+					for(String subjectStr : subjects) {
+						Integer subjectKey = tx.select(subject.id)
+							.from(subject)
+							.where(subject.name.eq(subjectStr))
+							.fetchOne();
+						
+						tx.insert(mdSubject)
+							.set(mdSubject.metadataId, metadataId)
+							.set(mdSubject.subject, subjectKey)
+							.execute();
+					}
 				}
 			}
 			
