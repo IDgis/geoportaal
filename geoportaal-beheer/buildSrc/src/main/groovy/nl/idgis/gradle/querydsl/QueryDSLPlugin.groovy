@@ -38,7 +38,7 @@ class QueryDSLPlugin implements Plugin<Project> {
 		// Add default dependencies to the configurations used by this plugin:
 		project.dependencies {
 			// Database drivers used for QueryDSL metadata generation:
-			queryDSLDatabaseDriver "com.h2database:h2:1.4.190"
+			queryDSLDatabaseDriver "org.postgresql:postgresql:9.4-1202-jdbc42"
 	
 			// APT processor for QueryDSL:
 			queryDSLApt "com.querydsl:querydsl-apt:4.0.6"
@@ -53,10 +53,9 @@ class QueryDSLPlugin implements Plugin<Project> {
 			def databaseCreationTask = project.task ('queryDSLCreateDatabase') {
 				ext.srcDir = project.queryDSL.evolutionsDir
 				ext.srcFiles = project.files { srcDir.listFiles () }
-				ext.destFile = new File (new File (project.buildDir, "queryDSL"), "db")
+				ext.buildDbName = "build"
 				
 				inputs.files srcFiles
-				outputs.file new File (destFile.getAbsolutePath () + ".mv.db")
 				
 				doLast {
 					// Load the database drivers:
@@ -65,9 +64,19 @@ class QueryDSLPlugin implements Plugin<Project> {
 						loader.addURL (file.toURL ())
 					}
 					
-					// Create and populate the database:
-					def sql = Sql.newInstance ("jdbc:h2:/${destFile};DB_CLOSE_DELAY=0;FILE_LOCK=NO;MODE=PostgreSQL", "", "", "org.h2.Driver")
-					sql.execute "drop all objects"
+					def masterSql = Sql.newInstance ("jdbc:postgresql://localhost:5432/postgres", "postgres", "postgres", "org.postgresql.Driver")
+					
+					// Terminate all existing database connections
+					masterSql.execute "select pg_terminate_backend(pid) from pg_stat_activity where pid != pg_backend_pid() and datname = ${buildDbName}"
+					
+					// Drop the database
+					masterSql.execute "drop database if exists " + buildDbName
+					
+					// Create the database
+					masterSql.execute "create database " + buildDbName
+					
+					// Populate the database:
+					def sql = Sql.newInstance ("jdbc:postgresql://localhost:5432/${buildDbName}", "postgres", "postgres", "org.postgresql.Driver")
 					try {
 						srcFiles.collect { it.getAbsolutePath() }.sort ().each { file ->
 							// Extract the "Ups" section from the SQL:
@@ -99,7 +108,6 @@ class QueryDSLPlugin implements Plugin<Project> {
 				ext.packageName = project.queryDSL.packageName
 				ext.targetDir = new File (project.buildDir.absolutePath + File.separator + "queryDSL" + File.separator + "src") 
 				
-				inputs.file new File (databaseCreationTask.destFile.getAbsolutePath () + ".mv.db")
 				outputs.dir targetDir
 			
 				doLast {	
@@ -109,8 +117,8 @@ class QueryDSLPlugin implements Plugin<Project> {
 						loader.addURL (file.toURL ())
 					}
 					
-					// Create and populate the database:
-					def sql = Sql.newInstance ("jdbc:h2:/${databaseCreationTask.destFile};DB_CLOSE_DELAY=0;FILE_LOCK=NO;MODE=PostgreSQL", "", "", "org.h2.Driver")
+					// Generate QueryDSL metamodel
+					def sql = Sql.newInstance ("jdbc:postgresql://localhost:5432/${databaseCreationTask.buildDbName}", "postgres", "postgres", "org.postgresql.Driver")
 					try {
 						MetaDataExporter exporter = new MetaDataExporter ()
 						exporter.setPackageName packageName
