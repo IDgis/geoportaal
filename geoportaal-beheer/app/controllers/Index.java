@@ -12,6 +12,7 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -190,21 +191,62 @@ public class Index extends Controller {
 		String statusName = s.getStatus();
 		
 		return q.withTransaction(tx -> {
-			if(changeRecords != null && statusName != null) {
+			Integer roleId = tx.select(user.roleId)
+	    			.from(user)
+	    			.where(user.username.eq(session("username")))
+	    			.fetchOne();
+			
+			Integer userId = tx.select(user.id)
+        			.from(user)
+        			.where(user.username.eq(session("username")))
+        			.fetchOne();
+	    	
+			List<String> finalChangeRecords = new ArrayList<String>();
+			if(roleId.equals(2)) {
+	    		if(changeRecords != null) {
+	    			for(String record : changeRecords) {
+		    			Integer statusId = tx.select(metadata.status)
+			    			.from(metadata)
+			    			.where(metadata.uuid.eq(record))
+			    			.fetchOne();
+		    			
+		    			Integer supplierId = tx.select(metadata.supplier)
+			    				.from(metadata)
+			    				.where(metadata.uuid.eq(record))
+			    				.fetchOne();
+		    			
+		    			if(!statusId.equals(4) && userId.equals(supplierId)) {
+		    				finalChangeRecords.add(record);
+		    			}
+		    		}
+	    		}
+	    	} else {
+	    		if(changeRecords != null) {
+		    		for(String record : changeRecords) {
+		    			finalChangeRecords.add(record);
+		    		}
+	    		}
+	    	}
+			
+			if(finalChangeRecords != null && statusName != null) {
 				Integer statusKey = tx.select(status.id)
 					.from(status)
 					.where(status.name.eq(statusName))
 					.fetchOne();
-			
+				
 				if(statusKey != null) {
-					Long count = tx.update(metadata)
-			    		.where(metadata.uuid.in(changeRecords))
-			    		.set(metadata.status, statusKey)
-			    		.execute();
-					
-					Integer finalCount = count.intValue();
-					if(!finalCount.equals(changeRecords.size())) {
-						throw new Exception("Changing status: different amount of affected rows than expected");
+					if(roleId.equals(2) && "published".equals(statusName)) {
+						// do nothing
+					} else {
+						Long count = tx.update(metadata)
+				    		.where(metadata.uuid.in(finalChangeRecords))
+				    		.set(metadata.status, statusKey)
+				    		.execute();
+						
+						Integer finalCount = count.intValue();
+						if(!finalCount.equals(finalChangeRecords.size())) {
+							throw new Exception("Changing status: different amount of affected rows than expected");
+						}
 					}
 				}
 			}
@@ -251,24 +293,61 @@ public class Index extends Controller {
 		String permDel = d.getPermDel();
 		
 		return q.withTransaction(tx -> {
-			if(deleteRecords != null) {
+			Integer roleId = tx.select(user.roleId)
+	    			.from(user)
+	    			.where(user.username.eq(session("username")))
+	    			.fetchOne();
+			
+			Integer userId = tx.select(user.id)
+        			.from(user)
+        			.where(user.username.eq(session("username")))
+        			.fetchOne();
+	    	
+			List<String> finalDeleteRecords = new ArrayList<String>();
+			if(roleId.equals(2)) {
+	    		if(deleteRecords != null) {
+	    			for(String record : deleteRecords) {
+		    			Integer statusId = tx.select(metadata.status)
+			    			.from(metadata)
+			    			.where(metadata.uuid.eq(record))
+			    			.fetchOne();
+		    			
+		    			Integer supplierId = tx.select(metadata.supplier)
+		    				.from(metadata)
+		    				.where(metadata.uuid.eq(record))
+		    				.fetchOne();
+		    			
+		    			if(!statusId.equals(4) && userId.equals(supplierId)) {
+		    				finalDeleteRecords.add(record);
+		    			}
+		    		}
+	    		}
+	    	} else {
+	    		if(deleteRecords != null) {
+		    		for(String record : deleteRecords) {
+		    			finalDeleteRecords.add(record);
+		    		}
+	    		}
+	    	}
+			
+			if(finalDeleteRecords != null) {
 				if(permDel != null) {
 					Long count = tx.delete(metadata)
-						.where(metadata.uuid.in(deleteRecords))
+						.where(metadata.uuid.in(finalDeleteRecords))
 						.execute();
 					
 					Integer finalCount = count.intValue();
-					if(!finalCount.equals(deleteRecords.size())) {
+					if(!finalCount.equals(finalDeleteRecords.size())) {
 						throw new Exception("Deleting records: different amount of affected rows than expected");
 					}
 				} else {
 					Long count = tx.update(metadata)
-						.where(metadata.uuid.in(deleteRecords))
+						.where(metadata.uuid.in(finalDeleteRecords))
 						.set(metadata.status, 5)
 						.execute();
 					
 					Integer finalCount = count.intValue();
-					if(!finalCount.equals(deleteRecords.size())) {
+					if(!finalCount.equals(finalDeleteRecords.size())) {
 						throw new Exception("Change status to deleted: different amount of affected rows than expected");
 					}
 				}
