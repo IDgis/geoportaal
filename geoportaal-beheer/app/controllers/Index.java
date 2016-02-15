@@ -190,21 +190,30 @@ public class Index extends Controller {
 		String statusName = s.getStatus();
 		
 		return q.withTransaction(tx -> {
-			if(changeRecords != null && statusName != null) {
+			Integer roleId = tx.select(user.roleId)
+	    			.from(user)
+	    			.where(user.username.eq(session("username")))
+	    			.fetchOne();
+	    	 
+	    	if(changeRecords != null && statusName != null) {
 				Integer statusKey = tx.select(status.id)
 					.from(status)
 					.where(status.name.eq(statusName))
 					.fetchOne();
 			
 				if(statusKey != null) {
-					Long count = tx.update(metadata)
-			    		.where(metadata.uuid.in(changeRecords))
-			    		.set(metadata.status, statusKey)
-			    		.execute();
-					
-					Integer finalCount = count.intValue();
-					if(!finalCount.equals(changeRecords.size())) {
-						throw new Exception("Changing status: different amount of affected rows than expected");
+					if(roleId.equals(2) && "published".equals(statusName)) {
+						// do nothing
+					} else {
+						Long count = tx.update(metadata)
+				    		.where(metadata.uuid.in(changeRecords))
+				    		.set(metadata.status, statusKey)
+				    		.execute();
+						
+						Integer finalCount = count.intValue();
+						if(!finalCount.equals(changeRecords.size())) {
+							throw new Exception("Changing status: different amount of affected rows than expected");
+						}
 					}
 				}
 			}
