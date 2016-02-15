@@ -12,6 +12,7 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -194,24 +195,46 @@ public class Index extends Controller {
 	    			.from(user)
 	    			.where(user.username.eq(session("username")))
 	    			.fetchOne();
-	    	 
-	    	if(changeRecords != null && statusName != null) {
+	    	
+			List<String> finalChangeRecords = new ArrayList<String>();
+			if(roleId.equals(2)) {
+	    		if(changeRecords != null) {
+	    			for(String record : changeRecords) {
+		    			Integer statusId = tx.select(metadata.status)
+			    			.from(metadata)
+			    			.where(metadata.uuid.eq(record))
+			    			.fetchOne();
+		    			
+		    			if(!statusId.equals(4)) {
+		    				finalChangeRecords.add(record);
+		    			}
+		    		}
+	    		}
+	    	} else {
+	    		for(String record : changeRecords) {
+	    			finalChangeRecords.add(record);
+	    		}
+	    	}
+			
+			System.out.println(finalChangeRecords.size());
+			
+			if(finalChangeRecords != null && statusName != null) {
 				Integer statusKey = tx.select(status.id)
 					.from(status)
 					.where(status.name.eq(statusName))
 					.fetchOne();
-			
+				
 				if(statusKey != null) {
 					if(roleId.equals(2) && "published".equals(statusName)) {
 						// do nothing
 					} else {
 						Long count = tx.update(metadata)
-				    		.where(metadata.uuid.in(changeRecords))
+				    		.where(metadata.uuid.in(finalChangeRecords))
 				    		.set(metadata.status, statusKey)
 				    		.execute();
 						
 						Integer finalCount = count.intValue();
-						if(!finalCount.equals(changeRecords.size())) {
+						if(!finalCount.equals(finalChangeRecords.size())) {
 							throw new Exception("Changing status: different amount of affected rows than expected");
 						}
 					}
