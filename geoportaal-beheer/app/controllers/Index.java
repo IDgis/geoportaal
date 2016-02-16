@@ -118,6 +118,8 @@ public class Index extends Controller {
 	        				.collect(Collectors.joining(" | "));
 	        		
 	        		datasetQuery.where(metadata.tsv.query(tsQuery));
+	        		
+	        		// TODO: ranking?
 	        	}
 	        	
 				if(!"none".equals(supplierSearch)) {
