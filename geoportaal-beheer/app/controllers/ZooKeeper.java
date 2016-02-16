@@ -110,10 +110,10 @@ public class ZooKeeper {
 				ProxyMappingType.HTTP
 			));
 		
-		// The admin path: force HTTPS and exclude from statistics.
+		// The index path: force HTTPS and exclude from statistics.
 		serviceRegistration.registerProxyPath (new ProxyPath (
 				domain, 
-				mkPath (path, "/admin"), 
+				mkPath (path, ""), 
 				true, 
 				true, 
 				null, 
