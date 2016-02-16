@@ -8,7 +8,17 @@ import org.gradle.play.plugins.PlayPlugin
 import org.gradle.plugins.ide.eclipse.EclipsePlugin
 
 import groovy.sql.Sql
+
+import com.querydsl.sql.Configuration
+import com.querydsl.sql.SQLTemplates
+import com.querydsl.sql.PostgreSQLTemplates
 import com.querydsl.sql.codegen.MetaDataExporter
+import com.mysema.codegen.model.TypeCategory;
+import com.mysema.codegen.model.Type;
+import com.mysema.codegen.model.ClassType;
+import com.querydsl.codegen.TypeMappings
+import com.querydsl.codegen.JavaTypeMappings
+import com.querydsl.codegen.EntityType
 
 /**
  * This plugins adds QueryDSL source generation capabilities to a project.
@@ -32,14 +42,11 @@ class QueryDSLPlugin implements Plugin<Project> {
 		// compiler and one containing database drivers for the metadata generator.
 		project.configurations {
 			queryDSLApt
-			queryDSLDatabaseDriver
+			queryDSLMetaDataExporter
 		}
 
 		// Add default dependencies to the configurations used by this plugin:
 		project.dependencies {
-			// Database drivers used for QueryDSL metadata generation:
-			queryDSLDatabaseDriver "com.h2database:h2:1.4.190"
-	
 			// APT processor for QueryDSL:
 			queryDSLApt "com.querydsl:querydsl-apt:4.0.6"
 		}	
@@ -49,25 +56,37 @@ class QueryDSLPlugin implements Plugin<Project> {
 		// may not have been configured otherwise.
 		project.afterEvaluate {
 		
+			def queryDSLMetaDataExporterDependencies = project.configurations.queryDSLMetaDataExporter.buildDependencies
+		
 			// Database creation task:
 			def databaseCreationTask = project.task ('queryDSLCreateDatabase') {
+				dependsOn queryDSLMetaDataExporterDependencies
 				ext.srcDir = project.queryDSL.evolutionsDir
 				ext.srcFiles = project.files { srcDir.listFiles () }
-				ext.destFile = new File (new File (project.buildDir, "queryDSL"), "db")
+				ext.buildDbName = "build"
 				
 				inputs.files srcFiles
-				outputs.file new File (destFile.getAbsolutePath () + ".mv.db")
 				
 				doLast {
-					// Load the database drivers:
+					// Add dependencies to classpath:
 					URLClassLoader loader = GroovyObject.class.classLoader
-					project.configurations.queryDSLDatabaseDriver.each { File file ->
+					project.configurations.queryDSLMetaDataExporter.each { File file ->
 						loader.addURL (file.toURL ())
 					}
 					
-					// Create and populate the database:
-					def sql = Sql.newInstance ("jdbc:h2:/${destFile};DB_CLOSE_DELAY=0;FILE_LOCK=NO;MODE=PostgreSQL", "", "", "org.h2.Driver")
-					sql.execute "drop all objects"
+					def masterSql = Sql.newInstance ("jdbc:postgresql://localhost:5432/postgres", "postgres", "postgres", "org.postgresql.Driver")
+					
+					// Terminate all existing database connections
+					masterSql.execute "select pg_terminate_backend(pid) from pg_stat_activity where pid != pg_backend_pid() and datname = ${buildDbName}"
+					
+					// Drop the database
+					masterSql.execute "drop database if exists " + buildDbName
+					
+					// Create the database
+					masterSql.execute "create database " + buildDbName
+					
+					// Populate the database:
+					def sql = Sql.newInstance ("jdbc:postgresql://localhost:5432/${buildDbName}", "postgres", "postgres", "org.postgresql.Driver")
 					try {
 						srcFiles.collect { it.getAbsolutePath() }.sort ().each { file ->
 							// Extract the "Ups" section from the SQL:
@@ -80,6 +99,8 @@ class QueryDSLPlugin implements Plugin<Project> {
 								} else if (line.startsWith ("# --- !Downs")) {
 									inUps = false
 								} else if (inUps) {
+									line = line.replace(';;', ';')
+								
 									builder.append (line + "\n")
 								}
 							}
@@ -95,26 +116,41 @@ class QueryDSLPlugin implements Plugin<Project> {
 			// Metadata generator task:
 			def generateMetadataTask = project.task ('queryDSLGenerateMetadata') {
 				dependsOn databaseCreationTask
+				dependsOn queryDSLMetaDataExporterDependencies
 				
 				ext.packageName = project.queryDSL.packageName
 				ext.targetDir = new File (project.buildDir.absolutePath + File.separator + "queryDSL" + File.separator + "src") 
 				
-				inputs.file new File (databaseCreationTask.destFile.getAbsolutePath () + ".mv.db")
 				outputs.dir targetDir
 			
 				doLast {	
-					// Load the database drivers:
+					// Add dependencies to classpath:
 					URLClassLoader loader = GroovyObject.class.classLoader
-					project.configurations.queryDSLDatabaseDriver.each { File file ->
+					project.configurations.queryDSLMetaDataExporter.each { File file ->
 						loader.addURL (file.toURL ())
 					}
 					
-					// Create and populate the database:
-					def sql = Sql.newInstance ("jdbc:h2:/${databaseCreationTask.destFile};DB_CLOSE_DELAY=0;FILE_LOCK=NO;MODE=PostgreSQL", "", "", "org.h2.Driver")
+					// Generate QueryDSL metamodel
+					def sql = Sql.newInstance ("jdbc:postgresql://localhost:5432/${databaseCreationTask.buildDbName}", "postgres", "postgres", "org.postgresql.Driver")
 					try {
+						def tsVectorClass = loader.loadClass ('nl.idgis.querydsl.TsVector')
+						def tsVectorPathClass = loader.loadClass ('nl.idgis.querydsl.TsVectorPath')
+					
+						SQLTemplates templates = new PostgreSQLTemplates ()
+						Configuration configuration = new Configuration (templates)
+						configuration.registerType ('tsvector', tsVectorClass)
+						
+						TypeMappings typeMappings = new JavaTypeMappings ()
+						Type type = new ClassType (tsVectorClass);
+						typeMappings.register(type, new ClassType (tsVectorPathClass, type));
+					
 						MetaDataExporter exporter = new MetaDataExporter ()
+						exporter.setImports ((String[])['static nl.idgis.querydsl.factory'])
 						exporter.setPackageName packageName
 						exporter.setTargetFolder targetDir
+						exporter.setConfiguration (configuration)
+						exporter.setTypeMappings (typeMappings)
+						exporter.setTableTypesToExport 'TABLE,VIEW,MATERIALIZED VIEW'
 						exporter.export sql.getConnection ().getMetaData ()   
 					} finally {
 						sql.close ()

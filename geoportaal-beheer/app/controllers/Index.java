@@ -1,11 +1,24 @@
 package controllers;
 
+import static models.QCreator.creator;
+import static models.QCreatorLabel.creatorLabel;
+import static models.QMdAttachment.mdAttachment;
 import static models.QMdFormat.mdFormat;
 import static models.QMdFormatLabel.mdFormatLabel;
+import static models.QMdSubject.mdSubject;
 import static models.QMetadata.metadata;
+import static models.QMetadataSearch.metadataSearch;
+import static models.QRights.rights;
+import static models.QRightsLabel.rightsLabel;
 import static models.QStatus.status;
 import static models.QStatusLabel.statusLabel;
+import static models.QSubject.subject;
+import static models.QSubjectLabel.subjectLabel;
 import static models.QSupplier.supplier;
+import static models.QTypeInformation.typeInformation;
+import static models.QTypeInformationLabel.typeInformationLabel;
+import static models.QUseLimitation.useLimitation;
+import static models.QUseLimitationLabel.useLimitationLabel;
 import static models.QUser.user;
 
 import java.sql.SQLException;
@@ -15,10 +28,13 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
 import com.querydsl.core.Tuple;
+import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.sql.SQLQuery;
 
 import actions.DefaultAuthenticator;
@@ -95,13 +111,23 @@ public class Index extends Controller {
 		    			.join(supplier).on(metadata.supplier.eq(supplier.id))
 		    			.join(statusLabel).on(status.id.eq(statusLabel.statusId))
 		    			.join(mdFormat).on(metadata.mdFormat.eq(mdFormat.id));
-				
-				if(!"".equals(textSearch)) {
-					datasetQuery
-						.where(metadata.title.containsIgnoreCase(textSearch)
-								.or(metadata.description.containsIgnoreCase(textSearch)));
-				}
-				
+	        	
+	        	String[] textSearchTerms = textSearch.split("\\s+");
+	        	if(textSearchTerms.length > 0) {
+	        		String tsQuery = 
+	        			Arrays.asList(textSearchTerms).stream()
+	        				.collect(Collectors.joining(" | "));
+	        		
+	        		datasetQuery.where(
+	        			tx.selectOne()
+	        				.from(metadataSearch)
+	        				.where(metadataSearch.metadataId.eq(metadata.id))
+	        				.where(metadataSearch.tsv.query(tsQuery))
+	        				.exists());
+	        		
+	        		// TODO: ranking?
+	        	}
+	        	
 				if(!"none".equals(supplierSearch)) {
 					datasetQuery
 						.where(supplier.name.eq(supplierSearch));
@@ -352,6 +378,8 @@ public class Index extends Controller {
 					}
 				}
 			}
+			
+			tx.refreshMaterializedViewConcurrently(metadataSearch);
 			
 			return redirect(controllers.routes.Index.index(null, null, null, null, null, null));
 		});

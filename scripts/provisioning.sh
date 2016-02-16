@@ -22,14 +22,14 @@ apt-get -qy install \
 apt-get -qy upgrade
 
 # Configure the docker daemon:
-  cp /vagrant/geoportaal/scripts/docker-settings /etc/default/docker
+  cp /vagrant/scripts/docker-settings /etc/default/docker
   mkdir -p /etc/systemd/system/docker.service.d
-  cp /vagrant/geoportaal/scripts/docker.conf /etc/systemd/system/docker.service.d/
+  cp /vagrant/scripts/docker.conf /etc/systemd/system/docker.service.d/
 
   systemctl daemon-reload
   service docker restart
 
-  cp /vagrant/geoportaal/scripts/docker-env.sh /etc/profile.d/
+  cp /vagrant/scripts/docker-env.sh /etc/profile.d/
 
 # Install docker compose:
   curl -L https://github.com/docker/compose/releases/download/1.5.2/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
@@ -96,7 +96,7 @@ if [ $(sudo -u postgres psql --list -qA | grep geoportaal-beheer | wc -l) -eq 0 
 fi
 
 # Install a FTP server and configure it:
-sudo cp /vagrant/geoportaal/scripts/vsftpd.conf /etc/vsftpd.conf
+sudo cp /vagrant/scripts/vsftpd.conf /etc/vsftpd.conf
 mkdir /etc/vsftpd
 cd /etc/vsftpd
 echo user >> vusers.txt
