@@ -7,6 +7,7 @@ import static models.QMdFormat.mdFormat;
 import static models.QMdFormatLabel.mdFormatLabel;
 import static models.QMdSubject.mdSubject;
 import static models.QMetadata.metadata;
+import static models.QMetadataSearch.metadataSearch;
 import static models.QRights.rights;
 import static models.QRightsLabel.rightsLabel;
 import static models.QStatus.status;
@@ -117,7 +118,12 @@ public class Index extends Controller {
 	        			Arrays.asList(textSearchTerms).stream()
 	        				.collect(Collectors.joining(" | "));
 	        		
-	        		datasetQuery.where(metadata.tsv.query(tsQuery));
+	        		datasetQuery.where(
+	        			tx.selectOne()
+	        				.from(metadataSearch)
+	        				.where(metadataSearch.metadataId.eq(metadata.id))
+	        				.where(metadataSearch.tsv.query(tsQuery))
+	        				.exists());
 	        		
 	        		// TODO: ranking?
 	        	}
@@ -372,6 +378,8 @@ public class Index extends Controller {
 					}
 				}
 			}
+			
+			tx.refreshMaterializedViewConcurrently(metadataSearch);
 			
 			return redirect(controllers.routes.Index.index(null, null, null, null, null, null));
 		});

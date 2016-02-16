@@ -116,6 +116,22 @@ public class QueryDSL {
 		public final SQLUpdateClause update(RelationalPath<?> path) {
 			return factory.update(path);
 		}
+		
+		public <T> void refreshMaterializedView(RelationalPath<T> path) throws SQLException {
+			try(Statement stmt = c.createStatement()) {
+				 stmt.execute("refresh materialized view \"" 
+						+ path.getSchemaName() + "\".\"" 
+						+ path.getTableName() + "\"");
+			}
+		}
+		
+		public <T> void refreshMaterializedViewConcurrently(RelationalPath<T> path) throws SQLException {
+			try(Statement stmt = c.createStatement()) {
+				stmt.execute("refresh materialized view concurrently \"" 
+						+ path.getSchemaName() + "\".\"" 
+						+ path.getTableName() + "\"");
+			 }
+		}
 	}
 	
 	@FunctionalInterface

@@ -150,6 +150,7 @@ class QueryDSLPlugin implements Plugin<Project> {
 						exporter.setTargetFolder targetDir
 						exporter.setConfiguration (configuration)
 						exporter.setTypeMappings (typeMappings)
+						exporter.setTableTypesToExport 'TABLE,VIEW,MATERIALIZED VIEW'
 						exporter.export sql.getConnection ().getMetaData ()   
 					} finally {
 						sql.close ()
