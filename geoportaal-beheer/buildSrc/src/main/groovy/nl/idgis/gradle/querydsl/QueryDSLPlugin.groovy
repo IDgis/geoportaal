@@ -99,6 +99,8 @@ class QueryDSLPlugin implements Plugin<Project> {
 								} else if (line.startsWith ("# --- !Downs")) {
 									inUps = false
 								} else if (inUps) {
+									line = line.replace(';;', ';')
+								
 									builder.append (line + "\n")
 								}
 							}
