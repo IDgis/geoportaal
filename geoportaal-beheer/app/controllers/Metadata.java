@@ -27,12 +27,15 @@ import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import javax.inject.Inject;
 
 import com.querydsl.core.Tuple;
+import com.querydsl.sql.SQLQuery;
 
 import models.DublinCore;
 import play.data.DynamicForm;
@@ -85,7 +88,7 @@ public class Metadata extends Controller {
 			
 			return ok(views.html.form.render(create, todayUS, todayLocal, null, null, null, typeInformationList, creatorsList, rightsList, 
 					useLimitationList, mdFormatList, null, null, subjectList, textSearch, supplierSearch, statusSearch, mdFormatSearch,
-					dateStartSearch, dateEndSearch));
+					dateStartSearch, dateEndSearch, false, null));
 		});
 	}
 	
@@ -147,6 +150,30 @@ public class Metadata extends Controller {
 				.from(supplier)
 				.where(supplier.name.eq(session("username")))
 				.fetchOne();
+			
+			Boolean creatorOtherFailed = false;
+			if(creatorKey != null) {
+				if(creatorKey.equals(9) && "".equals(dc.getCreatorOther())) {
+					creatorOtherFailed = true;
+				} else {
+					creatorOtherFailed = false;
+				}
+			}
+			
+			if("".equals(dc.getTitle()) || "".equals(dc.getDescription()) || "".equals(dc.getLocation()) || "".equals(dc.getFileId()) || 
+				creatorKey == null || creatorOtherFailed || useLimitationKey == null || dateSourceCreationValue == null || 
+				dc.getSubject() == null) {
+					
+					DublinCore previousDC = new DublinCore(dc.getLocation(), dc.getFileId(), dc.getTitle(), dc.getDescription(), dc.getTypeInformation(),
+						dc.getCreator(), dc.getCreatorOther(), dc.getRights(), dc.getUseLimitation(), dc.getMdFormat(), dc.getSource(),
+						dc.getDateSourceCreation(), dc.getDateSourcePublication(), dc.getDateSourceRevision(), dc.getDateSourceValidFrom(),
+						dc.getDateSourceValidUntil(), dc.getSubject(), null);
+					
+					Map<String, DublinCore> previousValues = new HashMap<String, DublinCore>();
+					previousValues.put("metadata", previousDC);
+					
+					return validateFormServer(true, null, null, textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch, previousValues);
+			}
 			
 			tx.insert(metadata)
 				.set(metadata.uuid, uuid)
@@ -300,7 +327,7 @@ public class Metadata extends Controller {
 			
 			return ok(views.html.form.render(create, "", "", datasetRow, subjectsDataset, attachmentsDataset, typeInformationList, creatorsList, 
 				rightsList, useLimitationList, mdFormatList, sdfUS, sdfLocal, subjectList, textSearch, supplierSearch, statusSearch, mdFormatSearch,
-				dateStartSearch, dateEndSearch));
+				dateStartSearch, dateEndSearch, false, null));
 		});
 	}
 	
@@ -390,6 +417,50 @@ public class Metadata extends Controller {
 				Timestamp dateSourceValidUntilValue = nullCheckDate(dc.getDateSourceValidUntil());
 				
 				List<String> subjects = dc.getSubject();
+				
+				Boolean creatorOtherFailed = false;
+				if(creatorKey != null) {
+					if(creatorKey.equals(9) && "".equals(dc.getCreatorOther())) {
+						creatorOtherFailed = true;
+					} else {
+						creatorOtherFailed = false;
+					}
+				}
+				
+				if("".equals(dc.getTitle()) || "".equals(dc.getDescription()) || "".equals(dc.getLocation()) || "".equals(dc.getFileId()) || 
+					creatorKey == null || creatorOtherFailed || useLimitationKey == null || dateSourceCreationValue == null || 
+					dc.getSubject() == null) {
+						
+						Tuple datasetRow = tx.select(metadata.id, metadata.uuid, metadata.location, metadata.fileId, metadata.title, 
+								metadata.description, metadata.typeInformation, metadata.creator, metadata.creatorOther, metadata.rights, metadata.useLimitation,
+								metadata.mdFormat, metadata.source, metadata.dateSourceCreation, metadata.dateSourcePublication, metadata.dateSourceRevision,
+								metadata.dateSourceValidFrom, metadata.dateSourceValidUntil, creator.name)
+							.from(metadata)
+							.join(creator).on(metadata.creator.eq(creator.id))
+							.where(metadata.id.eq(metadataId))
+							.fetchOne();
+						
+						SQLQuery<Tuple> attachmentQuery = tx.select(mdAttachment.all())
+							.from(mdAttachment)
+							.where(mdAttachment.metadataId.eq(metadataId));
+						
+						if(dc.getDeletedAttachment() != null) {
+							attachmentQuery
+								.where(mdAttachment.attachmentName.notIn(dc.getDeletedAttachment()));
+						}
+							
+						List<Tuple> attachmentsDataset = attachmentQuery.fetch();
+						
+						DublinCore previousDC = new DublinCore(dc.getLocation(), dc.getFileId(), dc.getTitle(), dc.getDescription(), dc.getTypeInformation(),
+							dc.getCreator(), dc.getCreatorOther(), dc.getRights(), dc.getUseLimitation(), dc.getMdFormat(), dc.getSource(),
+							dc.getDateSourceCreation(), dc.getDateSourcePublication(), dc.getDateSourceRevision(), dc.getDateSourceValidFrom(),
+							dc.getDateSourceValidUntil(), dc.getSubject(), dc.getDeletedAttachment());
+						
+						Map<String, DublinCore> previousValues = new HashMap<String, DublinCore>();
+						previousValues.put("metadata", previousDC);
+						
+						return validateFormServer(false, datasetRow, attachmentsDataset, textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch, previousValues);
+				}
 				
 				Long metadataCount = tx.update(metadata)
 					.where(metadata.uuid.eq(metadataUuid))
@@ -589,7 +660,7 @@ public class Metadata extends Controller {
 			
 			String creator = null;
 			String creatorOther = null;
-			if("none".equals(dc.getCreator().trim())) {
+			if("".equals(dc.getCreator().trim())) {
 				creator = null;
 			} else {
 				creator = dc.getCreator();
@@ -636,6 +707,53 @@ public class Metadata extends Controller {
 		}
 		
 		return timestamp;
+	}
+	
+	public Result validateFormServer(Boolean create, Tuple datasetRow, List<Tuple> attachmentsDataset, String textSearch, String supplierSearch, 
+			String statusSearch, String mdFormatSearch, String dateStartSearch, String dateEndSearch, Map<String, DublinCore> previousValues) {
+		String todayUS = new SimpleDateFormat("yyyy-MM-dd").format(new Date().getTime());
+		String todayLocal = new SimpleDateFormat("dd-MM-yyyy").format(new Date().getTime());
+		
+		SimpleDateFormat sdfUS = new SimpleDateFormat("yyyy-MM-dd");
+		SimpleDateFormat sdfLocal = new SimpleDateFormat("dd-MM-yyyy");
+		
+		Boolean validate = true;
+		
+		return q.withTransaction(tx -> {
+			List<Tuple> typeInformationList = tx.select(typeInformation.id, typeInformation.name, typeInformationLabel.label)
+			.from(typeInformation)
+				.join(typeInformationLabel).on(typeInformation.id.eq(typeInformationLabel.typeInformationId))
+				.fetch();
+			
+			List<Tuple> creatorsList = tx.select(creator.id, creator.name, creatorLabel.label)
+				.from(creator)
+				.join(creatorLabel).on(creator.id.eq(creatorLabel.creatorId))
+				.fetch();
+			
+			List<Tuple> rightsList = tx.select(rights.id, rights.name, rightsLabel.label)
+				.from(rights)
+				.join(rightsLabel).on(rights.id.eq(rightsLabel.rightsId))
+				.fetch();
+			
+			List<Tuple> useLimitationList = tx.select(useLimitation.id, useLimitation.name, useLimitationLabel.label)
+				.from(useLimitation)
+				.join(useLimitationLabel).on(useLimitation.id.eq(useLimitationLabel.useLimitationId))
+				.fetch();
+			
+			List<Tuple> mdFormatList = tx.select(mdFormat.id, mdFormat.name, mdFormatLabel.label)
+				.from(mdFormat)
+				.join(mdFormatLabel).on(mdFormat.id.eq(mdFormatLabel.mdFormatId))
+				.fetch();
+			
+			List<Tuple> subjectList = tx.select(subject.id, subject.name, subjectLabel.label)
+				.from(subject)
+				.join(subjectLabel).on(subject.id.eq(subjectLabel.subjectId))
+				.fetch();
+			
+			return ok(views.html.form.render(create, todayUS, todayLocal, datasetRow, null, attachmentsDataset, typeInformationList, creatorsList, rightsList, 
+					useLimitationList, mdFormatList, sdfUS, sdfLocal, subjectList, textSearch, supplierSearch, statusSearch, mdFormatSearch,
+					dateStartSearch, dateEndSearch, validate, previousValues));
+		});
 	}
 	
 	public Result cancel(String textSearch, String supplierSearch, String statusSearch, String mdFormatSearch, String dateStartSearch, 
