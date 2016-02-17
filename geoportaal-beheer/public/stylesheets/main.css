@@ -78,3 +78,5 @@ input[type="file"].input-attachment {display:inline;}
 
 .add-icon {background-position:-15px 15px;}
 .search-icon {background-position:25px 15px;}
+
+.edit-btn-published {pointer-events:none;filter:alpha(opacity=65);-webkit-box-shadow:none;box-shadow:none;opacity:0.65;}
