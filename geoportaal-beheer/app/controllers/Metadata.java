@@ -221,6 +221,15 @@ public class Metadata extends Controller {
 		Boolean create = false;
 		
 		return q.withTransaction(tx -> {
+			Integer statusId = tx.from(metadata)
+					.select(metadata.status)
+					.where(metadata.uuid.eq(metadataUuid))
+					.fetchOne();
+			
+			if(statusId.equals(4)) {
+				return status(UNAUTHORIZED, "Geen toegang.");
+			}
+			
 			Integer metadataId = tx.from(metadata)
 					.select(metadata.id)
 					.where(metadata.uuid.eq(metadataUuid))
@@ -290,6 +299,15 @@ public class Metadata extends Controller {
 		Timestamp dateToday = new Timestamp(new Date().getTime());
 		
 		return q.withTransaction(tx -> {
+			Integer statusId = tx.from(metadata)
+					.select(metadata.status)
+					.where(metadata.uuid.eq(metadataUuid))
+					.fetchOne();
+			
+			if(statusId.equals(4)) {
+				return status(UNAUTHORIZED, "Geen toegang.");
+			}
+			
 			Integer roleId = tx.select(user.roleId)
 	    			.from(user)
 	    			.where(user.username.eq(session("username")))
