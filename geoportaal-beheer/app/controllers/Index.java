@@ -116,16 +116,19 @@ public class Index extends Controller {
 	        	if(textSearchTerms.length > 0) {
 	        		String tsQuery = 
 	        			Arrays.asList(textSearchTerms).stream()
+	        				.filter(str -> !str.isEmpty())
 	        				.collect(Collectors.joining(" | "));
 	        		
-	        		datasetQuery.where(
-	        			tx.selectOne()
-	        				.from(metadataSearch)
-	        				.where(metadataSearch.metadataId.eq(metadata.id))
-	        				.where(metadataSearch.tsv.query(tsQuery))
-	        				.exists());
-	        		
-	        		// TODO: ranking?
+	        		if(!tsQuery.isEmpty()) {	        		
+		        		datasetQuery.where(
+		        			tx.selectOne()
+		        				.from(metadataSearch)
+		        				.where(metadataSearch.metadataId.eq(metadata.id))
+		        				.where(metadataSearch.tsv.query(tsQuery))
+		        				.exists());
+		        		
+		        		// TODO: ranking?
+	        		}
 	        	}
 	        	
 				if(!"none".equals(supplierSearch)) {
