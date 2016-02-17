@@ -290,6 +290,11 @@ public class Metadata extends Controller {
 		Timestamp dateToday = new Timestamp(new Date().getTime());
 		
 		return q.withTransaction(tx -> {
+			Integer roleId = tx.select(user.roleId)
+	    			.from(user)
+	    			.where(user.username.eq(session("username")))
+	    			.fetchOne();
+			
 			Integer userId = tx.select(user.id)
         			.from(user)
         			.where(user.username.eq(session("username")))
@@ -300,7 +305,9 @@ public class Metadata extends Controller {
     				.where(metadata.uuid.eq(metadataUuid))
     				.fetchOne();
 			
-			if(userId.equals(supplierId)) {
+			if(roleId.equals(2) && !userId.equals(supplierId)) {
+				// do nothing
+			} else {
 				Integer metadataId = tx.select(metadata.id)
 						.from(metadata)
 						.where(metadata.uuid.eq(metadataUuid))
