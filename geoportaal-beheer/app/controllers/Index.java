@@ -59,141 +59,134 @@ public class Index extends Controller {
 			String dateEndSearch) throws SQLException {
 		return q.withTransaction(tx -> {
 			List<Tuple> supplierList = tx.select(supplier.all())
-	            	.from(supplier)
-	            	.orderBy(supplier.name.asc())
-	            	.fetch();
-	    	
-	    	List<Tuple> statusList = tx.select(status.name, statusLabel.label)
-	            	.from(status)
-	            	.join(statusLabel).on(status.id.eq(statusLabel.statusId))
-	            	.fetch();
-	    	
-	    	List<Tuple> mdFormatList = tx.select(mdFormat.name, mdFormatLabel.label)
-	            	.from(mdFormat)
-	            	.join(mdFormatLabel).on(mdFormat.id.eq(mdFormatLabel.mdFormatId))
-	            	.fetch();
-	    	
-	    	SimpleDateFormat sdfUS = new SimpleDateFormat("yyyy-MM-dd");
-	        SimpleDateFormat sdfLocal = new SimpleDateFormat("dd-MM-yyyy");
-	        
-	        Integer roleId = tx.select(user.roleId)
-        			.from(user)
-        			.where(user.username.eq(session("username")))
-        			.fetchOne();
-        	 
-        	Integer supplierId = tx.select(user.id)
-        			.from(user)
-        			.where(user.username.eq(session("username")))
-        			.fetchOne();
-	        
-	        if(textSearch == null && supplierSearch == null && statusSearch == null && mdFormatSearch == null && dateStartSearch == null && dateEndSearch == null) {
-	        	SQLQuery<Tuple> datasetQuery = tx.select(metadata.id, metadata.uuid, metadata.title, metadata.status, metadata.lastRevisionDate, statusLabel.label, supplier.name)
-		    			.from(metadata)
-		    			.join(status).on(metadata.status.eq(status.id))
-		    			.join(supplier).on(metadata.supplier.eq(supplier.id))
-		    			.join(statusLabel).on(status.id.eq(statusLabel.statusId));
-	        	
-	        	if(roleId.equals(2)) {
-	        		datasetQuery.where(metadata.supplier.eq(supplierId));
-	        	}
-	        	
-	        	List<Tuple> datasetRows = datasetQuery.where(metadata.status.notIn(5))
-		    			.limit(200)
-		    			.orderBy(metadata.lastRevisionDate.desc())
-		    			.fetch();
-		    	
-		    	return ok(views.html.index.render(datasetRows, supplierList, statusList, mdFormatList, sdfUS, sdfLocal, roleId, "", "none", "none", "none", null, null));
-	        } else {
-	        	SQLQuery<Tuple> datasetQuery = tx.select(metadata.id, metadata.uuid, metadata.title, metadata.status, metadata.lastRevisionDate, statusLabel.label, supplier.name, 
-						status.name, mdFormat.name)
-		    			.from(metadata)
-		    			.join(status).on(metadata.status.eq(status.id))
-		    			.join(supplier).on(metadata.supplier.eq(supplier.id))
-		    			.join(statusLabel).on(status.id.eq(statusLabel.statusId))
-		    			.join(mdFormat).on(metadata.mdFormat.eq(mdFormat.id));
-	        	
-	        	String[] textSearchTerms = textSearch.split("\\s+");
-	        	if(textSearchTerms.length > 0) {
-	        		String tsQuery = 
-	        			Arrays.asList(textSearchTerms).stream()
-	        				.filter(str -> !str.isEmpty())
-	        				.collect(Collectors.joining(" & "));
-	        		
-	        		if(!tsQuery.isEmpty()) {	        		
-		        		datasetQuery.where(
-		        			tx.selectOne()
-		        				.from(metadataSearch)
-		        				.where(metadataSearch.metadataId.eq(metadata.id))
-		        				.where(metadataSearch.tsv.query(tsQuery))
-		        				.exists());
-		        		
-		        		// TODO: ranking?
-	        		}
-	        	}
-	        	
-				if(!"none".equals(supplierSearch)) {
-					datasetQuery
-						.where(supplier.name.eq(supplierSearch));
+				.from(supplier)
+				.orderBy(supplier.name.asc())
+				.fetch();
+
+			List<Tuple> statusList = tx.select(status.name, statusLabel.label)
+				.from(status)
+				.join(statusLabel).on(status.id.eq(statusLabel.statusId))
+				.fetch();
+
+			List<Tuple> mdFormatList = tx.select(mdFormat.name, mdFormatLabel.label)
+				.from(mdFormat)
+				.join(mdFormatLabel).on(mdFormat.id.eq(mdFormatLabel.mdFormatId))
+				.fetch();
+
+			SimpleDateFormat sdfUS = new SimpleDateFormat("yyyy-MM-dd");
+			SimpleDateFormat sdfLocal = new SimpleDateFormat("dd-MM-yyyy");
+
+			Integer roleId = tx.select(user.roleId)
+				.from(user)
+				.where(user.username.eq(session("username")))
+				.fetchOne();
+
+			Integer supplierId = tx.select(user.id)
+				.from(user)
+				.where(user.username.eq(session("username")))
+				.fetchOne();
+
+			SQLQuery<Tuple> datasetQuery = tx.select(metadata.id, metadata.uuid, metadata.title, metadata.status, metadata.lastRevisionDate, statusLabel.label, supplier.name, 
+				status.name, mdFormat.name)
+				.from(metadata)
+				.join(status).on(metadata.status.eq(status.id))
+				.join(supplier).on(metadata.supplier.eq(supplier.id))
+				.join(statusLabel).on(status.id.eq(statusLabel.statusId))
+				.join(mdFormat).on(metadata.mdFormat.eq(mdFormat.id));
+
+			String[] textSearchTerms = textSearch.split("\\s+");
+			if(textSearchTerms.length > 0) {
+				String tsQuery = 
+					Arrays.asList(textSearchTerms).stream()
+						.filter(str -> !str.isEmpty())
+						.collect(Collectors.joining(" & "));
+
+				if(!tsQuery.isEmpty()) {
+					datasetQuery.where(
+						tx.selectOne()
+							.from(metadataSearch)
+							.where(metadataSearch.metadataId.eq(metadata.id))
+							.where(metadataSearch.tsv.query(tsQuery))
+							.exists());
+
+					// TODO: ranking?
 				}
-				
-				if(!"none".equals(statusSearch)) {
-					datasetQuery
-						.where(status.name.eq(statusSearch));
-				}
-				
-				if("none".equals(statusSearch)) {
-					datasetQuery.where(metadata.status.notIn(5));
-				}
-				
-				if(roleId.equals(2) && "deleted".equals(statusSearch)) {
-					datasetQuery.where(metadata.status.notIn(5));
-				}
-				
-				if(!"none".equals(mdFormatSearch)) {
-					datasetQuery
-						.where(mdFormat.name.eq(mdFormatSearch));
-				}
-				
-				Date finalDateStartSearch = null;
-				if(!"".equals(dateStartSearch)) {
+			}
+
+			if(!"none".equals(supplierSearch)) {
+				datasetQuery
+					.where(supplier.name.eq(supplierSearch));
+			}
+			
+			if(!"none".equals(statusSearch)) {
+				datasetQuery
+					.where(status.name.eq(statusSearch));
+			}
+			
+			if("none".equals(statusSearch)) {
+				datasetQuery.where(metadata.status.notIn(5));
+			}
+			
+			if(roleId.equals(2) && "deleted".equals(statusSearch)) {
+				datasetQuery.where(metadata.status.notIn(5));
+			}
+			
+			if(!"none".equals(mdFormatSearch)) {
+				datasetQuery
+					.where(mdFormat.name.eq(mdFormatSearch));
+			}
+			
+			final Date finalDateStartSearch;
+			if(dateStartSearch != null && !dateStartSearch.trim().isEmpty()) {
+				try {
 					finalDateStartSearch = sdfUS.parse(dateStartSearch);
+				} catch(ParseException e) {
+					throw new IllegalArgumentException("wrong dateStartSearch", e);
 				}
-				
-				Date finalDateEndSearch = null;
-				if(!"".equals(dateEndSearch)) {
+			} else {
+				finalDateStartSearch = null;
+			}
+			
+			final Date finalDateEndSearch;
+			if(dateEndSearch != null && !dateEndSearch.trim().isEmpty()) {
+				try {
 					finalDateEndSearch = sdfUS.parse(dateEndSearch);
+				} catch(ParseException e) {
+					throw new IllegalArgumentException("wrong dateEndSearch", e);
 				}
+			} else {
+				finalDateEndSearch = null;
+			}
+			
+			Timestamp timestampStartSearch = null;
+			Timestamp timestampEndSearch = null;
+			if(finalDateStartSearch != null && finalDateEndSearch != null) {
+				timestampStartSearch = new Timestamp(finalDateStartSearch.getTime());
+				timestampEndSearch = new Timestamp(finalDateEndSearch.getTime() + 86400000);
 				
-				Timestamp timestampStartSearch = null;
-				Timestamp timestampEndSearch = null;
-				if(finalDateStartSearch != null && finalDateEndSearch != null) {
-					timestampStartSearch = new Timestamp(finalDateStartSearch.getTime());
-					timestampEndSearch = new Timestamp(finalDateEndSearch.getTime() + 86400000);
-					
-					datasetQuery
-						.where(metadata.lastRevisionDate.after(timestampStartSearch))
-						.where(metadata.lastRevisionDate.before(timestampEndSearch));
-				}
-				
-				if(roleId.equals(2)) {
-	        		datasetQuery.where(metadata.supplier.eq(supplierId));
-	        	}
-				
-				List<Tuple> datasetRows = datasetQuery
-		    			.limit(200)
-						.orderBy(metadata.lastRevisionDate.desc())
-		    			.fetch();
-				
-				Timestamp resetTimestampEndSearch = null;
-		        if(finalDateEndSearch != null) {
-		        	resetTimestampEndSearch = new Timestamp(finalDateEndSearch.getTime());
-		        }
-		        
-		        return ok(views.html.index.render(datasetRows, supplierList, statusList, mdFormatList, sdfUS, sdfLocal, roleId, textSearch, 
-		        		supplierSearch, statusSearch, mdFormatSearch, timestampStartSearch, resetTimestampEndSearch));
-	        }
+				datasetQuery
+					.where(metadata.lastRevisionDate.after(timestampStartSearch))
+					.where(metadata.lastRevisionDate.before(timestampEndSearch));
+			}
+			
+			if(roleId.equals(2)) {
+				datasetQuery.where(metadata.supplier.eq(supplierId));
+			}
+			
+			List<Tuple> datasetRows = datasetQuery
+				.limit(200)
+				.orderBy(metadata.lastRevisionDate.desc())
+				.fetch();
+			
+			Timestamp resetTimestampEndSearch = null;
+			if(finalDateEndSearch != null) {
+				resetTimestampEndSearch = new Timestamp(finalDateEndSearch.getTime());
+			}
+
+			return ok(views.html.index.render(datasetRows, supplierList, statusList, mdFormatList, sdfUS, sdfLocal, roleId, textSearch, 
+				supplierSearch, statusSearch, mdFormatSearch, timestampStartSearch, resetTimestampEndSearch));	        
 		});
-    }
+	}
 	
 	public Result search() {
 		Form<Search> searchForm = Form.form(Search.class);
