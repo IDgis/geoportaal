@@ -117,7 +117,7 @@ public class Index extends Controller {
 	        		String tsQuery = 
 	        			Arrays.asList(textSearchTerms).stream()
 	        				.filter(str -> !str.isEmpty())
-	        				.collect(Collectors.joining(" | "));
+	        				.collect(Collectors.joining(" & "));
 	        		
 	        		if(!tsQuery.isEmpty()) {	        		
 		        		datasetQuery.where(
