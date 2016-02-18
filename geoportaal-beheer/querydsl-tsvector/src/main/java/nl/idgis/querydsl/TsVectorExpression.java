@@ -14,6 +14,6 @@ public abstract class TsVectorExpression<T extends TsVector> extends SimpleExpre
 	}
 	
 	public BooleanExpression query(String query) {
-		return Expressions.booleanTemplate("{0} @@ to_tsquery({1})", mixin, query);
+		return Expressions.booleanTemplate("{0} @@ to_tsquery('dutch', {1})", mixin, query);
 	}
 }

@@ -31,7 +31,8 @@
 							<a>
 								<span class="action-button glyphicon glyphicon-eye-open" title="Metadata bekijken"></span>
 							</a>
-							<a href="@routes.Metadata.renderEditForm(datasetRow.get(metadata.uuid))">
+							<a href="@routes.Metadata.renderEditForm(datasetRow.get(metadata.uuid))"
+								@if(datasetRow.get(metadata.status).equals(4)) {class="edit-btn-published"}>
 								<span class="action-button glyphicon glyphicon-edit" title="Bestand wijzigen"></span>
 							</a>
 						</td>
@@ -43,14 +44,15 @@
 				} @if(datasetRows.indexOf(datasetRow) > 19 && datasetRows.indexOf(datasetRow) < 40) {	
 					<tr class="js-index-page js-index-page-2">
 						<td>
-							<input type="checkbox" class="js-check js-record-checkbox" data-uuid="@datasetRow.get(metadata.uuid)" 
-								@if(roleId.equals(2) && datasetRow.get(metadata.status).equals(4)) {disabled="disabled"}>
+							<input type="checkbox" class="js-check js-record-checkbox" data-uuid="@datasetRow.get(metadata.uuid)"
+								data-role="@roleId" data-status="@datasetRow.get(metadata.status)">
 						</td>
 						<td>
 							<a>
 								<span class="action-button glyphicon glyphicon-eye-open" title="Metadata bekijken"></span>
 							</a>
-							<a href="@routes.Metadata.renderEditForm(datasetRow.get(metadata.uuid))">
+							<a href="@routes.Metadata.renderEditForm(datasetRow.get(metadata.uuid))"
+								@if(datasetRow.get(metadata.status).equals(4)) {class="edit-btn-published"}>
 								<span class="action-button glyphicon glyphicon-edit" title="Bestand wijzigen"></span>
 							</a>
 						</td>
@@ -62,14 +64,15 @@
 				} @if(datasetRows.indexOf(datasetRow) > 39 && datasetRows.indexOf(datasetRow) < 60) {	
 					<tr class="js-index-page js-index-page-3">
 						<td>
-							<input type="checkbox" class="js-check js-record-checkbox" data-uuid="@datasetRow.get(metadata.uuid)" 
-								@if(roleId.equals(2) && datasetRow.get(metadata.status).equals(4)) {disabled="disabled"}>
+							<input type="checkbox" class="js-check js-record-checkbox" data-uuid="@datasetRow.get(metadata.uuid)"
+								data-role="@roleId" data-status="@datasetRow.get(metadata.status)">
 						</td>
 						<td>
 							<a>
 								<span class="action-button glyphicon glyphicon-eye-open" title="Metadata bekijken"></span>
 							</a>
-							<a href="@routes.Metadata.renderEditForm(datasetRow.get(metadata.uuid))">
+							<a href="@routes.Metadata.renderEditForm(datasetRow.get(metadata.uuid))"
+								@if(datasetRow.get(metadata.status).equals(4)) {class="edit-btn-published"}>
 								<span class="action-button glyphicon glyphicon-edit" title="Bestand wijzigen"></span>
 							</a>
 						</td>
@@ -81,14 +84,15 @@
 				} @if(datasetRows.indexOf(datasetRow) > 59 && datasetRows.indexOf(datasetRow) < 80) {	
 					<tr class="js-index-page js-index-page-4">
 						<td>
-							<input type="checkbox" class="js-check js-record-checkbox" data-uuid="@datasetRow.get(metadata.uuid)" 
-								@if(roleId.equals(2) && datasetRow.get(metadata.status).equals(4)) {disabled="disabled"}>
+							<input type="checkbox" class="js-check js-record-checkbox" data-uuid="@datasetRow.get(metadata.uuid)"
+								data-role="@roleId" data-status="@datasetRow.get(metadata.status)">
 						</td>
 						<td>
 							<a>
 								<span class="action-button glyphicon glyphicon-eye-open" title="Metadata bekijken"></span>
 							</a>
-							<a href="@routes.Metadata.renderEditForm(datasetRow.get(metadata.uuid))">
+							<a href="@routes.Metadata.renderEditForm(datasetRow.get(metadata.uuid))"
+								@if(datasetRow.get(metadata.status).equals(4)) {class="edit-btn-published"}>
 								<span class="action-button glyphicon glyphicon-edit" title="Bestand wijzigen"></span>
 							</a>
 						</td>
@@ -100,14 +104,15 @@
 				} @if(datasetRows.indexOf(datasetRow) > 79 && datasetRows.indexOf(datasetRow) < 100) {	
 					<tr class="js-index-page js-index-page-5">
 						<td>
-							<input type="checkbox" class="js-check js-record-checkbox" data-uuid="@datasetRow.get(metadata.uuid)" 
-								@if(roleId.equals(2) && datasetRow.get(metadata.status).equals(4)) {disabled="disabled"}>
+							<input type="checkbox" class="js-check js-record-checkbox" data-uuid="@datasetRow.get(metadata.uuid)"
+								data-role="@roleId" data-status="@datasetRow.get(metadata.status)">
 						</td>
 						<td>
 							<a>
 								<span class="action-button glyphicon glyphicon-eye-open" title="Metadata bekijken"></span>
 							</a>
-							<a href="@routes.Metadata.renderEditForm(datasetRow.get(metadata.uuid))">
+							<a href="@routes.Metadata.renderEditForm(datasetRow.get(metadata.uuid))"
+								@if(datasetRow.get(metadata.status).equals(4)) {class="edit-btn-published"}>
 								<span class="action-button glyphicon glyphicon-edit" title="Bestand wijzigen"></span>
 							</a>
 						</td>
@@ -119,14 +124,15 @@
 				} @if(datasetRows.indexOf(datasetRow) > 99 && datasetRows.indexOf(datasetRow) < 120) {	
 					<tr class="js-index-page js-index-page-6">
 						<td>
-							<input type="checkbox" class="js-check js-record-checkbox" data-uuid="@datasetRow.get(metadata.uuid)" 
-								@if(roleId.equals(2) && datasetRow.get(metadata.status).equals(4)) {disabled="disabled"}>
+							<input type="checkbox" class="js-check js-record-checkbox" data-uuid="@datasetRow.get(metadata.uuid)"
+								data-role="@roleId" data-status="@datasetRow.get(metadata.status)">
 						</td>
 						<td>
 							<a>
 								<span class="action-button glyphicon glyphicon-eye-open" title="Metadata bekijken"></span>
 							</a>
-							<a href="@routes.Metadata.renderEditForm(datasetRow.get(metadata.uuid))">
+							<a href="@routes.Metadata.renderEditForm(datasetRow.get(metadata.uuid))"
+								@if(datasetRow.get(metadata.status).equals(4)) {class="edit-btn-published"}>
 								<span class="action-button glyphicon glyphicon-edit" title="Bestand wijzigen"></span>
 							</a>
 						</td>
@@ -138,14 +144,15 @@
 				} @if(datasetRows.indexOf(datasetRow) > 119 && datasetRows.indexOf(datasetRow) < 140) {	
 					<tr class="js-index-page js-index-page-7">
 						<td>
-							<input type="checkbox" class="js-check js-record-checkbox" data-uuid="@datasetRow.get(metadata.uuid)" 
-								@if(roleId.equals(2) && datasetRow.get(metadata.status).equals(4)) {disabled="disabled"}>
+							<input type="checkbox" class="js-check js-record-checkbox" data-uuid="@datasetRow.get(metadata.uuid)"
+								data-role="@roleId" data-status="@datasetRow.get(metadata.status)">
 						</td>
 						<td>
 							<a>
 								<span class="action-button glyphicon glyphicon-eye-open" title="Metadata bekijken"></span>
 							</a>
-							<a href="@routes.Metadata.renderEditForm(datasetRow.get(metadata.uuid))">
+							<a href="@routes.Metadata.renderEditForm(datasetRow.get(metadata.uuid))"
+								@if(datasetRow.get(metadata.status).equals(4)) {class="edit-btn-published"}>
 								<span class="action-button glyphicon glyphicon-edit" title="Bestand wijzigen"></span>
 							</a>
 						</td>
@@ -157,14 +164,15 @@
 				} @if(datasetRows.indexOf(datasetRow) > 139 && datasetRows.indexOf(datasetRow) < 160) {	
 					<tr class="js-index-page js-index-page-8">
 						<td>
-							<input type="checkbox" class="js-check js-record-checkbox" data-uuid="@datasetRow.get(metadata.uuid)" 
-								@if(roleId.equals(2) && datasetRow.get(metadata.status).equals(4)) {disabled="disabled"}>
+							<input type="checkbox" class="js-check js-record-checkbox" data-uuid="@datasetRow.get(metadata.uuid)"
+								data-role="@roleId" data-status="@datasetRow.get(metadata.status)">
 						</td>
 						<td>
 							<a>
 								<span class="action-button glyphicon glyphicon-eye-open" title="Metadata bekijken"></span>
 							</a>
-							<a href="@routes.Metadata.renderEditForm(datasetRow.get(metadata.uuid))">
+							<a href="@routes.Metadata.renderEditForm(datasetRow.get(metadata.uuid))"
+								@if(datasetRow.get(metadata.status).equals(4)) {class="edit-btn-published"}>
 								<span class="action-button glyphicon glyphicon-edit" title="Bestand wijzigen"></span>
 							</a>
 						</td>
@@ -176,14 +184,15 @@
 				} @if(datasetRows.indexOf(datasetRow) > 159 && datasetRows.indexOf(datasetRow) < 180) {	
 					<tr class="js-index-page js-index-page-9">
 						<td>
-							<input type="checkbox" class="js-check js-record-checkbox" data-uuid="@datasetRow.get(metadata.uuid)" 
-								@if(roleId.equals(2) && datasetRow.get(metadata.status).equals(4)) {disabled="disabled"}>
+							<input type="checkbox" class="js-check js-record-checkbox" data-uuid="@datasetRow.get(metadata.uuid)"
+								data-role="@roleId" data-status="@datasetRow.get(metadata.status)">
 						</td>
 						<td>
 							<a>
 								<span class="action-button glyphicon glyphicon-eye-open" title="Metadata bekijken"></span>
 							</a>
-							<a href="@routes.Metadata.renderEditForm(datasetRow.get(metadata.uuid))">
+							<a href="@routes.Metadata.renderEditForm(datasetRow.get(metadata.uuid))"
+								@if(datasetRow.get(metadata.status).equals(4)) {class="edit-btn-published"}>
 								<span class="action-button glyphicon glyphicon-edit" title="Bestand wijzigen"></span>
 							</a>
 						</td>
@@ -195,14 +204,15 @@
 				} @if(datasetRows.indexOf(datasetRow) > 179 && datasetRows.indexOf(datasetRow) < 200) {	
 					<tr class="js-index-page js-index-page-10">
 						<td>
-							<input type="checkbox" class="js-check js-record-checkbox" data-uuid="@datasetRow.get(metadata.uuid)" 
-								@if(roleId.equals(2) && datasetRow.get(metadata.status).equals(4)) {disabled="disabled"}>
+							<input type="checkbox" class="js-check js-record-checkbox" data-uuid="@datasetRow.get(metadata.uuid)"
+								data-role="@roleId" data-status="@datasetRow.get(metadata.status)">
 						</td>
 						<td>
 							<a>
 								<span class="action-button glyphicon glyphicon-eye-open" title="Metadata bekijken"></span>
 							</a>
-							<a href="@routes.Metadata.renderEditForm(datasetRow.get(metadata.uuid))">
+							<a href="@routes.Metadata.renderEditForm(datasetRow.get(metadata.uuid))"
+								@if(datasetRow.get(metadata.status).equals(4)) {class="edit-btn-published"}>
 								<span class="action-button glyphicon glyphicon-edit" title="Bestand wijzigen"></span>
 							</a>
 						</td>

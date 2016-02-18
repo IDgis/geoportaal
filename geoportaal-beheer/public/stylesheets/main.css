@@ -60,7 +60,6 @@ input[type="file"].input-attachment {display:inline;}
 .attachment-file {font-size:14px;}
 
 .action-button {font-size:18px;}
-#btn-search-hide {margin-top:10px;margin-bottom:10px;position:relative;left:-8px;}
 #list-pager ul {margin:0;position:relative;left:20px;}
 
 .js-index-page-2 {display:none;}
@@ -79,3 +78,5 @@ input[type="file"].input-attachment {display:inline;}
 
 .add-icon {background-position:-15px 15px;}
 .search-icon {background-position:25px 15px;}
+
+.edit-btn-published {pointer-events:none;filter:alpha(opacity=65);-webkit-box-shadow:none;box-shadow:none;opacity:0.65;}

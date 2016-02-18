@@ -54,21 +54,6 @@ require([
 			});
 		}
 		
-		var searchHide = on(dom.byId('btn-search-hide'), 'click', function(e) {
-			var searchStatus = domAttr.get(this, 'data-search-status');
-			var searchBlock = dom.byId('search-block');
-			
-			if(searchStatus === 'true') {
-				domStyle.set(searchBlock, 'display', 'none');
-				domAttr.set(this, 'data-search-status', 'false');
-				domAttr.set(dom.byId('btn-search-hide-text'), 'innerHTML', 'Zoekblok uitklappen');
-			} else {
-				domStyle.set(searchBlock, 'display', 'block');
-				domAttr.set(this, 'data-search-status', 'true');
-				domAttr.set(dom.byId('btn-search-hide-text'), 'innerHTML', 'Zoekblok dichtklappen');
-			}
-		});
-		
 		var allRecords = query('.js-record-checkbox');
 		var checkAll = on(dom.byId('js-check-all'), 'click', function(e) {
 			var pageCheck = domAttr.get(this, 'data-page');
