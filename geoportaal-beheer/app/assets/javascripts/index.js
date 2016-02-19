@@ -95,7 +95,7 @@ require([
 					domAttr.set(allRecords[i], 'checked', false);
 				}
 			}
-
+			
 			var recordsChecked = query('.js-record-checkbox:checked');
 			var buttons = query('.js-restriction');
 			

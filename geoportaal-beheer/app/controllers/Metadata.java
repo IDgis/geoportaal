@@ -226,74 +226,74 @@ public class Metadata extends Controller {
 		
 		return q.withTransaction(tx -> {
 			Integer statusId = tx.from(metadata)
-					.select(metadata.status)
-					.where(metadata.uuid.eq(metadataUuid))
-					.fetchOne();
+				.select(metadata.status)
+				.where(metadata.uuid.eq(metadataUuid))
+				.fetchOne();
 			
 			if(statusId.equals(4)) {
 				return status(UNAUTHORIZED, "Geen toegang.");
 			}
 			
 			Integer metadataId = tx.from(metadata)
-					.select(metadata.id)
-					.where(metadata.uuid.eq(metadataUuid))
-					.fetchOne();
+				.select(metadata.id)
+				.where(metadata.uuid.eq(metadataUuid))
+				.fetchOne();
 			
 			Tuple datasetRow = tx.select(metadata.id, metadata.uuid, metadata.location, metadata.fileId, metadata.title, 
-								metadata.description, metadata.typeInformation, metadata.creator, metadata.creatorOther, metadata.rights, metadata.useLimitation,
-								metadata.mdFormat, metadata.source, metadata.dateSourceCreation, metadata.dateSourcePublication, metadata.dateSourceRevision,
-								metadata.dateSourceValidFrom, metadata.dateSourceValidUntil, creator.name)
-					.from(metadata)
-					.join(creator).on(metadata.creator.eq(creator.id))
-					.where(metadata.id.eq(metadataId))
-					.fetchOne();
+					metadata.description, metadata.typeInformation, metadata.creator, metadata.creatorOther, metadata.rights, metadata.useLimitation,
+					metadata.mdFormat, metadata.source, metadata.dateSourceCreation, metadata.dateSourcePublication, metadata.dateSourceRevision,
+					metadata.dateSourceValidFrom, metadata.dateSourceValidUntil, creator.name)
+				.from(metadata)
+				.join(creator).on(metadata.creator.eq(creator.id))
+				.where(metadata.id.eq(metadataId))
+				.fetchOne();
 			
 			List<Tuple> subjectsDataset = tx.select(mdSubject.all())
-					.from(mdSubject)
-					.where(mdSubject.metadataId.eq(metadataId))
-					.fetch();
+				.from(mdSubject)
+				.where(mdSubject.metadataId.eq(metadataId))
+				.fetch();
 			
 			List<Tuple> attachmentsDataset = tx.select(mdAttachment.all())
-					.from(mdAttachment)
-					.where(mdAttachment.metadataId.eq(metadataId))
-					.fetch();
+				.from(mdAttachment)
+				.where(mdAttachment.metadataId.eq(metadataId))
+				.fetch();
 			
 			List<Tuple> typeInformationList = tx.select(typeInformation.id, typeInformation.name, typeInformationLabel.label)
-					.from(typeInformation)
-					.join(typeInformationLabel).on(typeInformation.id.eq(typeInformationLabel.typeInformationId))
-					.fetch();
+				.from(typeInformation)
+				.join(typeInformationLabel).on(typeInformation.id.eq(typeInformationLabel.typeInformationId))
+				.fetch();
 				
 			List<Tuple> creatorsList = tx.select(creator.id, creator.name, creatorLabel.label)
-					.from(creator)
-					.join(creatorLabel).on(creator.id.eq(creatorLabel.creatorId))
-					.fetch();
+				.from(creator)
+				.join(creatorLabel).on(creator.id.eq(creatorLabel.creatorId))
+				.fetch();
 			
 			List<Tuple> rightsList = tx.select(rights.id, rights.name, rightsLabel.label)
-					.from(rights)
-					.join(rightsLabel).on(rights.id.eq(rightsLabel.rightsId))
-					.fetch();
+				.from(rights)
+				.join(rightsLabel).on(rights.id.eq(rightsLabel.rightsId))
+				.fetch();
 			
 			List<Tuple> useLimitationList = tx.select(useLimitation.id, useLimitation.name, useLimitationLabel.label)
-					.from(useLimitation)
-					.join(useLimitationLabel).on(useLimitation.id.eq(useLimitationLabel.useLimitationId))
-					.fetch();
+				.from(useLimitation)
+				.join(useLimitationLabel).on(useLimitation.id.eq(useLimitationLabel.useLimitationId))
+				.fetch();
 			
 			List<Tuple> mdFormatList = tx.select(mdFormat.id, mdFormat.name, mdFormatLabel.label)
-					.from(mdFormat)
-					.join(mdFormatLabel).on(mdFormat.id.eq(mdFormatLabel.mdFormatId))
-					.fetch();
+				.from(mdFormat)
+				.join(mdFormatLabel).on(mdFormat.id.eq(mdFormatLabel.mdFormatId))
+				.fetch();
 			
 			List<Tuple> subjectList = tx.select(subject.id, subject.name, subjectLabel.label)
-					.from(subject)
-					.join(subjectLabel).on(subject.id.eq(subjectLabel.subjectId))
-					.fetch();
+				.from(subject)
+				.join(subjectLabel).on(subject.id.eq(subjectLabel.subjectId))
+				.fetch();
 			
 			SimpleDateFormat sdfUS = new SimpleDateFormat("yyyy-MM-dd");
 			SimpleDateFormat sdfLocal = new SimpleDateFormat("dd-MM-yyyy");
 			
 			return ok(views.html.form.render(create, "", "", datasetRow, subjectsDataset, attachmentsDataset, typeInformationList, creatorsList, 
-					rightsList, useLimitationList, mdFormatList, sdfUS, sdfLocal, subjectList, textSearch, supplierSearch, statusSearch, mdFormatSearch,
-					dateStartSearch, dateEndSearch));
+				rightsList, useLimitationList, mdFormatList, sdfUS, sdfLocal, subjectList, textSearch, supplierSearch, statusSearch, mdFormatSearch,
+				dateStartSearch, dateEndSearch));
 		});
 	}
 	
@@ -306,36 +306,36 @@ public class Metadata extends Controller {
 		
 		return q.withTransaction(tx -> {
 			Integer statusId = tx.from(metadata)
-					.select(metadata.status)
-					.where(metadata.uuid.eq(metadataUuid))
-					.fetchOne();
+				.select(metadata.status)
+				.where(metadata.uuid.eq(metadataUuid))
+				.fetchOne();
 			
 			if(statusId.equals(4)) {
 				return status(UNAUTHORIZED, "Geen toegang.");
 			}
 			
 			Integer roleId = tx.select(user.roleId)
-					.from(user)
-					.where(user.username.eq(session("username")))
-					.fetchOne();
+				.from(user)
+				.where(user.username.eq(session("username")))
+				.fetchOne();
 			
 			Integer userId = tx.select(user.id)
-					.from(user)
-					.where(user.username.eq(session("username")))
-					.fetchOne();
+				.from(user)
+				.where(user.username.eq(session("username")))
+				.fetchOne();
 			
 			Integer supplierId = tx.select(metadata.supplier)
-					.from(metadata)
-					.where(metadata.uuid.eq(metadataUuid))
-					.fetchOne();
+				.from(metadata)
+				.where(metadata.uuid.eq(metadataUuid))
+				.fetchOne();
 			
 			if(roleId.equals(2) && !userId.equals(supplierId)) {
 				// do nothing
 			} else {
 				Integer metadataId = tx.select(metadata.id)
-						.from(metadata)
-						.where(metadata.uuid.eq(metadataUuid))
-						.fetchOne();
+					.from(metadata)
+					.where(metadata.uuid.eq(metadataUuid))
+					.fetchOne();
 				
 				Integer typeInformationKey = tx.select(typeInformation.id)
 					.from(typeInformation)

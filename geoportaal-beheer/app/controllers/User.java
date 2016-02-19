@@ -47,7 +47,7 @@ public class User extends Controller {
 		}
 	}
 	
-	public void validate(Form<Login> loginForm) {		
+	public void validate(Form<Login> loginForm) {
 		q.withTransaction(tx -> {
 			String dbPassword = tx
 				.select(user.password)
@@ -81,27 +81,27 @@ public class User extends Controller {
 		public Login(final String returnUrl) {
 			this.returnUrl = returnUrl;
 		}
-
+		
 		public String getUsername() {			
 			return username;
 		}
-
+		
 		public void setUsername(final String username) {
 			this.username = username;
 		}
-
+		
 		public String getPassword() {
 			return password;
 		}
-
+		
 		public void setPassword(final String password) {
 			this.password = password;
 		}
-
+		
 		public String getReturnUrl() {
 			return returnUrl;
 		}
-
+		
 		public void setReturnUrl(final String returnUrl) {
 			this.returnUrl = returnUrl;
 		}
