@@ -31,123 +31,123 @@
 	
 	<div id="search-block">
 		@helper.form(action = routes.Index.search(), 'class -> "form-horizontal", 'id -> "js-form") {
-				<div class="form-group">
-					<label class="col-sm-3 control-label">Tekst</label>
-					<div class="col-sm-7">
-						<input class="form-control js-search-input" type="text" data-toggle="tooltip" data-placement="top" title="Zoek op een woord" name="text"
-						@if(!textSearch.equals("")) {value="@textSearch"}>
-					</div>
-					<div class="col-sm-2">
-						<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" tabindex="-1"
-						data-content="@Messages.get("index.text.tooltip")">
-							<span class="glyphicon glyphicon-info-sign"></span>
-						</button>
-					</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">Tekst</label>
+				<div class="col-sm-7">
+					<input class="form-control js-search-input" type="text" data-toggle="tooltip" data-placement="top" title="Zoek op een woord" name="text"
+					@if(!textSearch.equals("")) {value="@textSearch"}>
 				</div>
-				<div class="form-group">
-					<label class="col-sm-3 control-label">Leverancier</label>
-					<div class="col-sm-7">
-						<select class="form-control" data-toggle="tooltip" data-placement="top" title="Filter op leverancier" name="supplier">
-							<option value="none"></option>
-							@for(supplierOption <- supplierList) {
-								<option value="@supplierOption.get(supplier.name)" 
-									@if(supplierOption.get(supplier.name).equals(supplierSearch)) {selected}>
-										@supplierOption.get(supplier.name)
+				<div class="col-sm-2">
+					<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" tabindex="-1"
+					data-content="@Messages.get("index.text.tooltip")">
+						<span class="glyphicon glyphicon-info-sign"></span>
+					</button>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">Leverancier</label>
+				<div class="col-sm-7">
+					<select class="form-control" data-toggle="tooltip" data-placement="top" title="Filter op leverancier" name="supplier">
+						<option value="none"></option>
+						@for(supplierOption <- supplierList) {
+							<option value="@supplierOption.get(supplier.name)" 
+								@if(supplierOption.get(supplier.name).equals(supplierSearch)) {selected}>
+									@supplierOption.get(supplier.name)
+							</option>
+						}
+					</select>
+				</div>
+				<div class="col-sm-2">
+					<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" tabindex="-1"
+					data-content="@Messages.get("index.supplier.tooltip")">
+						<span class="glyphicon glyphicon-info-sign"></span>
+					</button>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">Status</label>
+				<div class="col-sm-7">
+					<select class="form-control" data-toggle="tooltip" data-placement="top" title="Filter op status" name="status">
+						@for(statusOption <- statusList) {
+							@if(roleId.equals(2) && statusOption.get(status.name).equals("deleted")) {
+								
+							} else {
+								<option value="@statusOption.get(status.name)"
+									@if(statusOption.get(status.name).equals(statusSearch)) {selected}>
+										@statusOption.get(statusLabel.label)
 								</option>
 							}
-						</select>
-					</div>
-					<div class="col-sm-2">
-						<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" tabindex="-1"
-						data-content="@Messages.get("index.supplier.tooltip")">
-							<span class="glyphicon glyphicon-info-sign"></span>
-						</button>
-					</div>
+						}
+					</select>
 				</div>
-				<div class="form-group">
-					<label class="col-sm-3 control-label">Status</label>
-					<div class="col-sm-7">
-						<select class="form-control" data-toggle="tooltip" data-placement="top" title="Filter op status" name="status">
-							@for(statusOption <- statusList) {
-								@if(roleId.equals(2) && statusOption.get(status.name).equals("deleted")) {
-									
-								} else {
-									<option value="@statusOption.get(status.name)"
-										@if(statusOption.get(status.name).equals(statusSearch)) {selected}>
-											@statusOption.get(statusLabel.label)
-									</option>
-								}
-							}
-						</select>
-					</div>
-					<div class="col-sm-2">
-						<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" tabindex="-1"
-						data-content="@Messages.get("index.status.tooltip")">
-							<span class="glyphicon glyphicon-info-sign"></span>
-						</button>
-					</div>
+				<div class="col-sm-2">
+					<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" tabindex="-1"
+					data-content="@Messages.get("index.status.tooltip")">
+						<span class="glyphicon glyphicon-info-sign"></span>
+					</button>
 				</div>
-				<div class="form-group">
-					<label class="col-sm-3 control-label">Formaat</label>
-					<div class="col-sm-7">
-						<select class="form-control" data-toggle="tooltip" data-placement="top" title="Filter op formaat" name="format">
-							@for(mdFormatOption <- mdFormatList) {
-								<option value="@mdFormatOption.get(mdFormat.name)"
-									@if(mdFormatOption.get(mdFormat.name).equals(mdFormatSearch)) {selected}>
-										@mdFormatOption.get(mdFormatLabel.label)
-								</option>
-							}
-						</select>
-					</div>
-					<div class="col-sm-2">
-						<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" tabindex="-1"
-						data-content="@Messages.get("index.format.tooltip")">
-							<span class="glyphicon glyphicon-info-sign"></span>
-						</button>
-					</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">Formaat</label>
+				<div class="col-sm-7">
+					<select class="form-control" data-toggle="tooltip" data-placement="top" title="Filter op formaat" name="format">
+						@for(mdFormatOption <- mdFormatList) {
+							<option value="@mdFormatOption.get(mdFormat.name)"
+								@if(mdFormatOption.get(mdFormat.name).equals(mdFormatSearch)) {selected}>
+									@mdFormatOption.get(mdFormatLabel.label)
+							</option>
+						}
+					</select>
 				</div>
-				<div class="form-group">
-					<label class="col-sm-3 control-label">Update datum tussen</label>
-					<div class="col-sm-4">
-						<input class="form-control js-date" id="js-date-update-start" type="date" data-toggle="tooltip" data-placement="top" 
-						title="Zoek op begindatum" name="dateUpdateStart"
-						@if(tsStartSearch != null) {data-date-value-US="@sdfUS.format(tsStartSearch.getTime())"} 
-						@if(tsStartSearch != null) {data-date-value-local="@sdfLocal.format(tsStartSearch.getTime())"}>
-						<input type="hidden" id="js-hidden-date-update-start">
-					</div>
-					<div class="col-sm-2">
-						<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" tabindex="-1"
-						data-content="@Messages.get("index.date.update.start.tooltip")">
-							<span class="glyphicon glyphicon-info-sign"></span>
-						</button>
-					</div>
+				<div class="col-sm-2">
+					<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" tabindex="-1"
+					data-content="@Messages.get("index.format.tooltip")">
+						<span class="glyphicon glyphicon-info-sign"></span>
+					</button>
 				</div>
-				<div class="form-group">
-					<label class="col-sm-3 control-label">en</label>
-					<div class="col-sm-4">
-						<input class="form-control js-date" id="js-date-update-end" type="date" data-toggle="tooltip" data-placement="top" 
-						title="Zoek op einddatum" name="dateUpdateEnd"
-						@if(tsEndSearch != null) {data-date-value-US="@sdfUS.format(tsEndSearch.getTime())"} 
-						@if(tsEndSearch != null) {data-date-value-local="@sdfLocal.format(tsEndSearch.getTime())"}>
-						<input type="hidden" id="js-hidden-date-update-end">
-					</div>
-					<div class="col-sm-2">
-						<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" tabindex="-1"
-						data-content="@Messages.get("index.date.update.end.tooltip")">
-							<span class="glyphicon glyphicon-info-sign"></span>
-						</button>
-					</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">Update datum tussen</label>
+				<div class="col-sm-4">
+					<input class="form-control js-date" id="js-date-update-start" type="date" data-toggle="tooltip" data-placement="top" 
+					title="Zoek op begindatum" name="dateUpdateStart"
+					@if(tsStartSearch != null) {data-date-value-US="@sdfUS.format(tsStartSearch.getTime())"} 
+					@if(tsStartSearch != null) {data-date-value-local="@sdfLocal.format(tsStartSearch.getTime())"}>
+					<input type="hidden" id="js-hidden-date-update-start">
 				</div>
-				<div class="col-sm-offset-3" id="js-form-validation"></div>
-				<div class="form-group">
-		 			<div class="col-sm-offset-3 col-sm-7">
-		 				<button class="knop" id="search-button" type="button">Zoek</button>
-		 				@if(!textSearch.equals("") || !supplierSearch.equals("none") || !statusSearch.equals("none") || !mdFormatSearch.equals("none") ||
-		 					tsStartSearch != null || tsEndSearch != null) {
-		 					<a class="knop" id="filter-button" href="@routes.Index.index("", "none", "none", "none", "", "")">Filter opheffen</a>
-		 				}
-					</div>
+				<div class="col-sm-2">
+					<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" tabindex="-1"
+					data-content="@Messages.get("index.date.update.start.tooltip")">
+						<span class="glyphicon glyphicon-info-sign"></span>
+					</button>
 				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">en</label>
+				<div class="col-sm-4">
+					<input class="form-control js-date" id="js-date-update-end" type="date" data-toggle="tooltip" data-placement="top" 
+					title="Zoek op einddatum" name="dateUpdateEnd"
+					@if(tsEndSearch != null) {data-date-value-US="@sdfUS.format(tsEndSearch.getTime())"} 
+					@if(tsEndSearch != null) {data-date-value-local="@sdfLocal.format(tsEndSearch.getTime())"}>
+					<input type="hidden" id="js-hidden-date-update-end">
+				</div>
+				<div class="col-sm-2">
+					<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" tabindex="-1"
+					data-content="@Messages.get("index.date.update.end.tooltip")">
+						<span class="glyphicon glyphicon-info-sign"></span>
+					</button>
+				</div>
+			</div>
+			<div class="col-sm-offset-3" id="js-form-validation"></div>
+			<div class="form-group">
+	 			<div class="col-sm-offset-3 col-sm-7">
+	 				<button class="knop" id="search-button" type="button">Zoek</button>
+	 				@if(!textSearch.equals("") || !supplierSearch.equals("none") || !statusSearch.equals("none") || !mdFormatSearch.equals("none") ||
+	 					tsStartSearch != null || tsEndSearch != null) {
+	 					<a class="knop" id="filter-button" href="@routes.Index.index("", "none", "none", "none", "", "")">Filter opheffen</a>
+	 				}
+				</div>
+			</div>
 		}
 	</div>
 	<div class="label-actions-selected-records col-sm-12">
@@ -183,24 +183,24 @@
 		<input type="hidden" name="dateStartSearch" value="">
 		<input type="hidden" name="dateEndSearch" value="">
 		<div class="modal fade" id="status-modal">
-	  		<div class="modal-dialog">
-	    		<div class="modal-content">
-	      			<div class="modal-header">
-	        			<button type="button" class="close" data-dismiss="modal">
-	        				<span>&times;</span>
-	        			</button>
-	        			<h4 class="modal-title">Wijzigen status statische kaarten</h4>
-	      			</div>
-	      			<div class="modal-body">
-	        			<p>Er wordt bij <b><span id="js-status-records-count">0</span></b> records de status gewijzigd. 
-	        				Weet u zeker dat u deze actie wilt uitvoeren?</p>
-	      			</div>
-	      			<div class="modal-footer">
-	        			<button type="button" class="btn btn-default" data-dismiss="modal">Annuleren</button>
-	        			<button type="submit" class="btn btn-primary">Uitvoeren</button>
-	      			</div>
-	    		</div>
-	  		</div>
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal">
+							<span>&times;</span>
+						</button>
+						<h4 class="modal-title">Wijzigen status statische kaarten</h4>
+					</div>
+					<div class="modal-body">
+						<p>Er wordt bij <b><span id="js-status-records-count">0</span></b> records de status gewijzigd. 
+							Weet u zeker dat u deze actie wilt uitvoeren?</p>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Annuleren</button>
+						<button type="submit" class="btn btn-primary">Uitvoeren</button>
+					</div>
+				</div>
+			</div>
 		</div>
 	}
 	
@@ -213,27 +213,27 @@
 		<input type="hidden" name="dateStartSearch" value="">
 		<input type="hidden" name="dateEndSearch" value="">
 		<div class="modal fade" id="delete-modal">
-	  		<div class="modal-dialog">
-	    		<div class="modal-content">
-	      			<div class="modal-header">
-	        			<button type="button" class="close" data-dismiss="modal">
-	        				<span>&times;</span>
-	        			</button>
-	        			<h4 class="modal-title">Verwijderen statische kaarten</h4>
-	      			</div>
-	      			<div class="modal-body">
-	        			<p>Er worden <b><span id="js-delete-records-count">0</span></b> records verwijderd. Weet u zeker dat u deze actie wilt uitvoeren?</p>
-	        			<p id="perm-delete-checkbox">
-	        				<input type="checkbox" name="permDel" value="true">
-	        				<span>Definitief verwijderen</span>
-	        			</p>
-	      			</div>
-	      			<div class="modal-footer">
-	        			<button type="button" class="btn btn-default" data-dismiss="modal">Annuleren</button>
-	        			<button type="submit" class="btn btn-primary">Uitvoeren</button>
-	      			</div>
-	    		</div>
-	  		</div>
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal">
+							<span>&times;</span>
+						</button>
+						<h4 class="modal-title">Verwijderen statische kaarten</h4>
+					</div>
+					<div class="modal-body">
+						<p>Er worden <b><span id="js-delete-records-count">0</span></b> records verwijderd. Weet u zeker dat u deze actie wilt uitvoeren?</p>
+						<p id="perm-delete-checkbox">
+							<input type="checkbox" name="permDel" value="true">
+							<span>Definitief verwijderen</span>
+						</p>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Annuleren</button>
+						<button type="submit" class="btn btn-primary">Uitvoeren</button>
+					</div>
+				</div>
+			</div>
 		</div>
 	}
 	
@@ -251,12 +251,12 @@
 				<div class="modal-content">
 					<div class="modal-header">
 						<button type="button" class="close" data-dismiss="modal">
-	        				<span>&times;</span>
-	        			</button>
-	        			<h4 class="modal-title">Wijzigen leverancier statische kaarten</h4>
-	      			</div>
-	      			<div class="modal-body">
-	        			<p>Er wordt bij <b><span id="js-supplier-records-count">0</span></b> records de leverancier gewijzigd. 
+							<span>&times;</span>
+						</button>
+						<h4 class="modal-title">Wijzigen leverancier statische kaarten</h4>
+					</div>
+					<div class="modal-body">
+						<p>Er wordt bij <b><span id="js-supplier-records-count">0</span></b> records de leverancier gewijzigd. 
 							Weet u zeker dat u deze actie wilt uitvoeren?</p>
 					</div>
 					<div class="modal-footer">
@@ -267,6 +267,5 @@
 			</div>
 		</div>
 	}
-	
 	
 }

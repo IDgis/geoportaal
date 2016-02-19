@@ -12,15 +12,15 @@
 <!DOCTYPE html>
 
 <html lang="en">
-    <head>
-        <title>@title</title>
-        <link rel="stylesheet" media="screen" href="@routes.Assets.versioned("lib/jquery-ui/jquery-ui.css")">
-        <link rel="stylesheet" media="screen" href="@routes.Assets.versioned("lib/bootstrap/css/bootstrap.min.css")">
-        <link rel="stylesheet" media="screen" href="@routes.Assets.versioned("stylesheets/main.css")">
-    </head>
-    <body>
-        <div class="page">
-	        <div class="logo">
+	<head>
+		<title>@title</title>
+		<link rel="stylesheet" media="screen" href="@routes.Assets.versioned("lib/jquery-ui/jquery-ui.css")">
+		<link rel="stylesheet" media="screen" href="@routes.Assets.versioned("lib/bootstrap/css/bootstrap.min.css")">
+		<link rel="stylesheet" media="screen" href="@routes.Assets.versioned("stylesheets/main.css")">
+	</head>
+	<body>
+		<div class="page">
+			<div class="logo">
 				<a>
 					<img src="@routes.Assets.versioned("images/logo_overijssel.png")"></img>
 				</a>
@@ -37,7 +37,7 @@
 								<div class="@if(title == Messages.get("index.header") || title == "Geoportaal: wijzigen metadata") {toptaak-inner-active} else {toptaak-inner}">
 									<div class="tab-element search-icon" style="background-image:url(@routes.Assets.versioned("images/search.png"))">
 										<span class="toptaak-titel">
-											Zoeken en wijzigen									
+											Zoeken en wijzigen
 										</span>
 									</div>
 								</div>
@@ -59,14 +59,14 @@
 					</a>
 				</div>
 			</div>
-	        @content
-        </div>
-        <script src="@routes.Assets.versioned("lib/jquery/jquery.js")" type="text/javascript"></script>
-        <script src="@routes.Assets.versioned("lib/jquery-ui/jquery-ui.js")" type="text/javascript"></script>
-        <script src="@routes.Assets.versioned("lib/modernizr/modernizr.js")" type="text/javascript"></script>
-        <script src="@routes.Assets.versioned("lib/bootstrap/js/bootstrap.js")" type="text/javascript"></script>
-        <script src="@routes.Assets.versioned("lib/dojo/dojo/dojo.js")" type="text/javascript"></script>
-        <script src="@routes.Index.jsRoutes()" type="text/javascript"></script>
-        <script src="@jsMain" type="text/javascript"></script>
-    </body>
+			@content
+		</div>
+		<script src="@routes.Assets.versioned("lib/jquery/jquery.js")" type="text/javascript"></script>
+		<script src="@routes.Assets.versioned("lib/jquery-ui/jquery-ui.js")" type="text/javascript"></script>
+		<script src="@routes.Assets.versioned("lib/modernizr/modernizr.js")" type="text/javascript"></script>
+		<script src="@routes.Assets.versioned("lib/bootstrap/js/bootstrap.js")" type="text/javascript"></script>
+		<script src="@routes.Assets.versioned("lib/dojo/dojo/dojo.js")" type="text/javascript"></script>
+		<script src="@routes.Index.jsRoutes()" type="text/javascript"></script>
+		<script src="@jsMain" type="text/javascript"></script>
+	</body>
 </html>

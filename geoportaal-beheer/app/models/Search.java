@@ -1,7 +1,5 @@
 package models;
 
-import java.util.Date;
-
 public class Search {
 	
 	private String text;

@@ -64,7 +64,7 @@ public class ZooKeeper {
 	 */
 	private void registerService (final String zooKeeperHosts, final Configuration config) throws ServiceRegistrationException {
 		Logger.info ("Registering with ZooKeeper cluster at " + zooKeeperHosts);
-
+		
 		// Start the service registration daemon:
 		serviceRegistration = new ServiceRegistration (zooKeeperHosts, config.getString ("zooKeeper.namespace", null));
 		
@@ -93,44 +93,44 @@ public class ZooKeeper {
 		}
 		
 		serviceRegistration.registerProxyDomain (new ProxyDomain (
-				domain, 
-				config.getBoolean ("service.domain.supportHttps", false).booleanValue (),
-				aliases, 
-				additionalConfig
-			));
-
+			domain, 
+			config.getBoolean ("service.domain.supportHttps", false).booleanValue (),
+			aliases, 
+			additionalConfig
+		));
+		
 		// Generate a proxy mapping for this Play! application:
 		final String path = config.getString ("application.context", "/");
 		final int port = config.getInt ("http.port", 9000);
 		final String destinationIP = config.getString ("service.mapping.destinationIP", ServiceRegistration.getPublicIp ());
 		serviceRegistration.registerProxyMapping (new ProxyMapping (
-				domain, 
-				path, 
-				"http://" + destinationIP + ":" + port + path, 
-				ProxyMappingType.HTTP
-			));
+			domain, 
+			path, 
+			"http://" + destinationIP + ":" + port + path, 
+			ProxyMappingType.HTTP
+		));
 		
 		// The index path: force HTTPS and exclude from statistics.
 		serviceRegistration.registerProxyPath (new ProxyPath (
-				domain, 
-				mkPath (path, ""), 
-				true, 
-				true, 
-				null, 
-				null, 
-				null
-			));
+			domain, 
+			mkPath (path, ""), 
+			true, 
+			true, 
+			null, 
+			null, 
+			null
+		));
 		
 		// The assets path: exclude from statistics.
 		serviceRegistration.registerProxyPath (new ProxyPath (
-				domain,
-				mkPath (path, "/assets"),
-				false,
-				true,
-				null,
-				null,
-				null
-			));
+			domain,
+			mkPath (path, "/assets"),
+			false,
+			true,
+			null,
+			null,
+			null
+		));
 		
 		// Register secured paths:
 		final Configuration securedPathsConfiguration = config.getConfig ("service.securedPaths");
@@ -152,14 +152,14 @@ public class ZooKeeper {
 			}
 			
 			serviceRegistration.registerProxyPath (new ProxyPath (
-					domain, 
-					securedPath.startsWith ("/") ? securedPath : "/" + securedPath, 
-					false, 
-					false, 
-					null, 
-					ips, 
-					null
-				));
+				domain, 
+				securedPath.startsWith ("/") ? securedPath : "/" + securedPath, 
+				false, 
+				false, 
+				null, 
+				ips, 
+				null
+			));
 		}
 		
 	}
