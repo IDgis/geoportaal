@@ -42,7 +42,7 @@ public class User extends Controller {
 			if(loginForm.get().getReturnUrl() != null) {
 				return redirect(loginForm.get().getReturnUrl ());
 			} else {
-				return redirect(controllers.routes.Index.index(null, null, null, null, null, null));
+				return redirect(controllers.routes.Index.index("", "none", "none", "none", "", ""));
 			}
 		}
 	}
@@ -64,7 +64,7 @@ public class User extends Controller {
 	
 	public Result logout () {
 		session().clear();
-		return redirect(controllers.routes.Index.index(null, null, null, null, null, null));
+		return redirect(controllers.routes.Index.index("", "none", "none", "none", "", ""));
 	}
 	
 	public static class Login {

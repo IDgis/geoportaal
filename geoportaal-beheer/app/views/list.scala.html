@@ -1,6 +1,12 @@
 @(datasetRows: java.util.List[com.querydsl.core.Tuple],
 	sdfLocal: java.text.SimpleDateFormat,
-	roleId: Integer
+	roleId: Integer,
+	textSearch: String,
+	supplierSearch: String,
+	statusSearch: String,
+	mdFormatSearch: String,
+	dateStartSearch: String,
+	dateEndSearch: String
 	)
 
 @import models.QMetadata.metadata
@@ -31,7 +37,7 @@
 							<a>
 								<span class="action-button glyphicon glyphicon-eye-open" title="Metadata bekijken"></span>
 							</a>
-							<a href="@routes.Metadata.renderEditForm(datasetRow.get(metadata.uuid))"
+							<a href="@routes.Metadata.renderEditForm(datasetRow.get(metadata.uuid), textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch)"
 								@if(datasetRow.get(metadata.status).equals(4)) {class="edit-btn-published"}>
 								<span class="action-button glyphicon glyphicon-edit" title="Bestand wijzigen"></span>
 							</a>
@@ -51,7 +57,7 @@
 							<a>
 								<span class="action-button glyphicon glyphicon-eye-open" title="Metadata bekijken"></span>
 							</a>
-							<a href="@routes.Metadata.renderEditForm(datasetRow.get(metadata.uuid))"
+							<a href="@routes.Metadata.renderEditForm(datasetRow.get(metadata.uuid), textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch)"
 								@if(datasetRow.get(metadata.status).equals(4)) {class="edit-btn-published"}>
 								<span class="action-button glyphicon glyphicon-edit" title="Bestand wijzigen"></span>
 							</a>
@@ -71,7 +77,7 @@
 							<a>
 								<span class="action-button glyphicon glyphicon-eye-open" title="Metadata bekijken"></span>
 							</a>
-							<a href="@routes.Metadata.renderEditForm(datasetRow.get(metadata.uuid))"
+							<a href="@routes.Metadata.renderEditForm(datasetRow.get(metadata.uuid), textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch)"
 								@if(datasetRow.get(metadata.status).equals(4)) {class="edit-btn-published"}>
 								<span class="action-button glyphicon glyphicon-edit" title="Bestand wijzigen"></span>
 							</a>
@@ -91,7 +97,7 @@
 							<a>
 								<span class="action-button glyphicon glyphicon-eye-open" title="Metadata bekijken"></span>
 							</a>
-							<a href="@routes.Metadata.renderEditForm(datasetRow.get(metadata.uuid))"
+							<a href="@routes.Metadata.renderEditForm(datasetRow.get(metadata.uuid), textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch)"
 								@if(datasetRow.get(metadata.status).equals(4)) {class="edit-btn-published"}>
 								<span class="action-button glyphicon glyphicon-edit" title="Bestand wijzigen"></span>
 							</a>
@@ -111,7 +117,7 @@
 							<a>
 								<span class="action-button glyphicon glyphicon-eye-open" title="Metadata bekijken"></span>
 							</a>
-							<a href="@routes.Metadata.renderEditForm(datasetRow.get(metadata.uuid))"
+							<a href="@routes.Metadata.renderEditForm(datasetRow.get(metadata.uuid), textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch)"
 								@if(datasetRow.get(metadata.status).equals(4)) {class="edit-btn-published"}>
 								<span class="action-button glyphicon glyphicon-edit" title="Bestand wijzigen"></span>
 							</a>
@@ -131,7 +137,7 @@
 							<a>
 								<span class="action-button glyphicon glyphicon-eye-open" title="Metadata bekijken"></span>
 							</a>
-							<a href="@routes.Metadata.renderEditForm(datasetRow.get(metadata.uuid))"
+							<a href="@routes.Metadata.renderEditForm(datasetRow.get(metadata.uuid), textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch)"
 								@if(datasetRow.get(metadata.status).equals(4)) {class="edit-btn-published"}>
 								<span class="action-button glyphicon glyphicon-edit" title="Bestand wijzigen"></span>
 							</a>
@@ -151,7 +157,7 @@
 							<a>
 								<span class="action-button glyphicon glyphicon-eye-open" title="Metadata bekijken"></span>
 							</a>
-							<a href="@routes.Metadata.renderEditForm(datasetRow.get(metadata.uuid))"
+							<a href="@routes.Metadata.renderEditForm(datasetRow.get(metadata.uuid), textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch)"
 								@if(datasetRow.get(metadata.status).equals(4)) {class="edit-btn-published"}>
 								<span class="action-button glyphicon glyphicon-edit" title="Bestand wijzigen"></span>
 							</a>
@@ -171,7 +177,7 @@
 							<a>
 								<span class="action-button glyphicon glyphicon-eye-open" title="Metadata bekijken"></span>
 							</a>
-							<a href="@routes.Metadata.renderEditForm(datasetRow.get(metadata.uuid))"
+							<a href="@routes.Metadata.renderEditForm(datasetRow.get(metadata.uuid), textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch)"
 								@if(datasetRow.get(metadata.status).equals(4)) {class="edit-btn-published"}>
 								<span class="action-button glyphicon glyphicon-edit" title="Bestand wijzigen"></span>
 							</a>
@@ -191,7 +197,7 @@
 							<a>
 								<span class="action-button glyphicon glyphicon-eye-open" title="Metadata bekijken"></span>
 							</a>
-							<a href="@routes.Metadata.renderEditForm(datasetRow.get(metadata.uuid))"
+							<a href="@routes.Metadata.renderEditForm(datasetRow.get(metadata.uuid), textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch)"
 								@if(datasetRow.get(metadata.status).equals(4)) {class="edit-btn-published"}>
 								<span class="action-button glyphicon glyphicon-edit" title="Bestand wijzigen"></span>
 							</a>
@@ -211,7 +217,7 @@
 							<a>
 								<span class="action-button glyphicon glyphicon-eye-open" title="Metadata bekijken"></span>
 							</a>
-							<a href="@routes.Metadata.renderEditForm(datasetRow.get(metadata.uuid))"
+							<a href="@routes.Metadata.renderEditForm(datasetRow.get(metadata.uuid), textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch)"
 								@if(datasetRow.get(metadata.status).equals(4)) {class="edit-btn-published"}>
 								<span class="action-button glyphicon glyphicon-edit" title="Bestand wijzigen"></span>
 							</a>
@@ -227,12 +233,12 @@
 	</table>
 </div>
 <nav id="list-pager">
- 	<ul class="pagination">
-   		@if(datasetRows.size() > 0) {
-   			<li class="js-page-status active" id="js-page-status-1">
-   				<a class="js-index-page-btn" id="js-index-page-btn-1" data-page="1">1</a>
-   			</li>
-   		} @if(datasetRows.size() > 20) {
+	<ul class="pagination">
+		@if(datasetRows.size() > 0) {
+			<li class="js-page-status active" id="js-page-status-1">
+				<a class="js-index-page-btn" id="js-index-page-btn-1" data-page="1">1</a>
+			</li>
+		} @if(datasetRows.size() > 20) {
    			<li class="js-page-status" id="js-page-status-2">
    				<a class="js-index-page-btn" id="js-index-page-btn-2" data-page="2">2</a>
    			</li>

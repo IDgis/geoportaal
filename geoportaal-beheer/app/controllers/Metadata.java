@@ -46,48 +46,51 @@ import views.html.*;
 public class Metadata extends Controller {
 	@Inject QueryDSL q;
 	
-	public Result renderCreateForm() {
+	public Result renderCreateForm(String textSearch, String supplierSearch, String statusSearch, 
+			String mdFormatSearch, String dateStartSearch, String dateEndSearch) {
 		Boolean create = true;
 		String todayUS = new SimpleDateFormat("yyyy-MM-dd").format(new Date().getTime());
 		String todayLocal = new SimpleDateFormat("dd-MM-yyyy").format(new Date().getTime());
 		
 		return q.withTransaction(tx -> {
 			List<Tuple> typeInformationList = tx.select(typeInformation.id, typeInformation.name, typeInformationLabel.label)
-	    		.from(typeInformation)
-	    		.join(typeInformationLabel).on(typeInformation.id.eq(typeInformationLabel.typeInformationId))
-	    		.fetch();
-	    	
-	    	List<Tuple> creatorsList = tx.select(creator.id, creator.name, creatorLabel.label)
-	        	.from(creator)
-	        	.join(creatorLabel).on(creator.id.eq(creatorLabel.creatorId))
-	        	.fetch();
-	    	
-	    	List<Tuple> rightsList = tx.select(rights.id, rights.name, rightsLabel.label)
-            	.from(rights)
-            	.join(rightsLabel).on(rights.id.eq(rightsLabel.rightsId))
-            	.fetch();
-	    	
-	    	List<Tuple> useLimitationList = tx.select(useLimitation.id, useLimitation.name, useLimitationLabel.label)
-            	.from(useLimitation)
-            	.join(useLimitationLabel).on(useLimitation.id.eq(useLimitationLabel.useLimitationId))
-            	.fetch();
-	    	
-	    	List<Tuple> mdFormatList = tx.select(mdFormat.id, mdFormat.name, mdFormatLabel.label)
-            	.from(mdFormat)
-            	.join(mdFormatLabel).on(mdFormat.id.eq(mdFormatLabel.mdFormatId))
-            	.fetch();
-	    	
-	    	List<Tuple> subjectList = tx.select(subject.id, subject.name, subjectLabel.label)
-            	.from(subject)
-            	.join(subjectLabel).on(subject.id.eq(subjectLabel.subjectId))
-            	.fetch();
+			.from(typeInformation)
+				.join(typeInformationLabel).on(typeInformation.id.eq(typeInformationLabel.typeInformationId))
+				.fetch();
 			
-	    	return ok(views.html.form.render(create, todayUS, todayLocal, null, null, null, typeInformationList, creatorsList, rightsList, 
-					useLimitationList, mdFormatList, null, null, subjectList));
+			List<Tuple> creatorsList = tx.select(creator.id, creator.name, creatorLabel.label)
+				.from(creator)
+				.join(creatorLabel).on(creator.id.eq(creatorLabel.creatorId))
+				.fetch();
+			
+			List<Tuple> rightsList = tx.select(rights.id, rights.name, rightsLabel.label)
+				.from(rights)
+				.join(rightsLabel).on(rights.id.eq(rightsLabel.rightsId))
+				.fetch();
+			
+			List<Tuple> useLimitationList = tx.select(useLimitation.id, useLimitation.name, useLimitationLabel.label)
+				.from(useLimitation)
+				.join(useLimitationLabel).on(useLimitation.id.eq(useLimitationLabel.useLimitationId))
+				.fetch();
+			
+			List<Tuple> mdFormatList = tx.select(mdFormat.id, mdFormat.name, mdFormatLabel.label)
+				.from(mdFormat)
+				.join(mdFormatLabel).on(mdFormat.id.eq(mdFormatLabel.mdFormatId))
+				.fetch();
+			
+			List<Tuple> subjectList = tx.select(subject.id, subject.name, subjectLabel.label)
+				.from(subject)
+				.join(subjectLabel).on(subject.id.eq(subjectLabel.subjectId))
+				.fetch();
+			
+			return ok(views.html.form.render(create, todayUS, todayLocal, null, null, null, typeInformationList, creatorsList, rightsList, 
+					useLimitationList, mdFormatList, null, null, subjectList, textSearch, supplierSearch, statusSearch, mdFormatSearch,
+					dateStartSearch, dateEndSearch));
 		});
 	}
 	
-	public Result createSubmit() throws IOException {
+	public Result createSubmit(String textSearch, String supplierSearch, String statusSearch, String mdFormatSearch, 
+			String dateStartSearch, String dateEndSearch) throws IOException {
 		Form<DublinCore> dcForm = Form.form(DublinCore.class);
 		DublinCore dc = dcForm.bindFromRequest().get();
 		
@@ -139,30 +142,30 @@ public class Metadata extends Controller {
 				.fetchOne();
 			
 			tx.insert(metadata)
-	    		.set(metadata.uuid, uuid)
-	    		.set(metadata.location, dc.getLocation())
-	    		.set(metadata.fileId, dc.getFileId())
-	    		.set(metadata.title, dc.getTitle())
-	    		.set(metadata.description, dc.getDescription())
-	    		.set(metadata.typeInformation, typeInformationKey)
-	    		.set(metadata.creator, creatorKey)
-	    		.set(metadata.creatorOther, creatorOtherValue)
-	    		.set(metadata.rights, rightsKey)
-	    		.set(metadata.useLimitation, useLimitationKey)
-	    		.set(metadata.mdFormat, formatKey)
-	    		.set(metadata.source, dc.getSource())
-	    		.set(metadata.dateSourceCreation, dateSourceCreationValue)
-	    		.set(metadata.dateSourcePublication, dateSourcePublicationValue)
-	    		.set(metadata.dateSourceRevision, dateSourceRevisionValue)
-	    		.set(metadata.dateSourceValidFrom, dateSourceValidFromValue)
-	    		.set(metadata.dateSourceValidUntil, dateSourceValidUntilValue)
-	    		.set(metadata.supplier, supplierId)
-	    		.set(metadata.status, 2)
-	    		.set(metadata.published, false)
-	    		.set(metadata.lastRevisionUser, session("username"))
-	    		.set(metadata.lastRevisionDate, dateToday)
-	    		.execute();
-	    	
+				.set(metadata.uuid, uuid)
+				.set(metadata.location, dc.getLocation())
+				.set(metadata.fileId, dc.getFileId())
+				.set(metadata.title, dc.getTitle())
+				.set(metadata.description, dc.getDescription())
+				.set(metadata.typeInformation, typeInformationKey)
+				.set(metadata.creator, creatorKey)
+				.set(metadata.creatorOther, creatorOtherValue)
+				.set(metadata.rights, rightsKey)
+				.set(metadata.useLimitation, useLimitationKey)
+				.set(metadata.mdFormat, formatKey)
+				.set(metadata.source, dc.getSource())
+				.set(metadata.dateSourceCreation, dateSourceCreationValue)
+				.set(metadata.dateSourcePublication, dateSourcePublicationValue)
+				.set(metadata.dateSourceRevision, dateSourceRevisionValue)
+				.set(metadata.dateSourceValidFrom, dateSourceValidFromValue)
+				.set(metadata.dateSourceValidUntil, dateSourceValidUntilValue)
+				.set(metadata.supplier, supplierId)
+				.set(metadata.status, 2)
+				.set(metadata.published, false)
+				.set(metadata.lastRevisionUser, session("username"))
+				.set(metadata.lastRevisionDate, dateToday)
+				.execute();
+			
 			Integer metadataId = tx.select(metadata.id)
 					.from(metadata)
 					.where(metadata.uuid.eq(uuid))
@@ -180,9 +183,9 @@ public class Metadata extends Controller {
 					int bytesRead;
 					ByteArrayOutputStream byteOutput = new ByteArrayOutputStream();
 					while((bytesRead = inputStream.read(buffer)) != -1)
-				    {
+					{
 						byteOutput.write(buffer, 0, bytesRead);
-				    }
+					}
 					byte[] input = byteOutput.toByteArray();
 					
 					
@@ -213,11 +216,12 @@ public class Metadata extends Controller {
 			
 			tx.refreshMaterializedViewConcurrently(metadataSearch);
 			
-			return redirect(controllers.routes.Index.index(null, null, null, null, null, null));
+			return redirect(controllers.routes.Index.index(textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch));
 		});
 	}
 	
-	public Result renderEditForm(String metadataUuid) {
+	public Result renderEditForm(String metadataUuid, String textSearch, String supplierSearch, String statusSearch, 
+			String mdFormatSearch, String dateStartSearch, String dateEndSearch) {
 		Boolean create = false;
 		
 		return q.withTransaction(tx -> {
@@ -239,60 +243,62 @@ public class Metadata extends Controller {
 								metadata.description, metadata.typeInformation, metadata.creator, metadata.creatorOther, metadata.rights, metadata.useLimitation,
 								metadata.mdFormat, metadata.source, metadata.dateSourceCreation, metadata.dateSourcePublication, metadata.dateSourceRevision,
 								metadata.dateSourceValidFrom, metadata.dateSourceValidUntil, creator.name)
-	    			.from(metadata)
-	    			.join(creator).on(metadata.creator.eq(creator.id))
-	    			.where(metadata.id.eq(metadataId))
-	    			.fetchOne();
-	    	
-	    	List<Tuple> subjectsDataset = tx.select(mdSubject.all())
-	    			.from(mdSubject)
-	    			.where(mdSubject.metadataId.eq(metadataId))
-	    			.fetch();
-	    	
-	    	List<Tuple> attachmentsDataset = tx.select(mdAttachment.all())
-	    			.from(mdAttachment)
-	    			.where(mdAttachment.metadataId.eq(metadataId))
-	    			.fetch();
-	    	
-	    	List<Tuple> typeInformationList = tx.select(typeInformation.id, typeInformation.name, typeInformationLabel.label)
-	        		.from(typeInformation)
-	        		.join(typeInformationLabel).on(typeInformation.id.eq(typeInformationLabel.typeInformationId))
-	        		.fetch();
-	        	
-	    	List<Tuple> creatorsList = tx.select(creator.id, creator.name, creatorLabel.label)
-		        	.from(creator)
-		        	.join(creatorLabel).on(creator.id.eq(creatorLabel.creatorId))
-		        	.fetch();
-	    	
-	    	List<Tuple> rightsList = tx.select(rights.id, rights.name, rightsLabel.label)
-	            	.from(rights)
-	            	.join(rightsLabel).on(rights.id.eq(rightsLabel.rightsId))
-	            	.fetch();
-	    	
-	    	List<Tuple> useLimitationList = tx.select(useLimitation.id, useLimitation.name, useLimitationLabel.label)
-	            	.from(useLimitation)
-	            	.join(useLimitationLabel).on(useLimitation.id.eq(useLimitationLabel.useLimitationId))
-	            	.fetch();
-	    	
-	    	List<Tuple> mdFormatList = tx.select(mdFormat.id, mdFormat.name, mdFormatLabel.label)
-	            	.from(mdFormat)
-	            	.join(mdFormatLabel).on(mdFormat.id.eq(mdFormatLabel.mdFormatId))
-	            	.fetch();
-	    	
-	    	List<Tuple> subjectList = tx.select(subject.id, subject.name, subjectLabel.label)
-	            	.from(subject)
-	            	.join(subjectLabel).on(subject.id.eq(subjectLabel.subjectId))
-	            	.fetch();
-	        
-	        SimpleDateFormat sdfUS = new SimpleDateFormat("yyyy-MM-dd");
-	        SimpleDateFormat sdfLocal = new SimpleDateFormat("dd-MM-yyyy");
-	        
-	        return ok(views.html.form.render(create, "", "", datasetRow, subjectsDataset, attachmentsDataset, typeInformationList, creatorsList, 
-	    			rightsList, useLimitationList, mdFormatList, sdfUS, sdfLocal, subjectList));
+					.from(metadata)
+					.join(creator).on(metadata.creator.eq(creator.id))
+					.where(metadata.id.eq(metadataId))
+					.fetchOne();
+			
+			List<Tuple> subjectsDataset = tx.select(mdSubject.all())
+					.from(mdSubject)
+					.where(mdSubject.metadataId.eq(metadataId))
+					.fetch();
+			
+			List<Tuple> attachmentsDataset = tx.select(mdAttachment.all())
+					.from(mdAttachment)
+					.where(mdAttachment.metadataId.eq(metadataId))
+					.fetch();
+			
+			List<Tuple> typeInformationList = tx.select(typeInformation.id, typeInformation.name, typeInformationLabel.label)
+					.from(typeInformation)
+					.join(typeInformationLabel).on(typeInformation.id.eq(typeInformationLabel.typeInformationId))
+					.fetch();
+				
+			List<Tuple> creatorsList = tx.select(creator.id, creator.name, creatorLabel.label)
+					.from(creator)
+					.join(creatorLabel).on(creator.id.eq(creatorLabel.creatorId))
+					.fetch();
+			
+			List<Tuple> rightsList = tx.select(rights.id, rights.name, rightsLabel.label)
+					.from(rights)
+					.join(rightsLabel).on(rights.id.eq(rightsLabel.rightsId))
+					.fetch();
+			
+			List<Tuple> useLimitationList = tx.select(useLimitation.id, useLimitation.name, useLimitationLabel.label)
+					.from(useLimitation)
+					.join(useLimitationLabel).on(useLimitation.id.eq(useLimitationLabel.useLimitationId))
+					.fetch();
+			
+			List<Tuple> mdFormatList = tx.select(mdFormat.id, mdFormat.name, mdFormatLabel.label)
+					.from(mdFormat)
+					.join(mdFormatLabel).on(mdFormat.id.eq(mdFormatLabel.mdFormatId))
+					.fetch();
+			
+			List<Tuple> subjectList = tx.select(subject.id, subject.name, subjectLabel.label)
+					.from(subject)
+					.join(subjectLabel).on(subject.id.eq(subjectLabel.subjectId))
+					.fetch();
+			
+			SimpleDateFormat sdfUS = new SimpleDateFormat("yyyy-MM-dd");
+			SimpleDateFormat sdfLocal = new SimpleDateFormat("dd-MM-yyyy");
+			
+			return ok(views.html.form.render(create, "", "", datasetRow, subjectsDataset, attachmentsDataset, typeInformationList, creatorsList, 
+					rightsList, useLimitationList, mdFormatList, sdfUS, sdfLocal, subjectList, textSearch, supplierSearch, statusSearch, mdFormatSearch,
+					dateStartSearch, dateEndSearch));
 		});
 	}
 	
-	public Result editSubmit(String metadataUuid) throws IOException {
+	public Result editSubmit(String metadataUuid, String textSearch, String supplierSearch, String statusSearch, String mdFormatSearch, 
+			String dateStartSearch, String dateEndSearch) throws IOException {
 		Form<DublinCore> dcForm = Form.form(DublinCore.class);
 		DublinCore dc = dcForm.bindFromRequest().get();
 		
@@ -309,19 +315,19 @@ public class Metadata extends Controller {
 			}
 			
 			Integer roleId = tx.select(user.roleId)
-	    			.from(user)
-	    			.where(user.username.eq(session("username")))
-	    			.fetchOne();
+					.from(user)
+					.where(user.username.eq(session("username")))
+					.fetchOne();
 			
 			Integer userId = tx.select(user.id)
-        			.from(user)
-        			.where(user.username.eq(session("username")))
-        			.fetchOne();
+					.from(user)
+					.where(user.username.eq(session("username")))
+					.fetchOne();
 			
 			Integer supplierId = tx.select(metadata.supplier)
-    				.from(metadata)
-    				.where(metadata.uuid.eq(metadataUuid))
-    				.fetchOne();
+					.from(metadata)
+					.where(metadata.uuid.eq(metadataUuid))
+					.fetchOne();
 			
 			if(roleId.equals(2) && !userId.equals(supplierId)) {
 				// do nothing
@@ -475,7 +481,7 @@ public class Metadata extends Controller {
 			
 			tx.refreshMaterializedViewConcurrently(metadataSearch);
 			
-			return redirect(controllers.routes.Index.index(null, null, null, null, null, null));
+			return redirect(controllers.routes.Index.index(textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch));
 		});
 	}
 	
@@ -611,8 +617,8 @@ public class Metadata extends Controller {
 		return timestamp;
 	}
 	
-	public Result cancel() {
-
-		return redirect(controllers.routes.Index.index(null, null, null, null, null, null));
+	public Result cancel(String textSearch, String supplierSearch, String statusSearch, String mdFormatSearch, String dateStartSearch, 
+			String dateEndSearch) {
+		return redirect(controllers.routes.Index.index(textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch));
 	}
 }
