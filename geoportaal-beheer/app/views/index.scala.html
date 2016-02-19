@@ -9,8 +9,10 @@
 	supplierSearch: String,
 	statusSearch: String,
 	mdFormatSearch: String,
-	dateStart: java.sql.Timestamp,
-	dateEnd: java.sql.Timestamp
+	dateStartSearch: String,
+	dateEndSearch: String,
+	tsStartSearch: java.sql.Timestamp,
+	tsEndSearch: java.sql.Timestamp
 	)
 
 @import play.i18n._
@@ -21,7 +23,8 @@
 @import models.QStatusLabel.statusLabel
 @import models.QMdFormatLabel.mdFormatLabel
 
-@main(Messages.get("index.header"), routes.Assets.versioned("javascripts/index.js").url) {
+@main(Messages.get("index.header"), textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch, 
+	routes.Assets.versioned("javascripts/index.js").url) {
 	<div class="welkom">
 		<p>Hier kunt u naar metadata records zoeken en veranderingen doorvoeren.</p>
 	</div>
@@ -108,8 +111,8 @@
 					<div class="col-sm-4">
 						<input class="form-control js-date" id="js-date-update-start" type="date" data-toggle="tooltip" data-placement="top" 
 						title="Zoek op begindatum" name="dateUpdateStart"
-						@if(dateStart != null) {data-date-value-US="@sdfUS.format(dateStart.getTime())"} 
-						@if(dateStart != null) {data-date-value-local="@sdfLocal.format(dateStart.getTime())"}>
+						@if(tsStartSearch != null) {data-date-value-US="@sdfUS.format(tsStartSearch.getTime())"} 
+						@if(tsStartSearch != null) {data-date-value-local="@sdfLocal.format(tsStartSearch.getTime())"}>
 						<input type="hidden" id="js-hidden-date-update-start">
 					</div>
 					<div class="col-sm-2">
@@ -124,8 +127,8 @@
 					<div class="col-sm-4">
 						<input class="form-control js-date" id="js-date-update-end" type="date" data-toggle="tooltip" data-placement="top" 
 						title="Zoek op einddatum" name="dateUpdateEnd"
-						@if(dateEnd != null) {data-date-value-US="@sdfUS.format(dateEnd.getTime())"} 
-						@if(dateEnd != null) {data-date-value-local="@sdfLocal.format(dateEnd.getTime())"}>
+						@if(tsEndSearch != null) {data-date-value-US="@sdfUS.format(tsEndSearch.getTime())"} 
+						@if(tsEndSearch != null) {data-date-value-local="@sdfLocal.format(tsEndSearch.getTime())"}>
 						<input type="hidden" id="js-hidden-date-update-end">
 					</div>
 					<div class="col-sm-2">
@@ -140,8 +143,8 @@
 		 			<div class="col-sm-offset-3 col-sm-7">
 		 				<button class="knop" id="search-button" type="button">Zoek</button>
 		 				@if(!textSearch.equals("") || !supplierSearch.equals("none") || !statusSearch.equals("none") || !mdFormatSearch.equals("none") ||
-		 					dateStart != null || dateEnd != null) {
-		 					<a class="knop" id="filter-button" href="@routes.Index.index(null, null, null, null, null, null)">Filter opheffen</a>
+		 					tsStartSearch != null || tsEndSearch != null) {
+		 					<a class="knop" id="filter-button" href="@routes.Index.index("", "none", "none", "none", "", "")">Filter opheffen</a>
 		 				}
 					</div>
 				</div>
@@ -168,11 +171,17 @@
 			
 		</div>
 	</div>
-	@views.html.list(datasetRows, sdfLocal, roleId)
+	@views.html.list(datasetRows, sdfLocal, roleId, textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch)
 	
 	@helper.form(action = routes.Index.changeStatus(), 'id -> "js-status-form") {
 		<div id="js-status-records"></div>
 		<input type="hidden" id="js-status-value" name="status">
+		<input type="hidden" name="textSearch" value="@textSearch">
+		<input type="hidden" name="supplierSearch" value="@supplierSearch">
+		<input type="hidden" name="statusSearch" value="@statusSearch">
+		<input type="hidden" name="mdFormatSearch" value="@mdFormatSearch">
+		<input type="hidden" name="dateStartSearch" value="">
+		<input type="hidden" name="dateEndSearch" value="">
 		<div class="modal fade" id="status-modal">
 	  		<div class="modal-dialog">
 	    		<div class="modal-content">
@@ -197,6 +206,12 @@
 	
 	@helper.form(action = routes.Index.deleteMetadata()) {
 		<div id="js-delete-records"></div>
+		<input type="hidden" name="textSearch" value="@textSearch">
+		<input type="hidden" name="supplierSearch" value="@supplierSearch">
+		<input type="hidden" name="statusSearch" value="@statusSearch">
+		<input type="hidden" name="mdFormatSearch" value="@mdFormatSearch">
+		<input type="hidden" name="dateStartSearch" value="">
+		<input type="hidden" name="dateEndSearch" value="">
 		<div class="modal fade" id="delete-modal">
 	  		<div class="modal-dialog">
 	    		<div class="modal-content">
@@ -225,25 +240,31 @@
 	@helper.form(action = routes.Index.changeSupplier(), 'id -> "js-supplier-form") {
 		<div id="js-supplier-records"></div>
 		<input type="hidden" id="js-supplier-value" name="supplier">
+		<input type="hidden" name="textSearch" value="@textSearch">
+		<input type="hidden" name="supplierSearch" value="@supplierSearch">
+		<input type="hidden" name="statusSearch" value="@statusSearch">
+		<input type="hidden" name="mdFormatSearch" value="@mdFormatSearch">
+		<input type="hidden" name="dateStartSearch" value="">
+		<input type="hidden" name="dateEndSearch" value="">
 		<div class="modal fade" id="supplier-modal">
-	  		<div class="modal-dialog">
-	    		<div class="modal-content">
-	      			<div class="modal-header">
-	        			<button type="button" class="close" data-dismiss="modal">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal">
 	        				<span>&times;</span>
 	        			</button>
 	        			<h4 class="modal-title">Wijzigen leverancier statische kaarten</h4>
 	      			</div>
 	      			<div class="modal-body">
 	        			<p>Er wordt bij <b><span id="js-supplier-records-count">0</span></b> records de leverancier gewijzigd. 
-	        				Weet u zeker dat u deze actie wilt uitvoeren?</p>
-	      			</div>
-	      			<div class="modal-footer">
-	        			<button type="button" class="btn btn-default" data-dismiss="modal">Annuleren</button>
-	        			<button type="submit" class="btn btn-primary">Uitvoeren</button>
-	      			</div>
-	    		</div>
-	  		</div>
+							Weet u zeker dat u deze actie wilt uitvoeren?</p>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Annuleren</button>
+						<button type="submit" class="btn btn-primary">Uitvoeren</button>
+					</div>
+				</div>
+			</div>
 		</div>
 	}
 	

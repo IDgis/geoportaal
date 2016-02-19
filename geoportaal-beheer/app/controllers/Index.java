@@ -86,8 +86,8 @@ public class Index extends Controller {
 				.where(user.username.eq(session("username")))
 				.fetchOne();
 
-			SQLQuery<Tuple> datasetQuery = tx.select(metadata.id, metadata.uuid, metadata.title, metadata.status, metadata.lastRevisionDate, statusLabel.label, supplier.name, 
-				status.name, mdFormat.name)
+			SQLQuery<Tuple> datasetQuery = tx.select(metadata.id, metadata.uuid, metadata.title, metadata.status, metadata.lastRevisionDate, 
+					statusLabel.label, supplier.name, status.name, mdFormat.name)
 				.from(metadata)
 				.join(status).on(metadata.status.eq(status.id))
 				.join(supplier).on(metadata.supplier.eq(supplier.id))
@@ -95,24 +95,22 @@ public class Index extends Controller {
 				.join(mdFormat).on(metadata.mdFormat.eq(mdFormat.id));
 
 			String[] textSearchTerms = textSearch.split("\\s+");
-			if(textSearchTerms.length > 0) {
-				String tsQuery = 
-					Arrays.asList(textSearchTerms).stream()
-						.filter(str -> !str.isEmpty())
-						.collect(Collectors.joining(" & "));
+			String tsQuery = 
+				Arrays.asList(textSearchTerms).stream()
+					.filter(str -> !str.isEmpty())
+					.collect(Collectors.joining(" & "));
 
-				if(!tsQuery.isEmpty()) {
-					datasetQuery.where(
-						tx.selectOne()
-							.from(metadataSearch)
-							.where(metadataSearch.metadataId.eq(metadata.id))
-							.where(metadataSearch.tsv.query(tsQuery))
-							.exists());
+			if(!tsQuery.isEmpty()) {
+				datasetQuery.where(
+					tx.selectOne()
+						.from(metadataSearch)
+						.where(metadataSearch.metadataId.eq(metadata.id))
+						.where(metadataSearch.tsv.query(tsQuery))
+						.exists());
 
-					// TODO: ranking?
-				}
+				// TODO: ranking?
 			}
-
+			
 			if(!"none".equals(supplierSearch)) {
 				datasetQuery
 					.where(supplier.name.eq(supplierSearch));
@@ -184,7 +182,7 @@ public class Index extends Controller {
 			}
 
 			return ok(views.html.index.render(datasetRows, supplierList, statusList, mdFormatList, sdfUS, sdfLocal, roleId, textSearch, 
-				supplierSearch, statusSearch, mdFormatSearch, timestampStartSearch, resetTimestampEndSearch));	        
+				supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch, timestampStartSearch, resetTimestampEndSearch));
 		});
 	}
 	
@@ -212,43 +210,50 @@ public class Index extends Controller {
 		List<String> changeRecords = s.getRecordsChange();
 		String statusName = s.getStatus();
 		
+		String textSearch = s.getTextSearch();
+		String supplierSearch = s.getSupplierSearch();
+		String statusSearch = s.getStatusSearch();
+		String mdFormatSearch = s.getMdFormatSearch();
+		String dateStartSearch = s.getDateStartSearch();
+		String dateEndSearch = s.getDateEndSearch();
+		
 		return q.withTransaction(tx -> {
 			Integer roleId = tx.select(user.roleId)
-	    			.from(user)
-	    			.where(user.username.eq(session("username")))
-	    			.fetchOne();
+					.from(user)
+					.where(user.username.eq(session("username")))
+					.fetchOne();
 			
 			Integer userId = tx.select(user.id)
-        			.from(user)
-        			.where(user.username.eq(session("username")))
-        			.fetchOne();
-	    	
+					.from(user)
+					.where(user.username.eq(session("username")))
+					.fetchOne();
+			
 			List<String> finalChangeRecords = new ArrayList<String>();
 			if(roleId.equals(2)) {
-	    		if(changeRecords != null) {
-	    			for(String record : changeRecords) {
-		    			Integer statusId = tx.select(metadata.status)
-			    			.from(metadata)
-			    			.where(metadata.uuid.eq(record))
-			    			.fetchOne();
-		    			
-		    			Integer supplierId = tx.select(metadata.supplier)
-			    				.from(metadata)
-			    				.where(metadata.uuid.eq(record))
-			    				.fetchOne();
-		    			
-		    			if(!statusId.equals(4) && userId.equals(supplierId)) {
-		    				finalChangeRecords.add(record);
-		    			}
-		    		}
-	    		}
-	    	} else {
-	    		if(changeRecords != null) {
-		    		for(String record : changeRecords) {
-		    			finalChangeRecords.add(record);
-		    		}
-	    		}
-	    	}
+				if(changeRecords != null) {
+					for(String record : changeRecords) {
+						Integer statusId = tx.select(metadata.status)
+							.from(metadata)
+							.where(metadata.uuid.eq(record))
+							.fetchOne();
+						
+						Integer supplierId = tx.select(metadata.supplier)
+								.from(metadata)
+								.where(metadata.uuid.eq(record))
+								.fetchOne();
+						
+						if(!statusId.equals(4) && userId.equals(supplierId)) {
+							finalChangeRecords.add(record);
+						}
+					}
+				}
+			} else {
+				if(changeRecords != null) {
+					for(String record : changeRecords) {
+						finalChangeRecords.add(record);
+					}
+				}
+			}
 			
 			if(finalChangeRecords != null && statusName != null) {
 				Integer statusKey = tx.select(status.id)
@@ -261,9 +266,9 @@ public class Index extends Controller {
 						// do nothing
 					} else {
 						Long count = tx.update(metadata)
-				    		.where(metadata.uuid.in(finalChangeRecords))
-				    		.set(metadata.status, statusKey)
-				    		.execute();
+							.where(metadata.uuid.in(finalChangeRecords))
+							.set(metadata.status, statusKey)
+							.execute();
 						
 						Integer finalCount = count.intValue();
 						if(!finalCount.equals(finalChangeRecords.size())) {
@@ -272,8 +277,8 @@ public class Index extends Controller {
 					}
 				}
 			}
-	    	
-			return redirect(controllers.routes.Index.index(null, null, null, null, null, null));
+			
+			return redirect(controllers.routes.Index.index(textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch));
 		});
 		
 	}
@@ -284,6 +289,13 @@ public class Index extends Controller {
 		List<String> changeRecords = s.getRecordsChange();
 		String supplierName = s.getSupplier();
 		
+		String textSearch = s.getTextSearch();
+		String supplierSearch = s.getSupplierSearch();
+		String statusSearch = s.getStatusSearch();
+		String mdFormatSearch = s.getMdFormatSearch();
+		String dateStartSearch = s.getDateStartSearch();
+		String dateEndSearch = s.getDateEndSearch();
+		
 		return q.withTransaction(tx -> {
 			if(changeRecords != null && supplierName != null) {
 				Integer supplierKey = tx.select(supplier.id)
@@ -293,10 +305,10 @@ public class Index extends Controller {
 				
 				if(supplierKey != null) {
 					Long count = tx.update(metadata)
-			    		.where(metadata.uuid.in(changeRecords))
-			    		.set(metadata.supplier, supplierKey)
-			    		.execute();
-			    	
+						.where(metadata.uuid.in(changeRecords))
+						.set(metadata.supplier, supplierKey)
+						.execute();
+					
 					Integer finalCount = count.intValue();
 					if(!finalCount.equals(changeRecords.size())) {
 						throw new Exception("Changing supplier: different amount of affected rows than expected");
@@ -304,7 +316,7 @@ public class Index extends Controller {
 				}
 			}
 			
-			return redirect(controllers.routes.Index.index(null, null, null, null, null, null));
+			return redirect(controllers.routes.Index.index(textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch));
 		});
 	}
 	
@@ -314,43 +326,50 @@ public class Index extends Controller {
 		List<String> deleteRecords = d.getRecordsToDel();
 		String permDel = d.getPermDel();
 		
+		String textSearch = d.getTextSearch();
+		String supplierSearch = d.getSupplierSearch();
+		String statusSearch = d.getStatusSearch();
+		String mdFormatSearch = d.getMdFormatSearch();
+		String dateStartSearch = d.getDateStartSearch();
+		String dateEndSearch = d.getDateEndSearch();
+		
 		return q.withTransaction(tx -> {
 			Integer roleId = tx.select(user.roleId)
-	    			.from(user)
-	    			.where(user.username.eq(session("username")))
-	    			.fetchOne();
+					.from(user)
+					.where(user.username.eq(session("username")))
+					.fetchOne();
 			
 			Integer userId = tx.select(user.id)
-        			.from(user)
-        			.where(user.username.eq(session("username")))
-        			.fetchOne();
-	    	
+					.from(user)
+					.where(user.username.eq(session("username")))
+					.fetchOne();
+			
 			List<String> finalDeleteRecords = new ArrayList<String>();
 			if(roleId.equals(2)) {
-	    		if(deleteRecords != null) {
-	    			for(String record : deleteRecords) {
-		    			Integer statusId = tx.select(metadata.status)
-			    			.from(metadata)
-			    			.where(metadata.uuid.eq(record))
-			    			.fetchOne();
-		    			
-		    			Integer supplierId = tx.select(metadata.supplier)
-		    				.from(metadata)
-		    				.where(metadata.uuid.eq(record))
-		    				.fetchOne();
-		    			
-		    			if(!statusId.equals(4) && userId.equals(supplierId)) {
-		    				finalDeleteRecords.add(record);
-		    			}
-		    		}
-	    		}
-	    	} else {
-	    		if(deleteRecords != null) {
-		    		for(String record : deleteRecords) {
-		    			finalDeleteRecords.add(record);
-		    		}
-	    		}
-	    	}
+				if(deleteRecords != null) {
+					for(String record : deleteRecords) {
+						Integer statusId = tx.select(metadata.status)
+							.from(metadata)
+							.where(metadata.uuid.eq(record))
+							.fetchOne();
+						
+						Integer supplierId = tx.select(metadata.supplier)
+							.from(metadata)
+							.where(metadata.uuid.eq(record))
+							.fetchOne();
+						
+						if(!statusId.equals(4) && userId.equals(supplierId)) {
+							finalDeleteRecords.add(record);
+						}
+					}
+				}
+			} else {
+				if(deleteRecords != null) {
+					for(String record : deleteRecords) {
+						finalDeleteRecords.add(record);
+					}
+				}
+			}
 			
 			if(finalDeleteRecords != null) {
 				if(permDel != null) {
@@ -377,7 +396,7 @@ public class Index extends Controller {
 			
 			tx.refreshMaterializedViewConcurrently(metadataSearch);
 			
-			return redirect(controllers.routes.Index.index(null, null, null, null, null, null));
+			return redirect(controllers.routes.Index.index(textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch));
 		});
 	}
 	
@@ -431,12 +450,12 @@ public class Index extends Controller {
 	
 	public Result jsRoutes() {
 		return ok (Routes.javascriptRouter ("jsRoutes",
-            controllers.routes.javascript.Assets.versioned(),
-            controllers.routes.javascript.Index.deleteMetadata(),
+			controllers.routes.javascript.Assets.versioned(),
+			controllers.routes.javascript.Index.deleteMetadata(),
 			controllers.routes.javascript.Index.changeStatus(),
 			controllers.routes.javascript.Index.changeSupplier(),
 			controllers.routes.javascript.Metadata.validateForm(),
 			controllers.routes.javascript.Index.validateForm()
-        )).as ("text/javascript");
-    }
+		)).as ("text/javascript");
+	}
 }
