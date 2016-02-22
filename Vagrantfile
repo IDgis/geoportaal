@@ -12,7 +12,7 @@ Vagrant.configure(2) do |config|
 	config.vm.network "forwarded_port", guest: 5432, host: 5432
 	
 	# Forward the Docker daemon port:
-	config.vm.network "forwarded_port", guest: 2375, host: 2375
+	# config.vm.network "forwarded_port", guest: 2375, host: 2375
 	
 	# Forward the zookeeper port:
 	config.vm.network "forwarded_port", guest: 2181, host: 2181
