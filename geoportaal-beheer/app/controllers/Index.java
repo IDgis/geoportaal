@@ -297,7 +297,12 @@ public class Index extends Controller {
 		String dateEndSearch = s.getDateEndSearch();
 		
 		return q.withTransaction(tx -> {
-			if(changeRecords != null && supplierName != null) {
+			Integer roleId = tx.select(user.roleId)
+				.from(user)
+				.where(user.username.eq(session("username")))
+				.fetchOne();
+			
+			if(!roleId.equals(2) && changeRecords != null && supplierName != null) {
 				Integer supplierKey = tx.select(supplier.id)
 					.from(supplier)
 					.where(supplier.name.eq(supplierName))
