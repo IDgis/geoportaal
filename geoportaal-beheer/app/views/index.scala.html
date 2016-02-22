@@ -161,14 +161,15 @@
 				<button class="knop js-status" type="button" data-status="published">Publiceren</button>
 			}
 			<button class="knop js-restriction" id="js-delete" type="button" data-toggle="modal" data-target="#delete-modal">Verwijderen</button>
-			<button class="knop" type="button" id="js-edit-supplier">Leverancier wijzigen</button>
-			<select class="form-control" id="edit-supplier-select">
-				<option>--</option>
-				@for(supplierOption <- supplierList) {
-					<option value="@supplierOption.get(supplier.name)">@supplierOption.get(supplier.name)</option>
-				}
-			</select>
-			
+			@if(!roleId.equals(2)) {
+				<button class="knop" type="button" id="js-edit-supplier">Leverancier wijzigen</button>
+				<select class="form-control" id="edit-supplier-select">
+					<option>--</option>
+					@for(supplierOption <- supplierList) {
+						<option value="@supplierOption.get(supplier.name)">@supplierOption.get(supplier.name)</option>
+					}
+				</select>
+			}
 		</div>
 	</div>
 	@views.html.list(datasetRows, sdfLocal, roleId, textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch)
