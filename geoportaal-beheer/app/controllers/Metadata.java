@@ -560,28 +560,28 @@ public class Metadata extends Controller {
 			DublinCore dc = dcForm.bindFromRequest().get();
 			
 			String title = null;
-			if("".equals(dc.getTitle())) {
+			if("".equals(dc.getTitle().trim())) {
 				title = null;
 			} else {
 				title = dc.getTitle();
 			}
 			
 			String description = null;
-			if("".equals(dc.getDescription())) {
+			if("".equals(dc.getDescription().trim())) {
 				description = null;
 			} else {
 				description = dc.getDescription();
 			}
 			
 			String location = null;
-			if("".equals(dc.getLocation())) {
+			if("".equals(dc.getLocation().trim())) {
 				location = null;
 			} else {
 				location = dc.getLocation();
 			}
 			
 			String fileId = null;
-			if("".equals(dc.getFileId())) {
+			if("".equals(dc.getFileId().trim())) {
 				fileId = null;
 			} else {
 				fileId = dc.getFileId();
@@ -589,14 +589,14 @@ public class Metadata extends Controller {
 			
 			String creator = null;
 			String creatorOther = null;
-			if("none".equals(dc.getCreator())) {
+			if("none".equals(dc.getCreator().trim())) {
 				creator = null;
 			} else {
 				creator = dc.getCreator();
 			}
 			
-			if("other".equals(dc.getCreator())) {
-				if("".equals(dc.getCreatorOther())) {
+			if("other".equals(dc.getCreator().trim())) {
+				if("".equals(dc.getCreatorOther().trim())) {
 					creatorOther = null;
 				} else {
 					creatorOther = dc.getCreatorOther();
