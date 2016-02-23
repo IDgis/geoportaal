@@ -78,15 +78,12 @@ class QueryDSLPlugin implements Plugin<Project> {
 					}
 					
 					def masterSql = Sql.newInstance ("jdbc:postgresql://db:5432/postgres", "postgres", "postgres", "org.postgresql.Driver")
-					
-					// Terminate all existing database connections
-					masterSql.execute "select pg_terminate_backend(pid) from pg_stat_activity where pid != pg_backend_pid() and datname = ${buildDbName}"
-					
-					// Drop the database
-					masterSql.execute "drop database if exists \"" + buildDbName + "\""
-					
-					// Create the database
-					masterSql.execute "create database \"" + buildDbName + "\""
+					try {
+						// Create the database
+						masterSql.execute "create database \"" + buildDbName + "\""
+					} finally {
+						masterSql.close ()
+					}
 					
 					// Populate the database:
 					def sql = Sql.newInstance ("jdbc:postgresql://db:5432/${buildDbName}", "postgres", "postgres", "org.postgresql.Driver")
@@ -161,8 +158,30 @@ class QueryDSLPlugin implements Plugin<Project> {
 				}
 			}
 			
+			def databaseDropTask = project.task ('queryDSLDropDatabase') {
+				dependsOn queryDSLMetaDataExporterDependencies
+				dependsOn generateMetadataTask
+			
+				doLast {
+					// Add dependencies to classpath:
+					URLClassLoader loader = GroovyObject.class.classLoader
+					project.configurations.queryDSLMetaDataExporter.each { File file ->
+						loader.addURL (file.toURL ())
+					}
+					
+					def masterSql = Sql.newInstance ("jdbc:postgresql://db:5432/postgres", "postgres", "postgres", "org.postgresql.Driver")
+					try {
+						// Drop the database
+						masterSql.execute "drop database if exists \"" + databaseCreationTask.buildDbName + "\""
+					} finally {
+						masterSql.close ()
+					}
+				}
+			}
+			
 			// The QueryDSL annotation processor task:
 			def annotationProcessorTask = project.task ('queryDSLAnnotationProcessor', type: JavaCompile, group: 'build', description: 'Generates QueryDSL projections') {
+				dependsOn databaseDropTask
 				dependsOn generateMetadataTask
 				
 				println "Setting source: " + project.queryDSL.sourceDir
