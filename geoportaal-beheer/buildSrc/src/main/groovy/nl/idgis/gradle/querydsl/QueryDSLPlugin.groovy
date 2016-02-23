@@ -74,7 +74,7 @@ class QueryDSLPlugin implements Plugin<Project> {
 						loader.addURL (file.toURL ())
 					}
 					
-					def masterSql = Sql.newInstance ("jdbc:postgresql://localhost:5432/postgres", "postgres", "postgres", "org.postgresql.Driver")
+					def masterSql = Sql.newInstance ("jdbc:postgresql://db:5432/postgres", "postgres", "postgres", "org.postgresql.Driver")
 					
 					// Terminate all existing database connections
 					masterSql.execute "select pg_terminate_backend(pid) from pg_stat_activity where pid != pg_backend_pid() and datname = ${buildDbName}"
@@ -86,7 +86,7 @@ class QueryDSLPlugin implements Plugin<Project> {
 					masterSql.execute "create database " + buildDbName
 					
 					// Populate the database:
-					def sql = Sql.newInstance ("jdbc:postgresql://localhost:5432/${buildDbName}", "postgres", "postgres", "org.postgresql.Driver")
+					def sql = Sql.newInstance ("jdbc:postgresql://db:5432/${buildDbName}", "postgres", "postgres", "org.postgresql.Driver")
 					try {
 						srcFiles.collect { it.getAbsolutePath() }.sort ().each { file ->
 							// Extract the "Ups" section from the SQL:
@@ -131,7 +131,7 @@ class QueryDSLPlugin implements Plugin<Project> {
 					}
 					
 					// Generate QueryDSL metamodel
-					def sql = Sql.newInstance ("jdbc:postgresql://localhost:5432/${databaseCreationTask.buildDbName}", "postgres", "postgres", "org.postgresql.Driver")
+					def sql = Sql.newInstance ("jdbc:postgresql://db:5432/${databaseCreationTask.buildDbName}", "postgres", "postgres", "org.postgresql.Driver")
 					try {
 						def tsVectorClass = loader.loadClass ('nl.idgis.querydsl.TsVector')
 						def tsVectorPathClass = loader.loadClass ('nl.idgis.querydsl.TsVectorPath')
