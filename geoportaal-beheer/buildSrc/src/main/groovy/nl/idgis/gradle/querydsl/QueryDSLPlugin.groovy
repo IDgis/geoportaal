@@ -19,6 +19,7 @@ import com.mysema.codegen.model.ClassType;
 import com.querydsl.codegen.TypeMappings
 import com.querydsl.codegen.JavaTypeMappings
 import com.querydsl.codegen.EntityType
+import java.util.UUID
 
 /**
  * This plugins adds QueryDSL source generation capabilities to a project.
@@ -63,11 +64,13 @@ class QueryDSLPlugin implements Plugin<Project> {
 				dependsOn queryDSLMetaDataExporterDependencies
 				ext.srcDir = project.queryDSL.evolutionsDir
 				ext.srcFiles = project.files { srcDir.listFiles () }
-				ext.buildDbName = "build"
+				ext.buildDbName = "${project.name}-build-${UUID.randomUUID()}".toString()
 				
 				inputs.files srcFiles
 				
 				doLast {
+					println "build database name: ${buildDbName}"
+					
 					// Add dependencies to classpath:
 					URLClassLoader loader = GroovyObject.class.classLoader
 					project.configurations.queryDSLMetaDataExporter.each { File file ->
@@ -80,10 +83,10 @@ class QueryDSLPlugin implements Plugin<Project> {
 					masterSql.execute "select pg_terminate_backend(pid) from pg_stat_activity where pid != pg_backend_pid() and datname = ${buildDbName}"
 					
 					// Drop the database
-					masterSql.execute "drop database if exists " + buildDbName
+					masterSql.execute "drop database if exists \"" + buildDbName + "\""
 					
 					// Create the database
-					masterSql.execute "create database " + buildDbName
+					masterSql.execute "create database \"" + buildDbName + "\""
 					
 					// Populate the database:
 					def sql = Sql.newInstance ("jdbc:postgresql://db:5432/${buildDbName}", "postgres", "postgres", "org.postgresql.Driver")
