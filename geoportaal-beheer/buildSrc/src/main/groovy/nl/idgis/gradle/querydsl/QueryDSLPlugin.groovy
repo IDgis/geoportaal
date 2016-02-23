@@ -68,6 +68,8 @@ class QueryDSLPlugin implements Plugin<Project> {
 				
 				inputs.files srcFiles
 				
+				println "jdbc:postgresql://${project.queryDSL.databaseHost}:5432/postgres"
+				
 				doLast {
 					println "build database name: ${buildDbName}"
 					
@@ -77,7 +79,7 @@ class QueryDSLPlugin implements Plugin<Project> {
 						loader.addURL (file.toURL ())
 					}
 					
-					def masterSql = Sql.newInstance ("jdbc:postgresql://db:5432/postgres", "postgres", "postgres", "org.postgresql.Driver")
+					def masterSql = Sql.newInstance ("jdbc:postgresql://${project.queryDSL.databaseHost}:5432/postgres", "postgres", "postgres", "org.postgresql.Driver")
 					try {
 						// Create the database
 						masterSql.execute "create database \"" + buildDbName + "\""
@@ -86,7 +88,7 @@ class QueryDSLPlugin implements Plugin<Project> {
 					}
 					
 					// Populate the database:
-					def sql = Sql.newInstance ("jdbc:postgresql://db:5432/${buildDbName}", "postgres", "postgres", "org.postgresql.Driver")
+					def sql = Sql.newInstance ("jdbc:postgresql://${project.queryDSL.databaseHost}:5432/${buildDbName}", "postgres", "postgres", "org.postgresql.Driver")
 					try {
 						srcFiles.collect { it.getAbsolutePath() }.sort ().each { file ->
 							// Extract the "Ups" section from the SQL:
@@ -131,7 +133,7 @@ class QueryDSLPlugin implements Plugin<Project> {
 					}
 					
 					// Generate QueryDSL metamodel
-					def sql = Sql.newInstance ("jdbc:postgresql://db:5432/${databaseCreationTask.buildDbName}", "postgres", "postgres", "org.postgresql.Driver")
+					def sql = Sql.newInstance ("jdbc:postgresql://${project.queryDSL.databaseHost}:5432/${databaseCreationTask.buildDbName}", "postgres", "postgres", "org.postgresql.Driver")
 					try {
 						def tsVectorClass = loader.loadClass ('nl.idgis.querydsl.TsVector')
 						def tsVectorPathClass = loader.loadClass ('nl.idgis.querydsl.TsVectorPath')
@@ -169,7 +171,7 @@ class QueryDSLPlugin implements Plugin<Project> {
 						loader.addURL (file.toURL ())
 					}
 					
-					def masterSql = Sql.newInstance ("jdbc:postgresql://db:5432/postgres", "postgres", "postgres", "org.postgresql.Driver")
+					def masterSql = Sql.newInstance ("jdbc:postgresql://${project.queryDSL.databaseHost}:5432/postgres", "postgres", "postgres", "org.postgresql.Driver")
 					try {
 						// Drop the database
 						masterSql.execute "drop database if exists \"" + databaseCreationTask.buildDbName + "\""

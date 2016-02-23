@@ -26,4 +26,9 @@ class QueryDSLPluginExtension {
 	 * Classpath to use for the QueryDSL annotation processor.
 	 */
 	def FileCollection classpath
+	
+	/**
+	 * Database hostname
+	 */
+	def String databaseHost
 }

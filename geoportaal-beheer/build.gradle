@@ -19,7 +19,11 @@ apply plugin: DockerPlugin
 apply plugin: 'org.ajoberstar.release-opinion'
 
 docker {
-    url = 'http://docker:2375'
+    url = "http://${dockerHost}:2375"
+}
+
+queryDSL {
+    databaseHost = project.databaseHost
 }
 
 repositories {
