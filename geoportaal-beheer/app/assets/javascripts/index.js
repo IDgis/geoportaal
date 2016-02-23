@@ -283,10 +283,43 @@ require([
 		
 		var changeRecords = on(win.doc, '.js-check:click', function(e) {
 			var recordsChecked = query('.js-record-checkbox:checked');
+			var recordsSelectedMsg = query('.js-records-selected');
+			var recordsNoneSelectedMsg = query('.js-records-none-selected');
+			var executeBtns = query('.js-execute-btn');
 			
 			domAttr.set(dom.byId('js-status-records-count'), 'innerHTML', recordsChecked.length);
 			domAttr.set(dom.byId('js-delete-records-count'), 'innerHTML', recordsChecked.length);
 			domAttr.set(dom.byId('js-supplier-records-count'), 'innerHTML', recordsChecked.length);
+			
+			if(recordsChecked.length > 0) {
+				array.forEach(recordsSelectedMsg, function(item) {
+					domStyle.set(item, 'display', 'block');
+				});
+				
+				array.forEach(recordsNoneSelectedMsg, function(item) {
+					domStyle.set(item, 'display', 'none');
+				});
+				
+				domStyle.set(dom.byId('perm-delete-checkbox'), 'display', 'block');
+				
+				array.forEach(executeBtns, function(item) {
+					domStyle.set(item, 'display', 'inline-block');
+				});
+			} else {
+				array.forEach(recordsSelectedMsg, function(item) {
+					domStyle.set(item, 'display', 'none');
+				});
+				
+				array.forEach(recordsNoneSelectedMsg, function(item) {
+					domStyle.set(item, 'display', 'block');
+				});
+				
+				domStyle.set(dom.byId('perm-delete-checkbox'), 'display', 'none');
+				
+				array.forEach(executeBtns, function(item) {
+					domStyle.set(item, 'display', 'none');
+				});
+			}
 		});
 		
 		var deleteRecords = on(dom.byId('js-delete'), 'click', function(e) {

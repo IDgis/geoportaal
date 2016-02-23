@@ -223,15 +223,18 @@
 						<h4 class="modal-title">Verwijderen statische kaarten</h4>
 					</div>
 					<div class="modal-body">
-						<p>Er worden <b><span id="js-delete-records-count">0</span></b> records verwijderd. Weet u zeker dat u deze actie wilt uitvoeren?</p>
+						<p class="js-records-selected">Er worden <b><span id="js-delete-records-count">0</span></b> records verwijderd. 
+							Weet u zeker dat u deze actie wilt uitvoeren?</p>
 						<p id="perm-delete-checkbox">
 							<input type="checkbox" name="permDel" value="true">
 							<span>Definitief verwijderen</span>
 						</p>
+						
+						<p class="js-records-none-selected">U heeft geen records geselecteerd. Deze actie kan niet worden uitgevoerd.</p>
 					</div>
 					<div class="modal-footer">
 						<button type="button" class="btn btn-default" data-dismiss="modal">Annuleren</button>
-						<button type="submit" class="btn btn-primary">Uitvoeren</button>
+						<button type="submit" class="btn btn-primary js-execute-btn">Uitvoeren</button>
 					</div>
 				</div>
 			</div>
