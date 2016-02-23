@@ -18,6 +18,10 @@ apply plugin: QueryDSLPlugin
 apply plugin: DockerPlugin
 apply plugin: 'org.ajoberstar.release-opinion'
 
+docker {
+    url = 'http://docker:2375'
+}
+
 repositories {
 	jcenter ()
 	mavenCentral ()
