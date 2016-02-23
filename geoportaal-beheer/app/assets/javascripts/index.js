@@ -281,8 +281,9 @@ require([
 			}	
 		}
 		
-		var changeRecords = on(win.doc, '.js-check:change', function(e) {
+		var changeRecords = on(win.doc, '.js-check:click', function(e) {
 			var recordsChecked = query('.js-record-checkbox:checked');
+			
 			domAttr.set(dom.byId('js-status-records-count'), 'innerHTML', recordsChecked.length);
 			domAttr.set(dom.byId('js-delete-records-count'), 'innerHTML', recordsChecked.length);
 			domAttr.set(dom.byId('js-supplier-records-count'), 'innerHTML', recordsChecked.length);
