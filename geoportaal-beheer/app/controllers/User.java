@@ -29,14 +29,14 @@ public class User extends Controller {
 	}
 	
 	public Result authenticate() {
-		final Form<Login> loginForm = Form.form(Login.class).bindFromRequest ();
+		final Form<Login> loginForm = Form.form(Login.class).bindFromRequest();
 		
 		validate(loginForm);
 		
-		if (loginForm.hasErrors()) {
+		if(loginForm.hasErrors()) {
 			return badRequest(views.html.login.render(loginForm));
 		} else {
-			session().clear ();
+			session().clear();
 			session("username", loginForm.get().username);
 			
 			if(loginForm.get().getReturnUrl() != null) {
@@ -64,6 +64,61 @@ public class User extends Controller {
 	
 	public Result logout () {
 		session().clear();
+		return redirect(controllers.routes.Index.index("", "none", "none", "none", "", ""));
+	}
+	
+	public Result renderChangePassword() {
+		final Form<ChangePassword> cpForm = Form.form(ChangePassword.class);
+		
+		return ok(views.html.changepassword.render(cpForm));
+	}
+	
+	public Result changePassword() {
+		final Form<ChangePassword> cpForm = Form.form(ChangePassword.class).bindFromRequest();
+		
+		if("".equals(cpForm.get().username) || "".equals(cpForm.get().oldPassword) || "".equals(cpForm.get().newPassword) || 
+			"".equals(cpForm.get().repeatNewPassword)) {
+			cpForm.reject("Alle velden moeten ingevuld zijn");
+		}
+		
+		if(cpForm.hasErrors()) {
+			return badRequest(views.html.changepassword.render(cpForm));
+		}
+		
+		q.withTransaction(tx -> {
+			String dbPassword = tx
+				.select(user.password)
+				.from(user)
+				.where(user.username.eq(cpForm.get().username))
+				.fetchOne();
+			
+			BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+			if(dbPassword == null || !encoder.matches(cpForm.get().oldPassword, dbPassword)) {
+				cpForm.reject("Gebruikersnaam en wachtwoord komen niet overeen");
+			}
+		});
+		
+		if(cpForm.hasErrors()) {
+			return badRequest(views.html.changepassword.render(cpForm));
+		}
+		
+		if(!cpForm.get().newPassword.equals(cpForm.get().repeatNewPassword)) {
+			cpForm.reject("Nieuwe wachtwoord en herhaling komen niet overeen");
+		}
+		
+		if(cpForm.hasErrors()) {
+			return badRequest(views.html.changepassword.render(cpForm));
+		}
+		
+		q.withTransaction(tx -> {
+			BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+			String encodedNP = encoder.encode(cpForm.get().newPassword);
+			tx.update(user)
+				.set(user.password, encodedNP)
+				.where(user.username.eq(cpForm.get().username))
+				.execute();
+		});
+		
 		return redirect(controllers.routes.Index.index("", "none", "none", "none", "", ""));
 	}
 	
@@ -104,6 +159,48 @@ public class User extends Controller {
 		
 		public void setReturnUrl(final String returnUrl) {
 			this.returnUrl = returnUrl;
+		}
+	}
+	
+	public static class ChangePassword {
+		private String username;
+		private String oldPassword;
+		private String newPassword;
+		private String repeatNewPassword;
+		
+		public ChangePassword() {
+		}
+		
+		public String getUsername() {
+			return username;
+		}
+		
+		public void setUsername(final String username) {
+			this.username = username;
+		}
+		
+		public String getOldPassword() {
+			return oldPassword;
+		}
+		
+		public void setOldPassword(final String oldPassword) {
+			this.oldPassword = oldPassword;
+		}
+		
+		public String getNewPassword() {
+			return newPassword;
+		}
+		
+		public void setNewPassword(final String newPassword) {
+			this.newPassword = newPassword;
+		}
+		
+		public String getRepeatNewPassword() {
+			return repeatNewPassword;
+		}
+		
+		public void setRepeatNewPassword(final String repeatNewPassword) {
+			this.repeatNewPassword = repeatNewPassword;
 		}
 	}
 }
