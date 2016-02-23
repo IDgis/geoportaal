@@ -123,6 +123,13 @@ public class Metadata extends Controller {
 				.where(mdFormat.name.eq(dc.getMdFormat()))
 				.fetchOne();
 			
+			String fileIdValue;
+			if("".equals(dc.getFileId())) {
+				fileIdValue = null;
+			} else {
+				fileIdValue = dc.getFileId();
+			}
+			
 			String creatorOtherValue;
 			if(!"other".equals(dc.getCreator())) {
 				creatorOtherValue = null;
@@ -144,7 +151,7 @@ public class Metadata extends Controller {
 			tx.insert(metadata)
 				.set(metadata.uuid, uuid)
 				.set(metadata.location, dc.getLocation())
-				.set(metadata.fileId, dc.getFileId())
+				.set(metadata.fileId, fileIdValue)
 				.set(metadata.title, dc.getTitle())
 				.set(metadata.description, dc.getDescription())
 				.set(metadata.typeInformation, typeInformationKey)
@@ -362,6 +369,13 @@ public class Metadata extends Controller {
 					.where(mdFormat.name.eq(dc.getMdFormat()))
 					.fetchOne();
 				
+				String fileIdValue;
+				if("".equals(dc.getFileId())) {
+					fileIdValue = null;
+				} else {
+					fileIdValue = dc.getFileId();
+				}
+				
 				String creatorOtherValue;
 				if(!"other".equals(dc.getCreator())) {
 					creatorOtherValue = null;
@@ -380,7 +394,7 @@ public class Metadata extends Controller {
 				Long metadataCount = tx.update(metadata)
 					.where(metadata.uuid.eq(metadataUuid))
 					.set(metadata.location, dc.getLocation())
-					.set(metadata.fileId, dc.getFileId())
+					.set(metadata.fileId, fileIdValue)
 					.set(metadata.title, dc.getTitle())
 					.set(metadata.description, dc.getDescription())
 					.set(metadata.typeInformation, typeInformationKey)
@@ -566,6 +580,13 @@ public class Metadata extends Controller {
 				location = dc.getLocation();
 			}
 			
+			String fileId = null;
+			if("".equals(dc.getFileId())) {
+				fileId = null;
+			} else {
+				fileId = dc.getFileId();
+			}
+			
 			String creator = null;
 			String creatorOther = null;
 			if("none".equals(dc.getCreator())) {
@@ -584,7 +605,7 @@ public class Metadata extends Controller {
 				creatorOther = "";
 			}
 			
-			return ok(validateform.render(title, description, location, creator, creatorOther, dc.getDateSourceCreation(), dc.getSubject()));
+			return ok(validateform.render(title, description, location, fileId, creator, creatorOther, dc.getDateSourceCreation(), dc.getSubject()));
 		} catch(IllegalStateException ise) {
 			return ok(bindingerror.render("Er is iets misgegaan. Controleer of de velden correct zijn ingevuld.", null, null, null, null, null, null, null));
 		}

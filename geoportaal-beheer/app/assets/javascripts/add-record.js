@@ -156,6 +156,7 @@ require([
 			var titleVal = domAttr.get(dom.byId('js-title'), 'value');
 			var descriptionVal = domAttr.get(dom.byId('js-description'), 'value');
 			var locationVal = domAttr.get(dom.byId('js-location'), 'value');
+			var fileIdVal = domAttr.get(dom.byId('js-file-id'), 'value');
 			
 			var dateCreationChrome = domAttr.get(dom.byId('js-date-creation'), 'value');
 			var dateCreationRest = domAttr.get(dom.byId('js-hidden-date-creation'), 'value');
@@ -174,6 +175,7 @@ require([
 			formData.append('title', titleVal);
 			formData.append('description', descriptionVal);
 			formData.append('location', locationVal);
+			formData.append('fileId', fileIdVal);
 			formData.append('creator', creatorVal);
 			
 			if(creatorVal === 'other') {
