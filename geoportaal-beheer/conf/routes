@@ -7,6 +7,8 @@ GET		/	controllers.Index.index(text ?= "", supplier ?= "none", status ?= "none",
 GET		/user/login						controllers.User.login(r: String)
 GET		/user/logout					controllers.User.logout()
 POST	/user/authenticate				controllers.User.authenticate()
+GET		/password/edit					controllers.User.renderChangePassword()
+POST	/user/changepassword			controllers.User.changePassword()
 GET		/create							controllers.Metadata.renderCreateForm(text ?= "", supplier ?= "none", status ?= "none", format ?= "none", dateUpdateStart ?= "", dateUpdateEnd ?= "")
 POST	/createSubmit					controllers.Metadata.createSubmit(text ?= "", supplier ?= "none", status ?= "none", format ?= "none", dateUpdateStart ?= "", dateUpdateEnd ?= "")
 GET		/edit/:metadataUuid				controllers.Metadata.renderEditForm(metadataUuid: String, text ?= "", supplier ?= "none", status ?= "none", format ?= "none", dateUpdateStart ?= "", dateUpdateEnd ?= "")
