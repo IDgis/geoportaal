@@ -27,36 +27,36 @@ public class ToCSV implements OutDestination {
 		final String dataType = "rdf:datatype";
 		final String fileName = xmlFile.getName();
 
-		csvWriter.write("\"" + fileName + "\"");
-		writeToCSV(csvWriter, d.getStrings("/rdf:RDF/rdf:Description/dc:title"), true);
-		writeToCSV(csvWriter, d.getStrings("/rdf:RDF/rdf:Description/dc:creator"), false);
-		writeToCSV(csvWriter, d.getStrings("/rdf:RDF/rdf:Description/dc:subject", dataType, "theme:provisa", false), false);
-		writeToCSV(csvWriter, d.getStrings("/rdf:RDF/rdf:Description/dc:description"), false);
-		writeToCSV(csvWriter, d.getStrings("/rdf:RDF/rdf:Description/dc:publisher"), false);
-		writeToCSV(csvWriter, d.getStrings("/rdf:RDF/rdf:Description/dc:contributor"), false);
-		writeToCSV(csvWriter, d.getStrings("/rdf:RDF/rdf:Description/dc:date"), false);
-		writeToCSV(csvWriter, d.getStrings("/rdf:RDF/rdf:Description/dcterms:issued"), false);
-		writeToCSV(csvWriter, d.getStrings("/rdf:RDF/rdf:Description/dcterms:valid/start"), false);
-		writeToCSV(csvWriter, d.getStrings("/rdf:RDF/rdf:Description/dcterms:valid/end"), false);
-		writeToCSV(csvWriter, d.getStrings("/rdf:RDF/rdf:Description/dc:type"), false);
-		writeToCSV(csvWriter, d.getStrings("/rdf:RDF/rdf:Description/dc:format"), false);
-		writeToCSV(csvWriter, d.getStrings("/rdf:RDF/rdf:Description/dc:identifier"), false);
-		writeToCSV(csvWriter, d.getStrings("/rdf:RDF/rdf:Description/dcterms:references"), false);
-		writeToCSV(csvWriter, d.getStrings("/rdf:RDF/rdf:Description/dcterms:relation"), false);
-		writeToCSV(csvWriter, d.getStrings("/rdf:RDF/rdf:Description/dc:source"), false);
-		writeToCSV(csvWriter, d.getStrings("/rdf:RDF/rdf:Description/dc:language"), false);
+		csvWriter.write("\"" + xmlFile.getName() + "\"");
+		writeToCSV(csvWriter, d.getStrings(Path.TITLE.path()), true);
+		writeToCSV(csvWriter, d.getStrings(Path.CREATOR.path()), false);
+		writeToCSV(csvWriter, d.getStrings(Path.SUBJECT.path(), dataType, "theme:provisa", false), false);
+		writeToCSV(csvWriter, d.getStrings(Path.DESCRIPTION.path()), false);
+		writeToCSV(csvWriter, d.getStrings(Path.PUBLISHER.path()), false);
+		writeToCSV(csvWriter, d.getStrings(Path.CREATOR_OTHER.path()), false);
+		writeToCSV(csvWriter, d.getStrings(Path.DATE_SOURCE_CREATION.path()), false);
+		writeToCSV(csvWriter, d.getStrings(Path.DATE_SOURCE_PUBLICATION.path()), false);
+		writeToCSV(csvWriter, d.getStrings(Path.DATE_SOURCE_VALID_FROM.path()), false);
+		writeToCSV(csvWriter, d.getStrings(Path.DATE_SOURCE_VALID_UNTIL.path()), false);
+		writeToCSV(csvWriter, d.getStrings(Path.TYPE_INFORMATION.path()), false);
+		writeToCSV(csvWriter, d.getStrings(Path.MD_FORMAT.path()), false);
+		writeToCSV(csvWriter, d.getStrings(Path.UUID.path()), false);
+		writeToCSV(csvWriter, d.getStrings(Path.LOCATION.path()), false);
+		writeToCSV(csvWriter, d.getStrings(Path.RELATION.path()), false);
+		writeToCSV(csvWriter, d.getStrings(Path.SOURCE.path()), false);
+		writeToCSV(csvWriter, d.getStrings(Path.LANGUAGE.path()), false);
 
-		List<String> httpURLs = d.getStrings("/rdf:RDF/rdf:Description/dc:relation");
+		List<String> httpURLs = d.getStrings(Path.ATTACHMENT.path());
 		writeToCSV(csvWriter, httpURLs, false);
 		writeToCSV(csvWriter, retrieveStatusCodes(httpURLs), false);
 		writeToCSV(csvWriter, retrieveContentLengths(httpURLs, txtWriter, fileName), false);
 
-		writeToCSV(csvWriter, d.getStrings("/rdf:RDF/rdf:Description/dc:rights", dataType, "gebruiksrestricties", false), false);
-		writeToCSV(csvWriter, d.getStrings("/rdf:RDF/rdf:Description/dc:rights", dataType, "gebruiksrestricties", true), false);
-		writeToCSV(csvWriter, d.getStrings("/rdf:RDF/rdf:Description/dcterms:temporal/start"), false);
-		writeToCSV(csvWriter, d.getStrings("/rdf:RDF/rdf:Description/dcterms:temporal/end"), false);
-		writeToCSV(csvWriter, d.getStrings("/rdf:RDF/rdf:Description/ows:WGS84BoundingBox/ows:LowerCorner"), false);
-		writeToCSV(csvWriter, d.getStrings("/rdf:RDF/rdf:Description/ows:WGS84BoundingBox/ows:UpperCorner"), false);
+		writeToCSV(csvWriter, d.getStrings(Path.RIGHTS.path(), dataType, "gebruiksrestricties", false), false);
+		writeToCSV(csvWriter, d.getStrings(Path.USE_LIMITATION.path(), dataType, "gebruiksrestricties", true), false);
+		writeToCSV(csvWriter, d.getStrings(Path.TEMP_START.path()), false);
+		writeToCSV(csvWriter, d.getStrings(Path.TEMP_END.path()), false);
+		writeToCSV(csvWriter, d.getStrings(Path.LOWER_CORNER.path()), false);
+		writeToCSV(csvWriter, d.getStrings(Path.UPPER_CORNER.path()), false);
 	}
 
 	private static List<String> retrieveStatusCodes(List<String> httpURLsStrings) {
