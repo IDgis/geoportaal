@@ -78,8 +78,8 @@ class DockerPlugin implements Plugin<Project> {
 								task.dependsOn distTask
 								
 								task.from "java:latest"
-								task.copyFile ("/${binary.name}.zip", "/opt/${binary.name}.zip")
-								task.copyFile ("/start-application.sh", "/opt/start-application.sh")
+								task.copyFile ("${binary.name}.zip", "/opt/${binary.name}.zip")
+								task.copyFile ("start-application.sh", "/opt/start-application.sh")
 								task.runCommand "unzip /opt/${binary.name}.zip -d /opt/" +
 									" && chown -R daemon:daemon /opt/${binary.name}" +
 									" && chmod +x /opt/${binary.name}/bin/${binary.name}" +

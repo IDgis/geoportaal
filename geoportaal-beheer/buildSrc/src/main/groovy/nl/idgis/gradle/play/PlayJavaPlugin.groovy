@@ -84,6 +84,8 @@ class PlayJavaPlugin implements Plugin<Project> {
 						// Extract all less scripts found in webjars on which this project depends
 						// to a separate source folder:
 						tasks.create (extractLessTask, Copy) { task ->
+							dependsOn project.configurations.play.buildDependencies
+						
 							from {
 								project.configurations.play.collect { 
 									project.zipTree(it).matching { include 'META-INF/resources/webjars/**' }
