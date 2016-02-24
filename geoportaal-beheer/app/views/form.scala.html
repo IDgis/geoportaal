@@ -249,6 +249,7 @@
 				title="Selecteer het formaat van de data" name="mdFormat">
 					@for(mdFormatOption <- mdFormatList) {
 						<option value="@mdFormatOption.get(mdFormat.name)"
+						@if(create && mdFormatOption.get(mdFormat.id) == 8) {selected}
 						@if(!create && datasetRow.get(metadata.mdFormat) == mdFormatOption.get(mdFormat.id)) {selected}>
 							@mdFormatOption.get(mdFormatLabel.label)
 						</option>
