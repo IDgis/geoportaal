@@ -50,7 +50,7 @@
 			<label class="col-sm-3 control-label">Titel*</label>
 			<div class="col-sm-7">
 				<input class="form-control js-mandatory" id="js-title" type="text" data-toggle="tooltip" data-placement="top" data-field="titel"
-				title="Vul de titel in" name="title" value="@if(!create) {@datasetRow.get(metadata.title)}">
+				maxlength="200" title="Vul de titel in" name="title" value="@if(!create) {@datasetRow.get(metadata.title)}">
 			</div>
 			<div class="col-sm-2">
 				<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" tabindex="-1"
@@ -76,7 +76,7 @@
 			<label class="col-sm-3 control-label">Locatie*</label>
 			<div class="col-sm-7">
 				<input class="form-control js-mandatory" id="js-location" type="text" data-toggle="tooltip" data-placement="top" data-field="locatie"
-				title="Vul het pad naar het bestand op de computer in" name="location" value="@if(!create) {@datasetRow.get(metadata.location)}">
+				maxlength="2000" title="Vul het pad naar het bestand op de computer in" name="location" value="@if(!create) {@datasetRow.get(metadata.location)}">
 			</div>
 			<div class="col-sm-2">
 				<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" tabindex="-1"
@@ -89,7 +89,7 @@
 			<label class="col-sm-3 control-label">Nummer*</label>
 			<div class="col-sm-7">
 				<input class="form-control" id="js-file-id" type="text" data-toggle="tooltip" data-placement="top" 
-				title="Vul het kenmerk in" name="fileId" value="@if(!create) {@datasetRow.get(metadata.fileId)}">
+				maxlength="200" title="Vul het kenmerk in" name="fileId" value="@if(!create) {@datasetRow.get(metadata.fileId)}">
 			</div>
 			<div class="col-sm-2">
 				<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" tabindex="-1"
@@ -192,7 +192,7 @@
 		<div class="form-group" id="js-other-creator">
 			<label class="col-sm-3 control-label"></label>
 			<div class="col-sm-7">
-				<input id="js-other-creator-input" class="form-control" type="text" name="creatorOther" 
+				<input id="js-other-creator-input" class="form-control" type="text" name="creatorOther" maxlength="200"
 				@if(!create) {value="@datasetRow.get(metadata.creatorOther)"} placeholder="Voer eindverantwoordelijke van bestand in">
 			</div>
 			<div class="col-sm-2">
@@ -266,7 +266,7 @@
 		<div class="form-group">
 			<label class="col-sm-3 control-label">Bron (leverancier)</label>
 			<div class="col-sm-7">
-				<input class="form-control" type="text" data-toggle="tooltip" data-placement="top" 
+				<input class="form-control" type="text" data-toggle="tooltip" data-placement="top" maxlength="200"
 				title="Vul de persoon of organisatie waar de bron vandaan komt" name="source" 
 				value="@if(!create) {@datasetRow.get(metadata.source)}">
 			</div>
