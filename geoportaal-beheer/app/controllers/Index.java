@@ -94,7 +94,11 @@ public class Index extends Controller {
 				.join(statusLabel).on(status.id.eq(statusLabel.statusId))
 				.join(mdFormat).on(metadata.mdFormat.eq(mdFormat.id));
 			
-			String[] textSearchTerms = textSearch.split("\\s+");
+			String textSearchFirstStrip = textSearch.replace("&", "");
+			String textSearchSecondStrip = textSearchFirstStrip.replace("(", "");
+			String textSearchFinalStrip = textSearchSecondStrip.replace(")", "");
+			
+			String[] textSearchTerms = textSearchFinalStrip.split("\\s+");
 			String tsQuery = 
 				Arrays.asList(textSearchTerms).stream()
 					.filter(str -> !str.isEmpty())
