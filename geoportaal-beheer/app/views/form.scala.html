@@ -63,7 +63,7 @@
 			<label class="col-sm-3 control-label">Omschrijving*</label>
 			<div class="col-sm-7">
 				<textarea class="form-control js-mandatory" id="js-description" rows="8" data-toggle="tooltip" data-placement="top" data-field="omschrijving"
-				title="Vul de omschrijving in" name="description">@if(!create) {@datasetRow.get(metadata.description)}</textarea>
+				maxlength="100000" title="Vul de omschrijving in" name="description">@if(!create) {@datasetRow.get(metadata.description)}</textarea>
 			</div>
 			<div class="col-sm-2">
 				<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" tabindex="-1"
