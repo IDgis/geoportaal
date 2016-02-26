@@ -283,10 +283,43 @@ require([
 		
 		var changeRecords = on(win.doc, '.js-check:click', function(e) {
 			var recordsChecked = query('.js-record-checkbox:checked');
+			var recordsSelectedMsg = query('.js-records-selected');
+			var recordsNoneSelectedMsg = query('.js-records-none-selected');
+			var executeBtns = query('.js-execute-btn');
 			
 			domAttr.set(dom.byId('js-status-records-count'), 'innerHTML', recordsChecked.length);
 			domAttr.set(dom.byId('js-delete-records-count'), 'innerHTML', recordsChecked.length);
 			domAttr.set(dom.byId('js-supplier-records-count'), 'innerHTML', recordsChecked.length);
+			
+			if(recordsChecked.length > 0) {
+				array.forEach(recordsSelectedMsg, function(item) {
+					domStyle.set(item, 'display', 'block');
+				});
+				
+				array.forEach(recordsNoneSelectedMsg, function(item) {
+					domStyle.set(item, 'display', 'none');
+				});
+				
+				domStyle.set(dom.byId('perm-delete-checkbox'), 'display', 'block');
+				
+				array.forEach(executeBtns, function(item) {
+					domStyle.set(item, 'display', 'inline-block');
+				});
+			} else {
+				array.forEach(recordsSelectedMsg, function(item) {
+					domStyle.set(item, 'display', 'none');
+				});
+				
+				array.forEach(recordsNoneSelectedMsg, function(item) {
+					domStyle.set(item, 'display', 'block');
+				});
+				
+				domStyle.set(dom.byId('perm-delete-checkbox'), 'display', 'none');
+				
+				array.forEach(executeBtns, function(item) {
+					domStyle.set(item, 'display', 'none');
+				});
+			}
 		});
 		
 		var deleteRecords = on(dom.byId('js-delete'), 'click', function(e) {
@@ -326,32 +359,36 @@ require([
 			}
 		});
 		
-		var displaySupplierSelect = on(dom.byId('js-edit-supplier'), 'click', function(e) {
-			domStyle.set(dom.byId('edit-supplier-select'), 'display', 'inline');
-		});
-		
-		var changeSupplier = on(dom.byId('edit-supplier-select'), 'change', function(e) {
-			var recordsChecked = query('.js-record-checkbox:checked');
-			domConstruct.empty(dom.byId('js-supplier-records'));
-			var supplierValue = domAttr.get(dom.byId('edit-supplier-select'), 'value');
-			domAttr.set(dom.byId('js-supplier-value'), 'value', supplierValue);
-			
-			array.forEach(recordsChecked, function(item) {
-				var metadataUuid = domAttr.get(item, 'data-uuid');
-				var input = domConstruct.create('input');
-				domAttr.set(input, 'type', 'hidden');
-				domAttr.set(input, 'name', 'recordsChange[]');
-				domAttr.set(input, 'value', metadataUuid);
-				domConstruct.place(input, dom.byId('js-supplier-records'), 'last');
+		if(dom.byId('js-edit-supplier')) {
+			var displaySupplierSelect = on(dom.byId('js-edit-supplier'), 'click', function(e) {
+				domStyle.set(dom.byId('edit-supplier-select'), 'display', 'inline');
 			});
-			
-			var supplierForm = dom.byId('js-supplier-form');
-			if(recordsChecked.length > 20) {
-				$('#supplier-modal').modal({})
-			} else {
-				supplierForm.submit();
-			}
-		});
+		}
+		
+		if(dom.byId('edit-supplier-select')) {
+			var changeSupplier = on(dom.byId('edit-supplier-select'), 'change', function(e) {
+				var recordsChecked = query('.js-record-checkbox:checked');
+				domConstruct.empty(dom.byId('js-supplier-records'));
+				var supplierValue = domAttr.get(dom.byId('edit-supplier-select'), 'value');
+				domAttr.set(dom.byId('js-supplier-value'), 'value', supplierValue);
+				
+				array.forEach(recordsChecked, function(item) {
+					var metadataUuid = domAttr.get(item, 'data-uuid');
+					var input = domConstruct.create('input');
+					domAttr.set(input, 'type', 'hidden');
+					domAttr.set(input, 'name', 'recordsChange[]');
+					domAttr.set(input, 'value', metadataUuid);
+					domConstruct.place(input, dom.byId('js-supplier-records'), 'last');
+				});
+				
+				var supplierForm = dom.byId('js-supplier-form');
+				if(recordsChecked.length > 20) {
+					$('#supplier-modal').modal({})
+				} else {
+					supplierForm.submit();
+				}
+			});
+		}
 		
 		var searchRecordsEnter = on(win.doc, '.js-search-input:keypress', function(e) {
 			var code = e.keyCode

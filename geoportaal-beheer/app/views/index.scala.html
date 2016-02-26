@@ -44,26 +44,30 @@
 					</button>
 				</div>
 			</div>
-			<div class="form-group">
-				<label class="col-sm-3 control-label">Leverancier</label>
-				<div class="col-sm-7">
-					<select class="form-control" data-toggle="tooltip" data-placement="top" title="Filter op leverancier" name="supplier">
-						<option value="none"></option>
-						@for(supplierOption <- supplierList) {
-							<option value="@supplierOption.get(supplier.name)" 
-								@if(supplierOption.get(supplier.name).equals(supplierSearch)) {selected}>
-									@supplierOption.get(supplier.name)
-							</option>
-						}
-					</select>
+			@if(!roleId.equals(2)) {
+				<div class="form-group">
+					<label class="col-sm-3 control-label">Leverancier</label>
+					<div class="col-sm-7">
+						<select class="form-control" data-toggle="tooltip" data-placement="top" title="Filter op leverancier" name="supplier">
+							<option value="none"></option>
+							@for(supplierOption <- supplierList) {
+								<option value="@supplierOption.get(supplier.name)" 
+									@if(supplierOption.get(supplier.name).equals(supplierSearch)) {selected}>
+										@supplierOption.get(supplier.name)
+								</option>
+							}
+						</select>
+					</div>
+					<div class="col-sm-2">
+						<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" tabindex="-1"
+						data-content="@Messages.get("index.supplier.tooltip")">
+							<span class="glyphicon glyphicon-info-sign"></span>
+						</button>
+					</div>
 				</div>
-				<div class="col-sm-2">
-					<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" tabindex="-1"
-					data-content="@Messages.get("index.supplier.tooltip")">
-						<span class="glyphicon glyphicon-info-sign"></span>
-					</button>
-				</div>
-			</div>
+			} else {
+				<input type="hidden" name="supplier" value="none">
+			}
 			<div class="form-group">
 				<label class="col-sm-3 control-label">Status</label>
 				<div class="col-sm-7">
@@ -223,15 +227,18 @@
 						<h4 class="modal-title">Verwijderen statische kaarten</h4>
 					</div>
 					<div class="modal-body">
-						<p>Er worden <b><span id="js-delete-records-count">0</span></b> records verwijderd. Weet u zeker dat u deze actie wilt uitvoeren?</p>
+						<p class="js-records-selected">Er worden <b><span id="js-delete-records-count">0</span></b> records verwijderd. 
+							Weet u zeker dat u deze actie wilt uitvoeren?</p>
 						<p id="perm-delete-checkbox">
 							<input type="checkbox" name="permDel" value="true">
 							<span>Definitief verwijderen</span>
 						</p>
+						
+						<p class="js-records-none-selected">U heeft geen records geselecteerd. Deze actie kan niet worden uitgevoerd.</p>
 					</div>
 					<div class="modal-footer">
 						<button type="button" class="btn btn-default" data-dismiss="modal">Annuleren</button>
-						<button type="submit" class="btn btn-primary">Uitvoeren</button>
+						<button type="submit" class="btn btn-primary js-execute-btn">Uitvoeren</button>
 					</div>
 				</div>
 			</div>

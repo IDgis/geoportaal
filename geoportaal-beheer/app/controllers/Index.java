@@ -94,9 +94,22 @@ public class Index extends Controller {
 				.join(statusLabel).on(status.id.eq(statusLabel.statusId))
 				.join(mdFormat).on(metadata.mdFormat.eq(mdFormat.id));
 			
-			String[] textSearchTerms = textSearch.split("\\s+");
+			String textSearchFirstStrip = textSearch.replace("&", "");
+			String textSearchSecondStrip = textSearchFirstStrip.replace("(", "");
+			String textSearchFinalStrip = textSearchSecondStrip.replace(")", "");
+			
+			String[] textSearchTerms = textSearchFinalStrip.split("\\s+");
+			
+			List<String> finalListTextSearch = new ArrayList<String>();
+			List<String> textListTermsSearch = Arrays.asList(textSearchTerms);
+			for(String term : textListTermsSearch) {
+				if(term.length() > 0) {
+					finalListTextSearch.add(term + ":*");
+				}
+			}
+			
 			String tsQuery = 
-				Arrays.asList(textSearchTerms).stream()
+				finalListTextSearch.stream()
 					.filter(str -> !str.isEmpty())
 					.collect(Collectors.joining(" & "));
 			
