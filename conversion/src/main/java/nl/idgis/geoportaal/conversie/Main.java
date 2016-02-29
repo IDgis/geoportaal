@@ -188,7 +188,7 @@ public class Main {
 		List<String> httpURLs = d.getStrings("/rdf:RDF/rdf:Description/dc:relation");
 		writeToCSV(writer, httpURLs, false);
 		writeToCSV(writer, retrieveStatusCodes(httpURLs), false);
-		writeToCSV(writer, retrieveContentLengths(httpURLs, writerCL, txtFile), false);
+		writeToCSV(writer, retrieveContentLengths(httpURLs, writerCL, txtFile, fileName), false);
 		
 		writeToCSV(writer, d.getStrings("/rdf:RDF/rdf:Description/dc:rights", dataType, "gebruiksrestricties", false), false);
 		writeToCSV(writer, d.getStrings("/rdf:RDF/rdf:Description/dc:rights", dataType, "gebruiksrestricties", true), false);
@@ -225,7 +225,7 @@ public class Main {
 		return Integer.toString(responseCode);
 	}
 	
-	private static List<String> retrieveContentLengths(List<String> httpURLsStrings, BufferedWriter writerCL, File txtFile) throws IOException {
+	private static List<String> retrieveContentLengths(List<String> httpURLsStrings, BufferedWriter writerCL, File txtFile, String fileName) throws IOException {
 		List<String> httpContentLengths = new ArrayList<>();
 		
 		if(httpURLsStrings.isEmpty())
@@ -234,7 +234,10 @@ public class Main {
 		String[] httpURLs = httpURLsStrings.get(0).split("\\s+");
 		
 		for(String httpURL : httpURLs) {
-			httpContentLengths.add(requestContentLength(httpURL));
+			String contLength = requestContentLength(httpURL);
+			
+			httpContentLengths.add(contLength + "MB");
+			writerCL.write(fileName + ",");
 			writerCL.write(requestContentLength(httpURL));
 			writerCL.newLine();
 		}
@@ -244,15 +247,15 @@ public class Main {
 	
 	private static String requestContentLength(String httpURL) {
 		HttpURLConnection.setFollowRedirects(false);
-		int contentLength = 0;
+		int contentLengthInMb = 0;
 		try {
 			HttpURLConnection con = (HttpURLConnection) new URL(httpURL).openConnection();
 			con.setRequestMethod("HEAD");
-			contentLength = con.getContentLength();
+			contentLengthInMb = con.getContentLength() / 1024 / 1024;
 		} catch (Exception e) {
 			return e.getClass().getName() + ": " + e.getMessage();
 		}
-		return Integer.toString(contentLength);
+		return Integer.toString(contentLengthInMb);
 	}
 
 	private static void writeToCSV(BufferedWriter writer, List<String> elementList, Boolean first) throws IOException {
