@@ -37,14 +37,17 @@ public class Main {
 		File xmlDirectory = getFileFromArray(args, 0);
 		File csvFile = new File(getFileFromArray(args, 1) + "/conversion_input.csv");
 		BufferedWriter writer = new BufferedWriter(new FileWriter(csvFile), 2048);
-		final String header = "\"file_name\";\"title\";\"creator\";\"subject\";\"description\";\"publisher\";\"contributor\";\"date\";\"issued\";\"valid_start\";\"valid_end\";\"type\";\"format\";\"identifier\";\"references\";\"relation_id\";\"source\";\"language\";\"relation_attachment\";\"http_status_code\";\"rights_file\";\"rights_use\";\"temporal_start\";\"temportal_end\";\"bbox_lowercorner\";\"bbox_uppercorner\"";
+		final String header = "\"file_name\";\"title\";\"creator\";\"subject\";\"description\";\"publisher\";\"contributor\";\"date\";\"issued\";\"valid_start\";\"valid_end\";\"type\";\"format\";\"identifier\";\"references\";\"relation_id\";\"source\";\"language\";\"relation_attachment\";\"http_status_code\";\"http_content_length\";\"rights_file\";\"rights_use\";\"temporal_start\";\"temportal_end\";\"bbox_lowercorner\";\"bbox_uppercorner\"";
 		writer.write(header);
+		
+		File txtFile = new File("C:/Users/Sandro/git/geoportaal/conversion/content_lengths.txt");
+		BufferedWriter writerCL = new BufferedWriter(new FileWriter(txtFile), 2048);
 		
 		int i = 0;
 		for (File file : xmlDirectory.listFiles()) {
 			System.out.println(i++ + ": " + file.getName());
 			try {
-				convert(writer, file, csvFile, file.getName());
+				convert(writer, file, csvFile, file.getName(), writerCL, txtFile);
 			} catch(Exception e) {
 				System.out.println("File is invalid");
 				e.printStackTrace();
@@ -53,6 +56,7 @@ public class Main {
 		}
 		
 		writer.close();
+		writerCL.close();
 	}
 	
 	private static class MetadataDocument {
@@ -155,7 +159,7 @@ public class Main {
 		return new MetadataDocument(d, xp);
 	}
 
-	private static void convert(BufferedWriter writer, File xmlFile, File csvFile, String fileName) throws Exception {
+	private static void convert(BufferedWriter writer, File xmlFile, File csvFile, String fileName, BufferedWriter writerCL, File txtFile) throws Exception {
 		writer.newLine();
 		
 		MetadataDocument d = parseDocument(xmlFile);
@@ -184,6 +188,7 @@ public class Main {
 		List<String> httpURLs = d.getStrings("/rdf:RDF/rdf:Description/dc:relation");
 		writeToCSV(writer, httpURLs, false);
 		writeToCSV(writer, retrieveStatusCodes(httpURLs), false);
+		writeToCSV(writer, retrieveContentLengths(httpURLs, writerCL, txtFile, fileName), false);
 		
 		writeToCSV(writer, d.getStrings("/rdf:RDF/rdf:Description/dc:rights", dataType, "gebruiksrestricties", false), false);
 		writeToCSV(writer, d.getStrings("/rdf:RDF/rdf:Description/dc:rights", dataType, "gebruiksrestricties", true), false);
@@ -218,6 +223,39 @@ public class Main {
 			return e.getClass().getName() + ": " + e.getMessage();
 		}
 		return Integer.toString(responseCode);
+	}
+	
+	private static List<String> retrieveContentLengths(List<String> httpURLsStrings, BufferedWriter writerCL, File txtFile, String fileName) throws IOException {
+		List<String> httpContentLengths = new ArrayList<>();
+		
+		if(httpURLsStrings.isEmpty())
+			return httpContentLengths;
+		
+		String[] httpURLs = httpURLsStrings.get(0).split("\\s+");
+		
+		for(String httpURL : httpURLs) {
+			String contLength = requestContentLength(httpURL);
+			
+			httpContentLengths.add(contLength + "MB");
+			writerCL.write(fileName + ",");
+			writerCL.write(requestContentLength(httpURL));
+			writerCL.newLine();
+		}
+		
+		return httpContentLengths;
+	}
+	
+	private static String requestContentLength(String httpURL) {
+		HttpURLConnection.setFollowRedirects(false);
+		int contentLengthInMb = 0;
+		try {
+			HttpURLConnection con = (HttpURLConnection) new URL(httpURL).openConnection();
+			con.setRequestMethod("HEAD");
+			contentLengthInMb = con.getContentLength() / 1024 / 1024;
+		} catch (Exception e) {
+			return e.getClass().getName() + ": " + e.getMessage();
+		}
+		return Integer.toString(contentLengthInMb);
 	}
 
 	private static void writeToCSV(BufferedWriter writer, List<String> elementList, Boolean first) throws IOException {
