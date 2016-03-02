@@ -51,6 +51,8 @@ require([
 	], function(dom, query, on, lang, win, array, domAttr, domConstruct, domStyle, xhr) {
 		
 		var create = domAttr.get(dom.byId('js-date-creation'), 'data-create');
+		var validate = domAttr.get(dom.byId('js-date-creation'), 'data-validate');
+		
 		var datesArray = query('input[type=date]');
 		if(!Modernizr.inputtypes.date) {
 			array.forEach(datesArray, function(item) {
@@ -60,11 +62,21 @@ require([
 			});
 
 			if(create === "true") {
-				var todayLocal = domAttr.get(dom.byId('js-date-creation'), 'data-date-create-today-local');
-				var todayUS = domAttr.get(dom.byId('js-date-creation'), 'data-date-create-today-US');
-				
-				domAttr.set(dom.byId('js-date-creation'), 'value', todayLocal);
-				domAttr.set(dom.byId('js-hidden-date-creation'), 'value', todayUS);
+				if(validate === "true") {
+					array.forEach(datesArray, function(item) {
+						var validateDate = domAttr.get(item, 'data-date-value-US');
+						var validateDateLocal = domAttr.get(item, 'data-date-value-local');
+						
+						domAttr.set(item, 'value', validateDateLocal);
+						domAttr.set(query(item).query('~ input')[0], 'value', validateDate);
+					});
+				} else {
+					var todayLocal = domAttr.get(dom.byId('js-date-creation'), 'data-date-create-today-local');
+					var todayUS = domAttr.get(dom.byId('js-date-creation'), 'data-date-create-today-US');
+					
+					domAttr.set(dom.byId('js-date-creation'), 'value', todayLocal);
+					domAttr.set(dom.byId('js-hidden-date-creation'), 'value', todayUS);
+				}
 			} else {
 				array.forEach(datesArray, function(item) {
 					var dateLocal = domAttr.get(item, 'data-date-value-local');
@@ -76,8 +88,15 @@ require([
 			}
 		} else {
 			if(create === "true") {
-				var today = domAttr.get(dom.byId('js-date-creation'), 'data-date-create-today-US');
-				domAttr.set(dom.byId('js-date-creation'), 'value', today);
+				if(validate === "true") {
+					array.forEach(datesArray, function(item) {
+						var validateDate = domAttr.get(item, 'data-date-value-US');
+						domAttr.set(item, 'value', validateDate);
+					});
+				} else {
+					var today = domAttr.get(dom.byId('js-date-creation'), 'data-date-create-today-US');
+					domAttr.set(dom.byId('js-date-creation'), 'value', today);
+				}
 			} else {
 				array.forEach(datesArray, function(item) {
 					var date = domAttr.get(item, 'data-date-value-US');
@@ -147,7 +166,7 @@ require([
 		});
 		
 		var saveRecord = on(dom.byId('js-save-form'), 'click', function(e) {
-			var saveButton = dom.byId('js-save-form');
+			domAttr.set(this, 'type', 'button');
 			var form = dom.byId('js-form');
 			
 			var id = domAttr.get(this, 'data-id');
