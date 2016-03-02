@@ -9,6 +9,10 @@ buildscript {
 	repositories { mavenCentral() }
 }
 
+dependencies {
+	compile 'org.postgresql:postgresql:9.4.1208'
+}
+
 jar {
 	manifest {
 		attributes 'Main-Class': 'nl.idgis.geoportaal.conversie.Main'
