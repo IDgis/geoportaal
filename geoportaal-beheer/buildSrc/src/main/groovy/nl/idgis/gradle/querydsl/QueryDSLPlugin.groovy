@@ -56,19 +56,18 @@ class QueryDSLPlugin implements Plugin<Project> {
 		// settings for the JavaCompile task don't all accept closures and the extension
 		// may not have been configured otherwise.
 		project.afterEvaluate {
-		
-			def queryDSLMetaDataExporterDependencies = project.configurations.queryDSLMetaDataExporter.buildDependencies
-		
-			// Database creation task:
-			def databaseCreationTask = project.task ('queryDSLCreateDatabase') {
-				dependsOn queryDSLMetaDataExporterDependencies
+			
+			def generateMetadataTask = project.task ('queryDSLGenerateMetadata') {
+				dependsOn project.configurations.queryDSLMetaDataExporter.buildDependencies
+				
 				ext.srcDir = project.queryDSL.evolutionsDir
 				ext.srcFiles = project.files { srcDir.listFiles () }
 				ext.buildDbName = "${project.name}-build-${UUID.randomUUID()}".toString()
+				ext.packageName = project.queryDSL.packageName
+				ext.targetDir = new File (project.buildDir.absolutePath + File.separator + "queryDSL" + File.separator + "src")
 				
 				inputs.files srcFiles
-				
-				println "jdbc:postgresql://${project.queryDSL.databaseHost}:5432/postgres"
+				outputs.dir targetDir
 				
 				doLast {
 					println "build database name: ${buildDbName}"
@@ -90,12 +89,16 @@ class QueryDSLPlugin implements Plugin<Project> {
 					// Populate the database:
 					def sql = Sql.newInstance ("jdbc:postgresql://${project.queryDSL.databaseHost}:5432/${buildDbName}", "postgres", "postgres", "org.postgresql.Driver")
 					try {
-						srcFiles.collect { it.getAbsolutePath() }.sort ().each { file ->
+						// Extract revision number from file name:
+						def rev = { file -> file.name.find(/(.*?)\.sql/, { name, rev -> rev }).toInteger() }
+					
+						srcFiles.sort { a, b ->  rev(a) - rev(b) }.each { file ->
+							
 							// Extract the "Ups" section from the SQL:
 							StringBuilder builder = new StringBuilder ()
 							boolean inUps = false;
 							
-							new File (file).readLines().each { line ->
+							new File (file.getAbsolutePath()).readLines().each { line ->
 								if (line.startsWith ("# --- !Ups")) {
 									inUps = true
 								} else if (line.startsWith ("# --- !Downs")) {
@@ -112,28 +115,9 @@ class QueryDSLPlugin implements Plugin<Project> {
 					} finally {
 						sql.close ()
 					}
-				}
-			}
-			
-			// Metadata generator task:
-			def generateMetadataTask = project.task ('queryDSLGenerateMetadata') {
-				dependsOn databaseCreationTask
-				dependsOn queryDSLMetaDataExporterDependencies
-				
-				ext.packageName = project.queryDSL.packageName
-				ext.targetDir = new File (project.buildDir.absolutePath + File.separator + "queryDSL" + File.separator + "src") 
-				
-				outputs.dir targetDir
-			
-				doLast {	
-					// Add dependencies to classpath:
-					URLClassLoader loader = GroovyObject.class.classLoader
-					project.configurations.queryDSLMetaDataExporter.each { File file ->
-						loader.addURL (file.toURL ())
-					}
 					
 					// Generate QueryDSL metamodel
-					def sql = Sql.newInstance ("jdbc:postgresql://${project.queryDSL.databaseHost}:5432/${databaseCreationTask.buildDbName}", "postgres", "postgres", "org.postgresql.Driver")
+					sql = Sql.newInstance ("jdbc:postgresql://${project.queryDSL.databaseHost}:5432/${buildDbName}", "postgres", "postgres", "org.postgresql.Driver")
 					try {
 						def tsVectorClass = loader.loadClass ('nl.idgis.querydsl.TsVector')
 						def tsVectorPathClass = loader.loadClass ('nl.idgis.querydsl.TsVectorPath')
@@ -157,24 +141,11 @@ class QueryDSLPlugin implements Plugin<Project> {
 					} finally {
 						sql.close ()
 					}
-				}
-			}
-			
-			def databaseDropTask = project.task ('queryDSLDropDatabase') {
-				dependsOn queryDSLMetaDataExporterDependencies
-				dependsOn generateMetadataTask
-			
-				doLast {
-					// Add dependencies to classpath:
-					URLClassLoader loader = GroovyObject.class.classLoader
-					project.configurations.queryDSLMetaDataExporter.each { File file ->
-						loader.addURL (file.toURL ())
-					}
 					
-					def masterSql = Sql.newInstance ("jdbc:postgresql://${project.queryDSL.databaseHost}:5432/postgres", "postgres", "postgres", "org.postgresql.Driver")
+					masterSql = Sql.newInstance ("jdbc:postgresql://${project.queryDSL.databaseHost}:5432/postgres", "postgres", "postgres", "org.postgresql.Driver")
 					try {
 						// Drop the database
-						masterSql.execute "drop database if exists \"" + databaseCreationTask.buildDbName + "\""
+						masterSql.execute "drop database if exists \"" + buildDbName + "\""
 					} finally {
 						masterSql.close ()
 					}
@@ -183,10 +154,8 @@ class QueryDSLPlugin implements Plugin<Project> {
 			
 			// The QueryDSL annotation processor task:
 			def annotationProcessorTask = project.task ('queryDSLAnnotationProcessor', type: JavaCompile, group: 'build', description: 'Generates QueryDSL projections') {
-				dependsOn databaseDropTask
 				dependsOn generateMetadataTask
 				
-				println "Setting source: " + project.queryDSL.sourceDir
 				source = project.queryDSL.sourceDir
 				classpath = project.configurations.queryDSLApt + project.queryDSL.classpath + project.files ("${project.buildDir}/queryDSL/src")
 				options.compilerArgs = [
