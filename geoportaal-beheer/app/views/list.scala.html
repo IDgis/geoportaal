@@ -20,11 +20,25 @@
 				<th class="col-sm-1">
 					<input type="checkbox" id="js-check-all" class="js-check" data-page="1">
 				</th>
-				<th class="col-sm-1">Actie</th>
-				<th class="col-sm-4">Titel</th>
-				<th class="col-sm-2">Leverancier</th>
-				<th class="col-sm-2">Status</th>
-				<th class="col-sm-2">Datum</th>
+				<th class="col-sm-1">
+					Actie
+				</th>
+				<th class="col-sm-4">
+					Titel
+					<span class="pull-right glyphicon glyphicon glyphicon-sort"></span>
+				</th>
+				<th class="col-sm-2">
+					Leverancier
+					<span class="pull-right glyphicon glyphicon glyphicon-sort"></span>
+				</th>
+				<th class="col-sm-2">
+					Status
+					<span class="pull-right glyphicon glyphicon glyphicon-sort"></span>
+				</th>
+				<th class="col-sm-2">
+					Datum
+					<span class="pull-right glyphicon glyphicon glyphicon-sort"></span>
+				</th>
 			</tr>
 			@for(datasetRow <- datasetRows) {
 				@if(datasetRows.indexOf(datasetRow) > -1 && datasetRows.indexOf(datasetRow) < 20) {	
