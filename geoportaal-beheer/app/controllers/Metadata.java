@@ -12,7 +12,6 @@ import static models.QRights.rights;
 import static models.QRightsLabel.rightsLabel;
 import static models.QSubject.subject;
 import static models.QSubjectLabel.subjectLabel;
-import static models.QSupplier.supplier;
 import static models.QTypeInformation.typeInformation;
 import static models.QTypeInformationLabel.typeInformationLabel;
 import static models.QUseLimitation.useLimitation;
@@ -146,9 +145,9 @@ public class Metadata extends Controller {
 			Timestamp dateSourceValidFromValue = nullCheckDate(dc.getDateSourceValidFrom());
 			Timestamp dateSourceValidUntilValue = nullCheckDate(dc.getDateSourceValidUntil());
 			
-			Integer supplierId = tx.select(supplier.id)
-				.from(supplier)
-				.where(supplier.name.eq(session("username")))
+			Integer supplierId = tx.select(user.id)
+				.from(user)
+				.where(user.username.eq(session("username")))
 				.fetchOne();
 			
 			Boolean creatorOtherFailed = false;

@@ -18,11 +18,11 @@
 
 @import play.i18n._
 @import models.QMetadata.metadata
-@import models.QSupplier.supplier
 @import models.QStatus.status
 @import models.QMdFormat.mdFormat
 @import models.QStatusLabel.statusLabel
 @import models.QMdFormatLabel.mdFormatLabel
+@import models.QUser.user
 
 @main(Messages.get("index.header"), textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch, 
 	routes.Assets.versioned("javascripts/index.js").url) {
@@ -52,9 +52,9 @@
 						<select class="form-control" data-toggle="tooltip" data-placement="top" title="Filter op leverancier" name="supplier">
 							<option value="none"></option>
 							@for(supplierOption <- supplierList) {
-								<option value="@supplierOption.get(supplier.name)" 
-									@if(supplierOption.get(supplier.name).equals(supplierSearch)) {selected}>
-										@supplierOption.get(supplier.name)
+								<option value="@supplierOption.get(user.label)" 
+									@if(supplierOption.get(user.label).equals(supplierSearch)) {selected}>
+										@supplierOption.get(user.label)
 								</option>
 							}
 						</select>
@@ -171,7 +171,7 @@
 				<select class="form-control" id="edit-supplier-select">
 					<option>--</option>
 					@for(supplierOption <- supplierList) {
-						<option value="@supplierOption.get(supplier.name)">@supplierOption.get(supplier.name)</option>
+						<option value="@supplierOption.get(user.label)">@supplierOption.get(user.label)</option>
 					}
 				</select>
 			}
