@@ -90,12 +90,16 @@ class QueryDSLPlugin implements Plugin<Project> {
 					// Populate the database:
 					def sql = Sql.newInstance ("jdbc:postgresql://${project.queryDSL.databaseHost}:5432/${buildDbName}", "postgres", "postgres", "org.postgresql.Driver")
 					try {
-						srcFiles.collect { it.getAbsolutePath() }.sort ().each { file ->
+						// Extract revision number from file name:
+						def rev = { file -> file.name.find(/(.*?)\.sql/, { name, rev -> rev }).toInteger() }
+					
+						srcFiles.sort { a, b ->  rev(a) - rev(b) }.each { file ->
+							
 							// Extract the "Ups" section from the SQL:
 							StringBuilder builder = new StringBuilder ()
 							boolean inUps = false;
 							
-							new File (file).readLines().each { line ->
+							new File (file.getAbsolutePath()).readLines().each { line ->
 								if (line.startsWith ("# --- !Ups")) {
 									inUps = true
 								} else if (line.startsWith ("# --- !Downs")) {
