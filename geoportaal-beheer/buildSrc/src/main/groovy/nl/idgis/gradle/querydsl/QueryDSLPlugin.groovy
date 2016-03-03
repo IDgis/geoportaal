@@ -69,8 +69,6 @@ class QueryDSLPlugin implements Plugin<Project> {
 				inputs.files srcFiles
 				outputs.dir targetDir
 				
-				println "jdbc:postgresql://${project.queryDSL.databaseHost}:5432/postgres"
-				
 				doLast {
 					println "build database name: ${buildDbName}"
 					
@@ -158,7 +156,6 @@ class QueryDSLPlugin implements Plugin<Project> {
 			def annotationProcessorTask = project.task ('queryDSLAnnotationProcessor', type: JavaCompile, group: 'build', description: 'Generates QueryDSL projections') {
 				dependsOn generateMetadataTask
 				
-				println "Setting source: " + project.queryDSL.sourceDir
 				source = project.queryDSL.sourceDir
 				classpath = project.configurations.queryDSLApt + project.queryDSL.classpath + project.files ("${project.buildDir}/queryDSL/src")
 				options.compilerArgs = [
