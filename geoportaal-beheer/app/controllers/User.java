@@ -58,7 +58,7 @@ public class User extends Controller {
 			if(loginForm.get().getReturnUrl() != null) {
 				return redirect(loginForm.get().getReturnUrl ());
 			} else {
-				return redirect(controllers.routes.Index.index("", "none", "none", "none", "", ""));
+				return redirect(controllers.routes.Index.index("", "none", "none", "none", "", "", "dateDesc"));
 			}
 		}
 	}
@@ -80,7 +80,7 @@ public class User extends Controller {
 	
 	public Result logout () {
 		session().clear();
-		return redirect(controllers.routes.Index.index("", "none", "none", "none", "", ""));
+		return redirect(controllers.routes.Index.index("", "none", "none", "none", "", "", "dateDesc"));
 	}
 	
 	public Result renderChangePassword() {
@@ -135,7 +135,7 @@ public class User extends Controller {
 				.execute();
 		});
 		
-		return redirect(controllers.routes.Index.index("", "none", "none", "none", "", ""));
+		return redirect(controllers.routes.Index.index("", "none", "none", "none", "", "", "dateDesc"));
 	}
 	
 	public Result renderForgotPassword() {
@@ -176,7 +176,7 @@ public class User extends Controller {
 			}
 		});
 		
-		return redirect(controllers.routes.Index.index("", "none", "none", "none", "", ""));
+		return redirect(controllers.routes.Index.index("", "none", "none", "none", "", "", "dateDesc"));
 	}
 	
 	public static class Login {

@@ -56,7 +56,7 @@ public class Index extends Controller {
 	@Inject QueryDSL q;
 	
 	public Result index(String textSearch, String supplierSearch, String statusSearch, String mdFormatSearch, String dateStartSearch, 
-			String dateEndSearch) throws SQLException {
+			String dateEndSearch, String sort) throws SQLException {
 		return q.withTransaction(tx -> {
 			List<Tuple> supplierList = tx.select(supplier.all())
 				.from(supplier)
@@ -184,10 +184,41 @@ public class Index extends Controller {
 				datasetQuery.where(metadata.supplier.eq(supplierId));
 			}
 			
-			List<Tuple> datasetRows = datasetQuery
-				.limit(200)
-				.orderBy(metadata.lastRevisionDate.desc())
-				.fetch();
+			datasetQuery.limit(200);
+			
+			if("titleDesc".equals(sort)) {
+				datasetQuery.orderBy(metadata.title.desc());
+			}
+			
+			if("titleAsc".equals(sort)) {
+				datasetQuery.orderBy(metadata.title.asc());
+			}
+			
+			if("supplierDesc".equals(sort)) {
+				datasetQuery.orderBy(supplier.name.desc());
+			}
+			
+			if("supplierAsc".equals(sort)) {
+				datasetQuery.orderBy(supplier.name.asc());
+			}
+			
+			if("statusDesc".equals(sort)) {
+				datasetQuery.orderBy(metadata.status.desc());
+			}
+			
+			if("statusAsc".equals(sort)) {
+				datasetQuery.orderBy(metadata.status.asc());
+			}
+			
+			if("dateAsc".equals(sort)) {
+				datasetQuery.orderBy(metadata.lastRevisionDate.asc());
+			}
+			
+			if("dateDesc".equals(sort)) {
+				datasetQuery.orderBy(metadata.lastRevisionDate.desc());
+			}
+			
+			List<Tuple> datasetRows = datasetQuery.fetch();
 			
 			Timestamp resetTimestampEndSearch = null;
 			if(finalDateEndSearch != null) {
@@ -195,7 +226,7 @@ public class Index extends Controller {
 			}
 
 			return ok(views.html.index.render(datasetRows, supplierList, statusList, mdFormatList, sdfUS, sdfLocal, roleId, textSearch, 
-				supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch, timestampStartSearch, resetTimestampEndSearch));
+				supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch, timestampStartSearch, resetTimestampEndSearch, sort));
 		});
 	}
 	
@@ -214,7 +245,7 @@ public class Index extends Controller {
 			dateEndSearch = "";
 		}
 		
-		return redirect(controllers.routes.Index.index(textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch));
+		return redirect(controllers.routes.Index.index(textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch, "dateDesc"));
 	}
 	
 	public Result changeStatus() {
@@ -291,7 +322,7 @@ public class Index extends Controller {
 				}
 			}
 			
-			return redirect(controllers.routes.Index.index(textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch));
+			return redirect(controllers.routes.Index.index(textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch, "dateDesc"));
 		});
 		
 	}
@@ -334,7 +365,7 @@ public class Index extends Controller {
 				}
 			}
 			
-			return redirect(controllers.routes.Index.index(textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch));
+			return redirect(controllers.routes.Index.index(textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch, "dateDesc"));
 		});
 	}
 	
@@ -414,7 +445,7 @@ public class Index extends Controller {
 			
 			tx.refreshMaterializedViewConcurrently(metadataSearch);
 			
-			return redirect(controllers.routes.Index.index(textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch));
+			return redirect(controllers.routes.Index.index(textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch, "dateDesc"));
 		});
 	}
 	

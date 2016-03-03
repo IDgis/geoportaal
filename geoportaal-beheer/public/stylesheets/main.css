@@ -85,3 +85,7 @@ input[type="file"].input-attachment {display:inline;}
 .js-records-selected {display:none;}
 #perm-delete-checkbox {display:none;}
 .js-execute-btn {display:none;}
+
+.sort-button {color:black;}
+.sort-button:hover {text-decoration:none;color:#337ab7;}
+.sort-active {color:#337ab7;}

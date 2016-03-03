@@ -250,7 +250,7 @@ public class Metadata extends Controller {
 			
 			tx.refreshMaterializedViewConcurrently(metadataSearch);
 			
-			return redirect(controllers.routes.Index.index(textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch));
+			return redirect(controllers.routes.Index.index(textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch, "dateDesc"));
 		});
 	}
 	
@@ -569,7 +569,7 @@ public class Metadata extends Controller {
 			
 			tx.refreshMaterializedViewConcurrently(metadataSearch);
 			
-			return redirect(controllers.routes.Index.index(textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch));
+			return redirect(controllers.routes.Index.index(textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch, "dateDesc"));
 		});
 	}
 	
@@ -761,6 +761,6 @@ public class Metadata extends Controller {
 	
 	public Result cancel(String textSearch, String supplierSearch, String statusSearch, String mdFormatSearch, String dateStartSearch, 
 			String dateEndSearch) {
-		return redirect(controllers.routes.Index.index(textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch));
+		return redirect(controllers.routes.Index.index(textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch, "dateDesc"));
 	}
 }
