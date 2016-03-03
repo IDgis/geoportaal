@@ -3,14 +3,30 @@ package controllers;
 import static models.QUser.user;
 import static models.QRole.role1;
 
+import java.io.UnsupportedEncodingException;
+import java.math.BigInteger;
+import java.security.SecureRandom;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 
 import javax.inject.Inject;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 
+import org.apache.commons.lang.RandomStringUtils;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import com.querydsl.core.Tuple;
 
+import nl.idgis.commons.utils.Mail;
 import play.Play;
 import play.data.Form;
 import play.mvc.Controller;
@@ -122,6 +138,47 @@ public class User extends Controller {
 		return redirect(controllers.routes.Index.index("", "none", "none", "none", "", ""));
 	}
 	
+	public Result renderForgotPassword() {
+		final Form<ForgotPassword> fpForm = Form.form(ForgotPassword.class);
+		
+		return ok(views.html.forgotpassword.render(fpForm));
+	}
+	
+	public Result forgotPassword() {
+		final Form<ForgotPassword> fpForm = Form.form(ForgotPassword.class).bindFromRequest();
+		
+		String password = RandomStringUtils.randomAlphanumeric(10);
+		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+		String encodedPW = encoder.encode(password);
+		
+		q.withTransaction(tx -> {
+			Long count = tx.update(user)
+				.set(user.password, encodedPW)
+				.where(user.username.eq(fpForm.get().username))
+				.execute();
+			
+			Integer finalCount = count.intValue();
+			if(finalCount.equals(1)) {
+				Map<String, Object> placeholders = new HashMap<String, Object>();
+				placeholders.put("password", password);
+				
+				String msg = Mail.createMsg(placeholders, "Uw wachtwoord is op verzoek gereset. Uw nieuwe wachtwoord is ${password}. U wordt "
+						+ "aangeraden om zo snel als mogelijk het wachtwoord te veranderen.");
+				try {
+					Mail.send("mail.solcon.nl", 25, "sandro.neumann@idgis.nl", "sandro.neumann@idgis.nl", "Uw wachtwoord voor het geoportaal-beheer is gereset", msg);
+				} catch(Exception e) {
+					System.out.println("e" + e.getMessage());
+				}
+			}
+			
+			if(finalCount > 1) {
+				throw new Exception("Resetting password: too many rows affected");
+			}
+		});
+		
+		return redirect(controllers.routes.Index.index("", "none", "none", "none", "", ""));
+	}
+	
 	public static class Login {
 		@Constraints.Required
 		private String username;
@@ -201,6 +258,21 @@ public class User extends Controller {
 		
 		public void setRepeatNewPassword(final String repeatNewPassword) {
 			this.repeatNewPassword = repeatNewPassword;
+		}
+	}
+	
+	public static class ForgotPassword {
+		private String username;
+		
+		public ForgotPassword() {
+		}
+		
+		public String getUsername() {
+			return username;
+		}
+		
+		public void setUsername(final String username) {
+			this.username = username;
 		}
 	}
 }

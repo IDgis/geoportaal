@@ -64,6 +64,7 @@ dependencies {
 	play "com.typesafe.play:play-cache_2.11:2.4.3"			// cache
 	play "com.typesafe.play:play-java-ws_2.11:2.4.3"			// javaWs
 	play "com.typesafe.play:play-jdbc-evolutions_2.11:2.4.3"	// evolutions
+	play "nl.idgis.commons:commons-utils:0.0.14"
 	
 	// Geoportaal dependencies:
 	play project(':querydsl-tsvector')
