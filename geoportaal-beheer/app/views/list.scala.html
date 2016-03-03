@@ -11,8 +11,8 @@
 	)
 
 @import models.QMetadata.metadata
-@import models.QSupplier.supplier
 @import models.QStatusLabel.statusLabel
+@import models.QUser.user
 
 <div class="overzicht-records">
 	<table class="col-sm-offset-0 table table-bordered" id="list-table">
@@ -70,7 +70,7 @@
 							</a>
 						</td>
 						<td>@datasetRow.get(metadata.title)</td>
-						<td>@datasetRow.get(supplier.name)</td>
+						<td>@datasetRow.get(user.label)</td>
 						<td>@datasetRow.get(statusLabel.label)</td>
 						<td>@sdfLocal.format(datasetRow.get(metadata.lastRevisionDate).getTime())</td>
 					</tr>
@@ -90,7 +90,7 @@
 							</a>
 						</td>
 						<td>@datasetRow.get(metadata.title)</td>
-						<td>@datasetRow.get(supplier.name)</td>
+						<td>@datasetRow.get(user.label)</td>
 						<td>@datasetRow.get(statusLabel.label)</td>
 						<td>@sdfLocal.format(datasetRow.get(metadata.lastRevisionDate).getTime())</td>
 					</tr>
@@ -110,7 +110,7 @@
 							</a>
 						</td>
 						<td>@datasetRow.get(metadata.title)</td>
-						<td>@datasetRow.get(supplier.name)</td>
+						<td>@datasetRow.get(user.label)</td>
 						<td>@datasetRow.get(statusLabel.label)</td>
 						<td>@sdfLocal.format(datasetRow.get(metadata.lastRevisionDate).getTime())</td>
 					</tr>
@@ -130,7 +130,7 @@
 							</a>
 						</td>
 						<td>@datasetRow.get(metadata.title)</td>
-						<td>@datasetRow.get(supplier.name)</td>
+						<td>@datasetRow.get(user.label)</td>
 						<td>@datasetRow.get(statusLabel.label)</td>
 						<td>@sdfLocal.format(datasetRow.get(metadata.lastRevisionDate).getTime())</td>
 					</tr>
@@ -150,7 +150,7 @@
 							</a>
 						</td>
 						<td>@datasetRow.get(metadata.title)</td>
-						<td>@datasetRow.get(supplier.name)</td>
+						<td>@datasetRow.get(user.label)</td>
 						<td>@datasetRow.get(statusLabel.label)</td>
 						<td>@sdfLocal.format(datasetRow.get(metadata.lastRevisionDate).getTime())</td>
 					</tr>
@@ -170,7 +170,7 @@
 							</a>
 						</td>
 						<td>@datasetRow.get(metadata.title)</td>
-						<td>@datasetRow.get(supplier.name)</td>
+						<td>@datasetRow.get(user.label)</td>
 						<td>@datasetRow.get(statusLabel.label)</td>
 						<td>@sdfLocal.format(datasetRow.get(metadata.lastRevisionDate).getTime())</td>
 					</tr>
@@ -190,7 +190,7 @@
 							</a>
 						</td>
 						<td>@datasetRow.get(metadata.title)</td>
-						<td>@datasetRow.get(supplier.name)</td>
+						<td>@datasetRow.get(user.label)</td>
 						<td>@datasetRow.get(statusLabel.label)</td>
 						<td>@sdfLocal.format(datasetRow.get(metadata.lastRevisionDate).getTime())</td>
 					</tr>
@@ -210,7 +210,7 @@
 							</a>
 						</td>
 						<td>@datasetRow.get(metadata.title)</td>
-						<td>@datasetRow.get(supplier.name)</td>
+						<td>@datasetRow.get(user.label)</td>
 						<td>@datasetRow.get(statusLabel.label)</td>
 						<td>@sdfLocal.format(datasetRow.get(metadata.lastRevisionDate).getTime())</td>
 					</tr>
@@ -230,7 +230,7 @@
 							</a>
 						</td>
 						<td>@datasetRow.get(metadata.title)</td>
-						<td>@datasetRow.get(supplier.name)</td>
+						<td>@datasetRow.get(user.label)</td>
 						<td>@datasetRow.get(statusLabel.label)</td>
 						<td>@sdfLocal.format(datasetRow.get(metadata.lastRevisionDate).getTime())</td>
 					</tr>
@@ -250,7 +250,7 @@
 							</a>
 						</td>
 						<td>@datasetRow.get(metadata.title)</td>
-						<td>@datasetRow.get(supplier.name)</td>
+						<td>@datasetRow.get(user.label)</td>
 						<td>@datasetRow.get(statusLabel.label)</td>
 						<td>@sdfLocal.format(datasetRow.get(metadata.lastRevisionDate).getTime())</td>
 					</tr>

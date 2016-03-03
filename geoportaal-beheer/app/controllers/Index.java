@@ -14,7 +14,6 @@ import static models.QStatus.status;
 import static models.QStatusLabel.statusLabel;
 import static models.QSubject.subject;
 import static models.QSubjectLabel.subjectLabel;
-import static models.QSupplier.supplier;
 import static models.QTypeInformation.typeInformation;
 import static models.QTypeInformationLabel.typeInformationLabel;
 import static models.QUseLimitation.useLimitation;
@@ -58,9 +57,9 @@ public class Index extends Controller {
 	public Result index(String textSearch, String supplierSearch, String statusSearch, String mdFormatSearch, String dateStartSearch, 
 			String dateEndSearch, String sort) throws SQLException {
 		return q.withTransaction(tx -> {
-			List<Tuple> supplierList = tx.select(supplier.all())
-				.from(supplier)
-				.orderBy(supplier.name.asc())
+			List<Tuple> supplierList = tx.select(user.all())
+				.from(user)
+				.orderBy(user.label.asc())
 				.fetch();
 			
 			List<Tuple> statusList = tx.select(status.name, statusLabel.label)
@@ -87,10 +86,10 @@ public class Index extends Controller {
 				.fetchOne();
 			
 			SQLQuery<Tuple> datasetQuery = tx.select(metadata.id, metadata.uuid, metadata.title, metadata.status, metadata.lastRevisionDate, 
-					statusLabel.label, supplier.name, status.name, mdFormat.name)
+					statusLabel.label, user.label, status.name, mdFormat.name)
 				.from(metadata)
 				.join(status).on(metadata.status.eq(status.id))
-				.join(supplier).on(metadata.supplier.eq(supplier.id))
+				.join(user).on(metadata.supplier.eq(user.id))
 				.join(statusLabel).on(status.id.eq(statusLabel.statusId))
 				.join(mdFormat).on(metadata.mdFormat.eq(mdFormat.id));
 			
@@ -126,7 +125,7 @@ public class Index extends Controller {
 			
 			if(!"none".equals(supplierSearch)) {
 				datasetQuery
-					.where(supplier.name.eq(supplierSearch));
+					.where(user.label.eq(supplierSearch));
 			}
 			
 			if(!"none".equals(statusSearch)) {
@@ -195,11 +194,11 @@ public class Index extends Controller {
 			}
 			
 			if("supplierDesc".equals(sort)) {
-				datasetQuery.orderBy(supplier.name.desc());
+				datasetQuery.orderBy(user.label.desc());
 			}
 			
 			if("supplierAsc".equals(sort)) {
-				datasetQuery.orderBy(supplier.name.asc());
+				datasetQuery.orderBy(user.label.asc());
 			}
 			
 			if("statusDesc".equals(sort)) {
@@ -347,9 +346,9 @@ public class Index extends Controller {
 				.fetchOne();
 			
 			if(!roleId.equals(2) && changeRecords != null && supplierName != null) {
-				Integer supplierKey = tx.select(supplier.id)
-					.from(supplier)
-					.where(supplier.name.eq(supplierName))
+				Integer supplierKey = tx.select(user.id)
+					.from(user)
+					.where(user.label.eq(supplierName))
 					.fetchOne();
 				
 				if(supplierKey != null) {
