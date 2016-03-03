@@ -13,3 +13,4 @@ bin/
 *.tmp
 .gradle
 build/
+velocity.log
