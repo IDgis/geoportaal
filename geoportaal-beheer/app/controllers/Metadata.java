@@ -290,6 +290,7 @@ public class Metadata extends Controller {
 			List<Tuple> attachmentsDataset = tx.select(mdAttachment.all())
 				.from(mdAttachment)
 				.where(mdAttachment.metadataId.eq(metadataId))
+				.orderBy(mdAttachment.attachmentName.asc())
 				.fetch();
 			
 			List<Tuple> typeInformationList = tx.select(typeInformation.id, typeInformation.name, typeInformationLabel.label)
@@ -449,7 +450,9 @@ public class Metadata extends Controller {
 								.where(mdAttachment.attachmentName.notIn(dc.getDeletedAttachment()));
 						}
 							
-						List<Tuple> attachmentsDataset = attachmentQuery.fetch();
+						List<Tuple> attachmentsDataset = attachmentQuery
+							.orderBy(mdAttachment.attachmentName.asc())
+							.fetch();
 						
 						DublinCore previousDC = new DublinCore(dc.getLocation(), dc.getFileId(), dc.getTitle(), dc.getDescription(), dc.getTypeInformation(),
 							dc.getCreator(), dc.getCreatorOther(), dc.getRights(), dc.getUseLimitation(), dc.getMdFormat(), dc.getSource(),
