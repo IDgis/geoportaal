@@ -6,7 +6,8 @@
 	statusSearch: String,
 	mdFormatSearch: String,
 	dateStartSearch: String,
-	dateEndSearch: String
+	dateEndSearch: String,
+	sort: String
 	)
 
 @import models.QMetadata.metadata
@@ -20,11 +21,37 @@
 				<th class="col-sm-1">
 					<input type="checkbox" id="js-check-all" class="js-check" data-page="1">
 				</th>
-				<th class="col-sm-1">Actie</th>
-				<th class="col-sm-4">Titel</th>
-				<th class="col-sm-2">Leverancier</th>
-				<th class="col-sm-2">Status</th>
-				<th class="col-sm-2">Datum</th>
+				<th class="col-sm-1">
+					Actie
+				</th>
+				<th class="col-sm-4">
+					Titel
+					<a href="@routes.Index.index(textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch, "titleDesc")"
+						class="pull-right glyphicon glyphicon-triangle-bottom sort-button @if("titleDesc".equals(sort)) {sort-active}"></a>
+					<a href="@routes.Index.index(textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch, "titleAsc")"
+						class="pull-right glyphicon glyphicon-triangle-top sort-button @if("titleAsc".equals(sort)) {sort-active}"></a>
+				</th>
+				<th class="col-sm-2">
+					Leverancier
+					<a href="@routes.Index.index(textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch, "supplierDesc")"
+						class="pull-right glyphicon glyphicon-triangle-bottom sort-button @if("supplierDesc".equals(sort)) {sort-active}"></a>
+					<a href="@routes.Index.index(textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch, "supplierAsc")"
+						class="pull-right glyphicon glyphicon-triangle-top sort-button @if("supplierAsc".equals(sort)) {sort-active}"></a>
+				</th>
+				<th class="col-sm-2">
+					Status
+					<a href="@routes.Index.index(textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch, "statusDesc")"
+						class="pull-right glyphicon glyphicon-triangle-bottom sort-button @if("statusDesc".equals(sort)) {sort-active}"></a>
+					<a href="@routes.Index.index(textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch, "statusAsc")"
+						class="pull-right glyphicon glyphicon-triangle-top sort-button @if("statusAsc".equals(sort)) {sort-active}"></a>
+				</th>
+				<th class="col-sm-2">
+					Datum
+					<a href="@routes.Index.index(textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch, "dateDesc")"
+						class="pull-right glyphicon glyphicon-triangle-bottom sort-button @if("dateDesc".equals(sort)) {sort-active}"></a>
+					<a href="@routes.Index.index(textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch, "dateAsc")"
+						class="pull-right glyphicon glyphicon-triangle-top sort-button @if("dateAsc".equals(sort)) {sort-active}"></a>
+				</th>
 			</tr>
 			@for(datasetRow <- datasetRows) {
 				@if(datasetRows.indexOf(datasetRow) > -1 && datasetRows.indexOf(datasetRow) < 20) {	
