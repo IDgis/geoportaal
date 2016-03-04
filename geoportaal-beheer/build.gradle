@@ -18,6 +18,10 @@ apply plugin: QueryDSLPlugin
 apply plugin: DockerPlugin
 apply plugin: 'org.ajoberstar.release-opinion'
 
+ext {
+	scalaAbiVersion = '2.11'
+}
+
 docker {
 	url = "http://${dockerHost}:2375"
 }
@@ -67,6 +71,7 @@ dependencies {
 	play "nl.idgis.commons:commons-utils:0.0.14"
 	
 	// Geoportaal dependencies:
+	play "org.webjars:webjars-play_${scalaAbiVersion}:2.4.0-2"
 	play project(':querydsl-tsvector')
 	play "org.webjars:dojo:1.10.4"
 	play "org.webjars:bootstrap:3.3.5"
