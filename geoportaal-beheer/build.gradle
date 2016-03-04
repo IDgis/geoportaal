@@ -19,11 +19,11 @@ apply plugin: DockerPlugin
 apply plugin: 'org.ajoberstar.release-opinion'
 
 docker {
-    url = "http://${dockerHost}:2375"
+	url = "http://${dockerHost}:2375"
 }
 
 queryDSL {
-    databaseHost = project.databaseHost
+	databaseHost = project.databaseHost
 }
 
 repositories {
@@ -79,6 +79,7 @@ dependencies {
 		exclude module: "ch.qos.logback"
 		exclude module: "logback-classic"
 	}
+	play "nl.idgis.geoportaal:md-stylesheets:1.0.1"
 	
 }
 
@@ -90,6 +91,14 @@ model {
 			// The injected routes generator is required to be compatible with
 			// Play version 2.4 and up. 
 			injectedRoutesGenerator = true
+			
+			sources {
+				twirlTemplates {
+					source {
+						include "**/*.xml"
+					}
+				}
+			}
 		}
 	}
 }
