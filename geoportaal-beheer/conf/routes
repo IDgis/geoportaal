@@ -24,6 +24,7 @@ GET		/help							controllers.Main.renderHelp()
 POST	/validate/:metadataUuid			controllers.Metadata.validateForm(metadataUuid: String)
 POST	/validate						controllers.Index.validateForm()
 GET		/metadata/:metadataUuid			controllers.MetadataXML.generateXml(metadataUuid: String)
+GET		/webjars/*file					controllers.WebJarAssets.at(file)
 GET		/routes.js						controllers.Index.jsRoutes()
 
 # Map static resources from the /public folder to the /assets URL path
