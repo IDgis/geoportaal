@@ -503,7 +503,25 @@
   		<xsl:if test=". != ''">
  			<p>
  				<b><xsl:text>Locatie: </xsl:text></b>
-  				<xsl:value-of select="."/>
+  				<xsl:choose>
+					<xsl:when test="substring(substring-after(.,'http'),1,3) = '://'">
+						<xsl:value-of select="substring-before(.,'http://')"/>
+						<xsl:text> </xsl:text>
+						<a href="http://{substring-after(.,'http://')}">
+							http://<xsl:value-of select="substring-after(.,'http://')"/>
+						</a>
+					</xsl:when>
+					<xsl:when test="substring(substring-after(.,'https'),1,3) = '://'">
+						<xsl:value-of select="substring-before(.,'https://')"/>
+						<xsl:text> </xsl:text>
+						<a href="https://{substring-after(.,'https://')}">
+							https://<xsl:value-of select="substring-after(.,'https://')"/>
+						</a>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:value-of select="."/>
+					</xsl:otherwise>
+				</xsl:choose>
   			</p>
   		</xsl:if>
   	</xsl:template>
