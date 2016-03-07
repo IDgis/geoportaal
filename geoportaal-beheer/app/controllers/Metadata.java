@@ -18,6 +18,7 @@ import static models.QUseLimitation.useLimitation;
 import static models.QUseLimitationLabel.useLimitationLabel;
 import static models.QUser.user;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -40,7 +41,9 @@ import models.DublinCore;
 import play.data.DynamicForm;
 import play.data.Form;
 import play.mvc.Controller;
+import play.mvc.Http;
 import play.mvc.Http.MultipartFormData.FilePart;
+import play.mvc.Http.Response;
 import play.mvc.Result;
 import util.QueryDSL;
 import views.html.*;
@@ -520,9 +523,9 @@ public class Metadata extends Controller {
 						int bytesRead;
 						ByteArrayOutputStream byteOutput = new ByteArrayOutputStream();
 						while((bytesRead = inputStream.read(buffer)) != -1)
-					    {
+						{
 							byteOutput.write(buffer, 0, bytesRead);
-					    }
+						}
 						byte[] input = byteOutput.toByteArray();
 						
 						
@@ -569,6 +572,25 @@ public class Metadata extends Controller {
 			tx.refreshMaterializedViewConcurrently(metadataSearch);
 			
 			return redirect(controllers.routes.Index.index(textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch, "dateDesc"));
+		});
+	}
+	
+	public Result openAttachment(String attachmentName, String uuid) {
+		
+		return q.withTransaction(tx -> {
+			Tuple attachment = tx.select(mdAttachment.attachmentContent, mdAttachment.attachmentMimetype)
+				.from(mdAttachment)
+				.join(metadata).on(mdAttachment.metadataId.eq(metadata.id))
+				.where(metadata.uuid.eq(uuid))
+				.where(mdAttachment.attachmentName.eq(attachmentName))
+				.fetchOne();
+			
+			response().setContentType(attachment.get(mdAttachment.attachmentMimetype));
+			
+			byte[] content = attachment.get(mdAttachment.attachmentContent);
+			ByteArrayInputStream bais = new ByteArrayInputStream(content);
+			
+			return ok(bais);
 		});
 	}
 	
