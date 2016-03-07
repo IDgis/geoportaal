@@ -53,8 +53,8 @@ input[type="file"].input-attachment {display:inline;}
 #filter-button {line-height:20px;padding:7.5px 12px;}
 #password-edit-button, #password-forgot-button {line-height:20px;padding:7.5px 12px;position:relative;top:1px;}
 
-.delete-attachment-button {position:relative;top:2px;}
-.delete-attachment-button:hover {cursor:pointer;}
+.delete-attachment-button, .open-attachment-button {position:relative;top:2px;color:#333;}
+.delete-attachment-button:hover, .open-attachment-button:hover {cursor:pointer;}
 
 #attachment-files-box {margin-bottom:15px;left:-8px;}
 .attachment-file {font-size:14px;}
