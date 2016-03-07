@@ -291,6 +291,12 @@ require([
 			domAttr.set(dom.byId('js-delete-records-count'), 'innerHTML', recordsChecked.length);
 			domAttr.set(dom.byId('js-supplier-records-count'), 'innerHTML', recordsChecked.length);
 			
+			if(recordsChecked.length === 1) {
+				domAttr.set(dom.byId('js-delete-records-lang'), 'innerHTML', 'record');
+			} else {
+				domAttr.set(dom.byId('js-delete-records-lang'), 'innerHTML', 'records');
+			}	
+			
 			if(recordsChecked.length > 0) {
 				array.forEach(recordsSelectedMsg, function(item) {
 					domStyle.set(item, 'display', 'block');
