@@ -8,6 +8,13 @@ import java.util.UUID;
 
 public class MetadataRow {
 
+	private static final String TABLE_TYPE_INFORMATION = "type_information";
+	private static final String TABLE_CREATOR = "creator";
+	private static final String TABLE_RIGHTS = "rights";
+	private static final String TABLE_USE_LIMITATION = "use_limitation";
+	private static final String TABLE_MD_FORMAT = "md_format";
+	private static final String TABLE_SUPPLIER = "supplier";
+	private static final String TABLE_STATUS = "status";
 	private static final String SUPPLIER = "nienhuis";
 	private static final String STATUS = "ter goedkeuring";
 	private static final String LAST_REVISION_USER = "conversie";
@@ -18,19 +25,20 @@ public class MetadataRow {
 	private String fileId;
 	private String title;
 	private String description;
-	private String typeInformation;
-	private String creator;
+	private Label typeInformation;
+	private Label creator;
 	private String creatorOther;
-	private String rights;
-	private String useLimitation;
-	private String mdFormat;
+	private Label rights;
+	private Label useLimitation;
+	private Label mdFormat;
 	private String source;
 	private Timestamp dateSourceCreation;
 	private Timestamp dateSourcePublication;
+	private Timestamp dateSourceRevision;
 	private Timestamp dateSourceValidFrom;
 	private Timestamp dateSourceValidUntil;
-	private String supplier;
-	private String status;
+	private Label supplier;
+	private Label status;
 	private Boolean published;
 	private String lastRevisionUser;
 	private Timestamp lastRevisionDate;
@@ -49,19 +57,20 @@ public class MetadataRow {
 		row.setFileId(retrieveFirstStringOrNull(Path.RELATION, d));
 		row.setTitle(retrieveFirstStringOrNull(Path.TITLE, d));
 		row.setDescription(retrieveFirstStringOrNull(Path.DESCRIPTION, d));
-		row.setTypeInformation(retrieveFirstStringOrNull(Path.TYPE_INFORMATION, d));
-		row.setCreator(retrieveFirstStringOrNull(Path.CREATOR, d));
+		row.setTypeInformation(new Label(retrieveFirstStringOrNull(Path.TYPE_INFORMATION, d), TABLE_TYPE_INFORMATION));
+		row.setCreator(new Label(retrieveFirstStringOrNull(Path.CREATOR, d), TABLE_CREATOR));
 		row.setCreatorOther(retrieveFirstStringOrNull(Path.CREATOR_OTHER, d));
-		row.setRights(retrieveFirstStringOrNull(Path.RIGHTS, d));
-		row.setUseLimitation(retrieveFirstStringOrNull(Path.USE_LIMITATION, d));
-		row.setMdFormat(retrieveFirstStringOrNull(Path.MD_FORMAT, d));
+		row.setRights(new Label(retrieveFirstStringOrNull(Path.RIGHTS, d), TABLE_RIGHTS));
+		row.setUseLimitation(new Label(retrieveFirstStringOrNull(Path.USE_LIMITATION, d), TABLE_USE_LIMITATION));
+		row.setMdFormat(new Label(retrieveFirstStringOrNull(Path.MD_FORMAT, d), TABLE_MD_FORMAT));
 		row.setSource(retrieveFirstStringOrNull(Path.SOURCE, d));
 		row.setDateSourceCreation(toTime(retrieveFirstStringOrNull(Path.DATE_SOURCE_CREATION, d)));
 		row.setDateSourcePublication(toTime(retrieveFirstStringOrNull(Path.DATE_SOURCE_PUBLICATION, d)));
+		row.setDateSourceRevision(null);
 		row.setDateSourceValidFrom(toTime(retrieveFirstStringOrNull(Path.DATE_SOURCE_VALID_FROM, d)));
 		row.setDateSourceValidUntil(toTime(retrieveFirstStringOrNull(Path.DATE_SOURCE_VALID_UNTIL, d)));
-		row.setSupplier(SUPPLIER);
-		row.setStatus(STATUS);
+		row.setSupplier(new Label(SUPPLIER, TABLE_SUPPLIER));
+		row.setStatus(new Label(STATUS, TABLE_STATUS));
 		row.setPublished(PUBLISHED);
 		row.setLastRevisionUser(LAST_REVISION_USER);
 		row.setLastRevisionDate(new Timestamp(System.currentTimeMillis()));
@@ -126,19 +135,19 @@ public class MetadataRow {
 		this.description = description;
 	}
 
-	public String getTypeInformation() {
+	public Label getTypeInformation() {
 		return typeInformation;
 	}
 
-	public void setTypeInformation(String typeInformation) {
+	public void setTypeInformation(Label typeInformation) {
 		this.typeInformation = typeInformation;
 	}
 
-	public String getCreator() {
+	public Label getCreator() {
 		return creator;
 	}
 
-	public void setCreator(String creator) {
+	public void setCreator(Label creator) {
 		this.creator = creator;
 	}
 
@@ -150,27 +159,27 @@ public class MetadataRow {
 		this.creatorOther = creatorOther;
 	}
 
-	public String getRights() {
+	public Label getRights() {
 		return rights;
 	}
 
-	public void setRights(String rights) {
+	public void setRights(Label rights) {
 		this.rights = rights;
 	}
 
-	public String getUseLimitation() {
+	public Label getUseLimitation() {
 		return useLimitation;
 	}
 
-	public void setUseLimitation(String useLimitation) {
+	public void setUseLimitation(Label useLimitation) {
 		this.useLimitation = useLimitation;
 	}
 
-	public String getMdFormat() {
+	public Label getMdFormat() {
 		return mdFormat;
 	}
 
-	public void setMdFormat(String mdFormat) {
+	public void setMdFormat(Label mdFormat) {
 		this.mdFormat = mdFormat;
 	}
 
@@ -198,6 +207,14 @@ public class MetadataRow {
 		this.dateSourcePublication = dateSourcePublication;
 	}
 
+	public Timestamp getDateSourceRevision() {
+		return dateSourceRevision;
+	}
+
+	public void setDateSourceRevision(Timestamp dateSourceRevision) {
+		this.dateSourceRevision = dateSourceRevision;
+	}
+
 	public Timestamp getDateSourceValidFrom() {
 		return dateSourceValidFrom;
 	}
@@ -214,19 +231,19 @@ public class MetadataRow {
 		this.dateSourceValidUntil = dateSourceValidUntil;
 	}
 
-	public String getSupplier() {
+	public Label getSupplier() {
 		return supplier;
 	}
 
-	public void setSupplier(String supplier) {
+	public void setSupplier(Label supplier) {
 		this.supplier = supplier;
 	}
 
-	public String getStatus() {
+	public Label getStatus() {
 		return status;
 	}
 
-	public void setStatus(String status) {
+	public void setStatus(Label status) {
 		this.status = status;
 	}
 
