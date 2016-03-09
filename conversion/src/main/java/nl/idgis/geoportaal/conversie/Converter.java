@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -27,35 +28,42 @@ public class Converter {
 		this.xmlEncoding = xmlEncoding;
 		this.outType = outType;
 	}
-	
-	public void convertFiles(File[] files) throws IOException {		
+
+	public void convertFiles(File[] files) throws IOException {
+		PrintWriter errorWriter = new PrintWriter("log.txt");
+
 		int i = 0;
 		for (File file : files) {
 			System.out.println(i++ + ": " + file.getName());
 			try {
 				outType.convertFile(file, parseDocument(file));
 			} catch(Exception e) {
-				System.out.println("File is invalid");
+				System.out.println("File is invalid: " + file.getName());
 				e.printStackTrace();
+				errorWriter.println("File is invalid: " + file.getName());
+				e.printStackTrace(errorWriter);
+				errorWriter.println();
 			}
 		}
+
+		errorWriter.close();
 	}
-	
+
 	private MetadataDocument parseDocument(File xmlFile) throws Exception {
 		// parse xml to DOM
 		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 		dbf.setNamespaceAware(true);
-		
+
 		DocumentBuilder db = dbf.newDocumentBuilder();
 		Document d = db.parse(new InputSource(new InputStreamReader(new FileInputStream(xmlFile), xmlEncoding)));
-		
+
 		// construct namespace context
 		Map<String, String> ns = new HashMap<>();
 		ns.put("rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#");
 		ns.put("dc", "http://purl.org/dc/elements/1.1/");
 		ns.put("dcterms", "http://purl.org/dc/terms/");
 		ns.put("ows", "http://www.opengis.net/ows");
-		
+
 		Map<String, String> pf = new HashMap<>();
 		for(Map.Entry<String, String> e : ns.entrySet()) {
 			pf.put(e.getValue(), e.getKey());
@@ -72,20 +80,20 @@ public class Converter {
 			public String getPrefix(String ns) {
 				return pf.get(ns);
 			}
-			
+
 			@Override
 			@SuppressWarnings("rawtypes")
 			public Iterator getPrefixes(String ns) {
 				return Arrays.asList(getPrefix(ns)).iterator();
 			}
-			
+
 		};
-		
+
 		// construct XPath evaluator
 		XPathFactory xf = XPathFactory.newInstance();
 		XPath xp = xf.newXPath();
 		xp.setNamespaceContext(nc);
-		
+
 		return new MetadataDocument(d, xp);
 	}
 }
