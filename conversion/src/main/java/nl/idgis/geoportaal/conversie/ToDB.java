@@ -5,7 +5,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.SQLType;
 import java.sql.Statement;
 import java.sql.Types;
 import java.util.ArrayList;
@@ -35,13 +34,13 @@ public class ToDB implements OutDestination {
 
 		MetadataRow row = MetadataRow.parseMetadataDocument(d, creatorMapper, useLimitationMapper);
 
-		PreparedStatement statement = connection.prepareStatement("INSERT INTO " + schema
-				+ ".metadata VALUES(uuid=?,location=?,file_id=?,title=?,description=?,"
-				+ "type_information=?,creator=?,creator_other?,rights=?,use_limitation=?,"
-				+ "md_format=?,source=?,date_source_creation=?,date_source_publication?,"
-				+ "date_source_revision=?,date_source_valid_from=?,"
-				+ "date_source_valid_until=?,supplier=?,status=?,published=?,"
-				+ "last_revision_user=?,last_revision_date=?)");
+		PreparedStatement statement = connection.prepareStatement(
+				"INSERT INTO " + schema + ".metadata (uuid,location,file_id,title,description,"
+						+ "type_information,creator,creator_other,rights,use_limitation,"
+						+ "md_format,source,date_source_creation,date_source_publication,"
+						+ "date_source_revision,date_source_valid_from,date_source_valid_until,"
+						+ "supplier,status,published,last_revision_user,last_revision_date) "
+						+ "VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 		putValuesInStatement(row, statement);
 
 		statement.executeUpdate();

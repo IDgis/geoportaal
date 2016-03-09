@@ -49,8 +49,10 @@ public class MetadataRow {
 
 		String dUUID = retrieveFirstStringOrNull(Path.UUID, d);
 
-		if (dUUID == null || dUUID.isEmpty()) {
+		if (dUUID == null || dUUID.isEmpty())
 			dUUID = UUID.randomUUID().toString();
+		else {
+			dUUID = dUUID.substring(1, dUUID.length() - 1); // remove '{' and '}'
 		}
 
 		row.setUuid(dUUID);
