@@ -44,9 +44,6 @@ public class MetadataRow {
 			dUUID = UUID.randomUUID().toString();
 		}
 
-		final String dateFormatCreation = "yyyy-MM-dd";
-		final String dateFormatValid = "dd-MM-yyyy";
-
 		row.setUuid(dUUID);
 		row.setLocation(retrieveFirstStringOrNull(Path.LOCATION, d));
 		row.setFileId(retrieveFirstStringOrNull(Path.RELATION, d));
@@ -59,10 +56,10 @@ public class MetadataRow {
 		row.setUseLimitation(retrieveFirstStringOrNull(Path.USE_LIMITATION, d));
 		row.setMdFormat(retrieveFirstStringOrNull(Path.MD_FORMAT, d));
 		row.setSource(retrieveFirstStringOrNull(Path.SOURCE, d));
-		row.setDateSourceCreation(toTime(retrieveFirstStringOrNull(Path.DATE_SOURCE_CREATION, d), dateFormatCreation));
-		row.setDateSourcePublication(toTime(retrieveFirstStringOrNull(Path.DATE_SOURCE_PUBLICATION, d), dateFormatCreation));
-		row.setDateSourceValidFrom(toTime(retrieveFirstStringOrNull(Path.DATE_SOURCE_VALID_FROM, d), dateFormatValid));
-		row.setDateSourceValidUntil(toTime(retrieveFirstStringOrNull(Path.DATE_SOURCE_VALID_UNTIL, d), dateFormatValid));
+		row.setDateSourceCreation(toTime(retrieveFirstStringOrNull(Path.DATE_SOURCE_CREATION, d)));
+		row.setDateSourcePublication(toTime(retrieveFirstStringOrNull(Path.DATE_SOURCE_PUBLICATION, d)));
+		row.setDateSourceValidFrom(toTime(retrieveFirstStringOrNull(Path.DATE_SOURCE_VALID_FROM, d)));
+		row.setDateSourceValidUntil(toTime(retrieveFirstStringOrNull(Path.DATE_SOURCE_VALID_UNTIL, d)));
 		row.setSupplier(SUPPLIER);
 		row.setStatus(STATUS);
 		row.setPublished(PUBLISHED);
@@ -81,8 +78,11 @@ public class MetadataRow {
 		return strings.get(0);
 	}
 
-	private static Timestamp toTime(String timeString, String formatString) throws ParseException {
-		SimpleDateFormat format = new SimpleDateFormat(formatString);
+	private static Timestamp toTime(String timeString) throws ParseException {
+		if (timeString == null)
+			return null;
+
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 		return new Timestamp(format.parse(timeString).getTime());
 	}
 
