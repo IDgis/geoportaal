@@ -20,10 +20,10 @@ import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 
 public class Converter {
-	
+
 	private String xmlEncoding;
 	private OutDestination outType;
-	
+
 	public Converter(String xmlEncoding, OutDestination outType) throws IOException {
 		this.xmlEncoding = xmlEncoding;
 		this.outType = outType;
@@ -32,11 +32,14 @@ public class Converter {
 	public void convertFiles(File[] files) throws IOException {
 		PrintWriter errorWriter = new PrintWriter("log.txt");
 
+		int countSuccessful = 0;
+
 		int i = 0;
 		for (File file : files) {
 			System.out.println(i++ + ": " + file.getName());
 			try {
 				outType.convertFile(file, parseDocument(file));
+				countSuccessful++;
 			} catch(Exception e) {
 				System.out.println("File is invalid: " + file.getName());
 				e.printStackTrace();
@@ -47,6 +50,8 @@ public class Converter {
 		}
 
 		errorWriter.close();
+
+		System.out.println(countSuccessful + "/" + i + " succesvol verwerkt");
 	}
 
 	private MetadataDocument parseDocument(File xmlFile) throws Exception {
