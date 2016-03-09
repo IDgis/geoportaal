@@ -9,16 +9,21 @@ import org.postgresql.ds.PGSimpleDataSource;
 public class ToDB implements OutDestination {
 
 	private Connection connection;
+	private boolean connected;
 
-	public ToDB(String username, String password, String serverName, int portNumber, String databaseName) throws SQLException {
+	public void connect(String username, String password, String serverName, int portNumber, String databaseName) throws SQLException {
 		connection = createConnection(username, password, serverName, portNumber, databaseName);
+		connected = connection.isValid(3000);
 	}
 
 	@Override
 	public void convertFile(File file, MetadataDocument d) throws Exception {
+		if (!connected)
+			throw new Exception("connect method is nog niet aangeroepen of connectie is gesloten");
+
 		MetadataRow row = MetadataRow.parseMetadataDocument(d);
 
-		// TODO: insert row
+		System.out.println(row.toString());
 	}
 
 	private Connection createConnection(String username, String password, String serverName, int portNumber, String databaseName) throws SQLException {
