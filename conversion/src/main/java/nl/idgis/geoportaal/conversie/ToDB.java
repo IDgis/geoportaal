@@ -35,8 +35,6 @@ public class ToDB implements OutDestination {
 
 		MetadataRow row = MetadataRow.parseMetadataDocument(d, creatorMapper, useLimitationMapper);
 
-		System.out.println(row.toString());
-
 		PreparedStatement statement = connection.prepareStatement("INSERT INTO " + schema
 				+ ".metadata VALUES(uuid=?,location=?,file_id=?,title=?,description=?,"
 				+ "type_information=?,creator=?,creator_other?,rights=?,use_limitation=?,"
@@ -46,10 +44,7 @@ public class ToDB implements OutDestination {
 				+ "last_revision_user=?,last_revision_date=?)");
 		putValuesInStatement(row, statement);
 
-		System.out.println(statement.toString());
-
-		statement.cancel();
-
+		statement.executeUpdate();
 	}
 
 	private void putValuesInStatement(MetadataRow row, PreparedStatement statement) throws Exception {
@@ -102,7 +97,6 @@ public class ToDB implements OutDestination {
 		final String sql = "SELECT " + valueColumn + " FROM " + schema + "." + table
 				+ " WHERE LOWER(" + whereColumn + ") = LOWER('" + whereValue + "')";
 		Statement statement = connection.createStatement();
-		System.out.println(sql);
 		ResultSet results = statement.executeQuery(sql);
 
 		List<T> values = new ArrayList<>();
