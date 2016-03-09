@@ -5,13 +5,18 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.SQLType;
 import java.sql.Statement;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.postgresql.ds.PGSimpleDataSource;
 
 public class ToDB implements OutDestination {
+
+	private static Mapper creatorMapper = new Mapper("creator_conversion.csv");
+	private static Mapper useLimitationMapper = new Mapper("use_limitation_conversion.csv");
 
 	private String schema;
 	private Connection connection;
@@ -28,7 +33,7 @@ public class ToDB implements OutDestination {
 		if (!connected)
 			throw new Exception("connect method is nog niet aangeroepen of connectie is gesloten");
 
-		MetadataRow row = MetadataRow.parseMetadataDocument(d);
+		MetadataRow row = MetadataRow.parseMetadataDocument(d, creatorMapper, useLimitationMapper);
 
 		System.out.println(row.toString());
 
@@ -48,34 +53,37 @@ public class ToDB implements OutDestination {
 	}
 
 	private void putValuesInStatement(MetadataRow row, PreparedStatement statement) throws Exception {
-		statement.setString(1, row.getUuid());
-		statement.setString(2, row.getLocation());
-		statement.setString(3, row.getFileId());
-		statement.setString(4, row.getTitle());
-		statement.setString(5, row.getDescription());
-		statement.setInt(6, resolveIntFromLabel(row.getTypeInformation()));
-		statement.setInt(7, resolveIntFromLabel(row.getCreator()));
-		statement.setString(8, row.getCreatorOther());
-		statement.setInt(9, resolveIntFromLabel(row.getRights()));
-		statement.setInt(10, resolveIntFromLabel(row.getUseLimitation()));
-		statement.setInt(11, resolveIntFromLabel(row.getMdFormat()));
-		statement.setString(12, row.getSource());
-		statement.setTimestamp(13,row.getDateSourceCreation());
-		statement.setTimestamp(14, row.getDateSourcePublication());
-		statement.setTimestamp(15, row.getDateSourceRevision());
-		statement.setTimestamp(16, row.getDateSourceValidFrom());
-		statement.setTimestamp(17, row.getDateSourceValidUntil());
-		statement.setInt(18, resolveIntFromLabel(row.getSupplier()));
-		statement.setInt(19, resolveIntFromLabel(row.getStatus()));
-		statement.setBoolean(20, row.getPublished());
-		statement.setString(21, row.getLastRevisionUser());
-		statement.setTimestamp(22, row.getLastRevisionDate());
+		statement.setObject(1, row.getUuid(), Types.VARCHAR);
+		statement.setObject(2, row.getLocation(), Types.VARCHAR);
+		statement.setObject(3, row.getFileId(), Types.VARCHAR);
+		statement.setObject(4, row.getTitle(), Types.VARCHAR);
+		statement.setObject(5, row.getDescription(), Types.VARCHAR);
+		statement.setObject(6, resolveIntFromLabel(row.getTypeInformation()), Types.INTEGER);
+		statement.setObject(7, resolveIntFromLabel(row.getCreator()), Types.INTEGER);
+		statement.setObject(8, row.getCreatorOther(), Types.VARCHAR);
+		statement.setObject(9, resolveIntFromLabel(row.getRights()), Types.INTEGER);
+		statement.setObject(10, resolveIntFromLabel(row.getUseLimitation()), Types.INTEGER);
+		statement.setObject(11, resolveIntFromLabel(row.getMdFormat()), Types.INTEGER);
+		statement.setObject(12, row.getSource(), Types.VARCHAR);
+		statement.setObject(13,row.getDateSourceCreation(), Types.TIMESTAMP);
+		statement.setObject(14, row.getDateSourcePublication(), Types.TIMESTAMP);
+		statement.setObject(15, row.getDateSourceRevision(), Types.TIMESTAMP);
+		statement.setObject(16, row.getDateSourceValidFrom(), Types.TIMESTAMP);
+		statement.setObject(17, row.getDateSourceValidUntil(), Types.TIMESTAMP);
+		statement.setObject(18, resolveIntFromLabel(row.getSupplier()), Types.INTEGER);
+		statement.setObject(19, resolveIntFromLabel(row.getStatus()), Types.INTEGER);
+		statement.setObject(20, row.getPublished(), Types.BOOLEAN);
+		statement.setObject(21, row.getLastRevisionUser(), Types.VARCHAR);
+		statement.setObject(22, row.getLastRevisionDate(), Types.TIMESTAMP);
 	}
 
 	private Integer resolveIntFromLabel(Label label) throws Exception {
 		final String table = label.getTable();
 		final String labelTable = label.getLabelTable();
 		final String value = label.getValue();
+
+		if (value == null)
+			return null;
 
 		Integer id = select("id", table, "name", value);
 

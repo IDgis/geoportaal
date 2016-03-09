@@ -44,7 +44,7 @@ public class MetadataRow {
 	private String lastRevisionUser;
 	private Timestamp lastRevisionDate;
 
-	public static MetadataRow parseMetadataDocument(MetadataDocument d) throws Exception {
+	public static MetadataRow parseMetadataDocument(MetadataDocument d, Mapper creatorMapper, Mapper useLimitationMapper) throws Exception {
 		MetadataRow row = new MetadataRow();
 
 		String dUUID = retrieveFirstStringOrNull(Path.UUID, d);
@@ -59,10 +59,10 @@ public class MetadataRow {
 		row.setTitle(retrieveFirstStringOrNull(Path.TITLE, d));
 		row.setDescription(retrieveFirstStringOrNull(Path.DESCRIPTION, d));
 		row.setTypeInformation(new Label(retrieveFirstStringOrNull(Path.TYPE_INFORMATION, d), TABLE_TYPE_INFORMATION));
-		row.setCreator(new Label(retrieveFirstStringOrNull(Path.CREATOR, d), TABLE_CREATOR));
+		row.setCreator(new Label(map(retrieveFirstStringOrNull(Path.CREATOR, d), creatorMapper), TABLE_CREATOR));
 		row.setCreatorOther(retrieveFirstStringOrNull(Path.CREATOR_OTHER, d));
 		row.setRights(new Label(retrieveFirstStringOrNull(Path.RIGHTS, d, DATA_TYPE, "gebruiksrestricties", false), TABLE_RIGHTS));
-		row.setUseLimitation(new Label(retrieveFirstStringOrNull(Path.USE_LIMITATION, d, DATA_TYPE, "gebruiksrestricties", true), TABLE_USE_LIMITATION));
+		row.setUseLimitation(new Label(map(retrieveFirstStringOrNull(Path.USE_LIMITATION, d, DATA_TYPE, "gebruiksrestricties", true), useLimitationMapper), TABLE_USE_LIMITATION));
 		row.setMdFormat(new Label(retrieveFirstStringOrNull(Path.MD_FORMAT, d), TABLE_MD_FORMAT));
 		row.setSource(retrieveFirstStringOrNull(Path.SOURCE, d));
 		row.setDateSourceCreation(toTime(retrieveFirstStringOrNull(Path.DATE_SOURCE_CREATION, d)));
@@ -77,6 +77,14 @@ public class MetadataRow {
 		row.setLastRevisionDate(new Timestamp(System.currentTimeMillis()));
 
 		return row;
+	}
+
+	private static String map(String creator, Mapper mapper) throws Exception {
+		String newValue = mapper.get(creator);
+		if (newValue != null)
+			return newValue;
+
+		return creator;
 	}
 
 	private static String retrieveFirstStringOrNull(Path path, MetadataDocument d) throws Exception {
