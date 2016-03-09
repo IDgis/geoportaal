@@ -5,5 +5,5 @@ xml_files
 /.classpath
 /.project
 /.settings
-*.csv
+conversion_input.csv
 *.txt
