@@ -1,6 +1,17 @@
 package nl.idgis.geoportaal.conversie;
 
+import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.List;
+import java.util.UUID;
+
 public class MetadataRow {
+
+	private static final String SUPPLIER = "nienhuis";
+	private static final String STATUS = "ter goedkeuring";
+	private static final String LAST_REVISION_USER = "conversie";
+	private static final boolean PUBLISHED = false;
 
 	private String uuid;
 	private String location;
@@ -14,23 +25,65 @@ public class MetadataRow {
 	private String useLimitation;
 	private String mdFormat;
 	private String source;
-	private String dateSourceCreation;
-	private String dateSourcePublication;
-	private String dateSourceRevision;
-	private String dateSourceValidFrom;
-	private String dateSourceValidUntil;
+	private Timestamp dateSourceCreation;
+	private Timestamp dateSourcePublication;
+	private Timestamp dateSourceValidFrom;
+	private Timestamp dateSourceValidUntil;
 	private String supplier;
 	private String status;
-	private String published;
+	private Boolean published;
 	private String lastRevisionUser;
-	private String lastRevisionDate;
+	private Timestamp lastRevisionDate;
 
-	public static MetadataRow parseMetadataDocument(MetadataDocument d) {
+	public static MetadataRow parseMetadataDocument(MetadataDocument d) throws Exception {
 		MetadataRow row = new MetadataRow();
 
-		// TODO: set values from MetadataDocument to MetadataRow
+		String dUUID = retrieveFirstStringOrNull(Path.UUID, d);
+
+		if (dUUID == null || dUUID.isEmpty()) {
+			dUUID = UUID.randomUUID().toString();
+		}
+
+		final String dateFormatCreation = "yyyy-MM-dd";
+		final String dateFormatValid = "dd-MM-yyyy";
+
+		row.setUuid(dUUID);
+		row.setLocation(retrieveFirstStringOrNull(Path.LOCATION, d));
+		row.setFileId(retrieveFirstStringOrNull(Path.RELATION, d));
+		row.setTitle(retrieveFirstStringOrNull(Path.TITLE, d));
+		row.setDescription(retrieveFirstStringOrNull(Path.DESCRIPTION, d));
+		row.setTypeInformation(retrieveFirstStringOrNull(Path.TYPE_INFORMATION, d));
+		row.setCreator(retrieveFirstStringOrNull(Path.CREATOR, d));
+		row.setCreatorOther(retrieveFirstStringOrNull(Path.CREATOR_OTHER, d));
+		row.setRights(retrieveFirstStringOrNull(Path.RIGHTS, d));
+		row.setUseLimitation(retrieveFirstStringOrNull(Path.USE_LIMITATION, d));
+		row.setMdFormat(retrieveFirstStringOrNull(Path.MD_FORMAT, d));
+		row.setSource(retrieveFirstStringOrNull(Path.SOURCE, d));
+		row.setDateSourceCreation(toTime(retrieveFirstStringOrNull(Path.DATE_SOURCE_CREATION, d), dateFormatCreation));
+		row.setDateSourcePublication(toTime(retrieveFirstStringOrNull(Path.DATE_SOURCE_PUBLICATION, d), dateFormatCreation));
+		row.setDateSourceValidFrom(toTime(retrieveFirstStringOrNull(Path.DATE_SOURCE_VALID_FROM, d), dateFormatValid));
+		row.setDateSourceValidUntil(toTime(retrieveFirstStringOrNull(Path.DATE_SOURCE_VALID_UNTIL, d), dateFormatValid));
+		row.setSupplier(SUPPLIER);
+		row.setStatus(STATUS);
+		row.setPublished(PUBLISHED);
+		row.setLastRevisionUser(LAST_REVISION_USER);
+		row.setLastRevisionDate(new Timestamp(System.currentTimeMillis()));
 
 		return row;
+	}
+
+	private static String retrieveFirstStringOrNull(Path path, MetadataDocument d) throws Exception {
+		List<String> strings = d.getStrings(path.path());
+
+		if (strings.size() == 0)
+			return null;
+
+		return strings.get(0);
+	}
+
+	private static Timestamp toTime(String timeString, String formatString) throws ParseException {
+		SimpleDateFormat format = new SimpleDateFormat(formatString);
+		return new Timestamp(format.parse(timeString).getTime());
 	}
 
 	public String getUuid() {
@@ -129,43 +182,35 @@ public class MetadataRow {
 		this.source = source;
 	}
 
-	public String getDateSourceCreation() {
+	public Timestamp getDateSourceCreation() {
 		return dateSourceCreation;
 	}
 
-	public void setDateSourceCreation(String dateSourceCreation) {
+	public void setDateSourceCreation(Timestamp dateSourceCreation) {
 		this.dateSourceCreation = dateSourceCreation;
 	}
 
-	public String getDateSourcePublication() {
+	public Timestamp getDateSourcePublication() {
 		return dateSourcePublication;
 	}
 
-	public void setDateSourcePublication(String dateSourcePublication) {
+	public void setDateSourcePublication(Timestamp dateSourcePublication) {
 		this.dateSourcePublication = dateSourcePublication;
 	}
 
-	public String getDateSourceRevision() {
-		return dateSourceRevision;
-	}
-
-	public void setDateSourceRevision(String dateSourceRevision) {
-		this.dateSourceRevision = dateSourceRevision;
-	}
-
-	public String getDateSourceValidFrom() {
+	public Timestamp getDateSourceValidFrom() {
 		return dateSourceValidFrom;
 	}
 
-	public void setDateSourceValidFrom(String dateSourceValidFrom) {
+	public void setDateSourceValidFrom(Timestamp dateSourceValidFrom) {
 		this.dateSourceValidFrom = dateSourceValidFrom;
 	}
 
-	public String getDateSourceValidUntil() {
+	public Timestamp getDateSourceValidUntil() {
 		return dateSourceValidUntil;
 	}
 
-	public void setDateSourceValidUntil(String dateSourceValidUntil) {
+	public void setDateSourceValidUntil(Timestamp dateSourceValidUntil) {
 		this.dateSourceValidUntil = dateSourceValidUntil;
 	}
 
@@ -185,11 +230,11 @@ public class MetadataRow {
 		this.status = status;
 	}
 
-	public String getPublished() {
+	public Boolean getPublished() {
 		return published;
 	}
 
-	public void setPublished(String published) {
+	public void setPublished(Boolean published) {
 		this.published = published;
 	}
 
@@ -201,12 +246,24 @@ public class MetadataRow {
 		this.lastRevisionUser = lastRevisionUser;
 	}
 
-	public String getLastRevisionDate() {
+	public Timestamp getLastRevisionDate() {
 		return lastRevisionDate;
 	}
 
-	public void setLastRevisionDate(String lastRevisionDate) {
+	public void setLastRevisionDate(Timestamp lastRevisionDate) {
 		this.lastRevisionDate = lastRevisionDate;
+	}
+
+	@Override
+	public String toString() {
+		return "MetadataRow [uuid=" + uuid + ", location=" + location + ", fileId=" + fileId + ", title=" + title
+				+ ", description=" + description + ", typeInformation=" + typeInformation + ", creator=" + creator
+				+ ", creatorOther=" + creatorOther + ", rights=" + rights + ", useLimitation=" + useLimitation
+				+ ", mdFormat=" + mdFormat + ", source=" + source + ", dateSourceCreation=" + dateSourceCreation
+				+ ", dateSourcePublication=" + dateSourcePublication + ", dateSourceValidFrom=" + dateSourceValidFrom
+				+ ", dateSourceValidUntil=" + dateSourceValidUntil + ", supplier=" + supplier + ", status=" + status
+				+ ", published=" + published + ", lastRevisionUser=" + lastRevisionUser + ", lastRevisionDate="
+				+ lastRevisionDate + "]";
 	}
 
 }
