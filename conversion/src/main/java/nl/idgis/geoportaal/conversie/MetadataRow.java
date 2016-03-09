@@ -8,6 +8,7 @@ import java.util.UUID;
 
 public class MetadataRow {
 
+	private static final String DATA_TYPE = "rdf:datatype";
 	private static final String TABLE_TYPE_INFORMATION = "type_information";
 	private static final String TABLE_CREATOR = "creator";
 	private static final String TABLE_RIGHTS = "rights";
@@ -60,8 +61,8 @@ public class MetadataRow {
 		row.setTypeInformation(new Label(retrieveFirstStringOrNull(Path.TYPE_INFORMATION, d), TABLE_TYPE_INFORMATION));
 		row.setCreator(new Label(retrieveFirstStringOrNull(Path.CREATOR, d), TABLE_CREATOR));
 		row.setCreatorOther(retrieveFirstStringOrNull(Path.CREATOR_OTHER, d));
-		row.setRights(new Label(retrieveFirstStringOrNull(Path.RIGHTS, d), TABLE_RIGHTS));
-		row.setUseLimitation(new Label(retrieveFirstStringOrNull(Path.USE_LIMITATION, d), TABLE_USE_LIMITATION));
+		row.setRights(new Label(retrieveFirstStringOrNull(Path.RIGHTS, d, DATA_TYPE, "gebruiksrestricties", false), TABLE_RIGHTS));
+		row.setUseLimitation(new Label(retrieveFirstStringOrNull(Path.USE_LIMITATION, d, DATA_TYPE, "gebruiksrestricties", true), TABLE_USE_LIMITATION));
 		row.setMdFormat(new Label(retrieveFirstStringOrNull(Path.MD_FORMAT, d), TABLE_MD_FORMAT));
 		row.setSource(retrieveFirstStringOrNull(Path.SOURCE, d));
 		row.setDateSourceCreation(toTime(retrieveFirstStringOrNull(Path.DATE_SOURCE_CREATION, d)));
@@ -79,7 +80,11 @@ public class MetadataRow {
 	}
 
 	private static String retrieveFirstStringOrNull(Path path, MetadataDocument d) throws Exception {
-		List<String> strings = d.getStrings(path.path());
+		return retrieveFirstStringOrNull(path, d, null, null, false);
+	}
+
+	private static String retrieveFirstStringOrNull(Path path, MetadataDocument d, String attrName, String attrValue, boolean shouldMatch) throws Exception {
+		List<String> strings = d.getStrings(path.path(), attrName, attrValue, shouldMatch);
 
 		if (strings.size() == 0)
 			return null;

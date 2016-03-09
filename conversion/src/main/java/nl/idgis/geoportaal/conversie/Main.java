@@ -9,6 +9,7 @@ import net.sourceforge.argparse4j.inf.Namespace;
 
 public class Main {
 
+	private static final String SCHEMA = "schema";
 	private static final String DATABASE = "database";
 	private static final String PORT = "port";
 	private static final String SERVER_NAME = "servername";
@@ -28,6 +29,7 @@ public class Main {
 		parser.addArgument("-" + SERVER_NAME).type(String.class).help("server waarop de database zich bevindt (bijvoorbeeld 'localhost'");
 		parser.addArgument("-" + PORT).type(Integer.class).help("poortnummer van de server");
 		parser.addArgument("-" + DATABASE).type(String.class).help("naam van de database");
+		parser.addArgument("-" + SCHEMA).type(String.class).help("database schema indien in public").setDefault("public");
 
 		File xmlDirectory = null;
 		File csvFile = null;
@@ -37,6 +39,7 @@ public class Main {
 		String serverName = null;
 		Integer port = null;
 		String database = null;
+		String schema = null;
 
 		try {
 			Namespace res = parser.parseArgs(args);
@@ -49,6 +52,7 @@ public class Main {
 			serverName = res.getString(SERVER_NAME);
 			port = res.getInt(PORT);
 			database = res.getString(DATABASE);
+			schema = res.getString(SCHEMA);
 		} catch (ArgumentParserException e) {
             parser.handleError(e);
             return;
@@ -71,7 +75,7 @@ public class Main {
 							+ "\"temportal_end\";\"bbox_lowercorner\";\"bbox_uppercorner\"");
 		} else {
 			out = new ToDB();
-			((ToDB) out).connect(username, password, serverName, port, database);
+			((ToDB) out).connect(username, password, serverName, port, database, schema);
 		}
 
 		Converter converter = new Converter(XML_ENCODING, out);
