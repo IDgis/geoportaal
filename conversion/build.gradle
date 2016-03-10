@@ -6,15 +6,23 @@ version = '0.1'
 repositories { mavenCentral() }
 
 buildscript {
-	repositories { mavenCentral() }
+	repositories {
+		mavenCentral()
+		flatDir { dir 'lib' }
+	}
+}
+
+eclipse {
+	classpath {
+	   downloadSources=true
+	}
 }
 
 dependencies {
 	compile 'org.postgresql:postgresql:9.4.1208'
+	compile group: 'net.sourceforge.argparse4j', name:'argparse4j', version: '0.7.0'
 }
 
 jar {
-	manifest {
-		attributes 'Main-Class': 'nl.idgis.geoportaal.conversie.Main'
-	}
+	manifest { attributes 'Main-Class': 'nl.idgis.geoportaal.conversie.Main' }
 }
