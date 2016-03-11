@@ -39,6 +39,7 @@ import com.querydsl.sql.SQLQuery;
 import actions.DefaultAuthenticator;
 import models.Delete;
 import models.Search;
+import models.Sort;
 import models.Supplier;
 import play.Routes;
 import play.data.DynamicForm;
@@ -55,7 +56,7 @@ public class Index extends Controller {
 	@Inject QueryDSL q;
 	
 	public Result index(String textSearch, String supplierSearch, String statusSearch, String mdFormatSearch, String dateStartSearch, 
-			String dateEndSearch, String sort) throws SQLException {
+			String dateEndSearch, String sort, String checked) throws SQLException {
 		return q.withTransaction(tx -> {
 			List<Tuple> supplierList = tx.select(user.all())
 				.from(user)
@@ -223,9 +224,22 @@ public class Index extends Controller {
 			if(finalDateEndSearch != null) {
 				resetTimestampEndSearch = new Timestamp(finalDateEndSearch.getTime());
 			}
-
+			
+			List<String> checkedList = new ArrayList<String>();
+			String[] checkedArray = checked.split(" ");
+			if(!"".equals(checked)) {
+				for(String checkedString : checkedArray) {
+					checkedList.add(checkedString);
+				}
+			}
+			
+			/*if(checkedList.contains("a6c8628e-4bb8-4208-83c5-f05d5e7bebf5")) {
+				System.out.println("test");
+			}*/
+			
 			return ok(views.html.index.render(datasetRows, supplierList, statusList, mdFormatList, sdfUS, sdfLocal, roleId, textSearch, 
-				supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch, timestampStartSearch, resetTimestampEndSearch, sort));
+				supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch, timestampStartSearch, resetTimestampEndSearch, sort,
+				checkedList));
 		});
 	}
 	
@@ -244,7 +258,33 @@ public class Index extends Controller {
 			dateEndSearch = "";
 		}
 		
-		return redirect(controllers.routes.Index.index(textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch, "dateDesc"));
+		return redirect(controllers.routes.Index.index(textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch, "dateDesc", ""));
+	}
+	
+	public Result sort() {
+		Form<Sort> sortForm = Form.form(Sort.class);
+		Sort s = sortForm.bindFromRequest().get();
+		String textSearch = s.getText();
+		String supplierSearch = s.getSupplier();
+		String statusSearch = s.getStatus();
+		String mdFormatSearch = s.getFormat();
+		String dateStartSearch = s.getDateUpdateStart();
+		String dateEndSearch = s.getDateUpdateEnd();
+		String sort = s.getSort();
+		List<String> recordsChecked = s.getRecordsChecked();
+		
+		if("".equals(dateStartSearch) || "".equals(dateEndSearch)) {
+			dateStartSearch = "";
+			dateEndSearch = "";
+		}
+		
+		String checked = "";
+		if(recordsChecked != null) {
+			checked = recordsChecked.stream().collect(Collectors.joining(" "));
+		}
+		
+		return redirect(controllers.routes.Index.index(textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch, 
+			sort, checked));
 	}
 	
 	public Result changeStatus() {
@@ -321,7 +361,7 @@ public class Index extends Controller {
 				}
 			}
 			
-			return redirect(controllers.routes.Index.index(textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch, "dateDesc"));
+			return redirect(controllers.routes.Index.index(textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch, "dateDesc", ""));
 		});
 		
 	}
@@ -364,7 +404,7 @@ public class Index extends Controller {
 				}
 			}
 			
-			return redirect(controllers.routes.Index.index(textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch, "dateDesc"));
+			return redirect(controllers.routes.Index.index(textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch, "dateDesc", ""));
 		});
 	}
 	
@@ -444,7 +484,7 @@ public class Index extends Controller {
 			
 			tx.refreshMaterializedViewConcurrently(metadataSearch);
 			
-			return redirect(controllers.routes.Index.index(textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch, "dateDesc"));
+			return redirect(controllers.routes.Index.index(textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch, "dateDesc", ""));
 		});
 	}
 	

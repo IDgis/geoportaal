@@ -3,7 +3,7 @@
 # ~~~~
 
 # Home page
-GET		/	controllers.Index.index(text ?= "", supplier ?= "none", status ?= "none", format ?= "none", dateUpdateStart ?= "", dateUpdateEnd ?= "", sort ?= "dateDesc")
+GET		/	controllers.Index.index(text ?= "", supplier ?= "none", status ?= "none", format ?= "none", dateUpdateStart ?= "", dateUpdateEnd ?= "", sort ?= "dateDesc", checked ?= "")
 GET		/user/login						controllers.User.login(r: String)
 GET		/user/logout					controllers.User.logout()
 POST	/user/authenticate				controllers.User.authenticate()
@@ -21,6 +21,7 @@ GET		/cancel							controllers.Metadata.cancel(text ?= "", supplier ?= "none", s
 GET		/delete							controllers.Index.deleteMetadata()
 GET		/openAttachment/:attachmentName		controllers.Metadata.openAttachment(attachmentName: String, uuid: String)
 POST	/search							controllers.Index.search()
+POST	/sort							controllers.Index.sort()
 GET		/help							controllers.Main.renderHelp()
 POST	/validate/:metadataUuid			controllers.Metadata.validateForm(metadataUuid: String)
 POST	/validate						controllers.Index.validateForm()

@@ -7,300 +7,319 @@
 	mdFormatSearch: String,
 	dateStartSearch: String,
 	dateEndSearch: String,
-	sort: String
+	sort: String,
+	checkedList: java.util.List[String]
 	)
 
 @import models.QMetadata.metadata
 @import models.QStatusLabel.statusLabel
 @import models.QUser.user
 
-<div class="overzicht-records">
-	<table class="col-sm-offset-0 table table-bordered" id="list-table">
-		<tbody>
-			<tr>
-				<th class="col-sm-1">
-					<input type="checkbox" id="js-check-all" class="js-check" data-page="1">
-				</th>
-				<th class="col-sm-1">
-					Actie
-				</th>
-				<th class="col-sm-4">
-					Titel
-					<a href="@routes.Index.index(textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch, "titleDesc")"
-						class="pull-right glyphicon glyphicon-triangle-bottom sort-button @if("titleDesc".equals(sort)) {sort-active}"></a>
-					<a href="@routes.Index.index(textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch, "titleAsc")"
-						class="pull-right glyphicon glyphicon-triangle-top sort-button @if("titleAsc".equals(sort)) {sort-active}"></a>
-				</th>
-				<th class="col-sm-2">
-					Leverancier
-					<a href="@routes.Index.index(textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch, "supplierDesc")"
-						class="pull-right glyphicon glyphicon-triangle-bottom sort-button @if("supplierDesc".equals(sort)) {sort-active}"></a>
-					<a href="@routes.Index.index(textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch, "supplierAsc")"
-						class="pull-right glyphicon glyphicon-triangle-top sort-button @if("supplierAsc".equals(sort)) {sort-active}"></a>
-				</th>
-				<th class="col-sm-2">
-					Status
-					<a href="@routes.Index.index(textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch, "statusDesc")"
-						class="pull-right glyphicon glyphicon-triangle-bottom sort-button @if("statusDesc".equals(sort)) {sort-active}"></a>
-					<a href="@routes.Index.index(textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch, "statusAsc")"
-						class="pull-right glyphicon glyphicon-triangle-top sort-button @if("statusAsc".equals(sort)) {sort-active}"></a>
-				</th>
-				<th class="col-sm-2">
-					Datum
-					<a href="@routes.Index.index(textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch, "dateDesc")"
-						class="pull-right glyphicon glyphicon-triangle-bottom sort-button @if("dateDesc".equals(sort)) {sort-active}"></a>
-					<a href="@routes.Index.index(textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch, "dateAsc")"
-						class="pull-right glyphicon glyphicon-triangle-top sort-button @if("dateAsc".equals(sort)) {sort-active}"></a>
-				</th>
-			</tr>
-			@for(datasetRow <- datasetRows) {
-				@if(datasetRows.indexOf(datasetRow) > -1 && datasetRows.indexOf(datasetRow) < 20) {	
-					<tr class="js-index-page js-index-page-1">
-						<td>
-							<input type="checkbox" class="js-check js-record-checkbox" data-uuid="@datasetRow.get(metadata.uuid)" 
-								data-role="@roleId" data-status="@datasetRow.get(metadata.status)">
-						</td>
-						<td>
-							<a href="@routes.MetadataXML.generateXml(datasetRow.get(metadata.uuid))">
-								<span class="action-button glyphicon glyphicon-eye-open" title="Metadata bekijken"></span>
-							</a>
-							<a href="@routes.Metadata.renderEditForm(datasetRow.get(metadata.uuid), textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch)"
-								@if(datasetRow.get(metadata.status).equals(4)) {class="edit-btn-published"}>
-								<span class="action-button glyphicon glyphicon-edit" title="Bestand wijzigen"></span>
-							</a>
-						</td>
-						<td>@datasetRow.get(metadata.title)</td>
-						<td>@datasetRow.get(user.label)</td>
-						<td>@datasetRow.get(statusLabel.label)</td>
-						<td>@sdfLocal.format(datasetRow.get(metadata.lastRevisionDate).getTime())</td>
-					</tr>
-				} @if(datasetRows.indexOf(datasetRow) > 19 && datasetRows.indexOf(datasetRow) < 40) {	
-					<tr class="js-index-page js-index-page-2">
-						<td>
-							<input type="checkbox" class="js-check js-record-checkbox" data-uuid="@datasetRow.get(metadata.uuid)"
-								data-role="@roleId" data-status="@datasetRow.get(metadata.status)">
-						</td>
-						<td>
-							<a href="@routes.MetadataXML.generateXml(datasetRow.get(metadata.uuid))">
-								<span class="action-button glyphicon glyphicon-eye-open" title="Metadata bekijken"></span>
-							</a>
-							<a href="@routes.Metadata.renderEditForm(datasetRow.get(metadata.uuid), textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch)"
-								@if(datasetRow.get(metadata.status).equals(4)) {class="edit-btn-published"}>
-								<span class="action-button glyphicon glyphicon-edit" title="Bestand wijzigen"></span>
-							</a>
-						</td>
-						<td>@datasetRow.get(metadata.title)</td>
-						<td>@datasetRow.get(user.label)</td>
-						<td>@datasetRow.get(statusLabel.label)</td>
-						<td>@sdfLocal.format(datasetRow.get(metadata.lastRevisionDate).getTime())</td>
-					</tr>
-				} @if(datasetRows.indexOf(datasetRow) > 39 && datasetRows.indexOf(datasetRow) < 60) {	
-					<tr class="js-index-page js-index-page-3">
-						<td>
-							<input type="checkbox" class="js-check js-record-checkbox" data-uuid="@datasetRow.get(metadata.uuid)"
-								data-role="@roleId" data-status="@datasetRow.get(metadata.status)">
-						</td>
-						<td>
-							<a href="@routes.MetadataXML.generateXml(datasetRow.get(metadata.uuid))">
-								<span class="action-button glyphicon glyphicon-eye-open" title="Metadata bekijken"></span>
-							</a>
-							<a href="@routes.Metadata.renderEditForm(datasetRow.get(metadata.uuid), textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch)"
-								@if(datasetRow.get(metadata.status).equals(4)) {class="edit-btn-published"}>
-								<span class="action-button glyphicon glyphicon-edit" title="Bestand wijzigen"></span>
-							</a>
-						</td>
-						<td>@datasetRow.get(metadata.title)</td>
-						<td>@datasetRow.get(user.label)</td>
-						<td>@datasetRow.get(statusLabel.label)</td>
-						<td>@sdfLocal.format(datasetRow.get(metadata.lastRevisionDate).getTime())</td>
-					</tr>
-				} @if(datasetRows.indexOf(datasetRow) > 59 && datasetRows.indexOf(datasetRow) < 80) {	
-					<tr class="js-index-page js-index-page-4">
-						<td>
-							<input type="checkbox" class="js-check js-record-checkbox" data-uuid="@datasetRow.get(metadata.uuid)"
-								data-role="@roleId" data-status="@datasetRow.get(metadata.status)">
-						</td>
-						<td>
-							<a href="@routes.MetadataXML.generateXml(datasetRow.get(metadata.uuid))">
-								<span class="action-button glyphicon glyphicon-eye-open" title="Metadata bekijken"></span>
-							</a>
-							<a href="@routes.Metadata.renderEditForm(datasetRow.get(metadata.uuid), textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch)"
-								@if(datasetRow.get(metadata.status).equals(4)) {class="edit-btn-published"}>
-								<span class="action-button glyphicon glyphicon-edit" title="Bestand wijzigen"></span>
-							</a>
-						</td>
-						<td>@datasetRow.get(metadata.title)</td>
-						<td>@datasetRow.get(user.label)</td>
-						<td>@datasetRow.get(statusLabel.label)</td>
-						<td>@sdfLocal.format(datasetRow.get(metadata.lastRevisionDate).getTime())</td>
-					</tr>
-				} @if(datasetRows.indexOf(datasetRow) > 79 && datasetRows.indexOf(datasetRow) < 100) {	
-					<tr class="js-index-page js-index-page-5">
-						<td>
-							<input type="checkbox" class="js-check js-record-checkbox" data-uuid="@datasetRow.get(metadata.uuid)"
-								data-role="@roleId" data-status="@datasetRow.get(metadata.status)">
-						</td>
-						<td>
-							<a href="@routes.MetadataXML.generateXml(datasetRow.get(metadata.uuid))">
-								<span class="action-button glyphicon glyphicon-eye-open" title="Metadata bekijken"></span>
-							</a>
-							<a href="@routes.Metadata.renderEditForm(datasetRow.get(metadata.uuid), textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch)"
-								@if(datasetRow.get(metadata.status).equals(4)) {class="edit-btn-published"}>
-								<span class="action-button glyphicon glyphicon-edit" title="Bestand wijzigen"></span>
-							</a>
-						</td>
-						<td>@datasetRow.get(metadata.title)</td>
-						<td>@datasetRow.get(user.label)</td>
-						<td>@datasetRow.get(statusLabel.label)</td>
-						<td>@sdfLocal.format(datasetRow.get(metadata.lastRevisionDate).getTime())</td>
-					</tr>
-				} @if(datasetRows.indexOf(datasetRow) > 99 && datasetRows.indexOf(datasetRow) < 120) {	
-					<tr class="js-index-page js-index-page-6">
-						<td>
-							<input type="checkbox" class="js-check js-record-checkbox" data-uuid="@datasetRow.get(metadata.uuid)"
-								data-role="@roleId" data-status="@datasetRow.get(metadata.status)">
-						</td>
-						<td>
-							<a href="@routes.MetadataXML.generateXml(datasetRow.get(metadata.uuid))">
-								<span class="action-button glyphicon glyphicon-eye-open" title="Metadata bekijken"></span>
-							</a>
-							<a href="@routes.Metadata.renderEditForm(datasetRow.get(metadata.uuid), textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch)"
-								@if(datasetRow.get(metadata.status).equals(4)) {class="edit-btn-published"}>
-								<span class="action-button glyphicon glyphicon-edit" title="Bestand wijzigen"></span>
-							</a>
-						</td>
-						<td>@datasetRow.get(metadata.title)</td>
-						<td>@datasetRow.get(user.label)</td>
-						<td>@datasetRow.get(statusLabel.label)</td>
-						<td>@sdfLocal.format(datasetRow.get(metadata.lastRevisionDate).getTime())</td>
-					</tr>
-				} @if(datasetRows.indexOf(datasetRow) > 119 && datasetRows.indexOf(datasetRow) < 140) {	
-					<tr class="js-index-page js-index-page-7">
-						<td>
-							<input type="checkbox" class="js-check js-record-checkbox" data-uuid="@datasetRow.get(metadata.uuid)"
-								data-role="@roleId" data-status="@datasetRow.get(metadata.status)">
-						</td>
-						<td>
-							<a href="@routes.MetadataXML.generateXml(datasetRow.get(metadata.uuid))">
-								<span class="action-button glyphicon glyphicon-eye-open" title="Metadata bekijken"></span>
-							</a>
-							<a href="@routes.Metadata.renderEditForm(datasetRow.get(metadata.uuid), textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch)"
-								@if(datasetRow.get(metadata.status).equals(4)) {class="edit-btn-published"}>
-								<span class="action-button glyphicon glyphicon-edit" title="Bestand wijzigen"></span>
-							</a>
-						</td>
-						<td>@datasetRow.get(metadata.title)</td>
-						<td>@datasetRow.get(user.label)</td>
-						<td>@datasetRow.get(statusLabel.label)</td>
-						<td>@sdfLocal.format(datasetRow.get(metadata.lastRevisionDate).getTime())</td>
-					</tr>
-				} @if(datasetRows.indexOf(datasetRow) > 139 && datasetRows.indexOf(datasetRow) < 160) {	
-					<tr class="js-index-page js-index-page-8">
-						<td>
-							<input type="checkbox" class="js-check js-record-checkbox" data-uuid="@datasetRow.get(metadata.uuid)"
-								data-role="@roleId" data-status="@datasetRow.get(metadata.status)">
-						</td>
-						<td>
-							<a href="@routes.MetadataXML.generateXml(datasetRow.get(metadata.uuid))">
-								<span class="action-button glyphicon glyphicon-eye-open" title="Metadata bekijken"></span>
-							</a>
-							<a href="@routes.Metadata.renderEditForm(datasetRow.get(metadata.uuid), textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch)"
-								@if(datasetRow.get(metadata.status).equals(4)) {class="edit-btn-published"}>
-								<span class="action-button glyphicon glyphicon-edit" title="Bestand wijzigen"></span>
-							</a>
-						</td>
-						<td>@datasetRow.get(metadata.title)</td>
-						<td>@datasetRow.get(user.label)</td>
-						<td>@datasetRow.get(statusLabel.label)</td>
-						<td>@sdfLocal.format(datasetRow.get(metadata.lastRevisionDate).getTime())</td>
-					</tr>
-				} @if(datasetRows.indexOf(datasetRow) > 159 && datasetRows.indexOf(datasetRow) < 180) {	
-					<tr class="js-index-page js-index-page-9">
-						<td>
-							<input type="checkbox" class="js-check js-record-checkbox" data-uuid="@datasetRow.get(metadata.uuid)"
-								data-role="@roleId" data-status="@datasetRow.get(metadata.status)">
-						</td>
-						<td>
-							<a href="@routes.MetadataXML.generateXml(datasetRow.get(metadata.uuid))">
-								<span class="action-button glyphicon glyphicon-eye-open" title="Metadata bekijken"></span>
-							</a>
-							<a href="@routes.Metadata.renderEditForm(datasetRow.get(metadata.uuid), textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch)"
-								@if(datasetRow.get(metadata.status).equals(4)) {class="edit-btn-published"}>
-								<span class="action-button glyphicon glyphicon-edit" title="Bestand wijzigen"></span>
-							</a>
-						</td>
-						<td>@datasetRow.get(metadata.title)</td>
-						<td>@datasetRow.get(user.label)</td>
-						<td>@datasetRow.get(statusLabel.label)</td>
-						<td>@sdfLocal.format(datasetRow.get(metadata.lastRevisionDate).getTime())</td>
-					</tr>
-				} @if(datasetRows.indexOf(datasetRow) > 179 && datasetRows.indexOf(datasetRow) < 200) {	
-					<tr class="js-index-page js-index-page-10">
-						<td>
-							<input type="checkbox" class="js-check js-record-checkbox" data-uuid="@datasetRow.get(metadata.uuid)"
-								data-role="@roleId" data-status="@datasetRow.get(metadata.status)">
-						</td>
-						<td>
-							<a href="@routes.MetadataXML.generateXml(datasetRow.get(metadata.uuid))">
-								<span class="action-button glyphicon glyphicon-eye-open" title="Metadata bekijken"></span>
-							</a>
-							<a href="@routes.Metadata.renderEditForm(datasetRow.get(metadata.uuid), textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch)"
-								@if(datasetRow.get(metadata.status).equals(4)) {class="edit-btn-published"}>
-								<span class="action-button glyphicon glyphicon-edit" title="Bestand wijzigen"></span>
-							</a>
-						</td>
-						<td>@datasetRow.get(metadata.title)</td>
-						<td>@datasetRow.get(user.label)</td>
-						<td>@datasetRow.get(statusLabel.label)</td>
-						<td>@sdfLocal.format(datasetRow.get(metadata.lastRevisionDate).getTime())</td>
-					</tr>
+@helper.form(action = routes.Index.sort(), 'id -> "js-form") {
+	<div class="overzicht-records">
+		<input type="hidden" name="text" value="@textSearch">
+		<input type="hidden" name="supplier" value="@supplierSearch">
+		<input type="hidden" name="status" value="@statusSearch">
+		<input type="hidden" name="format" value="@mdFormatSearch">
+		<input type="hidden" name="dateUpdateStart" value="@dateStartSearch">
+		<input type="hidden" name="dateUpdateEnd" value="@dateEndSearch">
+		<div id="js-sort-records"></div>
+		
+		<table class="col-sm-offset-0 table table-bordered" id="list-table">
+			<tbody>
+				<tr>
+					<th class="col-sm-1">
+						<input type="checkbox" id="js-check-all" class="js-check" data-page="1">
+					</th>
+					<th class="col-sm-1">
+						Actie
+					</th>
+					<th class="col-sm-4">
+						<span class="col-sm-8 table-header">Titel</span>
+						<div class="col-sm-4 sort-group">
+							<button type="submit" class="pull-right glyphicon glyphicon-triangle-bottom sort-button 
+								@if("titleDesc".equals(sort)) {sort-active}" name="sort" value="titleDesc"></button>
+							<button type="submit" class="pull-right glyphicon glyphicon-triangle-top sort-button 
+								@if("titleAsc".equals(sort)) {sort-active}" name="sort" value="titleAsc"></button>
+						</div>
+					</th>
+					<th class="col-sm-2">
+						<span class="col-sm-8 table-header">Leverancier</span>
+						<div class="col-sm-4 sort-group">
+							<button type="submit" class="pull-right glyphicon glyphicon-triangle-bottom sort-button 
+								@if("supplierDesc".equals(sort)) {sort-active}" name="sort" value="supplierDesc"></button>
+							<button type="submit" class="pull-right glyphicon glyphicon-triangle-top sort-button 
+								@if("supplierAsc".equals(sort)) {sort-active}" name="sort" value="supplierAsc"></button>
+						</div>
+					</th>
+					<th class="col-sm-2">
+						<span class="col-sm-8 table-header">Status</span>
+						<div class="col-sm-4 sort-group">
+							<button type="submit" class="pull-right glyphicon glyphicon-triangle-bottom sort-button 
+								@if("statusDesc".equals(sort)) {sort-active}" name="sort" value="statusDesc"></button>
+							<button type="submit" class="pull-right glyphicon glyphicon-triangle-top sort-button 
+								@if("statusAsc".equals(sort)) {sort-active}" name="sort" value="statusAsc"></button>
+						</div>
+					</th>
+					<th class="col-sm-2">
+						<span class="col-sm-8 table-header">Datum</span>
+						<div class="col-sm-4 sort-group">
+							<button type="submit" class="pull-right glyphicon glyphicon-triangle-bottom sort-button 
+								@if("dateDesc".equals(sort)) {sort-active}" name="sort" value="dateDesc"></button>
+							<button type="submit" class="pull-right glyphicon glyphicon-triangle-top sort-button 
+								@if("dateAsc".equals(sort)) {sort-active}" name="sort" value="dateAsc"></button>
+						</div>
+					</th>
+				</tr>
+				@for(datasetRow <- datasetRows) {
+					@if(datasetRows.indexOf(datasetRow) > -1 && datasetRows.indexOf(datasetRow) < 20) {	
+						<tr class="js-index-page js-index-page-1">
+							<td>
+								<input type="checkbox" class="js-check js-record-checkbox" data-uuid="@datasetRow.get(metadata.uuid)" 
+									data-role="@roleId" data-status="@datasetRow.get(metadata.status)" @if(checkedList.contains(datasetRow.get(metadata.uuid))) {checked}>
+							</td>
+							<td>
+								<a href="@routes.MetadataXML.generateXml(datasetRow.get(metadata.uuid))">
+									<span class="action-button glyphicon glyphicon-eye-open" title="Metadata bekijken"></span>
+								</a>
+								<a href="@routes.Metadata.renderEditForm(datasetRow.get(metadata.uuid), textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch)"
+									@if(datasetRow.get(metadata.status).equals(4)) {class="edit-btn-published"}>
+									<span class="action-button glyphicon glyphicon-edit" title="Bestand wijzigen"></span>
+								</a>
+							</td>
+							<td>@datasetRow.get(metadata.title)</td>
+							<td>@datasetRow.get(user.label)</td>
+							<td>@datasetRow.get(statusLabel.label)</td>
+							<td>@sdfLocal.format(datasetRow.get(metadata.lastRevisionDate).getTime())</td>
+						</tr>
+					} @if(datasetRows.indexOf(datasetRow) > 19 && datasetRows.indexOf(datasetRow) < 40) {	
+						<tr class="js-index-page js-index-page-2">
+							<td>
+								<input type="checkbox" class="js-check js-record-checkbox" data-uuid="@datasetRow.get(metadata.uuid)"
+									data-role="@roleId" data-status="@datasetRow.get(metadata.status)" @if(checkedList.contains(datasetRow.get(metadata.uuid))) {checked}>
+							</td>
+							<td>
+								<a href="@routes.MetadataXML.generateXml(datasetRow.get(metadata.uuid))">
+									<span class="action-button glyphicon glyphicon-eye-open" title="Metadata bekijken"></span>
+								</a>
+								<a href="@routes.Metadata.renderEditForm(datasetRow.get(metadata.uuid), textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch)"
+									@if(datasetRow.get(metadata.status).equals(4)) {class="edit-btn-published"}>
+									<span class="action-button glyphicon glyphicon-edit" title="Bestand wijzigen"></span>
+								</a>
+							</td>
+							<td>@datasetRow.get(metadata.title)</td>
+							<td>@datasetRow.get(user.label)</td>
+							<td>@datasetRow.get(statusLabel.label)</td>
+							<td>@sdfLocal.format(datasetRow.get(metadata.lastRevisionDate).getTime())</td>
+						</tr>
+					} @if(datasetRows.indexOf(datasetRow) > 39 && datasetRows.indexOf(datasetRow) < 60) {	
+						<tr class="js-index-page js-index-page-3">
+							<td>
+								<input type="checkbox" class="js-check js-record-checkbox" data-uuid="@datasetRow.get(metadata.uuid)"
+									data-role="@roleId" data-status="@datasetRow.get(metadata.status)" @if(checkedList.contains(datasetRow.get(metadata.uuid))) {checked}>
+							</td>
+							<td>
+								<a href="@routes.MetadataXML.generateXml(datasetRow.get(metadata.uuid))">
+									<span class="action-button glyphicon glyphicon-eye-open" title="Metadata bekijken"></span>
+								</a>
+								<a href="@routes.Metadata.renderEditForm(datasetRow.get(metadata.uuid), textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch)"
+									@if(datasetRow.get(metadata.status).equals(4)) {class="edit-btn-published"}>
+									<span class="action-button glyphicon glyphicon-edit" title="Bestand wijzigen"></span>
+								</a>
+							</td>
+							<td>@datasetRow.get(metadata.title)</td>
+							<td>@datasetRow.get(user.label)</td>
+							<td>@datasetRow.get(statusLabel.label)</td>
+							<td>@sdfLocal.format(datasetRow.get(metadata.lastRevisionDate).getTime())</td>
+						</tr>
+					} @if(datasetRows.indexOf(datasetRow) > 59 && datasetRows.indexOf(datasetRow) < 80) {	
+						<tr class="js-index-page js-index-page-4">
+							<td>
+								<input type="checkbox" class="js-check js-record-checkbox" data-uuid="@datasetRow.get(metadata.uuid)"
+									data-role="@roleId" data-status="@datasetRow.get(metadata.status)" @if(checkedList.contains(datasetRow.get(metadata.uuid))) {checked}>
+							</td>
+							<td>
+								<a href="@routes.MetadataXML.generateXml(datasetRow.get(metadata.uuid))">
+									<span class="action-button glyphicon glyphicon-eye-open" title="Metadata bekijken"></span>
+								</a>
+								<a href="@routes.Metadata.renderEditForm(datasetRow.get(metadata.uuid), textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch)"
+									@if(datasetRow.get(metadata.status).equals(4)) {class="edit-btn-published"}>
+									<span class="action-button glyphicon glyphicon-edit" title="Bestand wijzigen"></span>
+								</a>
+							</td>
+							<td>@datasetRow.get(metadata.title)</td>
+							<td>@datasetRow.get(user.label)</td>
+							<td>@datasetRow.get(statusLabel.label)</td>
+							<td>@sdfLocal.format(datasetRow.get(metadata.lastRevisionDate).getTime())</td>
+						</tr>
+					} @if(datasetRows.indexOf(datasetRow) > 79 && datasetRows.indexOf(datasetRow) < 100) {	
+						<tr class="js-index-page js-index-page-5">
+							<td>
+								<input type="checkbox" class="js-check js-record-checkbox" data-uuid="@datasetRow.get(metadata.uuid)"
+									data-role="@roleId" data-status="@datasetRow.get(metadata.status)" @if(checkedList.contains(datasetRow.get(metadata.uuid))) {checked}>
+							</td>
+							<td>
+								<a href="@routes.MetadataXML.generateXml(datasetRow.get(metadata.uuid))">
+									<span class="action-button glyphicon glyphicon-eye-open" title="Metadata bekijken"></span>
+								</a>
+								<a href="@routes.Metadata.renderEditForm(datasetRow.get(metadata.uuid), textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch)"
+									@if(datasetRow.get(metadata.status).equals(4)) {class="edit-btn-published"}>
+									<span class="action-button glyphicon glyphicon-edit" title="Bestand wijzigen"></span>
+								</a>
+							</td>
+							<td>@datasetRow.get(metadata.title)</td>
+							<td>@datasetRow.get(user.label)</td>
+							<td>@datasetRow.get(statusLabel.label)</td>
+							<td>@sdfLocal.format(datasetRow.get(metadata.lastRevisionDate).getTime())</td>
+						</tr>
+					} @if(datasetRows.indexOf(datasetRow) > 99 && datasetRows.indexOf(datasetRow) < 120) {	
+						<tr class="js-index-page js-index-page-6">
+							<td>
+								<input type="checkbox" class="js-check js-record-checkbox" data-uuid="@datasetRow.get(metadata.uuid)"
+									data-role="@roleId" data-status="@datasetRow.get(metadata.status)" @if(checkedList.contains(datasetRow.get(metadata.uuid))) {checked}>
+							</td>
+							<td>
+								<a href="@routes.MetadataXML.generateXml(datasetRow.get(metadata.uuid))">
+									<span class="action-button glyphicon glyphicon-eye-open" title="Metadata bekijken"></span>
+								</a>
+								<a href="@routes.Metadata.renderEditForm(datasetRow.get(metadata.uuid), textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch)"
+									@if(datasetRow.get(metadata.status).equals(4)) {class="edit-btn-published"}>
+									<span class="action-button glyphicon glyphicon-edit" title="Bestand wijzigen"></span>
+								</a>
+							</td>
+							<td>@datasetRow.get(metadata.title)</td>
+							<td>@datasetRow.get(user.label)</td>
+							<td>@datasetRow.get(statusLabel.label)</td>
+							<td>@sdfLocal.format(datasetRow.get(metadata.lastRevisionDate).getTime())</td>
+						</tr>
+					} @if(datasetRows.indexOf(datasetRow) > 119 && datasetRows.indexOf(datasetRow) < 140) {	
+						<tr class="js-index-page js-index-page-7">
+							<td>
+								<input type="checkbox" class="js-check js-record-checkbox" data-uuid="@datasetRow.get(metadata.uuid)"
+									data-role="@roleId" data-status="@datasetRow.get(metadata.status)" @if(checkedList.contains(datasetRow.get(metadata.uuid))) {checked}>
+							</td>
+							<td>
+								<a href="@routes.MetadataXML.generateXml(datasetRow.get(metadata.uuid))">
+									<span class="action-button glyphicon glyphicon-eye-open" title="Metadata bekijken"></span>
+								</a>
+								<a href="@routes.Metadata.renderEditForm(datasetRow.get(metadata.uuid), textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch)"
+									@if(datasetRow.get(metadata.status).equals(4)) {class="edit-btn-published"}>
+									<span class="action-button glyphicon glyphicon-edit" title="Bestand wijzigen"></span>
+								</a>
+							</td>
+							<td>@datasetRow.get(metadata.title)</td>
+							<td>@datasetRow.get(user.label)</td>
+							<td>@datasetRow.get(statusLabel.label)</td>
+							<td>@sdfLocal.format(datasetRow.get(metadata.lastRevisionDate).getTime())</td>
+						</tr>
+					} @if(datasetRows.indexOf(datasetRow) > 139 && datasetRows.indexOf(datasetRow) < 160) {	
+						<tr class="js-index-page js-index-page-8">
+							<td>
+								<input type="checkbox" class="js-check js-record-checkbox" data-uuid="@datasetRow.get(metadata.uuid)"
+									data-role="@roleId" data-status="@datasetRow.get(metadata.status)" @if(checkedList.contains(datasetRow.get(metadata.uuid))) {checked}>
+							</td>
+							<td>
+								<a href="@routes.MetadataXML.generateXml(datasetRow.get(metadata.uuid))">
+									<span class="action-button glyphicon glyphicon-eye-open" title="Metadata bekijken"></span>
+								</a>
+								<a href="@routes.Metadata.renderEditForm(datasetRow.get(metadata.uuid), textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch)"
+									@if(datasetRow.get(metadata.status).equals(4)) {class="edit-btn-published"}>
+									<span class="action-button glyphicon glyphicon-edit" title="Bestand wijzigen"></span>
+								</a>
+							</td>
+							<td>@datasetRow.get(metadata.title)</td>
+							<td>@datasetRow.get(user.label)</td>
+							<td>@datasetRow.get(statusLabel.label)</td>
+							<td>@sdfLocal.format(datasetRow.get(metadata.lastRevisionDate).getTime())</td>
+						</tr>
+					} @if(datasetRows.indexOf(datasetRow) > 159 && datasetRows.indexOf(datasetRow) < 180) {	
+						<tr class="js-index-page js-index-page-9">
+							<td>
+								<input type="checkbox" class="js-check js-record-checkbox" data-uuid="@datasetRow.get(metadata.uuid)"
+									data-role="@roleId" data-status="@datasetRow.get(metadata.status)" @if(checkedList.contains(datasetRow.get(metadata.uuid))) {checked}>
+							</td>
+							<td>
+								<a href="@routes.MetadataXML.generateXml(datasetRow.get(metadata.uuid))">
+									<span class="action-button glyphicon glyphicon-eye-open" title="Metadata bekijken"></span>
+								</a>
+								<a href="@routes.Metadata.renderEditForm(datasetRow.get(metadata.uuid), textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch)"
+									@if(datasetRow.get(metadata.status).equals(4)) {class="edit-btn-published"}>
+									<span class="action-button glyphicon glyphicon-edit" title="Bestand wijzigen"></span>
+								</a>
+							</td>
+							<td>@datasetRow.get(metadata.title)</td>
+							<td>@datasetRow.get(user.label)</td>
+							<td>@datasetRow.get(statusLabel.label)</td>
+							<td>@sdfLocal.format(datasetRow.get(metadata.lastRevisionDate).getTime())</td>
+						</tr>
+					} @if(datasetRows.indexOf(datasetRow) > 179 && datasetRows.indexOf(datasetRow) < 200) {	
+						<tr class="js-index-page js-index-page-10">
+							<td>
+								<input type="checkbox" class="js-check js-record-checkbox" data-uuid="@datasetRow.get(metadata.uuid)"
+									data-role="@roleId" data-status="@datasetRow.get(metadata.status)" @if(checkedList.contains(datasetRow.get(metadata.uuid))) {checked}>
+							</td>
+							<td>
+								<a href="@routes.MetadataXML.generateXml(datasetRow.get(metadata.uuid))">
+									<span class="action-button glyphicon glyphicon-eye-open" title="Metadata bekijken"></span>
+								</a>
+								<a href="@routes.Metadata.renderEditForm(datasetRow.get(metadata.uuid), textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch)"
+									@if(datasetRow.get(metadata.status).equals(4)) {class="edit-btn-published"}>
+									<span class="action-button glyphicon glyphicon-edit" title="Bestand wijzigen"></span>
+								</a>
+							</td>
+							<td>@datasetRow.get(metadata.title)</td>
+							<td>@datasetRow.get(user.label)</td>
+							<td>@datasetRow.get(statusLabel.label)</td>
+							<td>@sdfLocal.format(datasetRow.get(metadata.lastRevisionDate).getTime())</td>
+						</tr>
+					}
 				}
+			</tbody>
+		</table>
+	</div>
+	<nav id="list-pager">
+		<ul class="pagination">
+			@if(datasetRows.size() > 0) {
+				<li class="js-page-status active" id="js-page-status-1">
+					<a class="js-index-page-btn" id="js-index-page-btn-1" data-page="1">1</a>
+				</li>
+			} @if(datasetRows.size() > 20) {
+				<li class="js-page-status" id="js-page-status-2">
+					<a class="js-index-page-btn" id="js-index-page-btn-2" data-page="2">2</a>
+				</li>
+			} @if(datasetRows.size() > 40) {
+				<li class="js-page-status" id="js-page-status-3">
+					<a class="js-index-page-btn" id="js-index-page-btn-3" data-page="3">3</a>
+				</li>
+			} @if(datasetRows.size() > 60) {
+				<li class="js-page-status" id="js-page-status-4">
+					<a class="js-index-page-btn" id="js-index-page-btn-4" data-page="4">4</a>
+				</li>
+			} @if(datasetRows.size() > 80) {
+				<li class="js-page-status" id="js-page-status-5">
+					<a class="js-index-page-btn" id="js-index-page-btn-5" data-page="5">5</a>
+				</li>
+			} @if(datasetRows.size() > 100) {
+				<li class="js-page-status" id="js-page-status-6">
+					<a class="js-index-page-btn" id="js-index-page-btn-6" data-page="6">6</a>
+				</li>
+			} @if(datasetRows.size() > 120) {
+				<li class="js-page-status" id="js-page-status-7">
+					<a class="js-index-page-btn" id="js-index-page-btn-7" data-page="7">7</a>
+				</li>
+			} @if(datasetRows.size() > 140) {
+				<li class="js-page-status" id="js-page-status-8">
+					<a class="js-index-page-btn" id="js-index-page-btn-8" data-page="8">8</a>
+				</li>
+			} @if(datasetRows.size() > 160) {
+				<li class="js-page-status" id="js-page-status-9">
+					<a class="js-index-page-btn" id="js-index-page-btn-9" data-page="9">9</a>
+				</li>
+			} @if(datasetRows.size() > 180) {
+				<li class="js-page-status" id="js-page-status-10">
+					<a class="js-index-page-btn" id="js-index-page-btn-10" data-page="10">10</a>
+				</li>
 			}
-		</tbody>
-	</table>
-</div>
-<nav id="list-pager">
-	<ul class="pagination">
-		@if(datasetRows.size() > 0) {
-			<li class="js-page-status active" id="js-page-status-1">
-				<a class="js-index-page-btn" id="js-index-page-btn-1" data-page="1">1</a>
-			</li>
-		} @if(datasetRows.size() > 20) {
-			<li class="js-page-status" id="js-page-status-2">
-				<a class="js-index-page-btn" id="js-index-page-btn-2" data-page="2">2</a>
-			</li>
-		} @if(datasetRows.size() > 40) {
-			<li class="js-page-status" id="js-page-status-3">
-				<a class="js-index-page-btn" id="js-index-page-btn-3" data-page="3">3</a>
-			</li>
-		} @if(datasetRows.size() > 60) {
-			<li class="js-page-status" id="js-page-status-4">
-				<a class="js-index-page-btn" id="js-index-page-btn-4" data-page="4">4</a>
-			</li>
-		} @if(datasetRows.size() > 80) {
-			<li class="js-page-status" id="js-page-status-5">
-				<a class="js-index-page-btn" id="js-index-page-btn-5" data-page="5">5</a>
-			</li>
-		} @if(datasetRows.size() > 100) {
-			<li class="js-page-status" id="js-page-status-6">
-				<a class="js-index-page-btn" id="js-index-page-btn-6" data-page="6">6</a>
-			</li>
-		} @if(datasetRows.size() > 120) {
-			<li class="js-page-status" id="js-page-status-7">
-				<a class="js-index-page-btn" id="js-index-page-btn-7" data-page="7">7</a>
-			</li>
-		} @if(datasetRows.size() > 140) {
-			<li class="js-page-status" id="js-page-status-8">
-				<a class="js-index-page-btn" id="js-index-page-btn-8" data-page="8">8</a>
-			</li>
-		} @if(datasetRows.size() > 160) {
-			<li class="js-page-status" id="js-page-status-9">
-				<a class="js-index-page-btn" id="js-index-page-btn-9" data-page="9">9</a>
-			</li>
-		} @if(datasetRows.size() > 180) {
-			<li class="js-page-status" id="js-page-status-10">
-				<a class="js-index-page-btn" id="js-index-page-btn-10" data-page="10">10</a>
-			</li>
-		}
-	</ul>
-</nav>
+		</ul>
+	</nav>
+}

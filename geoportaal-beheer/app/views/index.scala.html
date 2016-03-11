@@ -13,7 +13,8 @@
 	dateEndSearch: String,
 	tsStartSearch: java.sql.Timestamp,
 	tsEndSearch: java.sql.Timestamp,
-	sort: String
+	sort: String,
+	checkedList: java.util.List[String]
 	)
 
 @import play.i18n._
@@ -177,7 +178,7 @@
 			}
 		</div>
 	</div>
-	@views.html.list(datasetRows, sdfLocal, roleId, textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch, sort)
+	@views.html.list(datasetRows, sdfLocal, roleId, textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch, sort, checkedList)
 	
 	@helper.form(action = routes.Index.changeStatus(), 'id -> "js-status-form") {
 		<div id="js-status-records"></div>
