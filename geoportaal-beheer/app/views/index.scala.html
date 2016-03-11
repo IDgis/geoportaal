@@ -178,6 +178,11 @@
 			}
 		</div>
 	</div>
+	<div id="published-warning">
+		<strong>U heeft 1 of meerdere records geselecteerd, die reeds zijn gepubliceerd. U kunt hiervan niet de status veranderen. 
+		Wilt u toch de status veranderen, neem dan contact op met de beheerders van het Geoportaal.</strong>
+	</div>
+	
 	@views.html.list(datasetRows, sdfLocal, roleId, textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch, sort, checkedList)
 	
 	@helper.form(action = routes.Index.changeStatus(), 'id -> "js-status-form") {
