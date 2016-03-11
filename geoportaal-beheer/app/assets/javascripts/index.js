@@ -326,6 +326,17 @@ require([
 					domStyle.set(item, 'display', 'none');
 				});
 			}
+			
+			domConstruct.empty(dom.byId('js-sort-records'));
+			
+			array.forEach(recordsChecked, function(item) {
+				var metadataUuid = domAttr.get(item, 'data-uuid');
+				var input = domConstruct.create('input');
+				domAttr.set(input, 'type', 'hidden');
+				domAttr.set(input, 'name', 'recordsChecked[]');
+				domAttr.set(input, 'value', metadataUuid);
+				domConstruct.place(input, dom.byId('js-sort-records'), 'last');
+			});
 		});
 		
 		var deleteRecords = on(dom.byId('js-delete'), 'click', function(e) {

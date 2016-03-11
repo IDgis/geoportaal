@@ -1,0 +1,37 @@
+@(page: Integer,
+	datasetRow: com.querydsl.core.Tuple,
+	datasetRows: java.util.List[com.querydsl.core.Tuple],
+	sdfLocal: java.text.SimpleDateFormat,
+	roleId: Integer,
+	textSearch: String,
+	supplierSearch: String,
+	statusSearch: String,
+	mdFormatSearch: String,
+	dateStartSearch: String,
+	dateEndSearch: String,
+	checkedList: java.util.List[String]
+	)
+	
+@import models.QMetadata.metadata
+@import models.QStatusLabel.statusLabel
+@import models.QUser.user
+
+<tr class="js-index-page js-index-page-@page">
+	<td>
+		<input type="checkbox" class="js-check js-record-checkbox" data-uuid="@datasetRow.get(metadata.uuid)"
+			data-role="@roleId" data-status="@datasetRow.get(metadata.status)" @if(checkedList.contains(datasetRow.get(metadata.uuid))) {checked}>
+	</td>
+	<td>
+		<a href="@routes.MetadataXML.generateXml(datasetRow.get(metadata.uuid))">
+			<span class="action-button glyphicon glyphicon-eye-open" title="Metadata bekijken"></span>
+		</a>
+		<a href="@routes.Metadata.renderEditForm(datasetRow.get(metadata.uuid), textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch)"
+			@if(datasetRow.get(metadata.status).equals(4)) {class="edit-btn-published"}>
+			<span class="action-button glyphicon glyphicon-edit" title="Bestand wijzigen"></span>
+		</a>
+	</td>
+	<td>@datasetRow.get(metadata.title)</td>
+	<td>@datasetRow.get(user.label)</td>
+	<td>@datasetRow.get(statusLabel.label)</td>
+	<td>@sdfLocal.format(datasetRow.get(metadata.lastRevisionDate).getTime())</td>
+</tr>
