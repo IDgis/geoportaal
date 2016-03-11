@@ -98,6 +98,7 @@ require([
 			
 			var recordsChecked = query('.js-record-checkbox:checked');
 			var buttons = query('.js-restriction');
+			domStyle.set(dom.byId('published-warning'), 'display', 'none');
 			
 			array.forEach(buttons, function(item) {
 				domStyle.set(item, 'pointer-events', '');
@@ -119,6 +120,8 @@ require([
 						domStyle.set(item, 'box-shadow', 'none');
 						domStyle.set(item, 'opacity', '.65');
 					});
+					
+					domStyle.set(dom.byId('published-warning'), 'display', 'block');
 				}
 			});
 		}
@@ -127,6 +130,7 @@ require([
 			var pageCheck = domAttr.get(dom.byId('js-check-all'), 'data-page');
 			var recordsChecked = query('.js-record-checkbox:checked');
 			var buttons = query('.js-restriction');
+			domStyle.set(dom.byId('published-warning'), 'display', 'none');
 			
 			array.forEach(buttons, function(item) {
 				domStyle.set(item, 'pointer-events', '');
@@ -148,6 +152,8 @@ require([
 						domStyle.set(item, 'box-shadow', 'none');
 						domStyle.set(item, 'opacity', '.65');
 					});
+					
+					domStyle.set(dom.byId('published-warning'), 'display', 'block');
 				}
 			});
 			
