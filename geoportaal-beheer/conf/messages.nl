@@ -1,3 +1,8 @@
+# Algemeen
+login=Inloggen
+confirm=Bevestigen
+
+# Index
 index.header=Geoportaal: zoeken en wijzigen metadata
 
 # Formulier labels en teksten
@@ -30,3 +35,12 @@ form.date.revision.tooltip=Datum waarop de kaart is vernieuwd.
 form.date.valid.start.tooltip=Geldigheidsdatum: begindatum.
 form.date.valid.end.tooltip=Geldigheidsdatum: einddatum.
 form.subject.tooltip=Onderwerp. Onderwerpen waar de kaart bij hoort. Je kan meerdere onderwerpen kiezen, als de kaart bij meerdere onderwerpen hoort.
+
+# Wachtwoord wijzigen
+password.edit.header=Wachtwoord wijzigen beheermodule Geoportaal
+password.edit.intro=Vul onderstaande velden in om uw wachtwoord te wijzigen.
+password.edit.form.error.label=Wachtwoord wijzigen
+password.edit.email.label=E-mailadres
+password.edit.password.old.label=Oud wachtwoord
+password.edit.password.new.label=Nieuw wachtwoord
+password.edit.password.new.repeat.label=Herhaal nieuw wachtwoord
