@@ -12,14 +12,10 @@
 	sdfUS: java.text.SimpleDateFormat,
 	sdfLocal: java.text.SimpleDateFormat,
 	subjectList: java.util.List[com.querydsl.core.Tuple],
-	textSearch: String,
-	supplierSearch: String,
-	statusSearch: String,
-	mdFormatSearch: String,
-	dateStartSearch: String,
-	dateEndSearch: String,
+	search: models.Search,
 	validate: Boolean,
-	previousValues: java.util.Map[String, DublinCore]
+	previousValues: java.util.Map[String, DublinCore],
+	df: java.text.DecimalFormat
 )
 
 @import play.i18n._
@@ -39,14 +35,14 @@
 @import models.QMdFormatLabel.mdFormatLabel
 @import models.QSubjectLabel.subjectLabel
 
-@main(if(create) {"Geoportaal: toevoegen metadata"} else {"Geoportaal: wijzigen metadata"}, textSearch, supplierSearch, statusSearch, 
-	mdFormatSearch, dateStartSearch, dateEndSearch, routes.Assets.versioned("javascripts/add-record.js").url) {
+@main(if(create) {"Geoportaal: toevoegen metadata"} else {"Geoportaal: wijzigen metadata"}, search.getText(), search.getSupplier(), search.getStatus(), 
+	search.getFormat(), search.getDateUpdateStart(), search.getDateUpdateEnd(), routes.Assets.versioned("javascripts/add-record.js").url) {
 	<div class="welkom">
 		<p class="welkom">Vul de velden zo volledig mogelijk in (* = verplicht)</p>
 	</div>
 	
-	@helper.form(action = if(create) {routes.Metadata.createSubmit(textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch)} else {
-		routes.Metadata.editSubmit(datasetRow.get(metadata.uuid), textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch)}, 'enctype -> "multipart/form-data", 
+	@helper.form(action = if(create) {routes.Metadata.createSubmit(search.getText(), search.getSupplier(), search.getStatus(), search.getFormat(), search.getDateUpdateStart(), search.getDateUpdateEnd())} else {
+		routes.Metadata.editSubmit(datasetRow.get(metadata.uuid), search.getText(), search.getSupplier(), search.getStatus(), search.getFormat(), search.getDateUpdateStart(), search.getDateUpdateEnd())}, 'enctype -> "multipart/form-data", 
 		'class -> "form-horizontal beheer-formulier", 'id -> "js-form") {
 		<div class="form-group">
 			<label class="col-sm-3 control-label">Titel*</label>
@@ -150,6 +146,9 @@
 								<span class="glyphicon glyphicon-eye-open open-attachment-button"></span>
 							</a>
 							<span>@attachmentFile.get(mdAttachment.attachmentName)</span>
+							<span>
+								<strong>@df.format(attachmentFile.get(mdAttachment.attachmentContent).length / 1048576.0)MB</strong>
+							</span>
 						</p>
 					}
 				}
@@ -524,7 +523,8 @@
 		<div class="editor-knoppen">
 			<div class="form-group">
 				<button id="js-save-form" class="knop" type="button" @if(create) {data-id="create"} else {data-id=@datasetRow.get(metadata.uuid)}>Opslaan</button>
-				<a class="knop" id="js-cancel-form" href="@routes.Metadata.cancel(textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch)">Annuleren</a>
+				<a class="knop" id="js-cancel-form" href="@routes.Metadata.cancel(search.getText(), search.getSupplier(), search.getStatus(), 
+					search.getFormat(), search.getDateUpdateStart(), search.getDateUpdateEnd())">Annuleren</a>
 			</div>
 		</div>
 	}
