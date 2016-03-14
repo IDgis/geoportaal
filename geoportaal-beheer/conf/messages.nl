@@ -78,3 +78,13 @@ list.action.edit=Bestand wijzigen
 
 # XML
 xml.uselimitation=gebruiksrestricties
+
+# Validatie formulier
+validate.form.title=De titel moet ingevuld zijn.
+validate.form.description=De omschrijving moet ingevuld zijn.
+validate.form.location=De locatie moet ingevuld zijn.
+validate.form.fileid=Het nummer moet ingevuld zijn.
+validate.form.creator=Er moet een eindverantwoordelijke geselecteerd zijn.
+validate.form.creator.other=Bij het selecteren van ''andere'' bij eindverantwoordelijke moet het invoerveld ingevuld worden.
+validate.form.date.create=De datum creatie moet ingevuld zijn.
+validate.form.subject.list=Er moet minimaal één onderwerp aangevinkt zijn.

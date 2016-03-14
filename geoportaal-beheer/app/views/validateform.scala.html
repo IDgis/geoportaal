@@ -1,45 +1,47 @@
 @(title: String, description: String, location: String, fileId: String, creator: String, creatorOther: String, dateCreate: java.util.Date, subjectList: java.util.List[String])
 
+@import play.i18n._
+
 <div id="js-form-validation-result">
 	@if(title == null) {
 		<div>
 			<div class="alert alert-danger" role="alert" data-error="true">
-				<b>De titel moet ingevuld zijn.</b>
+				<b>@Messages.get("validate.form.title")</b>
 			</div>
 		</div>
 	}
 	@if(description == null) {
 		<div>
 			<div class="alert alert-danger" role="alert" data-error="true">
-				<b>De omschrijving moet ingevuld zijn.</b>
+				<b>@Messages.get("validate.form.description")</b>
 			</div>
 		</div>
 	}
 	@if(location == null) {
 		<div>
 			<div class="alert alert-danger" role="alert" data-error="true">
-				<b>De locatie moet ingevuld zijn.</b>
+				<b>@Messages.get("validate.form.location")</b>
 			</div>
 		</div>
 	}
 	@if(fileId == null) {
 		<div>
 			<div class="alert alert-danger" role="alert" data-error="true">
-				<b>Het nummer moet ingevuld zijn.</b>
+				<b>@Messages.get("validate.form.fileid")</b>
 			</div>
 		</div>
 	}
 	@if(creator == null) {
 		<div>
 			<div class="alert alert-danger" role="alert" data-error="true">
-				<b>Er moet een eindverantwoordelijke geselecteerd zijn.</b>
+				<b>@Messages.get("validate.form.creator")</b>
 			</div>
 		</div>
 	}
 	@if(creatorOther == null) {
 		<div>
 			<div class="alert alert-danger" role="alert" data-error="true">
-				<b>Bij het selecteren van 'andere' bij eindverantwoordelijke moet het invoerveld ingevuld worden.</b>
+				<b>@Messages.get("validate.form.creator.other")</b>
 			</div>
 		</div>
 	}
@@ -47,7 +49,7 @@
 	@if(dateCreate == null) {
 		<div>
 			<div class="alert alert-danger" role="alert" data-error="true">
-				<b>De datum creatie moet ingevuld zijn.</b>
+				<b>@Messages.get("validate.form.date.create")</b>
 			</div>
 		</div>
 	}
@@ -55,7 +57,7 @@
 	@if(subjectList == null) {
 		<div>
 			<div class="alert alert-danger" role="alert" data-error="true">
-				<b>Er moet minimaal &#233;&#233;n onderwerp aangevinkt zijn.</b>
+				<b>@Messages.get("validate.form.subject.list")</b>
 			</div>
 		</div>
 	}
