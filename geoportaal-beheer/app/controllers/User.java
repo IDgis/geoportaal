@@ -147,6 +147,9 @@ public class User extends Controller {
 	public Result forgotPassword() {
 		final Form<ForgotPassword> fpForm = Form.form(ForgotPassword.class).bindFromRequest();
 		
+		final String emailUsername = Play.application().configuration().getString("geoportaal.email.username");
+		final String emailPassword = Play.application().configuration().getString("geoportaal.email.password");
+		
 		String password = RandomStringUtils.randomAlphanumeric(10);
 		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 		String encodedPW = encoder.encode(password);
@@ -156,7 +159,7 @@ public class User extends Controller {
 				.set(user.password, encodedPW)
 				.where(user.username.eq(fpForm.get().username))
 				.execute();
-			
+				
 			Integer finalCount = count.intValue();
 			if(finalCount.equals(1)) {
 				Map<String, Object> placeholders = new HashMap<String, Object>();
@@ -165,9 +168,10 @@ public class User extends Controller {
 				String msg = Mail.createMsg(placeholders, "Uw wachtwoord is op verzoek gereset. Uw nieuwe wachtwoord is ${password}. U wordt "
 						+ "aangeraden om zo snel als mogelijk het wachtwoord te veranderen.");
 				try {
-					Mail.send("mail.solcon.nl", 25, "sandro.neumann@idgis.nl", "sandro.neumann@idgis.nl", "Uw wachtwoord voor het geoportaal-beheer is gereset", msg);
+					Mail.send(emailUsername, emailPassword, "mail.your-server.de", 25, "sandro.neumann@idgis.nl", emailUsername, 
+						"Uw wachtwoord voor het geoportaal-beheer is gereset", msg);
 				} catch(Exception e) {
-					System.out.println("e" + e.getMessage());
+					throw e;
 				}
 			}
 			
