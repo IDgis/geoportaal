@@ -11,6 +11,7 @@
 	checkedList: java.util.List[String]
 	)
 
+@import play.i18n._
 @import models.QMetadata.metadata
 @import models.QStatusLabel.statusLabel
 @import models.QUser.user
@@ -32,10 +33,10 @@
 						<input type="checkbox" id="js-check-all" class="js-check" data-page="1">
 					</th>
 					<th class="col-sm-1">
-						Actie
+						@Messages.get("list.action.header")
 					</th>
 					<th class="col-sm-4">
-						<span class="col-sm-8 table-header">Titel</span>
+						<span class="col-sm-8 table-header">@Messages.get("list.title.header")</span>
 						<div class="col-sm-4 sort-group">
 							<button type="submit" class="pull-right glyphicon glyphicon-triangle-bottom sort-button 
 								@if("titleDesc".equals(sort)) {sort-active}" name="sort" value="titleDesc"></button>
@@ -44,7 +45,7 @@
 						</div>
 					</th>
 					<th class="col-sm-2">
-						<span class="col-sm-8 table-header">Leverancier</span>
+						<span class="col-sm-8 table-header">@Messages.get("list.supplier.header")</span>
 						<div class="col-sm-4 sort-group">
 							<button type="submit" class="pull-right glyphicon glyphicon-triangle-bottom sort-button 
 								@if("supplierDesc".equals(sort)) {sort-active}" name="sort" value="supplierDesc"></button>
@@ -53,7 +54,7 @@
 						</div>
 					</th>
 					<th class="col-sm-2">
-						<span class="col-sm-8 table-header">Status</span>
+						<span class="col-sm-8 table-header">@Messages.get("list.status.header")</span>
 						<div class="col-sm-4 sort-group">
 							<button type="submit" class="pull-right glyphicon glyphicon-triangle-bottom sort-button 
 								@if("statusDesc".equals(sort)) {sort-active}" name="sort" value="statusDesc"></button>
@@ -62,7 +63,7 @@
 						</div>
 					</th>
 					<th class="col-sm-2">
-						<span class="col-sm-8 table-header">Datum</span>
+						<span class="col-sm-8 table-header">@Messages.get("list.date.header")</span>
 						<div class="col-sm-4 sort-group">
 							<button type="submit" class="pull-right glyphicon glyphicon-triangle-bottom sort-button 
 								@if("dateDesc".equals(sort)) {sort-active}" name="sort" value="dateDesc"></button>

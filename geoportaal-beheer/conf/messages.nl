@@ -73,6 +73,11 @@ help.header=Geoportaal: help metadata
 help.intro=Hier komt de tekst voor de help pagina.
 
 # Lijst
+list.action.header=Actie
+list.title.header=Titel
+list.supplier.header=Leverancier
+list.status.header=Status
+list.date.header=Datum
 list.action.view=Metadata bekijken
 list.action.edit=Bestand wijzigen
 
