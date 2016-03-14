@@ -44,3 +44,9 @@ password.edit.email.label=E-mailadres
 password.edit.password.old.label=Oud wachtwoord
 password.edit.password.new.label=Nieuw wachtwoord
 password.edit.password.new.repeat.label=Herhaal nieuw wachtwoord
+
+# Wachtwoord vergeten
+password.forgot.header=Wachtwoord vergeten beheermodule Geoportaal
+password.forgot.intro=Vul onderstaande velden in om uw wachtwoord te resetten.
+password.forgot.form.error.label=Wachtwoord vergeten
+password.forgot.email.label=E-mailadres
