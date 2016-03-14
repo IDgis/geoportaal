@@ -11,7 +11,8 @@
 	dateEndSearch: String,
 	checkedList: java.util.List[String]
 	)
-	
+
+@import play.i18n._
 @import models.QMetadata.metadata
 @import models.QStatusLabel.statusLabel
 @import models.QUser.user
@@ -23,11 +24,11 @@
 	</td>
 	<td>
 		<a href="@routes.MetadataXML.generateXml(datasetRow.get(metadata.uuid))">
-			<span class="action-button glyphicon glyphicon-eye-open" title="Metadata bekijken"></span>
+			<span class="action-button glyphicon glyphicon-eye-open" title="@Messages.get("list.action.view")"></span>
 		</a>
 		<a href="@routes.Metadata.renderEditForm(datasetRow.get(metadata.uuid), textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch)"
 			@if(datasetRow.get(metadata.status).equals(4)) {class="edit-btn-published"}>
-			<span class="action-button glyphicon glyphicon-edit" title="Bestand wijzigen"></span>
+			<span class="action-button glyphicon glyphicon-edit" title="@Messages.get("list.action.edit")"></span>
 		</a>
 	</td>
 	<td>@datasetRow.get(metadata.title)</td>

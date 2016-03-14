@@ -54,3 +54,7 @@ password.forgot.email.label=E-mailadres
 # Help pagina
 help.title=Geoportaal: help metadata
 help.intro=Hier komt de tekst voor de help pagina.
+
+# Lijst
+list.action.view=Metadata bekijken
+list.action.edit=Bestand wijzigen
