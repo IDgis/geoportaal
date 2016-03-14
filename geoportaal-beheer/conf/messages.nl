@@ -75,3 +75,6 @@ help.intro=Hier komt de tekst voor de help pagina.
 # Lijst
 list.action.view=Metadata bekijken
 list.action.edit=Bestand wijzigen
+
+# XML
+xml.uselimitation=gebruiksrestricties

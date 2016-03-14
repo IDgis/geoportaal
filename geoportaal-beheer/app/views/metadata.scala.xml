@@ -1,4 +1,4 @@
-@(dcx: models.DublinCoreXML, sdf: java.text.SimpleDateFormat)<?xml version="1.0" encoding="UTF-8"?>
+@(dcx: models.DublinCoreXML, sdf: java.text.SimpleDateFormat, useLimitation: String)<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="@routes.Assets.versioned("lib/md-stylesheets/dc/intern/metadata.xsl")"?>
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" 
 	xmlns:dcmiBox="http://dublincore.org/documents/2000/07/11/dcmi-box/" xmlns:dcterms="http://purl.org/dc/terms/" 
@@ -17,7 +17,7 @@
 		<dc:publisher>@dcx.getPublisher()</dc:publisher>
 		<dc:contributor>@dcx.getContributor()</dc:contributor>
 		<dc:rights>@dcx.getRights()</dc:rights>
-		<dc:rights rdf:datatype="gebruiksrestricties">@dcx.getUseLimitation()</dc:rights>
+		<dc:rights rdf:datatype="@useLimitation">@dcx.getUseLimitation()</dc:rights>
 		<dc:format>@dcx.getFormat()</dc:format> 
 		<dc:source>@dcx.getSource()</dc:source>
 		@if(dcx.getDate() != null) {

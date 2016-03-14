@@ -25,6 +25,7 @@ import javax.inject.Inject;
 import com.querydsl.core.Tuple;
 
 import models.DublinCoreXML;
+import play.i18n.*;
 import play.mvc.Controller;
 import play.mvc.Result;
 import util.QueryDSL;
@@ -128,7 +129,9 @@ public class MetadataXML extends Controller {
 					upperCorner
 			);
 			
-			return ok(views.xml.metadata.render(dcx, sdf));
+			String useLimitation = Messages.get("xml.uselimitation");
+			
+			return ok(views.xml.metadata.render(dcx, sdf, useLimitation));
 		});
 	}
 }
