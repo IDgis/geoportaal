@@ -1,11 +1,19 @@
 # Algemeen
 login=Inloggen
+logout=Uitloggen
 confirm=Bevestigen
+
+# Tabbladen
+main.tab.index=Zoeken en wijzigen
+main.tab.add=Toevoegen
+main.tab.help=Help
 
 # Index
 index.header=Geoportaal: zoeken en wijzigen metadata
 
 # Formulier labels en teksten
+form.create.header=Geoportaal: toevoegen metadata
+form.edit.header=Geoportaal: wijzigen metadata
 form.id.message.create=De id zal bij het opslaan gegenereerd worden...
 
 # Tooltips index
@@ -61,7 +69,7 @@ password.forgot.form.error.label=Wachtwoord vergeten
 password.forgot.email.label=E-mailadres
 
 # Help pagina
-help.title=Geoportaal: help metadata
+help.header=Geoportaal: help metadata
 help.intro=Hier komt de tekst voor de help pagina.
 
 # Lijst
