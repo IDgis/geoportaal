@@ -24,6 +24,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Timestamp;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -38,6 +39,7 @@ import com.querydsl.core.Tuple;
 import com.querydsl.sql.SQLQuery;
 
 import models.DublinCore;
+import models.Search;
 import play.data.DynamicForm;
 import play.data.Form;
 import play.mvc.Controller;
@@ -54,6 +56,8 @@ public class Metadata extends Controller {
 		Boolean create = true;
 		String todayUS = new SimpleDateFormat("yyyy-MM-dd").format(new Date().getTime());
 		String todayLocal = new SimpleDateFormat("dd-MM-yyyy").format(new Date().getTime());
+		
+		Search search = new Search(textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch);
 		
 		return q.withTransaction(tx -> {
 			List<Tuple> typeInformationList = tx.select(typeInformation.id, typeInformation.name, typeInformationLabel.label)
@@ -87,8 +91,7 @@ public class Metadata extends Controller {
 				.fetch();
 			
 			return ok(views.html.form.render(create, todayUS, todayLocal, null, null, null, typeInformationList, creatorsList, rightsList, 
-					useLimitationList, mdFormatList, null, null, subjectList, textSearch, supplierSearch, statusSearch, mdFormatSearch,
-					dateStartSearch, dateEndSearch, false, null));
+					useLimitationList, mdFormatList, null, null, subjectList, search, false, null, null));
 		});
 	}
 	
@@ -258,6 +261,8 @@ public class Metadata extends Controller {
 			String mdFormatSearch, String dateStartSearch, String dateEndSearch) {
 		Boolean create = false;
 		
+		Search search = new Search(textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch);
+		
 		return q.withTransaction(tx -> {
 			Integer statusId = tx.from(metadata)
 				.select(metadata.status)
@@ -326,9 +331,10 @@ public class Metadata extends Controller {
 			SimpleDateFormat sdfUS = new SimpleDateFormat("yyyy-MM-dd");
 			SimpleDateFormat sdfLocal = new SimpleDateFormat("dd-MM-yyyy");
 			
+			DecimalFormat df = new DecimalFormat("0.##");
+			
 			return ok(views.html.form.render(create, "", "", datasetRow, subjectsDataset, attachmentsDataset, typeInformationList, creatorsList, 
-				rightsList, useLimitationList, mdFormatList, sdfUS, sdfLocal, subjectList, textSearch, supplierSearch, statusSearch, mdFormatSearch,
-				dateStartSearch, dateEndSearch, false, null));
+				rightsList, useLimitationList, mdFormatList, sdfUS, sdfLocal, subjectList, search, false, null, df));
 		});
 	}
 	
@@ -741,6 +747,8 @@ public class Metadata extends Controller {
 		
 		Boolean validate = true;
 		
+		Search search = new Search(textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch);
+		
 		return q.withTransaction(tx -> {
 			List<Tuple> typeInformationList = tx.select(typeInformation.id, typeInformation.name, typeInformationLabel.label)
 			.from(typeInformation)
@@ -772,9 +780,10 @@ public class Metadata extends Controller {
 				.join(subjectLabel).on(subject.id.eq(subjectLabel.subjectId))
 				.fetch();
 			
+			DecimalFormat df = new DecimalFormat("0.##");
+			
 			return ok(views.html.form.render(create, todayUS, todayLocal, datasetRow, null, attachmentsDataset, typeInformationList, creatorsList, rightsList, 
-					useLimitationList, mdFormatList, sdfUS, sdfLocal, subjectList, textSearch, supplierSearch, statusSearch, mdFormatSearch,
-					dateStartSearch, dateEndSearch, validate, previousValues));
+					useLimitationList, mdFormatList, sdfUS, sdfLocal, subjectList, search, validate, previousValues, df));
 		});
 	}
 	
