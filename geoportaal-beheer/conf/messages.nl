@@ -50,3 +50,7 @@ password.forgot.header=Wachtwoord vergeten beheermodule Geoportaal
 password.forgot.intro=Vul onderstaande velden in om uw wachtwoord te resetten.
 password.forgot.form.error.label=Wachtwoord vergeten
 password.forgot.email.label=E-mailadres
+
+# Help pagina
+help.title=Geoportaal: help metadata
+help.intro=Hier komt de tekst voor de help pagina.
