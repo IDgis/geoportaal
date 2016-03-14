@@ -36,6 +36,15 @@ form.date.valid.start.tooltip=Geldigheidsdatum: begindatum.
 form.date.valid.end.tooltip=Geldigheidsdatum: einddatum.
 form.subject.tooltip=Onderwerp. Onderwerpen waar de kaart bij hoort. Je kan meerdere onderwerpen kiezen, als de kaart bij meerdere onderwerpen hoort.
 
+# Inloggen
+login.header=Inloggen beheermodule Geoportaal
+login.intro=Vul onderstaande velden in om in te loggen.
+login.form.error.label=Inloggen mislukt
+login.email.label=E-mailadres
+login.password.label=Wachtwoord
+login.button.password.edit=Wachtwoord wijzigen
+login.button.password.forgot=Wachtwoord vergeten
+
 # Wachtwoord wijzigen
 password.edit.header=Wachtwoord wijzigen beheermodule Geoportaal
 password.edit.intro=Vul onderstaande velden in om uw wachtwoord te wijzigen.

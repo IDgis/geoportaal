@@ -1,8 +1,10 @@
 @(form: play.data.Form[User.Login])
 
+@import play.i18n._
+
 <html lang="en">
 	<head>
-		<title>Inloggen</title>
+		<title>@Messages.get("login")</title>
 		<link rel="stylesheet" media="screen" href="@routes.Assets.versioned("lib/jquery-ui/jquery-ui.css")">
 		<link rel="stylesheet" media="screen" href="@routes.Assets.versioned("lib/bootstrap/css/bootstrap.min.css")">
 		<link rel="stylesheet" media="screen" href="@routes.Assets.versioned("stylesheets/main.css")">
@@ -15,35 +17,36 @@
 				</a>
 			</div>
 			<div class="titelbalk">
-				<h1 class="header">Inloggen beheermodule Geoportaal</h1>
+				<h1 class="header">@Messages.get("login.header")</h1>
 			</div>
 			<div class="welkom">
-				<p>Vul onderstaande velden in om in te loggen.</p>
+				<p>@Messages.get("login.intro")</p>
 			</div>
 			@if(form.hasGlobalErrors) {
 				<div class="alert alert-danger">
-					<strong>Inloggen mislukt</strong> @form.globalError.message
+					<strong>@Messages.get("login.form.error.label")</strong> @form.globalError.message
 				</div>
 			}
 			@helper.form(action = routes.User.authenticate(), 'class -> "form-horizontal") {
 				<input type="hidden" name="returnUrl" value="@form("returnUrl").value">
 				<fieldset>
 					<div class="form-group col-sm-12">
-						<label class="col-sm-2 control-label">E-mailadres</label>
+						<label class="col-sm-2 control-label">@Messages.get("login.email.label")</label>
 						<div class="col-sm-4">
-							<input class="form-control" type="email" autofocus name="username" placeholder="E-mail" value="@form("username").value">
+							<input class="form-control" type="email" autofocus name="username" placeholder="@Messages.get("login.email.label")" 
+								value="@form("username").value">
 						</div>
 					</div>
 					<div class="form-group col-sm-12">
-						<label class="col-sm-2 control-label">Wachtwoord</label>
+						<label class="col-sm-2 control-label">@Messages.get("login.password.label")</label>
 						<div class="col-sm-4">
-							<input class="form-control" type="password" name="password" placeholder="Wachtwoord">
+							<input class="form-control" type="password" name="password" placeholder="@Messages.get("login.password.label")">
 						</div>
 					</div>
 					<div class="col-sm-offset-2 col-sm-10">
-						<button class="knop knop-correctie" type="submit">Inloggen</button>
-						<a class="knop knop-correctie" id="password-edit-button" href="@routes.User.renderChangePassword()">Wachtwoord wijzigen</a>
-						<a class="knop knop-correctie" id="password-forgot-button" href="@routes.User.renderForgotPassword()">Wachtwoord vergeten</a>
+						<button class="knop knop-correctie" type="submit">@Messages.get("login")</button>
+						<a class="knop knop-correctie" id="password-edit-button" href="@routes.User.renderChangePassword()">@Messages.get("login.button.password.edit")</a>
+						<a class="knop knop-correctie" id="password-forgot-button" href="@routes.User.renderForgotPassword()">@Messages.get("login.button.password.forgot")</a>
 					</div>
 				</fieldset>
 			}
