@@ -168,7 +168,7 @@ public class User extends Controller {
 				String msg = Mail.createMsg(placeholders, "Uw wachtwoord is op verzoek gereset. Uw nieuwe wachtwoord is ${password}. U wordt "
 						+ "aangeraden om zo snel als mogelijk het wachtwoord te veranderen.");
 				try {
-					Mail.send(emailUsername, emailPassword, "mail.your-server.de", 25, "sandro.neumann@idgis.nl", emailUsername, 
+					Mail.send(emailUsername, emailPassword, "mail.your-server.de", 25, fpForm.get().username, emailUsername, 
 						"Uw wachtwoord voor het geoportaal-beheer is gereset", msg);
 				} catch(Exception e) {
 					throw e;
