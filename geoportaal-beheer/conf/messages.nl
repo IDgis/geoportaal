@@ -2,6 +2,8 @@
 login=Inloggen
 logout=Uitloggen
 confirm=Bevestigen
+cancel=Annuleren
+execute=Uitvoeren
 
 # Tabbladen
 main.tab.index=Zoeken en wijzigen
@@ -10,6 +12,38 @@ main.tab.help=Help
 
 # Index
 index.header=Geoportaal: zoeken en wijzigen metadata
+index.intro=Hier kunt u naar metadata records zoeken en veranderingen doorvoeren.
+index.text.label=Tekst
+index.text.title=Zoek op een woord
+index.supplier.label=Leverancier
+index.supplier.title=Filter op leverancier
+index.status.label=Status
+index.status.title=Filter op status
+index.format.label=Formaat
+index.format.title=Filter op formaat
+index.date.start.label=Update datum tussen
+index.date.start.title=Zoek op begindatum
+index.date.end.label=en
+index.date.end.title=Zoek op einddatum
+index.button.search=Zoek
+index.button.filter.clear=Filter opheffen
+index.button.action.label=Acties voor geselecteerde records:
+index.button.action.concept=Concept
+index.button.action.approval=Ter goedkeuring
+index.button.action.publish=Publiceren
+index.button.action.delete=Verwijderen
+index.button.action.supplier.edit=Leverancier wijzigen
+index.warning.published.record=U heeft 1 of meerdere records geselecteerd, die reeds zijn gepubliceerd. U kunt hiervan niet de status veranderen. Wilt u toch de status veranderen, neem dan contact op met de beheerders van het Geoportaal.
+
+# Index modals
+index.modal.status.title=Wijzigen status statische kaarten
+index.modal.delete.title=Verwijderen statische kaarten
+index.modal.delete.definitive=Definitief verwijderen
+index.modal.delete.selected=Deze actie heeft betrekking op {0} {1}. 
+index.modal.delete.none.selected=U heeft geen records geselecteerd. Deze actie kan niet worden uitgevoerd.
+index.modal.supplier.title=Wijzigen leverancier statische kaarten
+index.modal.action.label=Aantal record(s) waar deze actie betrekking op heeft:
+index.modal.confirmation=Weet u zeker dat u deze actie wilt uitvoeren?
 
 # Formulier labels en teksten
 form.create.header=Geoportaal: toevoegen metadata
