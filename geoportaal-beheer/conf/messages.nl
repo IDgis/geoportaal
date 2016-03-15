@@ -174,3 +174,8 @@ validate.form.creator=Er moet een eindverantwoordelijke geselecteerd zijn.
 validate.form.creator.other=Bij het selecteren van ''andere'' bij eindverantwoordelijke moet het invoerveld ingevuld worden.
 validate.form.date.create=De datum creatie moet ingevuld zijn.
 validate.form.subject.list=Er moet minimaal één onderwerp aangevinkt zijn.
+
+# Zoek validatie
+validate.search.date.start=De update datum, van is niet correct ingevuld.
+validate.search.date.end=De update datum, tot is niet correct ingevuld.
+validate.search.generic=Er is iets misgegaan. Controleer of de velden correct zijn ingevuld.
