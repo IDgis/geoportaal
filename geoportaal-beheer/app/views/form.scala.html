@@ -35,20 +35,20 @@
 @import models.QMdFormatLabel.mdFormatLabel
 @import models.QSubjectLabel.subjectLabel
 
-@main(if(create) {"Geoportaal: toevoegen metadata"} else {"Geoportaal: wijzigen metadata"}, search.getText(), search.getSupplier(), search.getStatus(), 
+@main(if(create) {Messages.get("form.create.header")} else {Messages.get("form.edit.header")}, search.getText(), search.getSupplier(), search.getStatus(), 
 	search.getFormat(), search.getDateUpdateStart(), search.getDateUpdateEnd(), routes.Assets.versioned("javascripts/add-record.js").url) {
 	<div class="welkom">
-		<p class="welkom">Vul de velden zo volledig mogelijk in (* = verplicht)</p>
+		<p class="welkom">@Messages.get("form.intro")</p>
 	</div>
 	
 	@helper.form(action = if(create) {routes.Metadata.createSubmit(search.getText(), search.getSupplier(), search.getStatus(), search.getFormat(), search.getDateUpdateStart(), search.getDateUpdateEnd())} else {
 		routes.Metadata.editSubmit(datasetRow.get(metadata.uuid), search.getText(), search.getSupplier(), search.getStatus(), search.getFormat(), search.getDateUpdateStart(), search.getDateUpdateEnd())}, 'enctype -> "multipart/form-data", 
 		'class -> "form-horizontal beheer-formulier", 'id -> "js-form") {
 		<div class="form-group">
-			<label class="col-sm-3 control-label">Titel*</label>
+			<label class="col-sm-3 control-label">@Messages.get("form.title.label")</label>
 			<div class="col-sm-7">
 				<input class="form-control js-mandatory" id="js-title" type="text" data-toggle="tooltip" data-placement="top" data-field="titel"
-				maxlength="200" title="Vul de titel in" name="title" 
+				maxlength="200" title="@Messages.get("form.title.title")" name="title" 
 				value="@if(validate) {@previousValues.get("metadata").getTitle()}@if(!validate && !create) {@datasetRow.get(metadata.title)}">
 			</div>
 			<div class="col-sm-2">
@@ -59,10 +59,10 @@
 			</div>
 		</div>
 		<div class="form-group">
-			<label class="col-sm-3 control-label">Omschrijving*</label>
+			<label class="col-sm-3 control-label">@Messages.get("form.description.label")</label>
 			<div class="col-sm-7">
 				<textarea class="form-control js-mandatory" id="js-description" rows="8" data-toggle="tooltip" data-placement="top" data-field="omschrijving"
-				maxlength="100000" title="Vul de omschrijving in" 
+				maxlength="100000" title="@Messages.get("form.description.title")" 
 				name="description">@if(validate) {@previousValues.get("metadata").getDescription()}@if(!validate && !create) {@datasetRow.get(metadata.description)}</textarea>
 			</div>
 			<div class="col-sm-2">
@@ -73,10 +73,10 @@
 			</div>
 		</div>
 		<div class="form-group">
-			<label class="col-sm-3 control-label">Locatie*</label>
+			<label class="col-sm-3 control-label">@Messages.get("form.location.label")</label>
 			<div class="col-sm-7">
 				<input class="form-control js-mandatory" id="js-location" type="text" data-toggle="tooltip" data-placement="top" data-field="locatie"
-				maxlength="2000" title="Vul het pad naar het bestand op de computer in" name="location" 
+				maxlength="2000" title="@Messages.get("form.location.title")" name="location" 
 				value="@if(validate) {@previousValues.get("metadata").getLocation()}@if(!validate && !create) {@datasetRow.get(metadata.location)}">
 			</div>
 			<div class="col-sm-2">
@@ -87,10 +87,10 @@
 			</div>
 		</div>
 		<div class="form-group">
-			<label class="col-sm-3 control-label">Nummer*</label>
+			<label class="col-sm-3 control-label">@Messages.get("form.fileid.label")</label>
 			<div class="col-sm-7">
 				<input class="form-control" id="js-file-id" type="text" data-toggle="tooltip" data-placement="top" 
-				maxlength="200" title="Vul het kenmerk in" name="fileId" 
+				maxlength="200" title="@Messages.get("form.fileid.title")" name="fileId" 
 				value="@if(validate) {@previousValues.get("metadata").getFileId()}@if(!validate && !create) {@datasetRow.get(metadata.fileId)}">
 			</div>
 			<div class="col-sm-2">
@@ -101,10 +101,10 @@
 			</div>
 		</div>
 		<div class="form-group">
-			<label class="col-sm-3 control-label">Unieke ID</label>
+			<label class="col-sm-3 control-label">@Messages.get("form.id.label")</label>
 			<div class="col-sm-7">
-				<input class="form-control" type="text" data-toggle="tooltip" data-placement="top" title="De unieke ID van de data" 
-				value="@if(create) {@Messages.get("form.id.message.create")} else {@datasetRow.get(metadata.uuid)}" readonly>
+				<input class="form-control" type="text" data-toggle="tooltip" data-placement="top" title="@Messages.get("form.id.title")" 
+				value="@if(create) {@Messages.get("form.id.value.create")} else {@datasetRow.get(metadata.uuid)}" readonly>
 			</div>
 			<div class="col-sm-2">
 				<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement=top type="button" tabindex="-1"
@@ -115,14 +115,14 @@
 		</div>
 		<div id="js-group-attachment">
 			<div class="form-group js-attachment">
-				<label class="col-sm-3 control-label">Bijlage</label>
+				<label class="col-sm-3 control-label">@Messages.get("form.attachment.label")</label>
 				<div class="col-sm-7 form-inline js-attachment-input">
-					<input class="input-attachment" type="file" data-toggle="tooltip" data-placement="top" title="Voeg de bijlage(s) toe"
+					<input class="input-attachment" type="file" data-toggle="tooltip" data-placement="top" title="@Messages.get("form.attachment.title")"
 					name="attachmentName[]">
-					<button class="knop js-add-attachment" type="button" title="Bijlage toevoegen" tabindex="-1">
+					<button class="knop js-add-attachment" type="button" title="@Messages.get("form.attachment.button.add")" tabindex="-1">
 						<span class="glyphicon glyphicon-plus"></span>
 					</button>
-					<button class="knop js-empty-attachment" type="button" title="Bijlage leegmaken" tabindex="-1">
+					<button class="knop js-empty-attachment" type="button" title="@Messages.get("form.attachment.button.empty")" tabindex="-1">
 						<span class="glyphicon glyphicon-erase"></span>
 					</button>
 					
@@ -165,9 +165,9 @@
 			</p>
 		</div>
 		<div class="form-group">
-			<label class="col-sm-3 control-label">Type informatie</label>
+			<label class="col-sm-3 control-label">@Messages.get("form.typeinformation.label")</label>
 			<div class="col-sm-7">
-				<select class="form-control" data-toggle="tooltip" data-placement="top" title="Selecteer het type informatie"
+				<select class="form-control" data-toggle="tooltip" data-placement="top" title="@Messages.get("form.typeinformation.title")"
 				name="typeInformation">
 					@for(typeInformationOption <- typeInformationList) {
 						<option value="@typeInformationOption.get(typeInformation.name)" 
@@ -187,10 +187,10 @@
 			</div>
 		</div>
 		<div class="form-group">
-			<label class="col-sm-3 control-label">Eindverantwoordelijke*</label>
+			<label class="col-sm-3 control-label">@Messages.get("form.creator.label")</label>
 			<div class="col-sm-7">
 				<select id="js-creator-select" class="form-control" data-toggle="tooltip" data-placement="top" 
-				title="Selecteer de eindverantwoordelijke" name="creator">
+				title="@Messages.get("form.creator.title")" name="creator">
 					<option></option>
 					@for(creatorOption <- creatorList) {
 						<option value="@creatorOption.get(creator.name)"
@@ -212,15 +212,15 @@
 			<label class="col-sm-3 control-label"></label>
 			<div class="col-sm-7">
 				<input id="js-other-creator-input" class="form-control" type="text" name="creatorOther" maxlength="200"
-				placeholder="Voer eindverantwoordelijke van bestand in"
+				title="@Messages.get("form.creator.other.title")"
 				@if(validate) {value="@previousValues.get("metadata").getCreatorOther()"}
 				@if(!validate && !create) {value="@datasetRow.get(metadata.creatorOther)"}>
 			</div>
 		</div>
 		<div class="form-group">
-			<label class="col-sm-3 control-label">Eigendomsrechten</label>
+			<label class="col-sm-3 control-label">@Messages.get("form.rights.label")</label>
 			<div class="col-sm-7">
-				<select class="form-control" data-toggle="tooltip" data-placement="top" title="Selecteer de eigendomsrechten"
+				<select class="form-control" data-toggle="tooltip" data-placement="top" title="@Messages.get("form.rights.title")"
 				name="rights">
 					@for(rightsOption <- rightsList) {
 						<option value="@rightsOption.get(rights.name)"
@@ -240,9 +240,9 @@
 			</div>
 		</div>
 		<div class="form-group">
-			<label class="col-sm-3 control-label">Gebruiksrestricties*</label>
+			<label class="col-sm-3 control-label">@Messages.get("form.uselimitation.label")</label>
 			<div class="col-sm-7">
-				<select class="form-control" data-toggle="tooltip" data-placement="top" title="Selecteer de gebruiksrestrictie"
+				<select class="form-control" data-toggle="tooltip" data-placement="top" title="@Messages.get("form.uselimitation.title")"
 				name="useLimitation">
 					@for(useLimitationOption <- useLimitationList) {
 						<option value="@useLimitationOption.get(useLimitation.name)"
@@ -261,10 +261,10 @@
 			</div>
 		</div>
 		<div class="form-group">
-			<label class="col-sm-3 control-label">Formaat applicatie</label>
+			<label class="col-sm-3 control-label">@Messages.get("form.format.label")</label>
 			<div class="col-sm-7">
 				<select class="form-control" data-toggle="tooltip" data-placement="top" 
-				title="Selecteer het formaat van de data" name="mdFormat">
+				title="@Messages.get("form.format.title")" name="mdFormat">
 					@for(mdFormatOption <- mdFormatList) {
 						<option value="@mdFormatOption.get(mdFormat.name)"
 						@if(validate && mdFormatOption.get(mdFormat.name) == previousValues.get("metadata").getMdFormat()) {selected}
@@ -283,10 +283,10 @@
 			</div>
 		</div>
 		<div class="form-group">
-			<label class="col-sm-3 control-label">Bron (leverancier)</label>
+			<label class="col-sm-3 control-label">@Messages.get("form.source.label")</label>
 			<div class="col-sm-7">
 				<input class="form-control" type="text" data-toggle="tooltip" data-placement="top" maxlength="200"
-				title="Vul de persoon of organisatie waar de bron vandaan komt" name="source" 
+				title="@Messages.get("form.source.title")" name="source" 
 				value="@if(validate) {@previousValues.get("metadata").getSource()}@if(!validate && !create) {@datasetRow.get(metadata.source)}">
 			</div>
 			<div class="col-sm-2">
@@ -297,10 +297,10 @@
 			</div>
 		</div>
 		<div class="form-group">
-			<label class="col-sm-3 control-label">Datum creatie*</label>
+			<label class="col-sm-3 control-label">@Messages.get("form.date.create.label")</label>
 			<div class="col-sm-4">
 				<input class="form-control js-date" type="date" data-toggle="tooltip" data-placement="top" 
-				title="Vul de datum in wanneer de metadata gemaakt is" id="js-date-creation" name="dateSourceCreation"
+				title="@Messages.get("form.date.create.title")" id="js-date-creation" name="dateSourceCreation"
 				data-create="@create" data-validate="@validate" data-date-create-today-US="@todayUS" data-date-create-today-local="@todayLocal"
 				@if(validate && previousValues.get("metadata").getDateSourceCreation != null) {
 					data-date-value-US="@sdfUS.format(previousValues.get("metadata").getDateSourceCreation.getTime())"
@@ -318,10 +318,10 @@
 			</div>
 		</div>
 		<div class="form-group">
-			<label class="col-sm-3 control-label">Datum publicatie</label>
+			<label class="col-sm-3 control-label">@Messages.get("form.date.publication.label")</label>
 			<div class="col-sm-4">
 				<input class="form-control js-date" type="date" data-toggle="tooltip"  data-placement="top" 
-				title="Vul de datum in wanneer de metadata gepubliceerd is" id="js-date-publication" name="dateSourcePublication"
+				title="@Messages.get("form.date.publication.title")" id="js-date-publication" name="dateSourcePublication"
 				@if(validate && previousValues.get("metadata").getDateSourcePublication != null) {
 					data-date-value-US="@sdfUS.format(previousValues.get("metadata").getDateSourcePublication.getTime())"
 					data-date-value-local="@sdfLocal.format(previousValues.get("metadata").getDateSourcePublication.getTime())"}
@@ -338,10 +338,10 @@
 			</div>
 		</div>
 		<div class="form-group">
-			<label class="col-sm-3 control-label">Datum mutatie</label>
+			<label class="col-sm-3 control-label">@Messages.get("form.date.revision.label")</label>
 			<div class="col-sm-4">
 				<input class="form-control js-date" type="date" data-toggle="tooltip" data-placement="top" 
-				title="Vul de datum in wanneer de metadata gewijzigd is" id="js-date-revision" name="dateSourceRevision"
+				title="@Messages.get("form.date.revision.title")" id="js-date-revision" name="dateSourceRevision"
 				@if(validate && previousValues.get("metadata").getDateSourceRevision != null) {
 					data-date-value-US="@sdfUS.format(previousValues.get("metadata").getDateSourceRevision.getTime())"
 					data-date-value-local="@sdfLocal.format(previousValues.get("metadata").getDateSourceRevision.getTime())"}
@@ -358,10 +358,10 @@
 			</div>
 		</div>
 		<div class="form-group">
-			<label class="col-sm-3 control-label">Datum geldig, van</label>
+			<label class="col-sm-3 control-label">@Messages.get("form.date.valid.from.label")</label>
 			<div class="col-sm-4">
 				<input class="form-control js-date" type="date" data-toggle="tooltip" data-placement="top" 
-				title="Vul de datum in vanaf wanneer de bron geldig is" id="js-date-valid-from" name="dateSourceValidFrom"
+				title="@Messages.get("form.date.valid.from.title")" id="js-date-valid-from" name="dateSourceValidFrom"
 				@if(validate && previousValues.get("metadata").getDateSourceValidFrom != null) {
 					data-date-value-US="@sdfUS.format(previousValues.get("metadata").getDateSourceValidFrom.getTime())"
 					data-date-value-local="@sdfLocal.format(previousValues.get("metadata").getDateSourceValidFrom.getTime())"}
@@ -378,10 +378,10 @@
 			</div>
 		</div>
 		<div class="form-group">
-			<label class="col-sm-3 control-label">Datum geldig, tot</label>
+			<label class="col-sm-3 control-label">@Messages.get("form.date.valid.end.label")</label>
 			<div class="col-sm-4">
 				<input class="form-control js-date" type="date" data-toggle="tooltip" data-placement="top" 
-				title="Vul de datum in tot wanneer de bron geldig is" id="js-date-valid-until" name="dateSourceValidUntil"
+				title="@Messages.get("form.date.valid.end.title")" id="js-date-valid-until" name="dateSourceValidUntil"
 				@if(validate && previousValues.get("metadata").getDateSourceValidUntil != null) {
 					data-date-value-US="@sdfUS.format(previousValues.get("metadata").getDateSourceValidUntil.getTime())"
 					data-date-value-local="@sdfLocal.format(previousValues.get("metadata").getDateSourceValidUntil.getTime())"}
@@ -397,8 +397,8 @@
 				</button>
 			</div>
 		</div>
-		<div class="form-group" data-toggle="tooltip" data-placement="top" title="Vink de onderwerpen aan die van toepassing zijn op de data">
-			<label class="col-sm-3 control-label">ISO onderwerp*</label>
+		<div class="form-group" data-toggle="tooltip" data-placement="top" title="@Messages.get("form.subject.title")">
+			<label class="col-sm-3 control-label">@Messages.get("form.subject.label")</label>
 			<div class="col-sm-7">
 				<div class="col-sm-6">
 					@for(subjectOption <- subjectList) {
@@ -464,56 +464,56 @@
 					@if("".equals(previousValues.get("metadata").getTitle())) {
 						<div>
 							<div class="alert alert-danger" role="alert" data-error="true">
-								<b>De titel moet ingevuld zijn.</b>
+								<b>@Messages.get("validate.form.title")</b>
 							</div>
 						</div>
 					}
 					@if("".equals(previousValues.get("metadata").getDescription())) {
 						<div>
 							<div class="alert alert-danger" role="alert" data-error="true">
-								<b>De omschrijving moet ingevuld zijn.</b>
+								<b>@Messages.get("validate.form.description")</b>
 							</div>
 						</div>
 					}	
 					@if("".equals(previousValues.get("metadata").getLocation())) {
 						<div>
 							<div class="alert alert-danger" role="alert" data-error="true">
-								<b>De locatie moet ingevuld zijn.</b>
+								<b>@Messages.get("validate.form.location")</b>
 							</div>
 						</div>
 					}
 					@if("".equals(previousValues.get("metadata").getFileId())) {
 						<div>
 							<div class="alert alert-danger" role="alert" data-error="true">
-								<b>Het nummer moet ingevuld zijn.</b>
+								<b>@Messages.get("validate.form.fileid")</b>
 							</div>
 						</div>
 					}	
 					@if("".equals(previousValues.get("metadata").getCreator())) {
 						<div>
 							<div class="alert alert-danger" role="alert" data-error="true">
-								<b>Er moet een eindverantwoordelijke geselecteerd zijn.</b>
+								<b>@Messages.get("validate.form.creator")</b>
 							</div>
 						</div>
 					}
 					@if("other".equals(previousValues.get("metadata").getCreator()) && "".equals(previousValues.get("metadata").getCreatorOther())) {
 						<div>
 							<div class="alert alert-danger" role="alert" data-error="true">
-								<b>Bij het selecteren van 'andere' bij eindverantwoordelijke moet het invoerveld ingevuld worden.</b>
+								<b>@Messages.get("validate.form.creator.other")</b>
 							</div>
 						</div>
 					}
 					@if(previousValues.get("metadata").getDateSourceCreation() == null) {	
 						<div>
 							<div class="alert alert-danger" role="alert" data-error="true">
-								<b>De datum creatie moet ingevuld zijn.</b>
+								<b>@Messages.get("validate.form.date.create")</b>
 							</div>
 						</div>
 					}
 					@if(previousValues.get("metadata").getSubject() == null) {	
 						<div>
 							<div class="alert alert-danger" role="alert" data-error="true">
-								<b>Er moet minimaal &#233;&#233;n onderwerp aangevinkt zijn.</b>
+								<b>@Messages.get("validate.form.subject.list")</b>
 							</div>
 						</div>
 					}
@@ -522,9 +522,9 @@
 		</div>
 		<div class="editor-knoppen">
 			<div class="form-group">
-				<button id="js-save-form" class="knop" type="button" @if(create) {data-id="create"} else {data-id=@datasetRow.get(metadata.uuid)}>Opslaan</button>
+				<button id="js-save-form" class="knop" type="button" @if(create) {data-id="create"} else {data-id=@datasetRow.get(metadata.uuid)}>@Messages.get("save")</button>
 				<a class="knop" id="js-cancel-form" href="@routes.Metadata.cancel(search.getText(), search.getSupplier(), search.getStatus(), 
-					search.getFormat(), search.getDateUpdateStart(), search.getDateUpdateEnd())">Annuleren</a>
+					search.getFormat(), search.getDateUpdateStart(), search.getDateUpdateEnd())">@Messages.get("cancel")</a>
 			</div>
 		</div>
 	}

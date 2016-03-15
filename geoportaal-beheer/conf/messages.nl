@@ -1,6 +1,7 @@
 # Algemeen
 login=Inloggen
 logout=Uitloggen
+save=Opslaan
 confirm=Bevestigen
 cancel=Annuleren
 execute=Uitvoeren
@@ -48,7 +49,47 @@ index.modal.confirmation=Weet u zeker dat u deze actie wilt uitvoeren?
 # Formulier labels en teksten
 form.create.header=Geoportaal: toevoegen metadata
 form.edit.header=Geoportaal: wijzigen metadata
-form.id.message.create=De id zal bij het opslaan gegenereerd worden...
+form.intro=Vul de velden zo volledig mogelijk in (* = verplicht)
+form.title.label=Titel*
+form.title.title=Vul de titel in
+form.description.label=Omschrijving*
+form.description.title=Vul de omschrijving in
+form.location.label=Locatie*
+form.location.title=Vul het pad naar het bestand op de computer in
+form.fileid.label=Nummer*
+form.fileid.title=Vul het nummer in
+form.id.label=Unieke ID
+form.id.title=De unieke ID van de data
+form.id.value.create=De id zal bij het opslaan gegenereerd worden...
+form.attachment.label=Bijlage
+form.attachment.title=Voeg de bijlage(s) toe
+form.attachment.button.add=Bijlage toevoegen
+form.attachment.button.empty=Bijlage leegmaken
+form.typeinformation.label=Type informatie
+form.typeinformation.title=Selecteer het type informatie
+form.creator.label=Eindverantwoordelijke*
+form.creator.title=Selecteer de eindverantwoordelijke
+form.creator.other.title=Voer eindverantwoordelijke van bestand in
+form.rights.label=Eigendomsrechten
+form.rights.title=Selecteer de eigendomsrechten
+form.uselimitation.label=Gebruiksrestricties*
+form.uselimitation.title=Selecteer de gebruiksrestrictie
+form.format.label=Formaat applicatie
+form.format.title=Selecteer het formaat van de data
+form.source.label=Bron (leverancier)
+form.source.title=Vul de persoon of organisatie in waar de bron vandaan komt
+form.date.create.label=Datum creatie*
+form.date.create.title=Vul de datum in wanneer de metadata gemaakt is
+form.date.publication.label=Datum publicatie
+form.date.publication.title=Vul de datum in wanneer de metadata gepubliceerd is
+form.date.revision.label=Datum mutatie
+form.date.revision.title=Vul de datum in wanneer de metadata gewijzigd is
+form.date.valid.from.label=Datum geldig, van
+form.date.valid.from.title=Vul de datum in vanaf wanneer de bron geldig is
+form.date.valid.end.label=Datum geldig, tot
+form.date.valid.end.title=Vul de datum in tot wanneer de bron geldig is
+form.subject.label=ISO onderwerp*
+form.subject.title=Vink de onderwerpen aan die van toepassing zijn op de data
 
 # Tooltips index
 index.text.tooltip=Tekst in die je wilt zoeken. Meerdere woorden zijn mogelijk. Vul je niets in, dan wordt alles gekozen als je gaat zoeken.
@@ -86,6 +127,7 @@ login.email.label=E-mailadres
 login.password.label=Wachtwoord
 login.button.password.edit=Wachtwoord wijzigen
 login.button.password.forgot=Wachtwoord vergeten
+login.error.message=Ongeldige gebruikersnaam of wachtwoord
 
 # Wachtwoord wijzigen
 password.edit.header=Wachtwoord wijzigen beheermodule Geoportaal
@@ -95,12 +137,17 @@ password.edit.email.label=E-mailadres
 password.edit.password.old.label=Oud wachtwoord
 password.edit.password.new.label=Nieuw wachtwoord
 password.edit.password.new.repeat.label=Herhaal nieuw wachtwoord
+password.edit.error.incomplete.message=Alle velden moeten ingevuld zijn
+password.edit.error.mismatch.message=Gebruikersnaam en wachtwoord komen niet overeen
+password.edit.error.repeat.message=Nieuwe wachtwoord en herhaling komen niet overeen
 
 # Wachtwoord vergeten
 password.forgot.header=Wachtwoord vergeten beheermodule Geoportaal
 password.forgot.intro=Vul onderstaande velden in om uw wachtwoord te resetten.
 password.forgot.form.error.label=Wachtwoord vergeten
 password.forgot.email.label=E-mailadres
+password.forgot.email.message=Uw wachtwoord is op verzoek gereset. Uw nieuwe wachtwoord is {0}. U wordt aangeraden om zo snel als mogelijk het wachtwoord te veranderen.
+password.forgot.email.subject=Uw wachtwoord voor het geoportaal-beheer is gereset
 
 # Help pagina
 help.header=Geoportaal: help metadata
