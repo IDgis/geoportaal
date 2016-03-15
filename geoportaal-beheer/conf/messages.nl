@@ -5,6 +5,7 @@ save=Opslaan
 confirm=Bevestigen
 cancel=Annuleren
 execute=Uitvoeren
+unauthorized=Geen toegang.
 
 # Tabbladen
 main.tab.index=Zoeken en wijzigen
@@ -174,6 +175,11 @@ validate.form.creator=Er moet een eindverantwoordelijke geselecteerd zijn.
 validate.form.creator.other=Bij het selecteren van ''andere'' bij eindverantwoordelijke moet het invoerveld ingevuld worden.
 validate.form.date.create=De datum creatie moet ingevuld zijn.
 validate.form.subject.list=Er moet minimaal één onderwerp aangevinkt zijn.
+validate.form.parse.date.create=De datum creatie is niet correct ingevuld.
+validate.form.parse.date.publication=De datum publicatie is niet correct ingevuld.
+validate.form.parse.date.revision=De datum mutatie is niet correct ingevuld.
+validate.form.parse.date.valid.start=De datum geldig, van is niet correct ingevuld.
+validate.form.parse.date.valid.end=De datum geldig, tot is niet correct ingevuld.
 
 # Zoek validatie
 validate.search.date.start=De update datum, van is niet correct ingevuld.
