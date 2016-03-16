@@ -29,29 +29,33 @@ public class Converter {
 		this.outType = outType;
 	}
 
-	public void convertFiles(File[] files) throws IOException {
-		PrintWriter errorWriter = new PrintWriter("log.txt");
+	public void convertFiles(File[] files) throws Exception {
+		try {
+			PrintWriter errorWriter = new PrintWriter("log.txt");
 
-		int countSuccessful = 0;
+			int countSuccessful = 0;
 
-		int i = 0;
-		for (File file : files) {
-			System.out.println(i++ + ": " + file.getName());
-			try {
-				outType.convertFile(file, parseDocument(file));
-				countSuccessful++;
-			} catch(Exception e) {
-				System.out.println("File is invalid: " + file.getName());
-				e.printStackTrace();
-				errorWriter.println("File is invalid: " + file.getName());
-				e.printStackTrace(errorWriter);
-				errorWriter.println();
+			int i = 0;
+			for (File file : files) {
+				System.out.println(i++ + ": " + file.getName());
+				try {
+					outType.convertFile(file, parseDocument(file));
+					countSuccessful++;
+				} catch(Exception e) {
+					System.out.println("File is invalid: " + file.getName());
+					e.printStackTrace();
+					errorWriter.println("File is invalid: " + file.getName());
+					e.printStackTrace(errorWriter);
+					errorWriter.println();
+				}
 			}
+
+			errorWriter.close();
+
+			System.out.println(countSuccessful + "/" + i + " succesvol verwerkt");
+		} finally {
+			outType.close();
 		}
-
-		errorWriter.close();
-
-		System.out.println(countSuccessful + "/" + i + " succesvol verwerkt");
 	}
 
 	private MetadataDocument parseDocument(File xmlFile) throws Exception {

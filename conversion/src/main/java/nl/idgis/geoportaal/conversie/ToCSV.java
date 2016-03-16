@@ -148,4 +148,10 @@ public class ToCSV implements OutDestination {
 			}
 		}
 	}
+
+	@Override
+	public void close() throws IOException {
+		csvWriter.close();
+		txtWriter.close();
+	}
 }
