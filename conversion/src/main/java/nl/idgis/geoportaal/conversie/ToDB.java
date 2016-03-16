@@ -96,10 +96,10 @@ public class ToDB implements OutDestination {
 				attachmentStatement.setObject(2, attachment.getFileName(), Types.VARCHAR);
 				attachmentStatement.setBinaryStream(3, attachment.getDataStream(), attachment.getLength());
 				attachmentStatement.setObject(4, attachment.getMimeType(),Types.VARCHAR);
+				attachmentStatement.executeUpdate();
 			}
 
 			if (attachment != null) {
-				attachmentStatement.executeUpdate();
 				attachment.close();
 			}
 		}
