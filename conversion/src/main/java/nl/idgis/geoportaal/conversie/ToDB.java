@@ -95,7 +95,7 @@ public class ToDB implements OutDestination {
 				attachment = Attachment.openConnection(attachmentUrl);
 				attachmentStatement.setObject(1, metadataId, Types.INTEGER);
 				attachmentStatement.setObject(2, attachment.getFileName(), Types.VARCHAR);
-				// attachmentStatement.setBinaryStream(3, attachment.getDataStream(), attachment.getLength());
+				attachmentStatement.setBinaryStream(3, attachment.getDataStream(), attachment.getLength());
 				attachmentStatement.setObject(4, attachment.getMimeType(),Types.VARCHAR);
 				attachmentStatement.executeUpdate();
 			}
