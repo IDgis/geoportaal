@@ -66,6 +66,7 @@ form.attachment.label=Bijlage
 form.attachment.title=Voeg de bijlage(s) toe
 form.attachment.button.add=Bijlage toevoegen
 form.attachment.button.empty=Bijlage leegmaken
+form.attachment.button.delete=Bijlage verwijderen
 form.typeinformation.label=Type informatie
 form.typeinformation.title=Selecteer het type informatie
 form.creator.label=Eindverantwoordelijke*

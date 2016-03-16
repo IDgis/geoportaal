@@ -125,7 +125,6 @@
 					<button class="knop js-empty-attachment" type="button" title="@Messages.get("form.attachment.button.empty")" tabindex="-1">
 						<span class="glyphicon glyphicon-erase"></span>
 					</button>
-					
 				</div>
 				<div class="col-sm-2 js-attachment-tooltip">
 					<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" tabindex="-1"
@@ -134,6 +133,7 @@
 					</button>
 				</div>
 			</div>
+			<input type="hidden" id="js-remove-attachment-label" value="@Messages.get("form.attachment.button.delete")">
 		</div>
 		<div id="attachment-files-box" class="col-sm-offset-3 col-sm-8">
 			@if(!create) {
