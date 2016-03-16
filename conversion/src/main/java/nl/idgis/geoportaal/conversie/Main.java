@@ -46,7 +46,7 @@ public class Main {
 
 			xmlDirectory = new File(res.getString(XML_DIR));
 			csvFile = new File(res.getString(CSV_DIR) + "/conversion_input.csv");
-			txtFile = new File("./content_lengths.txt");
+			txtFile = new File(res.getString(CSV_DIR) + "/content_lengths.txt");
 			username = res.getString(USERNAME);
 			password = res.getString(PASSWORD);
 			serverName = res.getString(SERVER_NAME);
