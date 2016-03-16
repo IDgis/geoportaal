@@ -47,6 +47,7 @@ public class Converter {
 					errorWriter.println("File is invalid: " + file.getName());
 					e.printStackTrace(errorWriter);
 					errorWriter.println();
+					errorWriter.flush();
 				}
 			}
 

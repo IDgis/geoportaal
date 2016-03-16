@@ -16,6 +16,7 @@ public class ToDB implements OutDestination {
 
 	private static Mapper creatorMapper = new Mapper("creator_conversion.csv");
 	private static Mapper useLimitationMapper = new Mapper("use_limitation_conversion.csv");
+	private static Mapper mdFormatMapper = new Mapper("md_format_conversion.csv");
 
 	private String schema;
 	private Connection connection;
@@ -33,7 +34,7 @@ public class ToDB implements OutDestination {
 		if (!connected)
 			throw new Exception("connect method is nog niet aangeroepen of connectie is gesloten");
 
-		MetadataRow row = MetadataRow.parseMetadataDocument(d, creatorMapper, useLimitationMapper);
+		MetadataRow row = MetadataRow.parseMetadataDocument(d, creatorMapper, useLimitationMapper, mdFormatMapper);
 
 		final String metadataSql = "INSERT INTO " + schema + ".metadata (uuid,location,file_id,title,description,"
 				+ "type_information,creator,creator_other,rights,use_limitation,"
@@ -94,7 +95,7 @@ public class ToDB implements OutDestination {
 				attachment = Attachment.openConnection(attachmentUrl);
 				attachmentStatement.setObject(1, metadataId, Types.INTEGER);
 				attachmentStatement.setObject(2, attachment.getFileName(), Types.VARCHAR);
-				attachmentStatement.setBinaryStream(3, attachment.getDataStream(), attachment.getLength());
+				// attachmentStatement.setBinaryStream(3, attachment.getDataStream(), attachment.getLength());
 				attachmentStatement.setObject(4, attachment.getMimeType(),Types.VARCHAR);
 				attachmentStatement.executeUpdate();
 			}
