@@ -26,10 +26,10 @@ public class Main {
 		parser.addArgument("-" + CSV_DIR).type(String.class).help("map waar CSV-bestand met resultaten naar wordt geschreven (default: 'csvfiles')").setDefault("csvfiles");
 		parser.addArgument("-" + USERNAME).type(String.class).help("gebruikersnaam om in te loggen op de databaseserver");
 		parser.addArgument("-" + PASSWORD).type(String.class).help("wachtwoord om in te loggen op de databaseserver");
-		parser.addArgument("-" + SERVER_NAME).type(String.class).help("server waarop de database zich bevindt (bijvoorbeeld 'localhost'");
+		parser.addArgument("-" + SERVER_NAME).type(String.class).help("server waarop de database zich bevindt (bijvoorbeeld 'localhost')");
 		parser.addArgument("-" + PORT).type(Integer.class).help("poortnummer van de server");
 		parser.addArgument("-" + DATABASE).type(String.class).help("naam van de database");
-		parser.addArgument("-" + SCHEMA).type(String.class).help("database schema indien in public").setDefault("public");
+		parser.addArgument("-" + SCHEMA).type(String.class).help("database schema indien niet public").setDefault("public");
 
 		File xmlDirectory = null;
 		File csvFile = null;
