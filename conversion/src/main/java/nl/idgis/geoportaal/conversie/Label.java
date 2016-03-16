@@ -7,7 +7,7 @@ public class Label {
 	private String labelTable;
 
 	/**
-	 * Puntkomma's in {@code value} worden vervangen door dubbele punten. Dit gebeurt niet bij {@link Label#setValue}.
+	 * Puntkomma's in {@code value} worden vervangen door dubbele punten. Dit gebeurt niet bij {@link Label#setValue}. Null-waarden worden vervangen door lege strings.
 	 * @param value
 	 * @param table
 	 */
@@ -18,6 +18,8 @@ public class Label {
 
 		if (this.value != null)
 			this.value = value.replace(';', ':');
+		else
+			this.value = "";
 	}
 
 	public String getValue() {
