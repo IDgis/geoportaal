@@ -104,6 +104,18 @@ public class ToDB implements OutDestination {
 			}
 		}
 
+		PreparedStatement subjectStatement = connection.prepareStatement("INSERT INTO " + schema + ".md_subject (metadata_id,subject) VALUES (?,?)");
+
+		final List<Label> subjects = row.getSubject();
+
+		if (subjects != null) {
+			for (Label subject : subjects) {
+				subjectStatement.setInt(1, metadataId);
+				subjectStatement.setInt(2, resolveIntFromLabel(subject));
+				subjectStatement.executeUpdate();
+			}
+		}
+
 		connection.commit();
 	}
 

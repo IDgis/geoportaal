@@ -3,6 +3,7 @@ package nl.idgis.geoportaal.conversie;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -16,6 +17,7 @@ public class MetadataRow {
 	private static final String TABLE_MD_FORMAT = "md_format";
 	private static final String TABLE_SUPPLIER = "supplier";
 	private static final String TABLE_STATUS = "status";
+	private static final String TABLE_SUBJECT = "subject";
 	private static final String SUPPLIER = "nienhuis";
 	private static final String STATUS = "ter goedkeuring";
 	private static final String LAST_REVISION_USER = "conversie";
@@ -44,6 +46,7 @@ public class MetadataRow {
 	private String lastRevisionUser;
 	private Timestamp lastRevisionDate;
 	private String[] attachment;
+	private List<Label> subject;
 
 	public static MetadataRow parseMetadataDocument(MetadataDocument d, Mapper creatorMapper, Mapper useLimitationMapper) throws Exception {
 		MetadataRow row = new MetadataRow();
@@ -82,6 +85,17 @@ public class MetadataRow {
 		String attachmentString = retrieveFirstStringOrNull(Path.ATTACHMENT, d);
 		if (attachmentString != null)
 			row.setAttachment(attachmentString.split("\\s+"));
+
+		List<String> subjectStrings = d.getStrings(Path.SUBJECT.path(), DATA_TYPE, "theme:provisa", false);
+		List<Label> subjectLabels = new ArrayList<>();
+
+		if (subjectStrings != null) {
+			for (String subjectString : subjectStrings) {
+				subjectLabels.add(new Label(subjectString, TABLE_SUBJECT));
+			}
+		}
+
+		row.setSubject(subjectLabels);
 
 		return row;
 	}
@@ -297,6 +311,14 @@ public class MetadataRow {
 
 	public void setAttachment(String[] attachment) {
 		this.attachment = attachment;
+	}
+
+	public List<Label> getSubject() {
+		return subject;
+	}
+
+	public void setSubject(List<Label> subject) {
+		this.subject = subject;
 	}
 
 	@Override
