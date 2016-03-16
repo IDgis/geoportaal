@@ -1,6 +1,7 @@
 package nl.idgis.geoportaal.conversie;
 
 import java.io.File;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -35,43 +36,74 @@ public class ToDB implements OutDestination {
 
 		MetadataRow row = MetadataRow.parseMetadataDocument(d, creatorMapper, useLimitationMapper);
 
-		PreparedStatement statement = connection.prepareStatement(
-				"INSERT INTO " + schema + ".metadata (uuid,location,file_id,title,description,"
-						+ "type_information,creator,creator_other,rights,use_limitation,"
-						+ "md_format,source,date_source_creation,date_source_publication,"
-						+ "date_source_revision,date_source_valid_from,date_source_valid_until,"
-						+ "supplier,status,published,last_revision_user,last_revision_date) "
-						+ "VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
-		putValuesInStatement(row, statement);
+		final String metadataSql = "INSERT INTO " + schema + ".metadata (uuid,location,file_id,title,description,"
+				+ "type_information,creator,creator_other,rights,use_limitation,"
+				+ "md_format,source,date_source_creation,date_source_publication,"
+				+ "date_source_revision,date_source_valid_from,date_source_valid_until,"
+				+ "supplier,status,published,last_revision_user,last_revision_date) "
+				+ "VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
-		statement.executeUpdate();
+
+		PreparedStatement metadataStatement = connection.prepareStatement(metadataSql, Statement.RETURN_GENERATED_KEYS);
+
+
+		metadataStatement.setObject(1, row.getUuid(), Types.VARCHAR);
+		metadataStatement.setObject(2, row.getLocation(), Types.VARCHAR);
+		metadataStatement.setObject(3, row.getFileId(), Types.VARCHAR);
+		metadataStatement.setObject(4, row.getTitle(), Types.VARCHAR);
+		metadataStatement.setObject(5, row.getDescription(), Types.VARCHAR);
+		metadataStatement.setObject(6, resolveIntFromLabel(row.getTypeInformation()), Types.INTEGER);
+		metadataStatement.setObject(7, resolveIntFromLabel(row.getCreator()), Types.INTEGER);
+		metadataStatement.setObject(8, row.getCreatorOther(), Types.VARCHAR);
+		metadataStatement.setObject(9, resolveIntFromLabel(row.getRights()), Types.INTEGER);
+		metadataStatement.setObject(10, resolveIntFromLabel(row.getUseLimitation()), Types.INTEGER);
+		metadataStatement.setObject(11, resolveIntFromLabel(row.getMdFormat()), Types.INTEGER);
+		metadataStatement.setObject(12, row.getSource(), Types.VARCHAR);
+		metadataStatement.setObject(13,row.getDateSourceCreation(), Types.TIMESTAMP);
+		metadataStatement.setObject(14, row.getDateSourcePublication(), Types.TIMESTAMP);
+		metadataStatement.setObject(15, row.getDateSourceRevision(), Types.TIMESTAMP);
+		metadataStatement.setObject(16, row.getDateSourceValidFrom(), Types.TIMESTAMP);
+		metadataStatement.setObject(17, row.getDateSourceValidUntil(), Types.TIMESTAMP);
+		metadataStatement.setObject(18, resolveIntFromLabel(row.getSupplier()), Types.INTEGER);
+		metadataStatement.setObject(19, resolveIntFromLabel(row.getStatus()), Types.INTEGER);
+		metadataStatement.setObject(20, row.getPublished(), Types.BOOLEAN);
+		metadataStatement.setObject(21, row.getLastRevisionUser(), Types.VARCHAR);
+		metadataStatement.setObject(22, row.getLastRevisionDate(), Types.TIMESTAMP);
+
+		try {
+			metadataStatement.executeUpdate();
+		} catch (SQLException e) {
+			connection.rollback();
+			throw e;
+		}
+
+		ResultSet genKeys = metadataStatement.getGeneratedKeys();
+		if (!genKeys.next())
+			throw new Exception("geen gegenereerde primary key gevonden");
+
+		final int metadataId = genKeys.getInt(1);
+
+		PreparedStatement attachmentStatement = connection.prepareStatement(
+				"INSERT INTO " + schema + ".md_attachment (metadata_id,attachment_name,"
+						+ "attachment_content,attachment_mimetype) VALUES (?,?,?,?)");
+
+		final List<String> attachmentUrls = row.getAttachment();
+
+		Attachment attachment = null;
+		for (String attachmentUrl : attachmentUrls) {
+			attachment = Attachment.openConnection(attachmentUrl);
+			attachmentStatement.setObject(1, metadataId, Types.INTEGER);
+			attachmentStatement.setObject(2, attachment.getFileName(), Types.VARCHAR);
+			attachmentStatement.setBinaryStream(3, attachment.getDataStream(), attachment.getLength());
+			attachmentStatement.setObject(4, attachment.getMimeType(),Types.VARCHAR);
+		}
+
+		if (attachment != null) {
+			attachmentStatement.executeUpdate();
+			attachment.close();
+		}
 
 		connection.commit();
-	}
-
-	private void putValuesInStatement(MetadataRow row, PreparedStatement statement) throws Exception {
-		statement.setObject(1, row.getUuid(), Types.VARCHAR);
-		statement.setObject(2, row.getLocation(), Types.VARCHAR);
-		statement.setObject(3, row.getFileId(), Types.VARCHAR);
-		statement.setObject(4, row.getTitle(), Types.VARCHAR);
-		statement.setObject(5, row.getDescription(), Types.VARCHAR);
-		statement.setObject(6, resolveIntFromLabel(row.getTypeInformation()), Types.INTEGER);
-		statement.setObject(7, resolveIntFromLabel(row.getCreator()), Types.INTEGER);
-		statement.setObject(8, row.getCreatorOther(), Types.VARCHAR);
-		statement.setObject(9, resolveIntFromLabel(row.getRights()), Types.INTEGER);
-		statement.setObject(10, resolveIntFromLabel(row.getUseLimitation()), Types.INTEGER);
-		statement.setObject(11, resolveIntFromLabel(row.getMdFormat()), Types.INTEGER);
-		statement.setObject(12, row.getSource(), Types.VARCHAR);
-		statement.setObject(13,row.getDateSourceCreation(), Types.TIMESTAMP);
-		statement.setObject(14, row.getDateSourcePublication(), Types.TIMESTAMP);
-		statement.setObject(15, row.getDateSourceRevision(), Types.TIMESTAMP);
-		statement.setObject(16, row.getDateSourceValidFrom(), Types.TIMESTAMP);
-		statement.setObject(17, row.getDateSourceValidUntil(), Types.TIMESTAMP);
-		statement.setObject(18, resolveIntFromLabel(row.getSupplier()), Types.INTEGER);
-		statement.setObject(19, resolveIntFromLabel(row.getStatus()), Types.INTEGER);
-		statement.setObject(20, row.getPublished(), Types.BOOLEAN);
-		statement.setObject(21, row.getLastRevisionUser(), Types.VARCHAR);
-		statement.setObject(22, row.getLastRevisionDate(), Types.TIMESTAMP);
 	}
 
 	private Integer resolveIntFromLabel(Label label) throws Exception {
