@@ -23,6 +23,7 @@ public class ToDB implements OutDestination {
 
 	public void connect(String username, String password, String serverName, int portNumber, String databaseName, String schema) throws SQLException {
 		connection = createConnection(username, password, serverName, portNumber, databaseName);
+		connection.setAutoCommit(false);
 		connected = connection.isValid(3000);
 		this.schema = schema;
 	}
@@ -44,6 +45,8 @@ public class ToDB implements OutDestination {
 		putValuesInStatement(row, statement);
 
 		statement.executeUpdate();
+
+		connection.commit();
 	}
 
 	private void putValuesInStatement(MetadataRow row, PreparedStatement statement) throws Exception {
