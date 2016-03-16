@@ -42,7 +42,10 @@ public class User extends Controller {
 	public Result login (final String r) {
 		final Form<Login> loginForm = Form.form(Login.class).fill(new Login(r));
 		
-		return ok(views.html.login.render(loginForm));
+		String cpMsg = session("changePassword");
+		session("changePassword", "");
+		
+		return ok(views.html.login.render(loginForm, cpMsg));
 	}
 	
 	public Result authenticate() {
@@ -51,7 +54,7 @@ public class User extends Controller {
 		validate(loginForm);
 		
 		if(loginForm.hasErrors()) {
-			return badRequest(views.html.login.render(loginForm));
+			return badRequest(views.html.login.render(loginForm, ""));
 		} else {
 			session().clear();
 			session("username", loginForm.get().username);
@@ -135,6 +138,8 @@ public class User extends Controller {
 				.where(user.username.eq(cpForm.get().username))
 				.execute();
 		});
+		
+		session("changePassword", Messages.get("password.edit.success"));
 		
 		return redirect(controllers.routes.Index.index("", "none", "none", "none", "", "", "dateDesc", ""));
 	}

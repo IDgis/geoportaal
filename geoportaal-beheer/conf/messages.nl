@@ -142,6 +142,7 @@ password.edit.password.new.repeat.label=Herhaal nieuw wachtwoord
 password.edit.error.incomplete.message=Alle velden moeten ingevuld zijn
 password.edit.error.mismatch.message=Gebruikersnaam en wachtwoord komen niet overeen
 password.edit.error.repeat.message=Nieuwe wachtwoord en herhaling komen niet overeen
+password.edit.success=Het wijzigen van het wachtwoord is succesvol uitgevoerd
 
 # Wachtwoord vergeten
 password.forgot.header=Wachtwoord vergeten beheermodule Geoportaal
