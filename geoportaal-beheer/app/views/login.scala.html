@@ -1,4 +1,4 @@
-@(form: play.data.Form[User.Login])
+@(form: play.data.Form[User.Login], cpMsg: String, fpMsg: String)
 
 @import play.i18n._
 
@@ -27,6 +27,19 @@
 					<strong>@Messages.get("login.form.error.label")</strong> @form.globalError.message
 				</div>
 			}
+			
+			@if(!"".equals(cpMsg)) {
+				<div class="alert alert-success">
+					<strong>@cpMsg</strong>
+				</div>
+			}
+			
+			@if(!"".equals(fpMsg)) {
+				<div class="alert alert-success">
+					<strong>@fpMsg</strong>
+				</div>
+			}
+			
 			@helper.form(action = routes.User.authenticate(), 'class -> "form-horizontal") {
 				<input type="hidden" name="returnUrl" value="@form("returnUrl").value">
 				<fieldset>
