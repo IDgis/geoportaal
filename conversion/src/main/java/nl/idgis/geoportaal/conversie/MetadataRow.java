@@ -43,7 +43,7 @@ public class MetadataRow {
 	private Boolean published;
 	private String lastRevisionUser;
 	private Timestamp lastRevisionDate;
-	private List<String> attachment;
+	private String[] attachment;
 
 	public static MetadataRow parseMetadataDocument(MetadataDocument d, Mapper creatorMapper, Mapper useLimitationMapper) throws Exception {
 		MetadataRow row = new MetadataRow();
@@ -78,7 +78,10 @@ public class MetadataRow {
 		row.setPublished(PUBLISHED);
 		row.setLastRevisionUser(LAST_REVISION_USER);
 		row.setLastRevisionDate(new Timestamp(System.currentTimeMillis()));
-		row.setAttachment(d.getStrings(Path.ATTACHMENT.path()));
+
+		String attachmentString = retrieveFirstStringOrNull(Path.ATTACHMENT, d);
+		if (attachmentString != null)
+			row.setAttachment(attachmentString.split("\\s+"));
 
 		return row;
 	}
@@ -288,11 +291,11 @@ public class MetadataRow {
 		this.lastRevisionDate = lastRevisionDate;
 	}
 
-	public List<String> getAttachment() {
+	public String[] getAttachment() {
 		return attachment;
 	}
 
-	public void setAttachment(List<String> attachment) {
+	public void setAttachment(String[] attachment) {
 		this.attachment = attachment;
 	}
 

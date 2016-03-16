@@ -1,7 +1,6 @@
 package nl.idgis.geoportaal.conversie;
 
 import java.io.File;
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -87,20 +86,22 @@ public class ToDB implements OutDestination {
 				"INSERT INTO " + schema + ".md_attachment (metadata_id,attachment_name,"
 						+ "attachment_content,attachment_mimetype) VALUES (?,?,?,?)");
 
-		final List<String> attachmentUrls = row.getAttachment();
+		final String[] attachmentUrls = row.getAttachment();
 
-		Attachment attachment = null;
-		for (String attachmentUrl : attachmentUrls) {
-			attachment = Attachment.openConnection(attachmentUrl);
-			attachmentStatement.setObject(1, metadataId, Types.INTEGER);
-			attachmentStatement.setObject(2, attachment.getFileName(), Types.VARCHAR);
-			attachmentStatement.setBinaryStream(3, attachment.getDataStream(), attachment.getLength());
-			attachmentStatement.setObject(4, attachment.getMimeType(),Types.VARCHAR);
-		}
+		if (attachmentUrls != null) {
+			Attachment attachment = null;
+			for (String attachmentUrl : attachmentUrls) {
+				attachment = Attachment.openConnection(attachmentUrl);
+				attachmentStatement.setObject(1, metadataId, Types.INTEGER);
+				attachmentStatement.setObject(2, attachment.getFileName(), Types.VARCHAR);
+				attachmentStatement.setBinaryStream(3, attachment.getDataStream(), attachment.getLength());
+				attachmentStatement.setObject(4, attachment.getMimeType(),Types.VARCHAR);
+			}
 
-		if (attachment != null) {
-			attachmentStatement.executeUpdate();
-			attachment.close();
+			if (attachment != null) {
+				attachmentStatement.executeUpdate();
+				attachment.close();
+			}
 		}
 
 		connection.commit();
