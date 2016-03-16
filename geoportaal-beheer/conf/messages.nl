@@ -151,6 +151,7 @@ password.forgot.form.error.label=Wachtwoord vergeten
 password.forgot.email.label=E-mailadres
 password.forgot.email.message=Uw wachtwoord is op verzoek gereset. Uw nieuwe wachtwoord is {0}. U wordt aangeraden om zo snel als mogelijk het wachtwoord te veranderen.
 password.forgot.email.subject=Uw wachtwoord voor het geoportaal-beheer is gereset
+password.forgot.success=Er is een e-mail naar het door u opgegeven adres verstuurd
 
 # Help pagina
 help.header=Geoportaal: help metadata
