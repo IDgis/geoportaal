@@ -27,6 +27,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import com.querydsl.core.Tuple;
 
 import nl.idgis.commons.utils.Mail;
+import play.i18n.*;
 import play.Play;
 import play.data.Form;
 import play.mvc.Controller;
@@ -73,7 +74,7 @@ public class User extends Controller {
 			
 			BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 			if(dbPassword == null || !encoder.matches(loginForm.get().password, dbPassword)) {
-				loginForm.reject("Ongeldige gebruikersnaam of wachtwoord");
+				loginForm.reject(Messages.get("login.error.message"));
 			}
 		});
 	}
@@ -94,7 +95,7 @@ public class User extends Controller {
 		
 		if("".equals(cpForm.get().username) || "".equals(cpForm.get().oldPassword) || "".equals(cpForm.get().newPassword) || 
 			"".equals(cpForm.get().repeatNewPassword)) {
-			cpForm.reject("Alle velden moeten ingevuld zijn");
+			cpForm.reject(Messages.get("password.edit.error.incomplete.message"));
 		}
 		
 		if(cpForm.hasErrors()) {
@@ -110,7 +111,7 @@ public class User extends Controller {
 			
 			BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 			if(dbPassword == null || !encoder.matches(cpForm.get().oldPassword, dbPassword)) {
-				cpForm.reject("Gebruikersnaam en wachtwoord komen niet overeen");
+				cpForm.reject(Messages.get("password.edit.error.mismatch.message"));
 			}
 		});
 		
@@ -119,7 +120,7 @@ public class User extends Controller {
 		}
 		
 		if(!cpForm.get().newPassword.equals(cpForm.get().repeatNewPassword)) {
-			cpForm.reject("Nieuwe wachtwoord en herhaling komen niet overeen");
+			cpForm.reject(Messages.get("password.edit.error.repeat.message"));
 		}
 		
 		if(cpForm.hasErrors()) {
@@ -165,11 +166,10 @@ public class User extends Controller {
 				Map<String, Object> placeholders = new HashMap<String, Object>();
 				placeholders.put("password", password);
 				
-				String msg = Mail.createMsg(placeholders, "Uw wachtwoord is op verzoek gereset. Uw nieuwe wachtwoord is ${password}. U wordt "
-						+ "aangeraden om zo snel als mogelijk het wachtwoord te veranderen.");
+				String msg = Mail.createMsg(placeholders, Messages.get("password.forgot.email.message", "${password}"));
 				try {
 					Mail.send(emailUsername, emailPassword, "mail.your-server.de", 25, fpForm.get().username, emailUsername, 
-						"Uw wachtwoord voor het geoportaal-beheer is gereset", msg);
+						Messages.get("password.forgot.email.subject"), msg);
 				} catch(Exception e) {
 					throw e;
 				}

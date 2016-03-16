@@ -116,7 +116,7 @@ require([
 			var buttonNode = domConstruct.create("button");
 			domAttr.set(buttonNode, 'class', 'knop js-remove-attachment');
 			domAttr.set(buttonNode, 'type', 'button');
-			domAttr.set(buttonNode, 'title', 'Bijlage verwijderen');
+			domAttr.set(buttonNode, 'title', domAttr.get(dom.byId('js-remove-attachment-label'), 'value'));
 			domAttr.set(buttonNode, 'tabindex', '-1');
 			
 			var spanNode = domConstruct.create("span");

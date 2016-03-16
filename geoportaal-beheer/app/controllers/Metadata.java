@@ -42,6 +42,7 @@ import models.DublinCore;
 import models.Search;
 import play.data.DynamicForm;
 import play.data.Form;
+import play.i18n.Messages;
 import play.mvc.Controller;
 import play.mvc.Http.MultipartFormData.FilePart;
 import play.mvc.Result;
@@ -270,7 +271,7 @@ public class Metadata extends Controller {
 				.fetchOne();
 			
 			if(statusId.equals(4)) {
-				return status(UNAUTHORIZED, "Geen toegang.");
+				return status(UNAUTHORIZED, Messages.get("unauthorized"));
 			}
 			
 			Integer metadataId = tx.from(metadata)
@@ -352,7 +353,7 @@ public class Metadata extends Controller {
 				.fetchOne();
 			
 			if(statusId.equals(4)) {
-				return status(UNAUTHORIZED, "Geen toegang.");
+				return status(UNAUTHORIZED, Messages.get("unauthorized"));
 			}
 			
 			Integer roleId = tx.select(user.roleId)
@@ -468,7 +469,8 @@ public class Metadata extends Controller {
 						Map<String, DublinCore> previousValues = new HashMap<String, DublinCore>();
 						previousValues.put("metadata", previousDC);
 						
-						return validateFormServer(false, datasetRow, attachmentsDataset, textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch, previousValues);
+						return validateFormServer(false, datasetRow, attachmentsDataset, textSearch, supplierSearch, statusSearch, mdFormatSearch, 
+							dateStartSearch, dateEndSearch, previousValues);
 				}
 				
 				Long metadataCount = tx.update(metadata)
@@ -622,31 +624,31 @@ public class Metadata extends Controller {
 				String dateValidUntilMsg = null;
 				
 				if(!dateCreateReturn) {
-					dateCreateMsg = "De datum creatie is niet correct ingevuld.";
+					dateCreateMsg = Messages.get("validate.form.parse.date.create");
 				} else {
 					dateCreateMsg = null;
 				}
 				
 				if(!datePublicationReturn) {
-					datePublicationMsg = "De datum publicatie is niet correct ingevuld.";
+					datePublicationMsg = Messages.get("validate.form.parse.date.publication");
 				} else {
 					datePublicationMsg = null;
 				}
 				
 				if(!dateRevisionReturn) {
-					dateRevisionMsg = "De datum mutatie is niet correct ingevuld.";
+					dateRevisionMsg = Messages.get("validate.form.parse.date.revision");
 				} else {
 					dateRevisionMsg = null;
 				}
 				
 				if(!dateValidFromReturn) {
-					dateValidFromMsg = "De datum geldig, van is niet correct ingevuld.";
+					dateValidFromMsg = Messages.get("validate.form.parse.date.valid.start");
 				} else {
 					dateValidFromMsg = null;
 				}
 				
 				if(!dateValidUntilReturn) {
-					dateValidUntilMsg = "De datum geldig, tot is niet correct ingevuld.";
+					dateValidUntilMsg = Messages.get("validate.form.parse.date.valid.end");
 				} else {
 					dateValidUntilMsg = null;
 				}
@@ -706,7 +708,7 @@ public class Metadata extends Controller {
 			
 			return ok(validateform.render(title, description, location, fileId, creator, creatorOther, dc.getDateSourceCreation(), dc.getSubject()));
 		} catch(IllegalStateException ise) {
-			return ok(bindingerror.render("Er is iets misgegaan. Controleer of de velden correct zijn ingevuld.", null, null, null, null, null, null, null));
+			return ok(bindingerror.render(Messages.get("validate.search.generic"), null, null, null, null, null, null, null));
 		}
 	}
 	
@@ -751,7 +753,7 @@ public class Metadata extends Controller {
 		
 		return q.withTransaction(tx -> {
 			List<Tuple> typeInformationList = tx.select(typeInformation.id, typeInformation.name, typeInformationLabel.label)
-			.from(typeInformation)
+				.from(typeInformation)
 				.join(typeInformationLabel).on(typeInformation.id.eq(typeInformationLabel.typeInformationId))
 				.fetch();
 			

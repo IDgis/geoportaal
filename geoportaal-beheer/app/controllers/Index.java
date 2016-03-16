@@ -44,6 +44,7 @@ import models.Supplier;
 import play.Routes;
 import play.data.DynamicForm;
 import play.data.Form;
+import play.i18n.Messages;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
@@ -232,10 +233,6 @@ public class Index extends Controller {
 					checkedList.add(checkedString);
 				}
 			}
-			
-			/*if(checkedList.contains("a6c8628e-4bb8-4208-83c5-f05d5e7bebf5")) {
-				System.out.println("test");
-			}*/
 			
 			return ok(views.html.index.render(datasetRows, supplierList, statusList, mdFormatList, sdfUS, sdfLocal, roleId, textSearch, 
 				supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch, timestampStartSearch, resetTimestampEndSearch, sort,
@@ -503,13 +500,13 @@ public class Index extends Controller {
 			
 			if(!dateSearchStartReturn || !dateSearchEndReturn) {
 				if(!dateSearchStartReturn) {
-					dateSearchStartMsg = "De update datum, van is niet correct ingevuld.";
+					dateSearchStartMsg = Messages.get("validate.search.date.start");
 				} else {
 					dateSearchStartMsg = null;
 				}
 				
 				if(!dateSearchEndReturn) {
-					dateSearchEndMsg = "De update datum, tot is niet correct ingevuld.";
+					dateSearchEndMsg = Messages.get("validate.search.date.end");
 				} else {
 					dateSearchEndMsg = null;
 				}
@@ -517,7 +514,7 @@ public class Index extends Controller {
 			
 			return ok(bindingerror.render(null, null, null, null, null, null, dateSearchStartMsg, dateSearchEndMsg));
 		} catch(IllegalStateException ise) {
-			return ok(bindingerror.render("Er is iets misgegaan. Controleer of de velden correct zijn ingevuld.", null, null, null, null, null, null, null));
+			return ok(bindingerror.render(Messages.get("validate.search.generic"), null, null, null, null, null, null, null));
 		}
 	}
 	

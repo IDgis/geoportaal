@@ -28,15 +28,16 @@
 @main(Messages.get("index.header"), textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch, 
 	routes.Assets.versioned("javascripts/index.js").url) {
 	<div class="welkom">
-		<p>Hier kunt u naar metadata records zoeken en veranderingen doorvoeren.</p>
+		<p>@Messages.get("index.intro")</p>
 	</div>
 	
 	<div id="search-block">
 		@helper.form(action = routes.Index.search(), 'class -> "form-horizontal", 'id -> "js-form") {
 			<div class="form-group">
-				<label class="col-sm-3 control-label">Tekst</label>
+				<label class="col-sm-3 control-label">@Messages.get("index.text.label")</label>
 				<div class="col-sm-7">
-					<input class="form-control js-search-input" type="text" data-toggle="tooltip" data-placement="top" title="Zoek op een woord" name="text"
+					<input class="form-control js-search-input" type="text" data-toggle="tooltip" data-placement="top" 
+					title="@Messages.get("index.text.title")" name="text"
 					@if(!textSearch.equals("")) {value="@textSearch"}>
 				</div>
 				<div class="col-sm-2">
@@ -48,9 +49,9 @@
 			</div>
 			@if(!roleId.equals(2)) {
 				<div class="form-group">
-					<label class="col-sm-3 control-label">Leverancier</label>
+					<label class="col-sm-3 control-label">@Messages.get("index.supplier.label")</label>
 					<div class="col-sm-7">
-						<select class="form-control" data-toggle="tooltip" data-placement="top" title="Filter op leverancier" name="supplier">
+						<select class="form-control" data-toggle="tooltip" data-placement="top" title="@Messages.get("index.supplier.title")" name="supplier">
 							<option value="none"></option>
 							@for(supplierOption <- supplierList) {
 								<option value="@supplierOption.get(user.label)" 
@@ -71,9 +72,9 @@
 				<input type="hidden" name="supplier" value="none">
 			}
 			<div class="form-group">
-				<label class="col-sm-3 control-label">Status</label>
+				<label class="col-sm-3 control-label">@Messages.get("index.status.label")</label>
 				<div class="col-sm-7">
-					<select class="form-control" data-toggle="tooltip" data-placement="top" title="Filter op status" name="status">
+					<select class="form-control" data-toggle="tooltip" data-placement="top" title="@Messages.get("index.status.title")" name="status">
 						@for(statusOption <- statusList) {
 							@if(roleId.equals(2) && statusOption.get(status.name).equals("deleted")) {
 								
@@ -94,9 +95,9 @@
 				</div>
 			</div>
 			<div class="form-group">
-				<label class="col-sm-3 control-label">Formaat</label>
+				<label class="col-sm-3 control-label">@Messages.get("index.format.label")</label>
 				<div class="col-sm-7">
-					<select class="form-control" data-toggle="tooltip" data-placement="top" title="Filter op formaat" name="format">
+					<select class="form-control" data-toggle="tooltip" data-placement="top" title="@Messages.get("index.format.title")" name="format">
 						@for(mdFormatOption <- mdFormatList) {
 							<option value="@mdFormatOption.get(mdFormat.name)"
 								@if(mdFormatOption.get(mdFormat.name).equals(mdFormatSearch)) {selected}>
@@ -113,10 +114,10 @@
 				</div>
 			</div>
 			<div class="form-group">
-				<label class="col-sm-3 control-label">Update datum tussen</label>
+				<label class="col-sm-3 control-label">@Messages.get("index.date.start.label")</label>
 				<div class="col-sm-4">
 					<input class="form-control js-date" id="js-date-update-start" type="date" data-toggle="tooltip" data-placement="top" 
-					title="Zoek op begindatum" name="dateUpdateStart"
+					title="@Messages.get("index.date.start.title")" name="dateUpdateStart"
 					@if(tsStartSearch != null) {data-date-value-US="@sdfUS.format(tsStartSearch.getTime())"} 
 					@if(tsStartSearch != null) {data-date-value-local="@sdfLocal.format(tsStartSearch.getTime())"}>
 					<input type="hidden" id="js-hidden-date-update-start">
@@ -129,10 +130,10 @@
 				</div>
 			</div>
 			<div class="form-group">
-				<label class="col-sm-3 control-label">en</label>
+				<label class="col-sm-3 control-label">@Messages.get("index.date.end.label")</label>
 				<div class="col-sm-4">
 					<input class="form-control js-date" id="js-date-update-end" type="date" data-toggle="tooltip" data-placement="top" 
-					title="Zoek op einddatum" name="dateUpdateEnd"
+					title="@Messages.get("index.date.end.title")" name="dateUpdateEnd"
 					@if(tsEndSearch != null) {data-date-value-US="@sdfUS.format(tsEndSearch.getTime())"} 
 					@if(tsEndSearch != null) {data-date-value-local="@sdfLocal.format(tsEndSearch.getTime())"}>
 					<input type="hidden" id="js-hidden-date-update-end">
@@ -147,28 +148,30 @@
 			<div class="col-sm-offset-3" id="js-form-validation"></div>
 			<div class="form-group">
 	 			<div class="col-sm-offset-3 col-sm-7">
-	 				<button class="knop" id="search-button" type="button">Zoek</button>
+	 				<button class="knop" id="search-button" type="button">@Messages.get("index.button.search")</button>
 	 				@if(!textSearch.equals("") || !supplierSearch.equals("none") || !statusSearch.equals("none") || !mdFormatSearch.equals("none") ||
 	 					tsStartSearch != null || tsEndSearch != null) {
-	 					<a class="knop" id="filter-button" href="@routes.Index.index("", "none", "none", "none", "", "")">Filter opheffen</a>
+	 					<a class="knop" id="filter-button" 
+	 						href="@routes.Index.index("", "none", "none", "none", "", "")">@Messages.get("index.button.filter.clear")</a>
 	 				}
 				</div>
 			</div>
 		}
 	</div>
 	<div class="label-actions-selected-records col-sm-12">
-		<span>Acties voor geselecteerde records:</span>
+		<span>@Messages.get("index.button.action.label")</span>
 	</div>
 	<div class="admin-buttons col-sm-12">
 		<div class="form-group">
-			<button class="knop js-status js-restriction" type="button" data-status="concept">Concept</button>
-			<button class="knop js-status js-restriction" type="button" data-status="approval">Ter goedkeuring</button>
+			<button class="knop js-status js-restriction" type="button" data-status="concept">@Messages.get("index.button.action.concept")</button>
+			<button class="knop js-status js-restriction" type="button" data-status="approval">@Messages.get("index.button.action.approval")</button>
 			@if(!roleId.equals(2)) {
-				<button class="knop js-status" type="button" data-status="published">Publiceren</button>
+				<button class="knop js-status" type="button" data-status="published">@Messages.get("index.button.action.publish")</button>
 			}
-			<button class="knop js-restriction" id="js-delete" type="button" data-toggle="modal" data-target="#delete-modal">Verwijderen</button>
+			<button class="knop js-restriction" id="js-delete" type="button" data-toggle="modal" 
+				data-target="#delete-modal">@Messages.get("index.button.action.delete")</button>
 			@if(!roleId.equals(2)) {
-				<button class="knop" type="button" id="js-edit-supplier">Leverancier wijzigen</button>
+				<button class="knop" type="button" id="js-edit-supplier">@Messages.get("index.button.action.supplier.edit")</button>
 				<select class="form-control" id="edit-supplier-select">
 					<option>--</option>
 					@for(supplierOption <- supplierList) {
@@ -179,8 +182,7 @@
 		</div>
 	</div>
 	<div id="published-warning">
-		<strong>U heeft 1 of meerdere records geselecteerd, die reeds zijn gepubliceerd. U kunt hiervan niet de status veranderen. 
-		Wilt u toch de status veranderen, neem dan contact op met de beheerders van het Geoportaal.</strong>
+		<strong>@Messages.get("index.warning.published.record")</strong>
 	</div>
 	
 	@views.html.list(datasetRows, sdfLocal, roleId, textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch, sort, checkedList)
@@ -201,15 +203,19 @@
 						<button type="button" class="close" data-dismiss="modal">
 							<span>&times;</span>
 						</button>
-						<h4 class="modal-title">Wijzigen status statische kaarten</h4>
+						<h4 class="modal-title">@Messages.get("index.modal.status.title")</h4>
 					</div>
 					<div class="modal-body">
-						Deze actie heeft betrekking op <b><span id="js-status-records-count">0</span></b> records. Weet u zeker dat u deze actie 
-						wilt uitvoeren?</p>
+						<p>
+							@Messages.get("index.modal.action.label") <b><span id="js-status-records-count">0</span></b>
+						</p>
+						<p>
+							@Messages.get("index.modal.confirmation")
+						</p>
 					</div>
 					<div class="modal-footer">
-						<button type="button" class="btn btn-default" data-dismiss="modal">Annuleren</button>
-						<button type="submit" class="btn btn-primary">Uitvoeren</button>
+						<button type="button" class="btn btn-default" data-dismiss="modal">@Messages.get("cancel")</button>
+						<button type="submit" class="btn btn-primary">@Messages.get("execute")</button>
 					</div>
 				</div>
 			</div>
@@ -231,22 +237,27 @@
 						<button type="button" class="close" data-dismiss="modal">
 							<span>&times;</span>
 						</button>
-						<h4 class="modal-title">Verwijderen statische kaarten</h4>
+						<h4 class="modal-title">@Messages.get("index.modal.delete.title")</h4>
 					</div>
 					<div class="modal-body">
-						<p class="js-records-selected">
-							Deze actie heeft betrekking op <b><span id="js-delete-records-count">0</span></b> <span id="js-delete-records-lang">records</span>. 
-							Weet u zeker dat u deze actie wilt uitvoeren?</p>
+						<div class="js-records-selected">
+							<p>
+								@Messages.get("index.modal.action.label") <b><span id="js-delete-records-count">0</span></b>
+							</p>
+							<p>
+								@Messages.get("index.modal.confirmation")
+							</p>
+						</div>
 						<p id="perm-delete-checkbox">
 							<input type="checkbox" name="permDel" value="true">
-							<span>Definitief verwijderen</span>
+							<span>@Messages.get("index.modal.delete.definitive")</span>
 						</p>
 						
-						<p class="js-records-none-selected">U heeft geen records geselecteerd. Deze actie kan niet worden uitgevoerd.</p>
+						<p class="js-records-none-selected">@Messages.get("index.modal.delete.none.selected")</p>
 					</div>
 					<div class="modal-footer">
-						<button type="button" class="btn btn-default" data-dismiss="modal">Annuleren</button>
-						<button type="submit" class="btn btn-primary js-execute-btn">Uitvoeren</button>
+						<button type="button" class="btn btn-default" data-dismiss="modal">@Messages.get("cancel")</button>
+						<button type="submit" class="btn btn-primary js-execute-btn">@Messages.get("execute")</button>
 					</div>
 				</div>
 			</div>
@@ -269,15 +280,19 @@
 						<button type="button" class="close" data-dismiss="modal">
 							<span>&times;</span>
 						</button>
-						<h4 class="modal-title">Wijzigen leverancier statische kaarten</h4>
+						<h4 class="modal-title">@Messages.get("index.modal.supplier.title")</h4>
 					</div>
 					<div class="modal-body">
-						Deze actie heeft betrekking op <b><span id="js-supplier-records-count">0</span></b> records. Weet u zeker dat u deze actie 
-						wilt uitvoeren?</p>
+						<p>
+							@Messages.get("index.modal.action.label") <b><span id="js-supplier-records-count">0</span></b>
+						</p>
+						<p>
+							@Messages.get("index.modal.confirmation")
+						</p>
 					</div>
 					<div class="modal-footer">
-						<button type="button" class="btn btn-default" data-dismiss="modal">Annuleren</button>
-						<button type="submit" class="btn btn-primary">Uitvoeren</button>
+						<button type="button" class="btn btn-default" data-dismiss="modal">@Messages.get("cancel")</button>
+						<button type="submit" class="btn btn-primary">@Messages.get("execute")</button>
 					</div>
 				</div>
 			</div>
