@@ -21,6 +21,7 @@ eclipse {
 dependencies {
 	compile 'org.postgresql:postgresql:9.4.1208'
 	compile group: 'net.sourceforge.argparse4j', name:'argparse4j', version: '0.7.0'
+	testCompile 'junit:junit:4.12'
 }
 
 jar {

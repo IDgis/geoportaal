@@ -3,6 +3,7 @@ package nl.idgis.geoportaal.conversie;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -16,6 +17,7 @@ public class MetadataRow {
 	private static final String TABLE_MD_FORMAT = "md_format";
 	private static final String TABLE_SUPPLIER = "supplier";
 	private static final String TABLE_STATUS = "status";
+	private static final String TABLE_SUBJECT = "subject";
 	private static final String SUPPLIER = "nienhuis";
 	private static final String STATUS = "ter goedkeuring";
 	private static final String LAST_REVISION_USER = "conversie";
@@ -43,8 +45,10 @@ public class MetadataRow {
 	private Boolean published;
 	private String lastRevisionUser;
 	private Timestamp lastRevisionDate;
+	private String[] attachment;
+	private List<Label> subject;
 
-	public static MetadataRow parseMetadataDocument(MetadataDocument d, Mapper creatorMapper, Mapper useLimitationMapper) throws Exception {
+	public static MetadataRow parseMetadataDocument(MetadataDocument d, Mapper creatorMapper, Mapper useLimitationMapper, Mapper mdFormatMapper) throws Exception {
 		MetadataRow row = new MetadataRow();
 
 		String dUUID = retrieveFirstStringOrNull(Path.UUID, d);
@@ -65,7 +69,7 @@ public class MetadataRow {
 		row.setCreatorOther(retrieveFirstStringOrNull(Path.CREATOR_OTHER, d));
 		row.setRights(new Label(retrieveFirstStringOrNull(Path.RIGHTS, d, DATA_TYPE, "gebruiksrestricties", false), TABLE_RIGHTS));
 		row.setUseLimitation(new Label(map(retrieveFirstStringOrNull(Path.USE_LIMITATION, d, DATA_TYPE, "gebruiksrestricties", true), useLimitationMapper), TABLE_USE_LIMITATION));
-		row.setMdFormat(new Label(retrieveFirstStringOrNull(Path.MD_FORMAT, d), TABLE_MD_FORMAT));
+		row.setMdFormat(new Label(map(retrieveFirstStringOrNull(Path.MD_FORMAT, d), mdFormatMapper), TABLE_MD_FORMAT));
 		row.setSource(retrieveFirstStringOrNull(Path.SOURCE, d));
 		row.setDateSourceCreation(toTime(retrieveFirstStringOrNull(Path.DATE_SOURCE_CREATION, d)));
 		row.setDateSourcePublication(toTime(retrieveFirstStringOrNull(Path.DATE_SOURCE_PUBLICATION, d)));
@@ -77,6 +81,21 @@ public class MetadataRow {
 		row.setPublished(PUBLISHED);
 		row.setLastRevisionUser(LAST_REVISION_USER);
 		row.setLastRevisionDate(new Timestamp(System.currentTimeMillis()));
+
+		String attachmentString = retrieveFirstStringOrNull(Path.ATTACHMENT, d);
+		if (attachmentString != null)
+			row.setAttachment(attachmentString.split("\\s+"));
+
+		List<String> subjectStrings = d.getStrings(Path.SUBJECT.path(), DATA_TYPE, "theme:provisa", false);
+		List<Label> subjectLabels = new ArrayList<>();
+
+		if (subjectStrings != null) {
+			for (String subjectString : subjectStrings) {
+				subjectLabels.add(new Label(subjectString, TABLE_SUBJECT));
+			}
+		}
+
+		row.setSubject(subjectLabels);
 
 		return row;
 	}
@@ -284,6 +303,22 @@ public class MetadataRow {
 
 	public void setLastRevisionDate(Timestamp lastRevisionDate) {
 		this.lastRevisionDate = lastRevisionDate;
+	}
+
+	public String[] getAttachment() {
+		return attachment;
+	}
+
+	public void setAttachment(String[] attachment) {
+		this.attachment = attachment;
+	}
+
+	public List<Label> getSubject() {
+		return subject;
+	}
+
+	public void setSubject(List<Label> subject) {
+		this.subject = subject;
 	}
 
 	@Override
