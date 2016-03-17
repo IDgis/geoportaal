@@ -45,6 +45,14 @@ public class User extends Controller {
 		String cpMsg = session("changePassword");
 		String fpMsg = session("forgotPassword");
 		
+		if(cpMsg == null) {
+			cpMsg = "";
+		}
+		
+		if(fpMsg == null) {
+			fpMsg = "";
+		}
+		
 		session("changePassword", "");
 		session("forgotPassword", "");
 		
