@@ -15,14 +15,14 @@ public class MetadataRow {
 	private static final String TABLE_RIGHTS = "rights";
 	private static final String TABLE_USE_LIMITATION = "use_limitation";
 	private static final String TABLE_MD_FORMAT = "md_format";
-	private static final String TABLE_SUPPLIER = "supplier";
 	private static final String TABLE_STATUS = "status";
 	private static final String TABLE_SUBJECT = "subject";
-	private static final String SUPPLIER = "nienhuis";
+	private static final String TABLE_USER = "user";
 	private static final String STATUS = "ter goedkeuring";
 	private static final String LAST_REVISION_USER = "conversie";
 	private static final boolean PUBLISHED = false;
-
+	private static final String USER = "g.nienhuis@overijssel.nl";
+	
 	private String uuid;
 	private String location;
 	private String fileId;
@@ -76,7 +76,7 @@ public class MetadataRow {
 		row.setDateSourceRevision(null);
 		row.setDateSourceValidFrom(toTime(retrieveFirstStringOrNull(Path.DATE_SOURCE_VALID_FROM, d)));
 		row.setDateSourceValidUntil(toTime(retrieveFirstStringOrNull(Path.DATE_SOURCE_VALID_UNTIL, d)));
-		row.setSupplier(new Label(SUPPLIER, TABLE_SUPPLIER));
+		row.setSupplier(new Label(USER, TABLE_USER));
 		row.setStatus(new Label(STATUS, TABLE_STATUS));
 		row.setPublished(PUBLISHED);
 		row.setLastRevisionUser(LAST_REVISION_USER);

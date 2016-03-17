@@ -124,18 +124,27 @@ public class ToDB implements OutDestination {
 		final String table = label.getTable();
 		final String labelTable = label.getLabelTable();
 		final String value = label.getValue();
-
+		
 		if (value == null)
 			return null;
-
-		Integer id = select("id", table, "name", value);
-
+		
+		Integer id = null;
+		if(table.equals("user")) {
+			id = select("id", table, "username", value);
+		} else {
+			id = select("id", table, "name", value);
+		}
+		
 		if (id != null)
 			return id;
 
 		id = select(table + "_id", labelTable, "label", value);
-
-		if (id!= null)
+		
+		if(table.equals("creator") && id == null) {
+			id = 9;
+		}
+		
+		if (id != null)
 			return id;
 
 		throw new Exception("'" + value + "' niet gevonden in tabellen " + table + " en " + labelTable);
