@@ -97,7 +97,8 @@ public class Index extends Controller {
 			
 			String textSearchFirstStrip = textSearch.replace("&", "");
 			String textSearchSecondStrip = textSearchFirstStrip.replace("(", "");
-			String textSearchFinalStrip = textSearchSecondStrip.replace(")", "");
+			String textSearchThirdStrip = textSearchSecondStrip.replace(")", "");
+			String textSearchFinalStrip = textSearchThirdStrip.replace(":", "");
 			
 			String[] textSearchTerms = textSearchFinalStrip.split("\\s+");
 			
