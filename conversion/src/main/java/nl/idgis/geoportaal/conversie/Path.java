@@ -15,7 +15,7 @@ public enum Path {
 	DESCRIPTION ("/rdf:RDF/rdf:Description/dc:description"),
 	TYPE_INFORMATION ("/rdf:RDF/rdf:Description/dc:type"),
 	CREATOR ("/rdf:RDF/rdf:Description/dc:creator"),
-	CREATOR_OTHER ("/rdf:RDF/rdf:Description/dc:contributor"),
+	CREATOR_OTHER ("/rdf:RDF/rdf:Description/dc:creator"),
 	RIGHTS ("/rdf:RDF/rdf:Description/dc:rights"),
 	USE_LIMITATION ("/rdf:RDF/rdf:Description/dc:rights"),
 	MD_FORMAT ("/rdf:RDF/rdf:Description/dc:format"),

@@ -21,7 +21,7 @@ public class MetadataRow {
 	private static final String STATUS = "ter goedkeuring";
 	private static final String LAST_REVISION_USER = "conversie";
 	private static final boolean PUBLISHED = false;
-	private static final String USER = "g.nienhuis@overijssel.nl";
+	private static final String USER = "nrj.eilers@overijssel.nl";
 	
 	private String uuid;
 	private String location;
@@ -30,7 +30,7 @@ public class MetadataRow {
 	private String description;
 	private Label typeInformation;
 	private Label creator;
-	private String creatorOther;
+	private Label creatorOther;
 	private Label rights;
 	private Label useLimitation;
 	private Label mdFormat;
@@ -58,7 +58,7 @@ public class MetadataRow {
 		else {
 			dUUID = dUUID.substring(1, dUUID.length() - 1); // remove '{' and '}'
 		}
-
+		
 		row.setUuid(dUUID);
 		row.setLocation(retrieveFirstStringOrNull(Path.LOCATION, d));
 		row.setFileId(retrieveFirstStringOrNull(Path.RELATION, d));
@@ -66,7 +66,7 @@ public class MetadataRow {
 		row.setDescription(retrieveFirstStringOrNull(Path.DESCRIPTION, d));
 		row.setTypeInformation(new Label(retrieveFirstStringOrNull(Path.TYPE_INFORMATION, d), TABLE_TYPE_INFORMATION));
 		row.setCreator(new Label(map(retrieveFirstStringOrNull(Path.CREATOR, d), creatorMapper), TABLE_CREATOR));
-		row.setCreatorOther(retrieveFirstStringOrNull(Path.CREATOR_OTHER, d));
+		row.setCreatorOther(new Label(map(retrieveFirstStringOrNull(Path.CREATOR, d), creatorMapper), TABLE_CREATOR));
 		row.setRights(new Label(retrieveFirstStringOrNull(Path.RIGHTS, d, DATA_TYPE, "gebruiksrestricties", false), TABLE_RIGHTS));
 		row.setUseLimitation(new Label(map(retrieveFirstStringOrNull(Path.USE_LIMITATION, d, DATA_TYPE, "gebruiksrestricties", true), useLimitationMapper), TABLE_USE_LIMITATION));
 		row.setMdFormat(new Label(map(retrieveFirstStringOrNull(Path.MD_FORMAT, d), mdFormatMapper), TABLE_MD_FORMAT));
@@ -185,11 +185,11 @@ public class MetadataRow {
 		this.creator = creator;
 	}
 
-	public String getCreatorOther() {
+	public Label getCreatorOther() {
 		return creatorOther;
 	}
 
-	public void setCreatorOther(String creatorOther) {
+	public void setCreatorOther(Label creatorOther) {
 		this.creatorOther = creatorOther;
 	}
 

@@ -54,7 +54,7 @@ public class ToDB implements OutDestination {
 		metadataStatement.setObject(5, row.getDescription(), Types.VARCHAR);
 		metadataStatement.setObject(6, resolveIntFromLabel(row.getTypeInformation()), Types.INTEGER);
 		metadataStatement.setObject(7, resolveIntFromLabel(row.getCreator()), Types.INTEGER);
-		metadataStatement.setObject(8, row.getCreatorOther(), Types.VARCHAR);
+		metadataStatement.setObject(8, getCreatorOther(row.getCreator(), row), Types.VARCHAR);
 		metadataStatement.setObject(9, resolveIntFromLabel(row.getRights()), Types.INTEGER);
 		metadataStatement.setObject(10, resolveIntFromLabel(row.getUseLimitation()), Types.INTEGER);
 		metadataStatement.setObject(11, resolveIntFromLabel(row.getMdFormat()), Types.INTEGER);
@@ -148,6 +148,15 @@ public class ToDB implements OutDestination {
 			return id;
 
 		throw new Exception("'" + value + "' niet gevonden in tabellen " + table + " en " + labelTable);
+	}
+	
+	private String getCreatorOther(Label label, MetadataRow row) throws Exception {
+		Integer id = resolveIntFromLabel(label);
+		if(id.equals(9)) {
+			return row.getCreatorOther().getValue();
+		} else {
+			return "";
+		}
 	}
 
 	private <T> T select(String valueColumn, String table, String whereColumn, String whereValue) throws Exception {
