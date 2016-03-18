@@ -106,6 +106,19 @@ model {
 			}
 		}
 	}
+	
+	distributions {
+		 playBinary {
+			tasks.withType(org.gradle.jvm.tasks.Jar) {
+				manifest {
+					attributes("Implementation-Title": project.name)
+					if(project.version) {
+						attributes("Implementation-Version": project.version)
+					}
+				}
+			}
+		 }
+	}
 }
 
 // Configure gradle-git release procedure (https://github.com/ajoberstar/gradle-git):
