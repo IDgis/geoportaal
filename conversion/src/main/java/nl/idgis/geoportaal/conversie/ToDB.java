@@ -89,10 +89,20 @@ public class ToDB implements OutDestination {
 						+ "attachment_content,attachment_mimetype) VALUES (?,?,?,?)");
 
 		final String[] attachmentUrls = row.getAttachment();
+		List<String> finalAttachmentUrls = new ArrayList<String>();
+		if(attachmentUrls != null) {
+			for(String attachmentUrl : attachmentUrls) {
+				if(!finalAttachmentUrls.contains(attachmentUrl)) {
+					finalAttachmentUrls.add(attachmentUrl);
+				}
+			}
+		} else {
+			finalAttachmentUrls = null;
+		}
 
-		if (attachmentUrls != null) {
+		if (finalAttachmentUrls != null) {
 			Attachment attachment = null;
-			for (String attachmentUrl : attachmentUrls) {
+			for (String attachmentUrl : finalAttachmentUrls) {
 				attachment = Attachment.openConnection(attachmentUrl);
 				attachmentStatement.setObject(1, metadataId, Types.INTEGER);
 				attachmentStatement.setObject(2, attachment.getFileName(), Types.VARCHAR);
