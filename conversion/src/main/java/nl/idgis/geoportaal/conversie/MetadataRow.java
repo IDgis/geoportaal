@@ -48,7 +48,7 @@ public class MetadataRow {
 	private String[] attachment;
 	private List<Label> subject;
 
-	public static MetadataRow parseMetadataDocument(MetadataDocument d, Mapper creatorMapper, Mapper useLimitationMapper, Mapper mdFormatMapper) throws Exception {
+	public static MetadataRow parseMetadataDocument(MetadataDocument d, Mapper creatorMapper, Mapper useLimitationMapper, Mapper mdFormatMapper, Mapper rightsMapper) throws Exception {
 		MetadataRow row = new MetadataRow();
 
 		String dUUID = retrieveFirstStringOrNull(Path.UUID, d);
@@ -67,7 +67,7 @@ public class MetadataRow {
 		row.setTypeInformation(new Label(retrieveFirstStringOrNull(Path.TYPE_INFORMATION, d), TABLE_TYPE_INFORMATION));
 		row.setCreator(new Label(map(retrieveFirstStringOrNull(Path.CREATOR, d), creatorMapper), TABLE_CREATOR));
 		row.setCreatorOther(new Label(map(retrieveFirstStringOrNull(Path.CREATOR, d), creatorMapper), TABLE_CREATOR));
-		row.setRights(new Label(retrieveFirstStringOrNull(Path.RIGHTS, d, DATA_TYPE, "gebruiksrestricties", false), TABLE_RIGHTS));
+		row.setRights(new Label(map(retrieveFirstStringOrNull(Path.RIGHTS, d, DATA_TYPE, "gebruiksrestricties", false), rightsMapper), TABLE_RIGHTS));
 		row.setUseLimitation(new Label(map(retrieveFirstStringOrNull(Path.USE_LIMITATION, d, DATA_TYPE, "gebruiksrestricties", true), useLimitationMapper), TABLE_USE_LIMITATION));
 		row.setMdFormat(new Label(map(retrieveFirstStringOrNull(Path.MD_FORMAT, d), mdFormatMapper), TABLE_MD_FORMAT));
 		row.setSource(retrieveFirstStringOrNull(Path.SOURCE, d));
