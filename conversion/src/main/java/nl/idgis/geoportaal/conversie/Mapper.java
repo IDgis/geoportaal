@@ -28,7 +28,7 @@ public class Mapper {
 			while((line = reader.readLine()) != null) {
 				int i = line.indexOf(',');
 				String stringOne = line.substring(0, i).replace("\"", "");
-				String stringTwo = line.substring(i + 1).replace("\"", "");;
+				String stringTwo = line.substring(i + 1).replace("\"", "");
 				mapping.put(stringOne, stringTwo);
 			}
 		} catch (IOException e) {

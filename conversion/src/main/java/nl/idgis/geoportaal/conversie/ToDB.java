@@ -17,7 +17,7 @@ public class ToDB implements OutDestination {
 	private static Mapper creatorMapper = new Mapper("creator_conversion.csv");
 	private static Mapper useLimitationMapper = new Mapper("use_limitation_conversion.csv");
 	private static Mapper mdFormatMapper = new Mapper("md_format_conversion.csv");
-
+	
 	private String schema;
 	private Connection connection;
 	private boolean connected;

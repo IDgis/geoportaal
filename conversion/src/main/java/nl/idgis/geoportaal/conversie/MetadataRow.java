@@ -99,13 +99,13 @@ public class MetadataRow {
 
 		return row;
 	}
-
-	private static String map(String creator, Mapper mapper) throws Exception {
-		String newValue = mapper.get(creator);
+	
+	private static String map(String value, Mapper mapper) throws Exception {
+		String newValue = mapper.get(value);
 		if (newValue != null)
 			return newValue;
-
-		return creator;
+		
+		return value;
 	}
 
 	private static String retrieveFirstStringOrNull(Path path, MetadataDocument d) throws Exception {
