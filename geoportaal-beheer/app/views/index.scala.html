@@ -186,6 +186,9 @@
 	</div>
 	
 	@views.html.list(datasetRows, sdfLocal, roleId, textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch, sort, checkedList)
+	<div>
+		@getClass().getPackage().getImplementationVersion()
+	</div>
 	
 	@helper.form(action = routes.Index.changeStatus(), 'id -> "js-status-form") {
 		<div id="js-status-records"></div>
