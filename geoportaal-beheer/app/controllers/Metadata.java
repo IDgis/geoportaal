@@ -64,6 +64,7 @@ public class Metadata extends Controller {
 			List<Tuple> typeInformationList = tx.select(typeInformation.id, typeInformation.name, typeInformationLabel.label)
 			.from(typeInformation)
 				.join(typeInformationLabel).on(typeInformation.id.eq(typeInformationLabel.typeInformationId))
+				.orderBy(typeInformationLabel.label.asc())
 				.fetch();
 			
 			List<Tuple> creatorsList = tx.select(creator.id, creator.name, creatorLabel.label)
@@ -74,16 +75,19 @@ public class Metadata extends Controller {
 			List<Tuple> rightsList = tx.select(rights.id, rights.name, rightsLabel.label)
 				.from(rights)
 				.join(rightsLabel).on(rights.id.eq(rightsLabel.rightsId))
+				.orderBy(rightsLabel.label.asc())
 				.fetch();
 			
 			List<Tuple> useLimitationList = tx.select(useLimitation.id, useLimitation.name, useLimitationLabel.label)
 				.from(useLimitation)
 				.join(useLimitationLabel).on(useLimitation.id.eq(useLimitationLabel.useLimitationId))
+				.orderBy(useLimitationLabel.label.asc())
 				.fetch();
 			
 			List<Tuple> mdFormatList = tx.select(mdFormat.id, mdFormat.name, mdFormatLabel.label)
 				.from(mdFormat)
 				.join(mdFormatLabel).on(mdFormat.id.eq(mdFormatLabel.mdFormatId))
+				.orderBy(mdFormatLabel.label.asc())
 				.fetch();
 			
 			List<Tuple> subjectList = tx.select(subject.id, subject.name, subjectLabel.label)
@@ -302,6 +306,7 @@ public class Metadata extends Controller {
 			List<Tuple> typeInformationList = tx.select(typeInformation.id, typeInformation.name, typeInformationLabel.label)
 				.from(typeInformation)
 				.join(typeInformationLabel).on(typeInformation.id.eq(typeInformationLabel.typeInformationId))
+				.orderBy(typeInformationLabel.label.asc())
 				.fetch();
 				
 			List<Tuple> creatorsList = tx.select(creator.id, creator.name, creatorLabel.label)
@@ -312,16 +317,19 @@ public class Metadata extends Controller {
 			List<Tuple> rightsList = tx.select(rights.id, rights.name, rightsLabel.label)
 				.from(rights)
 				.join(rightsLabel).on(rights.id.eq(rightsLabel.rightsId))
+				.orderBy(rightsLabel.label.asc())
 				.fetch();
 			
 			List<Tuple> useLimitationList = tx.select(useLimitation.id, useLimitation.name, useLimitationLabel.label)
 				.from(useLimitation)
 				.join(useLimitationLabel).on(useLimitation.id.eq(useLimitationLabel.useLimitationId))
+				.orderBy(useLimitationLabel.label.asc())
 				.fetch();
 			
 			List<Tuple> mdFormatList = tx.select(mdFormat.id, mdFormat.name, mdFormatLabel.label)
 				.from(mdFormat)
 				.join(mdFormatLabel).on(mdFormat.id.eq(mdFormatLabel.mdFormatId))
+				.orderBy(mdFormatLabel.label.asc())
 				.fetch();
 			
 			List<Tuple> subjectList = tx.select(subject.id, subject.name, subjectLabel.label)
@@ -755,6 +763,7 @@ public class Metadata extends Controller {
 			List<Tuple> typeInformationList = tx.select(typeInformation.id, typeInformation.name, typeInformationLabel.label)
 				.from(typeInformation)
 				.join(typeInformationLabel).on(typeInformation.id.eq(typeInformationLabel.typeInformationId))
+				.orderBy(typeInformationLabel.label.asc())
 				.fetch();
 			
 			List<Tuple> creatorsList = tx.select(creator.id, creator.name, creatorLabel.label)
@@ -765,16 +774,19 @@ public class Metadata extends Controller {
 			List<Tuple> rightsList = tx.select(rights.id, rights.name, rightsLabel.label)
 				.from(rights)
 				.join(rightsLabel).on(rights.id.eq(rightsLabel.rightsId))
+				.orderBy(rightsLabel.label.asc())
 				.fetch();
 			
 			List<Tuple> useLimitationList = tx.select(useLimitation.id, useLimitation.name, useLimitationLabel.label)
 				.from(useLimitation)
 				.join(useLimitationLabel).on(useLimitation.id.eq(useLimitationLabel.useLimitationId))
+				.orderBy(useLimitationLabel.label.asc())
 				.fetch();
 			
 			List<Tuple> mdFormatList = tx.select(mdFormat.id, mdFormat.name, mdFormatLabel.label)
 				.from(mdFormat)
 				.join(mdFormatLabel).on(mdFormat.id.eq(mdFormatLabel.mdFormatId))
+				.orderBy(mdFormatLabel.label.asc())
 				.fetch();
 			
 			List<Tuple> subjectList = tx.select(subject.id, subject.name, subjectLabel.label)
