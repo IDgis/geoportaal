@@ -206,6 +206,10 @@ public class ToDB implements OutDestination {
 
 	@Override
 	public void close() throws SQLException {
+		PreparedStatement ps = connection.prepareStatement("refresh materialized view concurrently gb.metadata_search");
+		ps.executeUpdate();
+		connection.commit();
+		
 		connection.close();
 	}
 }
