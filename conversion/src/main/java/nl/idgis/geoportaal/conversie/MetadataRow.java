@@ -63,8 +63,10 @@ public class MetadataRow {
 		row.setLocation(retrieveFirstStringOrNull(Path.LOCATION, d));
 		
 		String fileId = retrieveFirstStringOrNull(Path.RELATION, d);
+		String fileIdExtension = "";
 		if(fileId.contains(".")) {
 			String finalFileId = fileId.substring(0, fileId.indexOf("."));
+			fileIdExtension = fileId.substring(fileId.indexOf(".") +1).toLowerCase();
 			row.setFileId(finalFileId);
 		} else {
 			row.setFileId(fileId);
@@ -77,7 +79,13 @@ public class MetadataRow {
 		row.setCreatorOther(new Label(map(retrieveFirstStringOrNull(Path.CREATOR, d), creatorMapper), TABLE_CREATOR));
 		row.setRights(new Label(map(retrieveFirstStringOrNull(Path.RIGHTS, d, DATA_TYPE, "gebruiksrestricties", false), rightsMapper), TABLE_RIGHTS));
 		row.setUseLimitation(new Label(map(retrieveFirstStringOrNull(Path.USE_LIMITATION, d, DATA_TYPE, "gebruiksrestricties", true), useLimitationMapper), TABLE_USE_LIMITATION));
-		row.setMdFormat(new Label(map(retrieveFirstStringOrNull(Path.MD_FORMAT, d), mdFormatMapper), TABLE_MD_FORMAT));
+		
+		if("".equals(fileIdExtension)) {
+			row.setMdFormat(new Label(map(retrieveFirstStringOrNull(Path.MD_FORMAT, d), mdFormatMapper), TABLE_MD_FORMAT));
+		} else {
+			row.setMdFormat(new Label(map(fileIdExtension, mdFormatMapper), TABLE_MD_FORMAT));
+		}
+		
 		row.setSource(retrieveFirstStringOrNull(Path.SOURCE, d));
 		row.setDateSourceCreation(toTime(retrieveFirstStringOrNull(Path.DATE_SOURCE_CREATION, d)));
 		row.setDateSourcePublication(toTime(retrieveFirstStringOrNull(Path.DATE_SOURCE_PUBLICATION, d)));
