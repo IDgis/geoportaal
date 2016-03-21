@@ -30,7 +30,7 @@ public class Attachment implements Closeable {
 
 		attachment.setLength(contentLength);
 		attachment.setMimeType(connection.getContentType());
-		attachment.setFileName(url.substring(url.lastIndexOf('/') + 1, url.lastIndexOf('.')));
+		attachment.setFileName(url.substring(url.lastIndexOf('/') + 1));
 		attachment.setDataStream(connection.getInputStream());
 
 		return attachment;
