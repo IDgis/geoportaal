@@ -70,6 +70,7 @@ public class Metadata extends Controller {
 			List<Tuple> creatorsList = tx.select(creator.id, creator.name, creatorLabel.label)
 				.from(creator)
 				.join(creatorLabel).on(creator.id.eq(creatorLabel.creatorId))
+				.orderBy(creator.id.asc())
 				.fetch();
 			
 			List<Tuple> rightsList = tx.select(rights.id, rights.name, rightsLabel.label)
@@ -312,6 +313,7 @@ public class Metadata extends Controller {
 			List<Tuple> creatorsList = tx.select(creator.id, creator.name, creatorLabel.label)
 				.from(creator)
 				.join(creatorLabel).on(creator.id.eq(creatorLabel.creatorId))
+				.orderBy(creator.id.asc())
 				.fetch();
 			
 			List<Tuple> rightsList = tx.select(rights.id, rights.name, rightsLabel.label)
@@ -769,6 +771,7 @@ public class Metadata extends Controller {
 			List<Tuple> creatorsList = tx.select(creator.id, creator.name, creatorLabel.label)
 				.from(creator)
 				.join(creatorLabel).on(creator.id.eq(creatorLabel.creatorId))
+				.orderBy(creator.id.asc())
 				.fetch();
 			
 			List<Tuple> rightsList = tx.select(rights.id, rights.name, rightsLabel.label)
