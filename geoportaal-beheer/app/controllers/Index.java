@@ -67,11 +67,13 @@ public class Index extends Controller {
 			List<Tuple> statusList = tx.select(status.name, statusLabel.label)
 				.from(status)
 				.join(statusLabel).on(status.id.eq(statusLabel.statusId))
+				.orderBy(status.id.asc())
 				.fetch();
 			
 			List<Tuple> mdFormatList = tx.select(mdFormat.name, mdFormatLabel.label)
 				.from(mdFormat)
 				.join(mdFormatLabel).on(mdFormat.id.eq(mdFormatLabel.mdFormatId))
+				.orderBy(mdFormatLabel.label.asc())
 				.fetch();
 			
 			SimpleDateFormat sdfUS = new SimpleDateFormat("yyyy-MM-dd");
