@@ -61,7 +61,15 @@ public class MetadataRow {
 		
 		row.setUuid(dUUID);
 		row.setLocation(retrieveFirstStringOrNull(Path.LOCATION, d));
-		row.setFileId(retrieveFirstStringOrNull(Path.RELATION, d));
+		
+		String fileId = retrieveFirstStringOrNull(Path.RELATION, d);
+		if(fileId.contains(".")) {
+			String finalFileId = fileId.substring(0, fileId.indexOf("."));
+			row.setFileId(finalFileId);
+		} else {
+			row.setFileId(fileId);
+		}
+		
 		row.setTitle(retrieveFirstStringOrNull(Path.TITLE, d));
 		row.setDescription(retrieveFirstStringOrNull(Path.DESCRIPTION, d));
 		row.setTypeInformation(new Label(retrieveFirstStringOrNull(Path.TYPE_INFORMATION, d), TABLE_TYPE_INFORMATION));
