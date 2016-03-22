@@ -9,6 +9,7 @@ import java.sql.Statement;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.postgresql.ds.PGSimpleDataSource;
 
@@ -46,9 +47,21 @@ public class ToDB implements OutDestination {
 
 
 		PreparedStatement metadataStatement = connection.prepareStatement(metadataSql, Statement.RETURN_GENERATED_KEYS);
-
-
-		metadataStatement.setObject(1, row.getUuid(), Types.VARCHAR);
+		
+		String uuid = row.getUuid();
+		final String sql = "select count(*) from " + schema + ".metadata where uuid = '" + uuid + "'";
+		Statement statement = connection.createStatement();
+		ResultSet results = statement.executeQuery(sql);
+		while(results.next()) {
+			Long uuidCount = (Long) results.getObject(1);
+			
+			if(uuidCount > 0) {
+				metadataStatement.setObject(1, UUID.randomUUID().toString(), Types.VARCHAR);
+			} else {
+				metadataStatement.setObject(1, row.getUuid(), Types.VARCHAR);
+			}
+		}
+		
 		metadataStatement.setObject(2, row.getLocation(), Types.VARCHAR);
 		metadataStatement.setObject(3, row.getFileId(), Types.VARCHAR);
 		metadataStatement.setObject(4, row.getTitle(), Types.VARCHAR);
