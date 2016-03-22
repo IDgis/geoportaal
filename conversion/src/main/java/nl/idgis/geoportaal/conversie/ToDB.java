@@ -9,6 +9,7 @@ import java.sql.Statement;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.postgresql.ds.PGSimpleDataSource;
 
@@ -17,7 +18,8 @@ public class ToDB implements OutDestination {
 	private static Mapper creatorMapper = new Mapper("creator_conversion.csv");
 	private static Mapper useLimitationMapper = new Mapper("use_limitation_conversion.csv");
 	private static Mapper mdFormatMapper = new Mapper("md_format_conversion.csv");
-
+	private static Mapper rightsMapper = new Mapper("rights_conversion.csv");
+	
 	private String schema;
 	private Connection connection;
 	private boolean connected;
@@ -34,7 +36,7 @@ public class ToDB implements OutDestination {
 		if (!connected)
 			throw new Exception("connect method is nog niet aangeroepen of connectie is gesloten");
 
-		MetadataRow row = MetadataRow.parseMetadataDocument(d, creatorMapper, useLimitationMapper, mdFormatMapper);
+		MetadataRow row = MetadataRow.parseMetadataDocument(d, creatorMapper, useLimitationMapper, mdFormatMapper, rightsMapper);
 
 		final String metadataSql = "INSERT INTO " + schema + ".metadata (uuid,location,file_id,title,description,"
 				+ "type_information,creator,creator_other,rights,use_limitation,"
@@ -45,16 +47,28 @@ public class ToDB implements OutDestination {
 
 
 		PreparedStatement metadataStatement = connection.prepareStatement(metadataSql, Statement.RETURN_GENERATED_KEYS);
-
-
-		metadataStatement.setObject(1, row.getUuid(), Types.VARCHAR);
+		
+		String uuid = row.getUuid();
+		final String sql = "select count(*) from " + schema + ".metadata where uuid = '" + uuid + "'";
+		Statement statement = connection.createStatement();
+		ResultSet results = statement.executeQuery(sql);
+		while(results.next()) {
+			Long uuidCount = (Long) results.getObject(1);
+			
+			if(uuidCount > 0) {
+				metadataStatement.setObject(1, UUID.randomUUID().toString(), Types.VARCHAR);
+			} else {
+				metadataStatement.setObject(1, row.getUuid(), Types.VARCHAR);
+			}
+		}
+		
 		metadataStatement.setObject(2, row.getLocation(), Types.VARCHAR);
 		metadataStatement.setObject(3, row.getFileId(), Types.VARCHAR);
 		metadataStatement.setObject(4, row.getTitle(), Types.VARCHAR);
 		metadataStatement.setObject(5, row.getDescription(), Types.VARCHAR);
 		metadataStatement.setObject(6, resolveIntFromLabel(row.getTypeInformation()), Types.INTEGER);
 		metadataStatement.setObject(7, resolveIntFromLabel(row.getCreator()), Types.INTEGER);
-		metadataStatement.setObject(8, row.getCreatorOther(), Types.VARCHAR);
+		metadataStatement.setObject(8, getCreatorOther(row.getCreator(), row), Types.VARCHAR);
 		metadataStatement.setObject(9, resolveIntFromLabel(row.getRights()), Types.INTEGER);
 		metadataStatement.setObject(10, resolveIntFromLabel(row.getUseLimitation()), Types.INTEGER);
 		metadataStatement.setObject(11, resolveIntFromLabel(row.getMdFormat()), Types.INTEGER);
@@ -88,10 +102,20 @@ public class ToDB implements OutDestination {
 						+ "attachment_content,attachment_mimetype) VALUES (?,?,?,?)");
 
 		final String[] attachmentUrls = row.getAttachment();
+		List<String> finalAttachmentUrls = new ArrayList<String>();
+		if(attachmentUrls != null) {
+			for(String attachmentUrl : attachmentUrls) {
+				if(!finalAttachmentUrls.contains(attachmentUrl)) {
+					finalAttachmentUrls.add(attachmentUrl);
+				}
+			}
+		} else {
+			finalAttachmentUrls = null;
+		}
 
-		if (attachmentUrls != null) {
+		if (finalAttachmentUrls != null) {
 			Attachment attachment = null;
-			for (String attachmentUrl : attachmentUrls) {
+			for (String attachmentUrl : finalAttachmentUrls) {
 				attachment = Attachment.openConnection(attachmentUrl);
 				attachmentStatement.setObject(1, metadataId, Types.INTEGER);
 				attachmentStatement.setObject(2, attachment.getFileName(), Types.VARCHAR);
@@ -124,21 +148,39 @@ public class ToDB implements OutDestination {
 		final String table = label.getTable();
 		final String labelTable = label.getLabelTable();
 		final String value = label.getValue();
-
+		
 		if (value == null)
 			return null;
-
-		Integer id = select("id", table, "name", value);
-
+		
+		Integer id = null;
+		if(table.equals("user")) {
+			id = select("id", table, "username", value);
+		} else {
+			id = select("id", table, "name", value);
+		}
+		
 		if (id != null)
 			return id;
 
 		id = select(table + "_id", labelTable, "label", value);
-
-		if (id!= null)
+		
+		if(table.equals("creator") && id == null) {
+			id = 9;
+		}
+		
+		if (id != null)
 			return id;
 
 		throw new Exception("'" + value + "' niet gevonden in tabellen " + table + " en " + labelTable);
+	}
+	
+	private String getCreatorOther(Label label, MetadataRow row) throws Exception {
+		Integer id = resolveIntFromLabel(label);
+		if(id.equals(9)) {
+			return row.getCreatorOther().getValue();
+		} else {
+			return "";
+		}
 	}
 
 	private <T> T select(String valueColumn, String table, String whereColumn, String whereValue) throws Exception {
@@ -177,6 +219,10 @@ public class ToDB implements OutDestination {
 
 	@Override
 	public void close() throws SQLException {
+		PreparedStatement ps = connection.prepareStatement("refresh materialized view concurrently gb.metadata_search");
+		ps.executeUpdate();
+		connection.commit();
+		
 		connection.close();
 	}
 }

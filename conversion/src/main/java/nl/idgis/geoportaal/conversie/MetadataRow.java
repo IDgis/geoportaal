@@ -15,14 +15,14 @@ public class MetadataRow {
 	private static final String TABLE_RIGHTS = "rights";
 	private static final String TABLE_USE_LIMITATION = "use_limitation";
 	private static final String TABLE_MD_FORMAT = "md_format";
-	private static final String TABLE_SUPPLIER = "supplier";
 	private static final String TABLE_STATUS = "status";
 	private static final String TABLE_SUBJECT = "subject";
-	private static final String SUPPLIER = "nienhuis";
+	private static final String TABLE_USER = "user";
 	private static final String STATUS = "ter goedkeuring";
 	private static final String LAST_REVISION_USER = "conversie";
 	private static final boolean PUBLISHED = false;
-
+	private static final String USER = "nrj.eilers@overijssel.nl";
+	
 	private String uuid;
 	private String location;
 	private String fileId;
@@ -30,7 +30,7 @@ public class MetadataRow {
 	private String description;
 	private Label typeInformation;
 	private Label creator;
-	private String creatorOther;
+	private Label creatorOther;
 	private Label rights;
 	private Label useLimitation;
 	private Label mdFormat;
@@ -48,7 +48,7 @@ public class MetadataRow {
 	private String[] attachment;
 	private List<Label> subject;
 
-	public static MetadataRow parseMetadataDocument(MetadataDocument d, Mapper creatorMapper, Mapper useLimitationMapper, Mapper mdFormatMapper) throws Exception {
+	public static MetadataRow parseMetadataDocument(MetadataDocument d, Mapper creatorMapper, Mapper useLimitationMapper, Mapper mdFormatMapper, Mapper rightsMapper) throws Exception {
 		MetadataRow row = new MetadataRow();
 
 		String dUUID = retrieveFirstStringOrNull(Path.UUID, d);
@@ -58,25 +58,41 @@ public class MetadataRow {
 		else {
 			dUUID = dUUID.substring(1, dUUID.length() - 1); // remove '{' and '}'
 		}
-
+		
 		row.setUuid(dUUID);
 		row.setLocation(retrieveFirstStringOrNull(Path.LOCATION, d));
-		row.setFileId(retrieveFirstStringOrNull(Path.RELATION, d));
+		
+		String fileId = retrieveFirstStringOrNull(Path.RELATION, d);
+		String fileIdExtension = "";
+		if(fileId.contains(".")) {
+			String finalFileId = fileId.substring(0, fileId.indexOf("."));
+			fileIdExtension = fileId.substring(fileId.indexOf(".") +1).toLowerCase();
+			row.setFileId(finalFileId);
+		} else {
+			row.setFileId(fileId);
+		}
+		
 		row.setTitle(retrieveFirstStringOrNull(Path.TITLE, d));
 		row.setDescription(retrieveFirstStringOrNull(Path.DESCRIPTION, d));
 		row.setTypeInformation(new Label(retrieveFirstStringOrNull(Path.TYPE_INFORMATION, d), TABLE_TYPE_INFORMATION));
 		row.setCreator(new Label(map(retrieveFirstStringOrNull(Path.CREATOR, d), creatorMapper), TABLE_CREATOR));
-		row.setCreatorOther(retrieveFirstStringOrNull(Path.CREATOR_OTHER, d));
-		row.setRights(new Label(retrieveFirstStringOrNull(Path.RIGHTS, d, DATA_TYPE, "gebruiksrestricties", false), TABLE_RIGHTS));
+		row.setCreatorOther(new Label(map(retrieveFirstStringOrNull(Path.CREATOR, d), creatorMapper), TABLE_CREATOR));
+		row.setRights(new Label(map(retrieveFirstStringOrNull(Path.RIGHTS, d, DATA_TYPE, "gebruiksrestricties", false), rightsMapper), TABLE_RIGHTS));
 		row.setUseLimitation(new Label(map(retrieveFirstStringOrNull(Path.USE_LIMITATION, d, DATA_TYPE, "gebruiksrestricties", true), useLimitationMapper), TABLE_USE_LIMITATION));
-		row.setMdFormat(new Label(map(retrieveFirstStringOrNull(Path.MD_FORMAT, d), mdFormatMapper), TABLE_MD_FORMAT));
+		
+		if("".equals(fileIdExtension)) {
+			row.setMdFormat(new Label(map(retrieveFirstStringOrNull(Path.MD_FORMAT, d), mdFormatMapper), TABLE_MD_FORMAT));
+		} else {
+			row.setMdFormat(new Label(map(fileIdExtension, mdFormatMapper), TABLE_MD_FORMAT));
+		}
+		
 		row.setSource(retrieveFirstStringOrNull(Path.SOURCE, d));
 		row.setDateSourceCreation(toTime(retrieveFirstStringOrNull(Path.DATE_SOURCE_CREATION, d)));
 		row.setDateSourcePublication(toTime(retrieveFirstStringOrNull(Path.DATE_SOURCE_PUBLICATION, d)));
 		row.setDateSourceRevision(null);
 		row.setDateSourceValidFrom(toTime(retrieveFirstStringOrNull(Path.DATE_SOURCE_VALID_FROM, d)));
 		row.setDateSourceValidUntil(toTime(retrieveFirstStringOrNull(Path.DATE_SOURCE_VALID_UNTIL, d)));
-		row.setSupplier(new Label(SUPPLIER, TABLE_SUPPLIER));
+		row.setSupplier(new Label(USER, TABLE_USER));
 		row.setStatus(new Label(STATUS, TABLE_STATUS));
 		row.setPublished(PUBLISHED);
 		row.setLastRevisionUser(LAST_REVISION_USER);
@@ -99,13 +115,13 @@ public class MetadataRow {
 
 		return row;
 	}
-
-	private static String map(String creator, Mapper mapper) throws Exception {
-		String newValue = mapper.get(creator);
+	
+	private static String map(String value, Mapper mapper) throws Exception {
+		String newValue = mapper.get(value);
 		if (newValue != null)
 			return newValue;
-
-		return creator;
+		
+		return value;
 	}
 
 	private static String retrieveFirstStringOrNull(Path path, MetadataDocument d) throws Exception {
@@ -185,11 +201,11 @@ public class MetadataRow {
 		this.creator = creator;
 	}
 
-	public String getCreatorOther() {
+	public Label getCreatorOther() {
 		return creatorOther;
 	}
 
-	public void setCreatorOther(String creatorOther) {
+	public void setCreatorOther(Label creatorOther) {
 		this.creatorOther = creatorOther;
 	}
 

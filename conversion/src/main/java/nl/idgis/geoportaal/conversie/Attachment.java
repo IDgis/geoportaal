@@ -22,12 +22,15 @@ public class Attachment implements Closeable {
 		final int responseCode = connection.getResponseCode();
 		if (responseCode != 200)
 			throw new Exception("request naar " + url + " stuurde code " + responseCode + " terug");
+		
+		Long contentLength = connection.getContentLengthLong();
+		if(contentLength.intValue() > 214958080) {
+			throw new Exception("bijlage van " + url + " is te groot");
+		}
 
-		final String contentType = connection.getContentType();
-
-		attachment.setLength(connection.getContentLengthLong());
-		attachment.setMimeType(contentType.substring(contentType.indexOf('/') + 1));
-		attachment.setFileName(url.substring(url.lastIndexOf('/') + 1, url.lastIndexOf('.')));
+		attachment.setLength(contentLength);
+		attachment.setMimeType(connection.getContentType());
+		attachment.setFileName(url.substring(url.lastIndexOf('/') + 1));
 		attachment.setDataStream(connection.getInputStream());
 
 		return attachment;
