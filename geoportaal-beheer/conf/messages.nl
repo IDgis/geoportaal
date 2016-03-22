@@ -6,6 +6,7 @@ confirm=Bevestigen
 cancel=Annuleren
 execute=Uitvoeren
 unauthorized=Geen toegang.
+application.name=Geoportaal-Beheer
 
 # Tabbladen
 main.tab.index=Zoeken en wijzigen

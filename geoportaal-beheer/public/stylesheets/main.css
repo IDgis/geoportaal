@@ -94,3 +94,5 @@ input[type="file"].input-attachment {display:inline;}
 .sort-group {padding-left:0;padding-right:0;}
 
 #published-warning {position:relative;left:20px;display:none;}
+
+#version-info {position:relative;left:20px;margin-top:20px;}
