@@ -2,6 +2,12 @@ package models;
 
 import java.util.List;
 
+/**
+ * The model class to store the sorting information
+ * 
+ * @author Sandro
+ *
+ */
 public class Sort {
 	private String text;
 	private String supplier;
@@ -15,6 +21,18 @@ public class Sort {
 	public Sort() {
 	}
 	
+	/**
+	 * The constructor of the sort class
+	 * 
+	 * @param text the search value of the text field
+	 * @param supplier the search value of the supplier field
+	 * @param status the search value of the status field
+	 * @param format the search value of the format field
+	 * @param dateUpdateStart the search value of the date start field
+	 * @param dateUpdateEnd the search value of the date end field
+	 * @param sort the sort type value
+	 * @param recordsChecked the UUID's of the records selected
+	 */
 	public Sort(String text, String supplier, String status, String format, String dateUpdateStart, String dateUpdateEnd, String sort, 
 		List<String> recordsChecked) {
 		
