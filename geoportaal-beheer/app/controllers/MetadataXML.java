@@ -24,10 +24,12 @@ import javax.inject.Inject;
 
 import com.querydsl.core.Tuple;
 
+import actions.DefaultAuthenticator;
 import models.DublinCoreXML;
 import play.i18n.*;
 import play.mvc.Controller;
 import play.mvc.Result;
+import play.mvc.Security;
 import util.QueryDSL;
 
 /**
@@ -36,6 +38,7 @@ import util.QueryDSL;
  * @author Sandro
  *
  */
+@Security.Authenticated(DefaultAuthenticator.class)
 public class MetadataXML extends Controller {
 	@Inject QueryDSL q;
 	

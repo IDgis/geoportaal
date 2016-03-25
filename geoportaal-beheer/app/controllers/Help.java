@@ -1,8 +1,9 @@
 package controllers;
 
+import actions.DefaultAuthenticator;
 import play.mvc.Controller;
 import play.mvc.Result;
-
+import play.mvc.Security;
 import views.html.*;
 
 /**
@@ -11,6 +12,7 @@ import views.html.*;
  * @author Sandro
  *
  */
+@Security.Authenticated(DefaultAuthenticator.class)
 public class Help extends Controller{
 	
 	/**

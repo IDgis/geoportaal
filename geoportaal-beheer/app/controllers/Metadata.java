@@ -38,6 +38,7 @@ import javax.inject.Inject;
 import com.querydsl.core.Tuple;
 import com.querydsl.sql.SQLQuery;
 
+import actions.DefaultAuthenticator;
 import models.DublinCore;
 import models.Search;
 import play.data.DynamicForm;
@@ -46,9 +47,11 @@ import play.i18n.Messages;
 import play.mvc.Controller;
 import play.mvc.Http.MultipartFormData.FilePart;
 import play.mvc.Result;
+import play.mvc.Security;
 import util.QueryDSL;
 import views.html.*;
 
+@Security.Authenticated(DefaultAuthenticator.class)
 public class Metadata extends Controller {
 	@Inject QueryDSL q;
 	
