@@ -3,6 +3,12 @@ package models;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * The model class to store information about the DublinCore metadata record to generate the XML
+ * 
+ * @author Sandro
+ *
+ */
 public class DublinCoreXML {
 	
 	private String identifier;
@@ -31,6 +37,32 @@ public class DublinCoreXML {
 	public DublinCoreXML() {
 	}
 	
+	/**
+	 * The constructor of the DublinCore class to generate the XML
+	 * 
+	 * @param identifier the identifier XML element
+	 * @param title the title XML element
+	 * @param description the description XML element
+	 * @param location the location XML element
+	 * @param fileId the number of the metadata
+	 * @param attachments the list of attachments
+	 * @param type the type XML element
+	 * @param creator the creator XML element
+	 * @param publisher the publisher XML element
+	 * @param contributor the contributor XML element
+	 * @param rights the rights XML element
+	 * @param useLimitation the use limitation XML element
+	 * @param format the format XML element
+	 * @param source the source XML element
+	 * @param date the date the metadata was created
+	 * @param dateIssued the date the metadata was published
+	 * @param dateValidStart the start date when the data was valid
+	 * @param dateValidEnd the end date when the data was valid
+	 * @param subjects the list of subjects
+	 * @param language the language XML element
+	 * @param lowerCorner the lower corner of the coordinates
+	 * @param upperCorner the upper corner of the coordinates
+	 */
 	public DublinCoreXML(String identifier, String title, String description, String location, String fileId, List<String> attachments, String type, 
 		String creator, String publisher, String contributor, String rights, String useLimitation, String format, String source, Date date, 
 		Date dateIssued, Date dateValidStart, Date dateValidEnd, List<String> subjects, String language, String lowerCorner, String upperCorner) {
