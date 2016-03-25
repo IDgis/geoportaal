@@ -4,8 +4,14 @@ import play.mvc.Http.Context;
 import play.mvc.Result;
 import play.mvc.Security.Authenticator;
 
+/**
+ * Handles authentication for the admin of the Geoportal
+ * 
+ * @author Sandro
+ *
+ */
 public class DefaultAuthenticator extends Authenticator {
-
+	
 	@Override
 	public String getUsername (final Context ctx) {
 		final String username = ctx.session ().get ("username");
