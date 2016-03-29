@@ -2,6 +2,12 @@ package models;
 
 import java.util.List;
 
+/**
+ * The model class to store information for deleting records
+ * 
+ * @author Sandro
+ *
+ */
 public class Delete {
 	
 	private List<String> recordsToDel;
@@ -16,6 +22,18 @@ public class Delete {
 	public Delete() {
 	}
 	
+	/**
+	 * The constructor of the delete class
+	 * 
+	 * @param recordsToDel the UUID's of the records to be deleted
+	 * @param permDel flag if the records should be permanently deleted
+	 * @param textSearch the search value of the text field
+	 * @param supplierSearch the search value of the supplier field
+	 * @param statusSearch the search value of the status field
+	 * @param mdFormatSearch the search value of the format field
+	 * @param dateStartSearch the search value of the date start field
+	 * @param dateEndSearch the search value of the date end field
+	 */
 	public Delete(List<String> recordsToDel, String permDel, String textSearch, String supplierSearch, String statusSearch, 
 			String mdFormatSearch, String dateStartSearch, String dateEndSearch) {
 		this.recordsToDel = recordsToDel;

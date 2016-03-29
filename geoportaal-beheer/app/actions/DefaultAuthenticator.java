@@ -4,29 +4,35 @@ import play.mvc.Http.Context;
 import play.mvc.Result;
 import play.mvc.Security.Authenticator;
 
+/**
+ * Handles authentication for the admin of the Geoportal
+ * 
+ * @author Sandro
+ *
+ */
 public class DefaultAuthenticator extends Authenticator {
-
+	
 	@Override
-	public String getUsername (final Context ctx) {
-		final String username = ctx.session ().get ("username");
+	public String getUsername(final Context ctx) {
+		final String username = ctx.session().get("username");
 		
-		if (username != null && isAllowed (username)) {
+		if(username != null && isAllowed(username)) {
 			return username;
 		}
 		
 		return null;
 	}
 	
-	protected boolean isAllowed (final String username) {
+	protected boolean isAllowed(final String username) {
 		return true;
 	}
 	
 	@Override
-	public Result onUnauthorized (final Context ctx) {
-		if (ctx.session ().get ("username") == null) {
+	public Result onUnauthorized(final Context ctx) {
+		if(ctx.session().get("username") == null) {
 			return redirect(controllers.routes.User.login(ctx.request().uri()));
 		} else {
-			return unauthorized (views.html.defaultpages.unauthorized.render ()); 
+			return unauthorized(views.html.defaultpages.unauthorized.render()); 
 		}
 	}
 }

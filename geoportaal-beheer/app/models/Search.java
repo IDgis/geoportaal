@@ -1,5 +1,11 @@
 package models;
 
+/**
+ * The model class to store information about the search values
+ * 
+ * @author Sandro
+ *
+ */
 public class Search {
 	
 	private String text;
@@ -12,6 +18,16 @@ public class Search {
 	public Search() {
 	}
 	
+	/**
+	 * The constructor of the search class
+	 * 
+	 * @param text the text search value
+	 * @param supplier the supplier search value
+	 * @param status the status search value
+	 * @param format the format search value
+	 * @param dateUpdateStart the date start search value
+	 * @param dateUpdateEnd the date end search value
+	 */
 	public Search(String text, String supplier, String status, String format, String dateUpdateStart, String dateUpdateEnd) {
 		this.text = text;
 		this.supplier = supplier;

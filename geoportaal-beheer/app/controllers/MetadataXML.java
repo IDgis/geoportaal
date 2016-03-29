@@ -24,20 +24,39 @@ import javax.inject.Inject;
 
 import com.querydsl.core.Tuple;
 
+import actions.DefaultAuthenticator;
 import models.DublinCoreXML;
 import play.i18n.*;
 import play.mvc.Controller;
 import play.mvc.Result;
+import play.mvc.Security;
 import util.QueryDSL;
 
+/**
+ * The class for the entity to generate XML of the DublinCore metadata
+ * 
+ * @author Sandro
+ *
+ */
+@Security.Authenticated(DefaultAuthenticator.class)
 public class MetadataXML extends Controller {
 	@Inject QueryDSL q;
 	
+	/**
+	 * Generates an XML page according to the DublinCore standard
+	 * 
+	 * @param metadataUuid the UUID of the metadata
+	 * @return the {@link Result} of the XML page
+	 */
 	public Result generateXml(String metadataUuid) {
+		// Sets the content type of the response to XML
 		response().setContentType("application/xml");
+		
+		// Create an object to easily format dates
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		
 		return q.withTransaction(tx -> {
+			// Fetch the metadata record with all relevant information
 			Tuple datasetRow = tx.select(metadata.id, metadata.uuid, metadata.title, metadata.description, metadata.location, metadata.fileId, 
 					typeInformationLabel.label, metadata.creator, creatorLabel.label, metadata.creatorOther, rightsLabel.label, useLimitationLabel.label, 
 					mdFormatLabel.label, metadata.source, metadata.dateSourceCreation, metadata.dateSourcePublication, metadata.dateSourceValidFrom, 
@@ -56,13 +75,20 @@ public class MetadataXML extends Controller {
 				.where(metadata.uuid.eq(metadataUuid))
 				.fetchOne();
 			
+			// Fetch the attachments
 			List<String> attachments = tx.select(mdAttachment.attachmentName)
 					.from(mdAttachment)
 					.where(mdAttachment.metadataId.eq(datasetRow.get(metadata.id)))
 					.orderBy(mdAttachment.attachmentName.asc())
 					.fetch();
 			
+			// Fetch the id of the creator
 			Integer creatorId = datasetRow.get(metadata.creator);
+			
+			/*
+			 * If the creator of the record is 'other' the creator string will be set on the creator other field, otherwise it will be set
+			 * on the creator label
+			 */
 			String creator;
 			if(creatorId.equals(9)) {
 				creator = datasetRow.get(metadata.creatorOther);
@@ -70,6 +96,7 @@ public class MetadataXML extends Controller {
 				creator = datasetRow.get(creatorLabel.label);
 			}
 			
+			// Sets the various dates if they aren't null
 			Date d = null;
 			if(datasetRow.get(metadata.dateSourceCreation) != null) {
 				d = new Date(datasetRow.get(metadata.dateSourceCreation).getTime());
@@ -90,6 +117,7 @@ public class MetadataXML extends Controller {
 				dve = new Date(datasetRow.get(metadata.dateSourceValidUntil).getTime());
 			}
 			
+			// Fetches the subjects
 			List<String> subjects = tx.select(subject.name)
 				.from(mdSubject)
 				.join(subject).on(mdSubject.subject.eq(subject.id))
@@ -97,13 +125,16 @@ public class MetadataXML extends Controller {
 				.orderBy(subject.name.asc())
 				.fetch();
 			
+			// Fetches the values of the constants table
 			Tuple constantsRow = tx.select(constants.all())
 					.from(constants)
 					.fetchOne();
 			
+			// Formats the values of the coordinates in an upper corner and a lower corner
 			String upperCorner = constantsRow.get(constants.northBoundLongitude) + " " + constantsRow.get(constants.westBoundLongitude);
 			String lowerCorner = constantsRow.get(constants.southBoundLongitude) + " " + constantsRow.get(constants.eastBoundLongitude);
 			
+			// Creates a DublinCoreXML object
 			DublinCoreXML dcx = new DublinCoreXML(
 					datasetRow.get(metadata.uuid),
 					datasetRow.get(metadata.title),
@@ -129,8 +160,10 @@ public class MetadataXML extends Controller {
 					upperCorner
 			);
 			
+			// Fetches the message of the use limitation attribute value
 			String useLimitation = Messages.get("xml.uselimitation");
 			
+			// Returns the XML page
 			return ok(views.xml.metadata.render(dcx, sdf, useLimitation));
 		});
 	}

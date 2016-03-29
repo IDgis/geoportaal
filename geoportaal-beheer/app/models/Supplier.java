@@ -2,6 +2,12 @@ package models;
 
 import java.util.List;
 
+/**
+ * The model class to store information for changing the supplier of records
+ * 
+ * @author Sandro
+ *
+ */
 public class Supplier {
 	private List<String> recordsChange;
 	private String supplier;
@@ -15,6 +21,18 @@ public class Supplier {
 	public Supplier() {
 	}
 	
+	/**
+	 * The constructor of the supplier class
+	 * 
+	 * @param recordsChange the UUID's of the records about to be changed
+	 * @param supplier the new supplier of the records
+	 * @param textSearch the search value of the text field
+	 * @param supplierSearch the search value of the supplier field
+	 * @param statusSearch the search value of the status field
+	 * @param mdFormatSearch the search value of the format field
+	 * @param dateStartSearch the search value of the date start field
+	 * @param dateEndSearch the search value of the date end field
+	 */
 	public Supplier(List<String> recordsChange, String supplier, String textSearch, String supplierSearch, String statusSearch, 
 			String mdFormatSearch, String dateStartSearch, String dateEndSearch) {
 		this.recordsChange = recordsChange;

@@ -21,6 +21,12 @@ import play.Logger;
 import play.inject.ApplicationLifecycle;
 import play.libs.F.Promise;
 
+/**
+ * The class for the zookeeper entity
+ * 
+ * @author Sandro
+ *
+ */
 @Singleton
 public class ZooKeeper {
 	

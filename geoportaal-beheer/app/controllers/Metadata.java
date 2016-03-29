@@ -38,6 +38,7 @@ import javax.inject.Inject;
 import com.querydsl.core.Tuple;
 import com.querydsl.sql.SQLQuery;
 
+import actions.DefaultAuthenticator;
 import models.DublinCore;
 import models.Search;
 import play.data.DynamicForm;
@@ -46,102 +47,155 @@ import play.i18n.Messages;
 import play.mvc.Controller;
 import play.mvc.Http.MultipartFormData.FilePart;
 import play.mvc.Result;
+import play.mvc.Security;
 import util.QueryDSL;
 import views.html.*;
 
+/**
+ * The class for the metadata entity
+ * 
+ * @author Sandro
+ *
+ */
+@Security.Authenticated(DefaultAuthenticator.class)
 public class Metadata extends Controller {
 	@Inject QueryDSL q;
 	
+	/**
+	 * Render the form of a new metadata record
+	 * 
+	 * @param textSearch the search value of the text field
+	 * @param supplierSearch the search value of the supplier field
+	 * @param statusSearch the search value of the status field
+	 * @param mdFormatSearch the search value of the format field
+	 * @param dateStartSearch the search value of the date start field
+	 * @param dateEndSearch the search value of the date end field
+	 * @return the {@link Result} of the form page
+	 */
 	public Result renderCreateForm(String textSearch, String supplierSearch, String statusSearch, 
 			String mdFormatSearch, String dateStartSearch, String dateEndSearch) {
+		// Create boolean that determines if the form is for a new record
 		Boolean create = true;
+		
+		// Create strings according to yyyy-MM-dd and dd-MM-yyyy formats
 		String todayUS = new SimpleDateFormat("yyyy-MM-dd").format(new Date().getTime());
 		String todayLocal = new SimpleDateFormat("dd-MM-yyyy").format(new Date().getTime());
 		
+		// Create search object
 		Search search = new Search(textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch);
 		
 		return q.withTransaction(tx -> {
+			// Fetch type information list
 			List<Tuple> typeInformationList = tx.select(typeInformation.id, typeInformation.name, typeInformationLabel.label)
 			.from(typeInformation)
 				.join(typeInformationLabel).on(typeInformation.id.eq(typeInformationLabel.typeInformationId))
 				.orderBy(typeInformationLabel.label.asc())
 				.fetch();
 			
+			// Fetch creator list
 			List<Tuple> creatorsList = tx.select(creator.id, creator.name, creatorLabel.label)
 				.from(creator)
 				.join(creatorLabel).on(creator.id.eq(creatorLabel.creatorId))
 				.orderBy(creator.id.asc())
 				.fetch();
 			
+			// Fetch rights list
 			List<Tuple> rightsList = tx.select(rights.id, rights.name, rightsLabel.label)
 				.from(rights)
 				.join(rightsLabel).on(rights.id.eq(rightsLabel.rightsId))
 				.orderBy(rightsLabel.label.asc())
 				.fetch();
 			
+			// Fetch use limitation list
 			List<Tuple> useLimitationList = tx.select(useLimitation.id, useLimitation.name, useLimitationLabel.label)
 				.from(useLimitation)
 				.join(useLimitationLabel).on(useLimitation.id.eq(useLimitationLabel.useLimitationId))
 				.orderBy(useLimitationLabel.label.asc())
 				.fetch();
 			
+			// Fetch format list
 			List<Tuple> mdFormatList = tx.select(mdFormat.id, mdFormat.name, mdFormatLabel.label)
 				.from(mdFormat)
 				.join(mdFormatLabel).on(mdFormat.id.eq(mdFormatLabel.mdFormatId))
 				.orderBy(mdFormatLabel.label.asc())
 				.fetch();
 			
+			// Fetch subject list
 			List<Tuple> subjectList = tx.select(subject.id, subject.name, subjectLabel.label)
 				.from(subject)
 				.join(subjectLabel).on(subject.id.eq(subjectLabel.subjectId))
 				.fetch();
 			
+			// Return form page
 			return ok(views.html.form.render(create, todayUS, todayLocal, null, null, null, typeInformationList, creatorsList, rightsList, 
 					useLimitationList, mdFormatList, null, null, subjectList, search, false, null, null));
 		});
 	}
 	
+	/**
+	 * Handles the insertion of a new metadata record
+	 * 
+	 * @param textSearch the search value of the text field
+	 * @param supplierSearch the search value of the supplier field
+	 * @param statusSearch the search value of the status field
+	 * @param mdFormatSearch the search value of the format field
+	 * @param dateStartSearch the search value of the date start field
+	 * @param dateEndSearch the search value of the date end field
+	 * @return the {@link Result} of the index page
+	 * @throws IOException
+	 */
 	public Result createSubmit(String textSearch, String supplierSearch, String statusSearch, String mdFormatSearch, 
 			String dateStartSearch, String dateEndSearch) throws IOException {
+		// Fetches the form
 		Form<DublinCore> dcForm = Form.form(DublinCore.class);
 		DublinCore dc = dcForm.bindFromRequest().get();
 		
+		// Generate an UUID
 		String uuid = UUID.randomUUID().toString();
+		
+		// Create a timestamp of today
 		Timestamp dateToday = new Timestamp(new Date().getTime());
 		
 		return q.withTransaction(tx -> {
+			// Fetches the type information key according to form value
 			Integer typeInformationKey = tx.select(typeInformation.id)
 				.from(typeInformation)
 				.where(typeInformation.name.eq(dc.getTypeInformation()))
 				.fetchOne();
 			
+			// Fetches the creator key according to form value
 			Integer creatorKey = tx.select(creator.id)
 				.from(creator)
 				.where(creator.name.eq(dc.getCreator()))
 				.fetchOne();
 			
+			// Fetches the rights key according to form value
 			Integer rightsKey = tx.select(rights.id)
 				.from(rights)
 				.where(rights.name.eq(dc.getRights()))
 				.fetchOne();
 			
+			// Fetches the use limitation key according to form value
 			Integer useLimitationKey = tx.select(useLimitation.id)
 				.from(useLimitation)
 				.where(useLimitation.name.eq(dc.getUseLimitation()))
 				.fetchOne();
 			
+			// Fetches the format key according to form value
 			Integer formatKey = tx.select(mdFormat.id)
 				.from(mdFormat)
 				.where(mdFormat.name.eq(dc.getMdFormat()))
 				.fetchOne();
 			
+			// Sets file id value to null if string is empty
 			String fileIdValue;
-			if("".equals(dc.getFileId())) {
+			if("".equals(dc.getFileId().trim())) {
 				fileIdValue = null;
 			} else {
 				fileIdValue = dc.getFileId();
 			}
 			
+			// If creator value is other set creator other field
 			String creatorOtherValue;
 			if(!"other".equals(dc.getCreator())) {
 				creatorOtherValue = null;
@@ -149,29 +203,33 @@ public class Metadata extends Controller {
 				creatorOtherValue = dc.getCreatorOther();
 			}
 			
+			// Check if dates are null
 			Timestamp dateSourceCreationValue = nullCheckDate(dc.getDateSourceCreation());
 			Timestamp dateSourcePublicationValue = nullCheckDate(dc.getDateSourcePublication());
 			Timestamp dateSourceRevisionValue = nullCheckDate(dc.getDateSourceRevision());
 			Timestamp dateSourceValidFromValue = nullCheckDate(dc.getDateSourceValidFrom());
 			Timestamp dateSourceValidUntilValue = nullCheckDate(dc.getDateSourceValidUntil());
 			
+			// Fetches the supplier id of logged in user
 			Integer supplierId = tx.select(user.id)
 				.from(user)
 				.where(user.username.eq(session("username")))
 				.fetchOne();
 			
+			// Check if creator other isn't empty if creator is other
 			Boolean creatorOtherFailed = false;
 			if(creatorKey != null) {
-				if(creatorKey.equals(9) && "".equals(dc.getCreatorOther())) {
+				if(creatorKey.equals(9) && "".equals(dc.getCreatorOther().trim())) {
 					creatorOtherFailed = true;
 				} else {
 					creatorOtherFailed = false;
 				}
 			}
 			
-			if("".equals(dc.getTitle()) || "".equals(dc.getDescription()) || "".equals(dc.getLocation()) || "".equals(dc.getFileId()) || 
-				creatorKey == null || creatorOtherFailed || useLimitationKey == null || dateSourceCreationValue == null || 
-				dc.getSubject() == null) {
+			// Checks if every mandatory field has been completed, if not return the form with previous state
+			if("".equals(dc.getTitle().trim()) || "".equals(dc.getDescription().trim()) || "".equals(dc.getLocation().trim()) || 
+				"".equals(dc.getFileId().trim()) || creatorKey == null || creatorOtherFailed || useLimitationKey == null || 
+				dateSourceCreationValue == null || dc.getSubject() == null) {
 					
 					DublinCore previousDC = new DublinCore(dc.getLocation(), dc.getFileId(), dc.getTitle(), dc.getDescription(), dc.getTypeInformation(),
 						dc.getCreator(), dc.getCreatorOther(), dc.getRights(), dc.getUseLimitation(), dc.getMdFormat(), dc.getSource(),
@@ -184,6 +242,7 @@ public class Metadata extends Controller {
 					return validateFormServer(true, null, null, textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch, previousValues);
 			}
 			
+			// Insert the form value in a new metadata record
 			tx.insert(metadata)
 				.set(metadata.uuid, uuid)
 				.set(metadata.location, dc.getLocation())
@@ -209,14 +268,17 @@ public class Metadata extends Controller {
 				.set(metadata.lastRevisionDate, dateToday)
 				.execute();
 			
+			// Fetches the metadata id of the new metadata record
 			Integer metadataId = tx.select(metadata.id)
 					.from(metadata)
 					.where(metadata.uuid.eq(uuid))
 					.fetchOne();
 			
+			// Get attachments
 			play.mvc.Http.MultipartFormData body = request().body().asMultipartFormData();
 			List<FilePart> allFiles = body.getFiles();
 			
+			// Insert every attachment individually
 			for(FilePart fp: allFiles) {
 				if(fp != null) {
 					java.io.File file = fp.getFile();
@@ -225,12 +287,10 @@ public class Metadata extends Controller {
 					byte[] buffer = new byte[8192];
 					int bytesRead;
 					ByteArrayOutputStream byteOutput = new ByteArrayOutputStream();
-					while((bytesRead = inputStream.read(buffer)) != -1)
-					{
+					while((bytesRead = inputStream.read(buffer)) != -1) {
 						byteOutput.write(buffer, 0, bytesRead);
 					}
 					byte[] input = byteOutput.toByteArray();
-					
 					
 					inputStream.close();
 					
@@ -243,6 +303,7 @@ public class Metadata extends Controller {
 				}
 			}
 			
+			// Insert every subject individually
 			if(dc.getSubject() != null) {
 				for(String subjectStr : dc.getSubject()) {
 					Integer subjectKey = tx.select(subject.id)
@@ -257,33 +318,53 @@ public class Metadata extends Controller {
 				}
 			}
 			
+			// Refresh materialized view
 			tx.refreshMaterializedViewConcurrently(metadataSearch);
 			
+			// Return index page
 			return redirect(controllers.routes.Index.index(textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch, "dateDesc", ""));
 		});
 	}
 	
+	/**
+	 * Renders the form of an existing metadata record
+	 * 
+	 * @param metadataUuid the UUID of the metadata
+	 * @param textSearch the search value of the text field
+	 * @param supplierSearch the search value of the supplier field
+	 * @param statusSearch the search value of the status field
+	 * @param mdFormatSearch the search value of the format field
+	 * @param dateStartSearch the search value of the date start field
+	 * @param dateEndSearch the search value of the date end field
+	 * @return the {@link Result} of the index page
+	 */
 	public Result renderEditForm(String metadataUuid, String textSearch, String supplierSearch, String statusSearch, 
 			String mdFormatSearch, String dateStartSearch, String dateEndSearch) {
+		// Create boolean that determines if the form is for an existing record
 		Boolean create = false;
 		
+		// Create search object
 		Search search = new Search(textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch);
 		
 		return q.withTransaction(tx -> {
+			// Fetches status id of metadata
 			Integer statusId = tx.from(metadata)
 				.select(metadata.status)
 				.where(metadata.uuid.eq(metadataUuid))
 				.fetchOne();
 			
+			// If status is published return unauthorized
 			if(statusId.equals(4)) {
 				return status(UNAUTHORIZED, Messages.get("unauthorized"));
 			}
 			
+			// Fetches the metadata id
 			Integer metadataId = tx.from(metadata)
 				.select(metadata.id)
 				.where(metadata.uuid.eq(metadataUuid))
 				.fetchOne();
 			
+			// Fetches the metadata record of the form
 			Tuple datasetRow = tx.select(metadata.id, metadata.uuid, metadata.location, metadata.fileId, metadata.title, 
 					metadata.description, metadata.typeInformation, metadata.creator, metadata.creatorOther, metadata.rights, metadata.useLimitation,
 					metadata.mdFormat, metadata.source, metadata.dateSourceCreation, metadata.dateSourcePublication, metadata.dateSourceRevision,
@@ -293,134 +374,174 @@ public class Metadata extends Controller {
 				.where(metadata.id.eq(metadataId))
 				.fetchOne();
 			
+			// Fetches the subjects of the form
 			List<Tuple> subjectsDataset = tx.select(mdSubject.all())
 				.from(mdSubject)
 				.where(mdSubject.metadataId.eq(metadataId))
 				.fetch();
 			
+			// Fetches the attachments of the form
 			List<Tuple> attachmentsDataset = tx.select(mdAttachment.all())
 				.from(mdAttachment)
 				.where(mdAttachment.metadataId.eq(metadataId))
 				.orderBy(mdAttachment.attachmentName.asc())
 				.fetch();
 			
+			// Fetches type information list
 			List<Tuple> typeInformationList = tx.select(typeInformation.id, typeInformation.name, typeInformationLabel.label)
 				.from(typeInformation)
 				.join(typeInformationLabel).on(typeInformation.id.eq(typeInformationLabel.typeInformationId))
 				.orderBy(typeInformationLabel.label.asc())
 				.fetch();
-				
+			
+			// Fetches creator list
 			List<Tuple> creatorsList = tx.select(creator.id, creator.name, creatorLabel.label)
 				.from(creator)
 				.join(creatorLabel).on(creator.id.eq(creatorLabel.creatorId))
 				.orderBy(creator.id.asc())
 				.fetch();
 			
+			// Fetches rights list
 			List<Tuple> rightsList = tx.select(rights.id, rights.name, rightsLabel.label)
 				.from(rights)
 				.join(rightsLabel).on(rights.id.eq(rightsLabel.rightsId))
 				.orderBy(rightsLabel.label.asc())
 				.fetch();
 			
+			// Fetches use limitation list
 			List<Tuple> useLimitationList = tx.select(useLimitation.id, useLimitation.name, useLimitationLabel.label)
 				.from(useLimitation)
 				.join(useLimitationLabel).on(useLimitation.id.eq(useLimitationLabel.useLimitationId))
 				.orderBy(useLimitationLabel.label.asc())
 				.fetch();
 			
+			// Fetches format list
 			List<Tuple> mdFormatList = tx.select(mdFormat.id, mdFormat.name, mdFormatLabel.label)
 				.from(mdFormat)
 				.join(mdFormatLabel).on(mdFormat.id.eq(mdFormatLabel.mdFormatId))
 				.orderBy(mdFormatLabel.label.asc())
 				.fetch();
 			
+			// Fetches subject list
 			List<Tuple> subjectList = tx.select(subject.id, subject.name, subjectLabel.label)
 				.from(subject)
 				.join(subjectLabel).on(subject.id.eq(subjectLabel.subjectId))
 				.fetch();
 			
+			// Create SimpleDateFormat in yyyy-MM-dd and dd-MM-yyyy format
 			SimpleDateFormat sdfUS = new SimpleDateFormat("yyyy-MM-dd");
 			SimpleDateFormat sdfLocal = new SimpleDateFormat("dd-MM-yyyy");
 			
+			// Create DecimalFormat with two decimals
 			DecimalFormat df = new DecimalFormat("0.##");
 			
+			// Return form page
 			return ok(views.html.form.render(create, "", "", datasetRow, subjectsDataset, attachmentsDataset, typeInformationList, creatorsList, 
 				rightsList, useLimitationList, mdFormatList, sdfUS, sdfLocal, subjectList, search, false, null, df));
 		});
 	}
 	
+	/**
+	 * Handles the updating of an existing metadata record
+	 * 
+	 * @param metadataUuid the UUID of the metadata
+	 * @param textSearch the search value of the text field
+	 * @param supplierSearch the search value of the supplier field
+	 * @param statusSearch the search value of the status field
+	 * @param mdFormatSearch the search value of the format field
+	 * @param dateStartSearch the search value of the date start field
+	 * @param dateEndSearch the search value of the date end field
+	 * @return the {@link Result} of the index page
+	 * @throws IOException
+	 */
 	public Result editSubmit(String metadataUuid, String textSearch, String supplierSearch, String statusSearch, String mdFormatSearch, 
 			String dateStartSearch, String dateEndSearch) throws IOException {
+		// Fetches the form
 		Form<DublinCore> dcForm = Form.form(DublinCore.class);
 		DublinCore dc = dcForm.bindFromRequest().get();
 		
+		// Create timestamp of today
 		Timestamp dateToday = new Timestamp(new Date().getTime());
 		
 		return q.withTransaction(tx -> {
+			// Fetches the status id of the metadata
 			Integer statusId = tx.from(metadata)
 				.select(metadata.status)
 				.where(metadata.uuid.eq(metadataUuid))
 				.fetchOne();
 			
+			// If metadata is published return unauthorized
 			if(statusId.equals(4)) {
 				return status(UNAUTHORIZED, Messages.get("unauthorized"));
 			}
 			
+			// Fetches the role id of the logged in user
 			Integer roleId = tx.select(user.roleId)
 				.from(user)
 				.where(user.username.eq(session("username")))
 				.fetchOne();
 			
+			// Fetches the user id of the logged in user
 			Integer userId = tx.select(user.id)
 				.from(user)
 				.where(user.username.eq(session("username")))
 				.fetchOne();
 			
+			// Fetches the supplier id of the metadata
 			Integer supplierId = tx.select(metadata.supplier)
 				.from(metadata)
 				.where(metadata.uuid.eq(metadataUuid))
 				.fetchOne();
 			
+			// If user is a supplier and the metadata doesn't match the user id don't do anything
 			if(roleId.equals(2) && !userId.equals(supplierId)) {
 				// do nothing
 			} else {
+				// Fetches the metadata id
 				Integer metadataId = tx.select(metadata.id)
 					.from(metadata)
 					.where(metadata.uuid.eq(metadataUuid))
 					.fetchOne();
 				
+				// Fetches the type information key according to form value
 				Integer typeInformationKey = tx.select(typeInformation.id)
 					.from(typeInformation)
 					.where(typeInformation.name.eq(dc.getTypeInformation()))
 					.fetchOne();
 				
+				// Fetches the creator key according to form value
 				Integer creatorKey = tx.select(creator.id)
 					.from(creator)
 					.where(creator.name.eq(dc.getCreator()))
 					.fetchOne();
 				
+				// Fetches the rights key according to form value
 				Integer rightsKey = tx.select(rights.id)
 					.from(rights)
 					.where(rights.name.eq(dc.getRights()))
 					.fetchOne();
 				
+				// Fetches the use limitation key according to form value
 				Integer useLimitationKey = tx.select(useLimitation.id)
 					.from(useLimitation)
 					.where(useLimitation.name.eq(dc.getUseLimitation()))
 					.fetchOne();
 				
+				// Fetches the format key according to form valuew
 				Integer formatKey = tx.select(mdFormat.id)
 					.from(mdFormat)
 					.where(mdFormat.name.eq(dc.getMdFormat()))
 					.fetchOne();
 				
+				// Sets file id value to null if string is empty
 				String fileIdValue;
-				if("".equals(dc.getFileId())) {
+				if("".equals(dc.getFileId().trim())) {
 					fileIdValue = null;
 				} else {
 					fileIdValue = dc.getFileId();
 				}
 				
+				// If creator value is other set creator other field
 				String creatorOtherValue;
 				if(!"other".equals(dc.getCreator())) {
 					creatorOtherValue = null;
@@ -428,26 +549,30 @@ public class Metadata extends Controller {
 					creatorOtherValue = dc.getCreatorOther();
 				}
 				
+				// Check if dates are null
 				Timestamp dateSourceCreationValue = nullCheckDate(dc.getDateSourceCreation());
 				Timestamp dateSourcePublicationValue = nullCheckDate(dc.getDateSourcePublication());
 				Timestamp dateSourceRevisionValue = nullCheckDate(dc.getDateSourceRevision());
 				Timestamp dateSourceValidFromValue = nullCheckDate(dc.getDateSourceValidFrom());
 				Timestamp dateSourceValidUntilValue = nullCheckDate(dc.getDateSourceValidUntil());
 				
+				// Fetch the submitted subjects of the form
 				List<String> subjects = dc.getSubject();
 				
+				// Check if creator other isn't empty if creator is other
 				Boolean creatorOtherFailed = false;
 				if(creatorKey != null) {
-					if(creatorKey.equals(9) && "".equals(dc.getCreatorOther())) {
+					if(creatorKey.equals(9) && "".equals(dc.getCreatorOther().trim())) {
 						creatorOtherFailed = true;
 					} else {
 						creatorOtherFailed = false;
 					}
 				}
 				
-				if("".equals(dc.getTitle()) || "".equals(dc.getDescription()) || "".equals(dc.getLocation()) || "".equals(dc.getFileId()) || 
-					creatorKey == null || creatorOtherFailed || useLimitationKey == null || dateSourceCreationValue == null || 
-					dc.getSubject() == null) {
+				// Checks if every mandatory field has been completed, if not return the form with previous state
+				if("".equals(dc.getTitle().trim()) || "".equals(dc.getDescription().trim()) || "".equals(dc.getLocation().trim()) || 
+					"".equals(dc.getFileId().trim()) || creatorKey == null || creatorOtherFailed || useLimitationKey == null || 
+					dateSourceCreationValue == null || dc.getSubject() == null) {
 						
 						Tuple datasetRow = tx.select(metadata.id, metadata.uuid, metadata.location, metadata.fileId, metadata.title, 
 								metadata.description, metadata.typeInformation, metadata.creator, metadata.creatorOther, metadata.rights, metadata.useLimitation,
@@ -483,6 +608,7 @@ public class Metadata extends Controller {
 							dateStartSearch, dateEndSearch, previousValues);
 				}
 				
+				// Update metadata record
 				Long metadataCount = tx.update(metadata)
 					.where(metadata.uuid.eq(metadataUuid))
 					.set(metadata.location, dc.getLocation())
@@ -505,6 +631,7 @@ public class Metadata extends Controller {
 					.set(metadata.lastRevisionDate, dateToday)
 					.execute();
 				
+				// Check if the count of the updated record is what is expected
 				Integer metadataFinalCount = metadataCount.intValue();
 				if(!metadataFinalCount.equals(1)) {
 					throw new Exception("Updating metadata: different amount of affected rows than expected");
@@ -514,22 +641,27 @@ public class Metadata extends Controller {
 				Integer attachmentsCount = 0;
 				if(attToDelete != null) {
 					for(String attachmentName : attToDelete) {
+						// Delete attachment
 						tx.delete(mdAttachment)
 							.where(mdAttachment.metadataId.eq(metadataId)
 								.and(mdAttachment.attachmentName.eq(attachmentName)))
 							.execute();
 						
+						// Remember how many attachments have been deleted
 						attachmentsCount++;
 					}
 					
+					// Check if the count of the deleted attachments is what is expected
 					if(!attachmentsCount.equals(attToDelete.size())) {
 						throw new Exception("Deleting attachments: different amount of affected rows than expected");
 					}
 				}
 				
+				// Get new attachments
 				play.mvc.Http.MultipartFormData body = request().body().asMultipartFormData();
 				List<FilePart> allFiles = body.getFiles();
 				
+				// Insert every new attachment individually
 				for(FilePart fp: allFiles) {
 					if(fp != null) {
 						java.io.File file = fp.getFile();
@@ -556,21 +688,26 @@ public class Metadata extends Controller {
 					}
 				}
 				
+				// Delete old subjects and insert new subjects
 				if(subjects != null) {
+					// Fetch the old subjects
 					List<Integer> existingSubjects = tx.select(mdSubject.id)
 						.from(mdSubject)
 						.where(mdSubject.metadataId.eq(metadataId))
 						.fetch();
 					
+					// Delete all old subjects
 					Long subjectsCount = tx.delete(mdSubject)
 						.where(mdSubject.metadataId.eq(metadataId))
 						.execute();
 					
+					// Check if the count of deleted subjects is what is expected
 					Integer subjectsFinalCount = subjectsCount.intValue();
 					if(!subjectsFinalCount.equals(existingSubjects.size())) {
 						throw new Exception("Updating subjects: different amount of affected rows than expected");
 					}
-						
+					
+					// Insert the new subjects
 					for(String subjectStr : subjects) {
 						Integer subjectKey = tx.select(subject.id)
 							.from(subject)
@@ -585,15 +722,24 @@ public class Metadata extends Controller {
 				}
 			}
 			
+			// Refresh the materialized view
 			tx.refreshMaterializedViewConcurrently(metadataSearch);
 			
+			// Return the index page
 			return redirect(controllers.routes.Index.index(textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch, "dateDesc", ""));
 		});
 	}
 	
+	/**
+	 * Open an attachment
+	 * 
+	 * @param attachmentName the name of the attachment
+	 * @param uuid the UUID of the record the attachment belongs to
+	 * @return the {@link Result} of a new page where the attachment will be opened
+	 */
 	public Result openAttachment(String attachmentName, String uuid) {
-		
 		return q.withTransaction(tx -> {
+			// Fetches the attachment content and mimetype
 			Tuple attachment = tx.select(mdAttachment.attachmentContent, mdAttachment.attachmentMimetype)
 				.from(mdAttachment)
 				.join(metadata).on(mdAttachment.metadataId.eq(metadata.id))
@@ -601,18 +747,27 @@ public class Metadata extends Controller {
 				.where(mdAttachment.attachmentName.eq(attachmentName))
 				.fetchOne();
 			
+			// Sets the mimetype of the response
 			response().setContentType(attachment.get(mdAttachment.attachmentMimetype));
 			
+			// Create a byte array and a byte array inputstream
 			byte[] content = attachment.get(mdAttachment.attachmentContent);
 			ByteArrayInputStream bais = new ByteArrayInputStream(content);
 			
+			// Return a new page where the attachment will be opened
 			return ok(bais);
 		});
 	}
 	
+	/**
+	 * Validate the form on the client side
+	 * 
+	 * @param metadataUuid the UUID of the metadata
+	 * @return the {@link Result} of the error messages
+	 */
 	public Result validateForm(String metadataUuid) {
-		
 		try {
+			// Fetches the form fields
 			DynamicForm requestData = Form.form().bindFromRequest();
 			String dateCreate = requestData.get("dateSourceCreation");
 			String datePublication = requestData.get("dateSourcePublication");
@@ -620,12 +775,14 @@ public class Metadata extends Controller {
 			String dateValidFrom = requestData.get("dateSourceValidFrom");
 			String dateValidUntil = requestData.get("dateSourceValidUntil");
 			
+			// Validate the dates
 			Boolean dateCreateReturn = validateDate(dateCreate);
 			Boolean datePublicationReturn = validateDate(datePublication);
 			Boolean dateRevisionReturn = validateDate(dateRevision);
 			Boolean dateValidFromReturn = validateDate(dateValidFrom);
 			Boolean dateValidUntilReturn = validateDate(dateValidUntil);
 			
+			// Check if one or more dates couldn't be parsed, if so return an error message 
 			if(!dateCreateReturn || !datePublicationReturn || !dateRevisionReturn || !dateValidFromReturn || !dateValidUntilReturn) {
 				String dateCreateMsg = null;
 				String datePublicationMsg = null;
@@ -664,12 +821,13 @@ public class Metadata extends Controller {
 				}
 				
 				return ok(bindingerror.render(null, dateCreateMsg, datePublicationMsg, dateRevisionMsg, dateValidFromMsg, dateValidUntilMsg, null, null));
-				
 			}
 			
+			// Fetches the form
 			Form<DublinCore> dcForm = Form.form(DublinCore.class);
 			DublinCore dc = dcForm.bindFromRequest().get();
 			
+			// If title is empty set to null (which will generate an error message)
 			String title = null;
 			if("".equals(dc.getTitle().trim())) {
 				title = null;
@@ -677,6 +835,7 @@ public class Metadata extends Controller {
 				title = dc.getTitle();
 			}
 			
+			// If description is empty set to null (which will generate an error message)
 			String description = null;
 			if("".equals(dc.getDescription().trim())) {
 				description = null;
@@ -684,6 +843,7 @@ public class Metadata extends Controller {
 				description = dc.getDescription();
 			}
 			
+			// If location is empty set to null (which will generate an error message)
 			String location = null;
 			if("".equals(dc.getLocation().trim())) {
 				location = null;
@@ -691,6 +851,7 @@ public class Metadata extends Controller {
 				location = dc.getLocation();
 			}
 			
+			// If file id is empty set to null (which will generate an error message)
 			String fileId = null;
 			if("".equals(dc.getFileId().trim())) {
 				fileId = null;
@@ -698,6 +859,7 @@ public class Metadata extends Controller {
 				fileId = dc.getFileId();
 			}
 			
+			// If creator is empty set to null (which will generate an error message)
 			String creator = null;
 			String creatorOther = null;
 			if("".equals(dc.getCreator().trim())) {
@@ -706,6 +868,7 @@ public class Metadata extends Controller {
 				creator = dc.getCreator();
 			}
 			
+			// If creator value is other and creator other value is empty set creator other to null (which will generate an error message)
 			if("other".equals(dc.getCreator().trim())) {
 				if("".equals(dc.getCreatorOther().trim())) {
 					creatorOther = null;
@@ -716,27 +879,45 @@ public class Metadata extends Controller {
 				creatorOther = "";
 			}
 			
+			// Return specific error message view
 			return ok(validateform.render(title, description, location, fileId, creator, creatorOther, dc.getDateSourceCreation(), dc.getSubject()));
 		} catch(IllegalStateException ise) {
+			// Return generic error message view
 			return ok(bindingerror.render(Messages.get("validate.search.generic"), null, null, null, null, null, null, null));
 		}
 	}
 	
+	/**
+	 * Validation of dates
+	 * 
+	 * @param date the date as a {@link String} to be validated
+	 * @return a {@link Boolean} that signals if validation was successful
+	 */
 	public Boolean validateDate(String date) {
+		// If string of date is empty return true
 		if("".equals(date)) {
 			return true;
 		}
 		
+		// Create SimpleDateFormat and use strict parsing
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		sdf.setLenient(false);
 		try {
+			// Try to parse date, if successful return true
 			sdf.parse(date);
 			return true;
 		} catch(ParseException pe) {
+			// If parsing was unsuccessful return false
 			return false;
 		}
 	}
 	
+	/**
+	 * Check if date is null
+	 * 
+	 * @param date the {@link Date} to be checked
+	 * @return the {@link Timestamp} of the date
+	 */
 	public Timestamp nullCheckDate(Date date) {
 		Timestamp timestamp;
 		
@@ -749,61 +930,99 @@ public class Metadata extends Controller {
 		return timestamp;
 	}
 	
+	/**
+	 * Validation on the server side
+	 * 
+	 * @param create indicates if the form is for a new or existing record
+	 * @param datasetRow the record if an existing record is being validated
+	 * @param attachmentsDataset the attachments of the record if an existing record is being validated
+	 * @param textSearch the search value of the text field
+	 * @param supplierSearch the search value of the supplier field
+	 * @param statusSearch the search value of the status field
+	 * @param mdFormatSearch the search value of the format field
+	 * @param dateStartSearch the search value of the date start field
+	 * @param dateEndSearch the search value of the date end field
+	 * @param previousValues the previous values of the form
+	 * @return the {@link Result} of the form page
+	 */
 	public Result validateFormServer(Boolean create, Tuple datasetRow, List<Tuple> attachmentsDataset, String textSearch, String supplierSearch, 
 			String statusSearch, String mdFormatSearch, String dateStartSearch, String dateEndSearch, Map<String, DublinCore> previousValues) {
+		// Create strings according to yyyy-MM-dd and dd-MM-yyyy formats
 		String todayUS = new SimpleDateFormat("yyyy-MM-dd").format(new Date().getTime());
 		String todayLocal = new SimpleDateFormat("dd-MM-yyyy").format(new Date().getTime());
 		
+		// Create SimpleDateFormat objects according to yyyy-MM-dd and dd-MM-yyyy formats
 		SimpleDateFormat sdfUS = new SimpleDateFormat("yyyy-MM-dd");
 		SimpleDateFormat sdfLocal = new SimpleDateFormat("dd-MM-yyyy");
 		
+		// Create boolean indicating that the resulting values originates from a validation
 		Boolean validate = true;
 		
+		// Create a search object
 		Search search = new Search(textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch);
 		
 		return q.withTransaction(tx -> {
+			// Fetches the type information list
 			List<Tuple> typeInformationList = tx.select(typeInformation.id, typeInformation.name, typeInformationLabel.label)
 				.from(typeInformation)
 				.join(typeInformationLabel).on(typeInformation.id.eq(typeInformationLabel.typeInformationId))
 				.orderBy(typeInformationLabel.label.asc())
 				.fetch();
 			
+			// Fetches the creator list
 			List<Tuple> creatorsList = tx.select(creator.id, creator.name, creatorLabel.label)
 				.from(creator)
 				.join(creatorLabel).on(creator.id.eq(creatorLabel.creatorId))
 				.orderBy(creator.id.asc())
 				.fetch();
 			
+			// Fetches the rights list
 			List<Tuple> rightsList = tx.select(rights.id, rights.name, rightsLabel.label)
 				.from(rights)
 				.join(rightsLabel).on(rights.id.eq(rightsLabel.rightsId))
 				.orderBy(rightsLabel.label.asc())
 				.fetch();
 			
+			// Fetches the use limitation list
 			List<Tuple> useLimitationList = tx.select(useLimitation.id, useLimitation.name, useLimitationLabel.label)
 				.from(useLimitation)
 				.join(useLimitationLabel).on(useLimitation.id.eq(useLimitationLabel.useLimitationId))
 				.orderBy(useLimitationLabel.label.asc())
 				.fetch();
 			
+			// Fetches the format list
 			List<Tuple> mdFormatList = tx.select(mdFormat.id, mdFormat.name, mdFormatLabel.label)
 				.from(mdFormat)
 				.join(mdFormatLabel).on(mdFormat.id.eq(mdFormatLabel.mdFormatId))
 				.orderBy(mdFormatLabel.label.asc())
 				.fetch();
 			
+			// Fetches the subject list
 			List<Tuple> subjectList = tx.select(subject.id, subject.name, subjectLabel.label)
 				.from(subject)
 				.join(subjectLabel).on(subject.id.eq(subjectLabel.subjectId))
 				.fetch();
 			
+			// Create DecimalFormat with two decimals
 			DecimalFormat df = new DecimalFormat("0.##");
 			
+			// Return form page
 			return ok(views.html.form.render(create, todayUS, todayLocal, datasetRow, null, attachmentsDataset, typeInformationList, creatorsList, rightsList, 
 					useLimitationList, mdFormatList, sdfUS, sdfLocal, subjectList, search, validate, previousValues, df));
 		});
 	}
 	
+	/**
+	 * Cancels the creation or updating of a form
+	 * 
+	 * @param textSearch the search value of the text field
+	 * @param supplierSearch the search value of the supplier field
+	 * @param statusSearch the search value of the status field
+	 * @param mdFormatSearch the search value of the format field
+	 * @param dateStartSearch the search value of the date start field
+	 * @param dateEndSearch the search value of the date end field
+	 * @return the {@link Result} of the index page
+	 */
 	public Result cancel(String textSearch, String supplierSearch, String statusSearch, String mdFormatSearch, String dateStartSearch, 
 			String dateEndSearch) {
 		return redirect(controllers.routes.Index.index(textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch, "dateDesc", ""));

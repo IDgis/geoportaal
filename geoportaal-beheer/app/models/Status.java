@@ -2,6 +2,12 @@ package models;
 
 import java.util.List;
 
+/**
+ * The model class to store information for changing the status of records
+ * 
+ * @author Sandro
+ *
+ */
 public class Status {
 	private List<String> recordsChange;
 	private String status;
@@ -15,6 +21,18 @@ public class Status {
 	public Status() {
 	}
 	
+	/**
+	 * The constructor of the status class
+	 * 
+	 * @param recordsChange the UUID's of the records about to be changed
+	 * @param status the new status of the records
+	 * @param textSearch the search value of the text field
+	 * @param supplierSearch the search value of the supplier field
+	 * @param statusSearch the search value of the status field
+	 * @param mdFormatSearch the search value of the format field
+	 * @param dateStartSearch the search value of the date start field
+	 * @param dateEndSearch the search value of the date end field
+	 */
 	public Status(List<String> recordsChange, String status, String textSearch, String supplierSearch, String statusSearch, 
 			String mdFormatSearch, String dateStartSearch, String dateEndSearch) {
 		this.recordsChange = recordsChange;

@@ -3,6 +3,12 @@ package models;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * The model class to store information about the DublinCore metadata record
+ * 
+ * @author Sandro
+ *
+ */
 public class DublinCore {
 	
 	private String location;
@@ -28,6 +34,28 @@ public class DublinCore {
 		
 	}
 	
+	/**
+	 * The constructor of the DublinCore metadata class
+	 * 
+	 * @param location the location field
+	 * @param fileId the file id field
+	 * @param title the title field
+	 * @param description the description field
+	 * @param typeInformation the type information option selected
+	 * @param creator the creator option selected
+	 * @param creatorOther the creator other field (only applicable if creator option selected is other)
+	 * @param rights the rights option selected
+	 * @param useLimitation the use limitation option selected
+	 * @param mdFormat the format option selected
+	 * @param source the source field
+	 * @param dateSourceCreation the date when the data was created
+	 * @param dateSourcePublication the date when the data was published
+	 * @param dateSourceRevision the date when the data was last changed
+	 * @param dateSourceValidFrom the start date when the data was valid
+	 * @param dateSourceValidUntil the end date when the data was valid
+	 * @param subject the subjects checked
+	 * @param deletedAttachment the UUID's of the attachments about to be deleted
+	 */
 	public DublinCore(String location, String fileId, String title, String description, String typeInformation, String creator, 
 			String creatorOther, String rights, String useLimitation, String mdFormat, String source, Date dateSourceCreation, Date dateSourcePublication, 
 			Date dateSourceRevision, Date dateSourceValidFrom, Date dateSourceValidUntil, List<String> subject, List<String> deletedAttachment) {
