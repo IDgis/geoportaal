@@ -263,7 +263,6 @@ public class Metadata extends Controller {
 				.set(metadata.dateSourceValidUntil, dateSourceValidUntilValue)
 				.set(metadata.supplier, supplierId)
 				.set(metadata.status, 2)
-				.set(metadata.published, false)
 				.set(metadata.lastRevisionUser, session("username"))
 				.set(metadata.lastRevisionDate, dateToday)
 				.execute();
