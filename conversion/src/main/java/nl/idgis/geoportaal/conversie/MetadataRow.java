@@ -94,7 +94,7 @@ public class MetadataRow {
 		row.setSupplier(new Label(USER, TABLE_USER));
 		row.setStatus(new Label(STATUS, TABLE_STATUS));
 		row.setLastRevisionUser(LAST_REVISION_USER);
-		row.setLastRevisionDate(new Timestamp(System.currentTimeMillis()));
+		row.setLastRevisionDate(toTime(retrieveFirstStringOrNull(Path.DATE_SOURCE_CREATION, d)));
 
 		String attachmentString = retrieveFirstStringOrNull(Path.ATTACHMENT, d);
 		if (attachmentString != null)
