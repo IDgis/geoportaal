@@ -18,7 +18,7 @@ public class MetadataRow {
 	private static final String TABLE_STATUS = "status";
 	private static final String TABLE_SUBJECT = "subject";
 	private static final String TABLE_USER = "user";
-	private static final String STATUS = "ter goedkeuring";
+	private static final String STATUS = "gepubliceerd";
 	private static final String LAST_REVISION_USER = "conversie";
 	private static final String USER = "nrj.eilers@overijssel.nl";
 	
