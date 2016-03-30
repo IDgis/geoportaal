@@ -277,7 +277,7 @@ public class Index extends Controller {
 			// Convert string of UUID's to list
 			List<String> checkedList = new ArrayList<String>();
 			String[] checkedArray = checked.split(" ");
-			if(!"".equals(checked)) {
+			if(!"".equals(checked.trim())) {
 				for(String checkedString : checkedArray) {
 					checkedList.add(checkedString);
 				}
@@ -307,7 +307,7 @@ public class Index extends Controller {
 		String dateEndSearch = s.getDateUpdateEnd();
 		
 		// Empties both date search fields if one of them is empty
-		if("".equals(dateStartSearch) || "".equals(dateEndSearch)) {
+		if("".equals(dateStartSearch.trim()) || "".equals(dateEndSearch.trim())) {
 			dateStartSearch = "";
 			dateEndSearch = "";
 		}
@@ -339,7 +339,7 @@ public class Index extends Controller {
 		List<String> recordsChecked = s.getRecordsChecked();
 		
 		// Empties both date search fields if one of them is empty
-		if("".equals(dateStartSearch) || "".equals(dateEndSearch)) {
+		if("".equals(dateStartSearch.trim()) || "".equals(dateEndSearch.trim())) {
 			dateStartSearch = "";
 			dateEndSearch = "";
 		}
@@ -665,7 +665,7 @@ public class Index extends Controller {
 	 */
 	public Boolean validateDate(String date) {
 		// If string of date is empty return true
-		if("".equals(date)) {
+		if("".equals(date.trim())) {
 			return true;
 		}
 		

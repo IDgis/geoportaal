@@ -895,7 +895,7 @@ public class Metadata extends Controller {
 	 */
 	public Boolean validateDate(String date) {
 		// If string of date is empty return true
-		if("".equals(date)) {
+		if("".equals(date.trim())) {
 			return true;
 		}
 		
