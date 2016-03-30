@@ -14,7 +14,7 @@ import java.util.UUID;
 import org.postgresql.ds.PGSimpleDataSource;
 
 public class ToDB implements OutDestination {
-
+	
 	private static Mapper creatorMapper = new Mapper("creator_conversion.csv");
 	private static Mapper useLimitationMapper = new Mapper("use_limitation_conversion.csv");
 	private static Mapper mdFormatMapper = new Mapper("md_format_conversion.csv");
@@ -23,29 +23,29 @@ public class ToDB implements OutDestination {
 	private String schema;
 	private Connection connection;
 	private boolean connected;
-
+	
 	public void connect(String username, String password, String serverName, int portNumber, String databaseName, String schema) throws SQLException {
 		connection = createConnection(username, password, serverName, portNumber, databaseName);
 		connection.setAutoCommit(false);
 		connected = connection.isValid(3000);
 		this.schema = schema;
 	}
-
+	
 	@Override
 	public void convertFile(File file, MetadataDocument d) throws Exception {
 		if (!connected)
 			throw new Exception("connect method is nog niet aangeroepen of connectie is gesloten");
-
+		
 		MetadataRow row = MetadataRow.parseMetadataDocument(d, creatorMapper, useLimitationMapper, mdFormatMapper, rightsMapper);
-
+		
 		final String metadataSql = "INSERT INTO " + schema + ".metadata (uuid,location,file_id,title,description,"
 				+ "type_information,creator,creator_other,rights,use_limitation,"
 				+ "md_format,source,date_source_creation,date_source_publication,"
 				+ "date_source_revision,date_source_valid_from,date_source_valid_until,"
 				+ "supplier,status,published,last_revision_user,last_revision_date) "
 				+ "VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
-
-
+		
+		
 		PreparedStatement metadataStatement = connection.prepareStatement(metadataSql, Statement.RETURN_GENERATED_KEYS);
 		
 		String uuid = row.getUuid();
@@ -83,65 +83,65 @@ public class ToDB implements OutDestination {
 		metadataStatement.setObject(20, row.getPublished(), Types.BOOLEAN);
 		metadataStatement.setObject(21, row.getLastRevisionUser(), Types.VARCHAR);
 		metadataStatement.setObject(22, row.getLastRevisionDate(), Types.TIMESTAMP);
-
+		
 		try {
 			metadataStatement.executeUpdate();
-		} catch (SQLException e) {
-			connection.rollback();
-			throw e;
-		}
-
-		ResultSet genKeys = metadataStatement.getGeneratedKeys();
-		if (!genKeys.next())
-			throw new Exception("geen gegenereerde primary key gevonden");
-
-		final int metadataId = genKeys.getInt(1);
-
-		PreparedStatement attachmentStatement = connection.prepareStatement(
-				"INSERT INTO " + schema + ".md_attachment (metadata_id,attachment_name,"
-						+ "attachment_content,attachment_mimetype) VALUES (?,?,?,?)");
-
-		final String[] attachmentUrls = row.getAttachment();
-		List<String> finalAttachmentUrls = new ArrayList<String>();
-		if(attachmentUrls != null) {
-			for(String attachmentUrl : attachmentUrls) {
-				if(!finalAttachmentUrls.contains(attachmentUrl)) {
-					finalAttachmentUrls.add(attachmentUrl);
+			
+			ResultSet genKeys = metadataStatement.getGeneratedKeys();
+			if (!genKeys.next())
+				throw new Exception("geen gegenereerde primary key gevonden");
+			
+			final int metadataId = genKeys.getInt(1);
+			
+			PreparedStatement attachmentStatement = connection.prepareStatement(
+					"INSERT INTO " + schema + ".md_attachment (metadata_id,attachment_name,"
+							+ "attachment_content,attachment_mimetype) VALUES (?,?,?,?)");
+			
+			final String[] attachmentUrls = row.getAttachment();
+			List<String> finalAttachmentUrls = new ArrayList<String>();
+			if(attachmentUrls != null) {
+				for(String attachmentUrl : attachmentUrls) {
+					if(!finalAttachmentUrls.contains(attachmentUrl)) {
+						finalAttachmentUrls.add(attachmentUrl);
+					}
+				}
+			} else {
+				finalAttachmentUrls = null;
+			}
+			
+			if (finalAttachmentUrls != null) {
+				Attachment attachment = null;
+				for (String attachmentUrl : finalAttachmentUrls) {
+					attachment = Attachment.openConnection(attachmentUrl);
+					attachmentStatement.setObject(1, metadataId, Types.INTEGER);
+					attachmentStatement.setObject(2, attachment.getFileName(), Types.VARCHAR);
+					attachmentStatement.setBinaryStream(3, attachment.getDataStream(), attachment.getLength());
+					attachmentStatement.setObject(4, attachment.getMimeType(),Types.VARCHAR);
+					attachmentStatement.executeUpdate();
+				}
+				
+				if (attachment != null) {
+					attachment.close();
 				}
 			}
-		} else {
-			finalAttachmentUrls = null;
-		}
-
-		if (finalAttachmentUrls != null) {
-			Attachment attachment = null;
-			for (String attachmentUrl : finalAttachmentUrls) {
-				attachment = Attachment.openConnection(attachmentUrl);
-				attachmentStatement.setObject(1, metadataId, Types.INTEGER);
-				attachmentStatement.setObject(2, attachment.getFileName(), Types.VARCHAR);
-				attachmentStatement.setBinaryStream(3, attachment.getDataStream(), attachment.getLength());
-				attachmentStatement.setObject(4, attachment.getMimeType(),Types.VARCHAR);
-				attachmentStatement.executeUpdate();
+			
+			PreparedStatement subjectStatement = connection.prepareStatement("INSERT INTO " + schema + ".md_subject (metadata_id,subject) VALUES (?,?)");
+			
+			final List<Label> subjects = row.getSubject();
+			
+			if (subjects != null) {
+				for (Label subject : subjects) {
+					subjectStatement.setInt(1, metadataId);
+					subjectStatement.setInt(2, resolveIntFromLabel(subject));
+					subjectStatement.executeUpdate();
+				}
 			}
-
-			if (attachment != null) {
-				attachment.close();
-			}
-		}
-
-		PreparedStatement subjectStatement = connection.prepareStatement("INSERT INTO " + schema + ".md_subject (metadata_id,subject) VALUES (?,?)");
-
-		final List<Label> subjects = row.getSubject();
-
-		if (subjects != null) {
-			for (Label subject : subjects) {
-				subjectStatement.setInt(1, metadataId);
-				subjectStatement.setInt(2, resolveIntFromLabel(subject));
-				subjectStatement.executeUpdate();
-			}
-		}
-
-		connection.commit();
+			
+			connection.commit();
+		} catch (Exception e) {
+			connection.rollback();
+			throw e;
+		}		
 	}
 
 	private Integer resolveIntFromLabel(Label label) throws Exception {
@@ -161,7 +161,7 @@ public class ToDB implements OutDestination {
 		
 		if (id != null)
 			return id;
-
+		
 		id = select(table + "_id", labelTable, "label", value);
 		
 		if(table.equals("creator") && id == null) {
@@ -170,7 +170,7 @@ public class ToDB implements OutDestination {
 		
 		if (id != null)
 			return id;
-
+		
 		throw new Exception("'" + value + "' niet gevonden in tabellen " + table + " en " + labelTable);
 	}
 	
@@ -182,27 +182,27 @@ public class ToDB implements OutDestination {
 			return "";
 		}
 	}
-
+	
 	private <T> T select(String valueColumn, String table, String whereColumn, String whereValue) throws Exception {
 		final String sql = "SELECT " + valueColumn + " FROM " + schema + "." + table
 				+ " WHERE LOWER(" + whereColumn + ") = LOWER('" + whereValue + "')";
 		Statement statement = connection.createStatement();
 		ResultSet results = statement.executeQuery(sql);
-
+		
 		List<T> values = new ArrayList<>();
 		while (results.next()) {
 			values.add((T) results.getObject(1));
 		}
-
+		
 		if (values.isEmpty())
 			return null;
-
+		
 		if (values.size() > 1)
 			throw new Exception("meer dan 1 resultaat verkregen uit query: " + sql);
-
+		
 		return values.get(0);
 	}
-
+	
 	private Connection createConnection(String username, String password, String serverName, int portNumber, String databaseName) throws SQLException {
 		Connection connection;
 		PGSimpleDataSource dataSource = new PGSimpleDataSource();
@@ -211,12 +211,12 @@ public class ToDB implements OutDestination {
 		dataSource.setServerName(serverName);
 		dataSource.setPortNumber(portNumber);
 		dataSource.setDatabaseName(databaseName);
-
+		
 		connection = dataSource.getConnection();
-
+		
 		return connection;
 	}
-
+	
 	@Override
 	public void close() throws SQLException {
 		PreparedStatement ps = connection.prepareStatement("refresh materialized view concurrently gb.metadata_search");
