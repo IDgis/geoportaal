@@ -42,8 +42,8 @@ public class ToDB implements OutDestination {
 				+ "type_information,creator,creator_other,rights,use_limitation,"
 				+ "md_format,source,date_source_creation,date_source_publication,"
 				+ "date_source_revision,date_source_valid_from,date_source_valid_until,"
-				+ "supplier,status,published,last_revision_user,last_revision_date) "
-				+ "VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+				+ "supplier,status,last_revision_user,last_revision_date) "
+				+ "VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 		
 		
 		PreparedStatement metadataStatement = connection.prepareStatement(metadataSql, Statement.RETURN_GENERATED_KEYS);
@@ -80,9 +80,8 @@ public class ToDB implements OutDestination {
 		metadataStatement.setObject(17, row.getDateSourceValidUntil(), Types.TIMESTAMP);
 		metadataStatement.setObject(18, resolveIntFromLabel(row.getSupplier()), Types.INTEGER);
 		metadataStatement.setObject(19, resolveIntFromLabel(row.getStatus()), Types.INTEGER);
-		metadataStatement.setObject(20, row.getPublished(), Types.BOOLEAN);
-		metadataStatement.setObject(21, row.getLastRevisionUser(), Types.VARCHAR);
-		metadataStatement.setObject(22, row.getLastRevisionDate(), Types.TIMESTAMP);
+		metadataStatement.setObject(20, row.getLastRevisionUser(), Types.VARCHAR);
+		metadataStatement.setObject(21, row.getLastRevisionDate(), Types.TIMESTAMP);
 		
 		try {
 			metadataStatement.executeUpdate();
