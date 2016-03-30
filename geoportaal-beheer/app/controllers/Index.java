@@ -150,11 +150,14 @@ public class Index extends Controller {
 			
 			// Filter records on text search words
 			if(!tsQuery.isEmpty()) {
+				// Get local language for query
+				String language = Messages.get("tsv.language");
+				
 				datasetQuery.where(
 					tx.selectOne()
 						.from(metadataSearch)
 						.where(metadataSearch.metadataId.eq(metadata.id))
-						.where(metadataSearch.tsv.query(tsQuery))
+						.where(metadataSearch.tsv.query(language, tsQuery))
 						.exists());
 				
 				// TODO: ranking?

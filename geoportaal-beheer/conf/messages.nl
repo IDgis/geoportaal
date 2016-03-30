@@ -8,6 +8,9 @@ execute=Uitvoeren
 unauthorized=Geen toegang.
 application.name=Geoportaal-Beheer
 
+# Query
+tsv.language=dutch
+
 # Tabbladen
 main.tab.index=Zoeken en wijzigen
 main.tab.add=Toevoegen
