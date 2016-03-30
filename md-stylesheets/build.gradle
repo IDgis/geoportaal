@@ -1,7 +1,7 @@
 apply plugin: 'java'
 apply plugin: 'maven-publish'
 
-version = '1.0.3'
+version = '1.0.4'
 
 import org.apache.tools.ant.filters.ReplaceTokens
 
@@ -23,12 +23,14 @@ publishing {
 	}
 	
 	processResources {
+		// replace *.png placeholders with data urls
 		from(sourceSets.main.resources.srcDirs) {
 			include '**/*.xsl'
-			filter ReplaceTokens, tokens: [
-				"project.name": project.name,
-				"project.version": project.version
-			]
+			filter ReplaceTokens, tokens: sourceSets.main.resources.srcDirs.collectEntries { dir ->
+				fileTree(dir: dir, include: '*.png').collectEntries { file ->
+					[(file.name): "data:image/png;base64,${file.readBytes().encodeBase64()}".toString()]
+				}
+			}
 		}
 	}
 	
@@ -40,3 +42,12 @@ publishing {
 		includeEmptyDirs = false
 	}
 }
+
+sourceSets {
+	main {
+		resources {
+			exclude '*.png'
+		}
+	}
+}
+
