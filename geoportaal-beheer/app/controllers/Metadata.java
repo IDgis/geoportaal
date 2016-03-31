@@ -298,6 +298,7 @@ public class Metadata extends Controller {
 						.set(mdAttachment.attachmentName, fp.getFilename())
 						.set(mdAttachment.attachmentContent, input)
 						.set(mdAttachment.attachmentMimetype, fp.getContentType())
+						.set(mdAttachment.attachmentLength, input.length)
 						.execute();
 				}
 			}
@@ -380,7 +381,8 @@ public class Metadata extends Controller {
 				.fetch();
 			
 			// Fetches the attachments of the form
-			List<Tuple> attachmentsDataset = tx.select(mdAttachment.all())
+			List<Tuple> attachmentsDataset = tx.select(mdAttachment.id, mdAttachment.metadataId, mdAttachment.attachmentName, 
+					mdAttachment.attachmentMimetype, mdAttachment.attachmentLength)
 				.from(mdAttachment)
 				.where(mdAttachment.metadataId.eq(metadataId))
 				.orderBy(mdAttachment.attachmentName.asc())
@@ -683,6 +685,7 @@ public class Metadata extends Controller {
 							.set(mdAttachment.attachmentName, fp.getFilename())
 							.set(mdAttachment.attachmentContent, input)
 							.set(mdAttachment.attachmentMimetype, fp.getContentType())
+							.set(mdAttachment.attachmentLength, input.length)
 							.execute();
 					}
 				}
