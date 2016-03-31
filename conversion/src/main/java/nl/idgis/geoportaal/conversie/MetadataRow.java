@@ -18,9 +18,8 @@ public class MetadataRow {
 	private static final String TABLE_STATUS = "status";
 	private static final String TABLE_SUBJECT = "subject";
 	private static final String TABLE_USER = "user";
-	private static final String STATUS = "ter goedkeuring";
+	private static final String STATUS = "gepubliceerd";
 	private static final String LAST_REVISION_USER = "conversie";
-	private static final boolean PUBLISHED = false;
 	private static final String USER = "nrj.eilers@overijssel.nl";
 	
 	private String uuid;
@@ -94,9 +93,8 @@ public class MetadataRow {
 		row.setDateSourceValidUntil(toTime(retrieveFirstStringOrNull(Path.DATE_SOURCE_VALID_UNTIL, d)));
 		row.setSupplier(new Label(USER, TABLE_USER));
 		row.setStatus(new Label(STATUS, TABLE_STATUS));
-		row.setPublished(PUBLISHED);
 		row.setLastRevisionUser(LAST_REVISION_USER);
-		row.setLastRevisionDate(new Timestamp(System.currentTimeMillis()));
+		row.setLastRevisionDate(toTime(retrieveFirstStringOrNull(Path.DATE_SOURCE_CREATION, d)));
 
 		String attachmentString = retrieveFirstStringOrNull(Path.ATTACHMENT, d);
 		if (attachmentString != null)
@@ -295,14 +293,6 @@ public class MetadataRow {
 
 	public void setStatus(Label status) {
 		this.status = status;
-	}
-
-	public Boolean getPublished() {
-		return published;
-	}
-
-	public void setPublished(Boolean published) {
-		this.published = published;
 	}
 
 	public String getLastRevisionUser() {

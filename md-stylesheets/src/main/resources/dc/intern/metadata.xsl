@@ -383,7 +383,15 @@
   	<xsl:template match="rdf:RDF/rdf:Description/dc:rights">
   		<xsl:if test=". != ''">
   			<p>
-	  			<b><xsl:text>Gebruiksrechten: </xsl:text></b>
+	  			<b><xsl:text>Eigendomsrechten: </xsl:text></b>
+	  			<xsl:value-of select="."/>
+  			</p>
+  		</xsl:if>
+  	</xsl:template>
+  	<xsl:template match="rdf:RDF/rdf:Description/dc:rights[@rdf:datatype]">
+  		<xsl:if test=". != ''">
+  			<p>
+	  			<b><xsl:text>Gebruiksrestricties: </xsl:text></b>
 	  			<xsl:value-of select="."/>
   			</p>
   		</xsl:if>

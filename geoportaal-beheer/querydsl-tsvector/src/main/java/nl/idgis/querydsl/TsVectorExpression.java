@@ -13,7 +13,7 @@ public abstract class TsVectorExpression<T extends TsVector> extends SimpleExpre
 		super(mixin);
 	}
 	
-	public BooleanExpression query(String query) {
-		return Expressions.booleanTemplate("{0} @@ to_tsquery('dutch', {1})", mixin, query);
+	public BooleanExpression query(String language, String query) {
+		return Expressions.booleanTemplate("{0} @@ to_tsquery('" + language + "', {1})", mixin, query);
 	}
 }

@@ -23,7 +23,7 @@
 			data-role="@roleId" data-status="@datasetRow.get(metadata.status)" @if(checkedList.contains(datasetRow.get(metadata.uuid))) {checked}>
 	</td>
 	<td>
-		<a href="@routes.MetadataXML.generateXml(datasetRow.get(metadata.uuid))">
+		<a href="@routes.MetadataXML.generateXml(datasetRow.get(metadata.uuid))" target="_blank">
 			<span class="action-button glyphicon glyphicon-eye-open" title="@Messages.get("list.action.view")"></span>
 		</a>
 		<a href="@routes.Metadata.renderEditForm(datasetRow.get(metadata.uuid), textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch)"

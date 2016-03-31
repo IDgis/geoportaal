@@ -164,8 +164,8 @@ public class User extends Controller {
 		final Form<ChangePassword> cpForm = Form.form(ChangePassword.class).bindFromRequest();
 		
 		// Reject and return with a message if one of the input fields is empty
-		if("".equals(cpForm.get().username) || "".equals(cpForm.get().oldPassword) || "".equals(cpForm.get().newPassword) || 
-			"".equals(cpForm.get().repeatNewPassword)) {
+		if("".equals(cpForm.get().username.trim()) || "".equals(cpForm.get().oldPassword.trim()) || "".equals(cpForm.get().newPassword.trim()) || 
+			"".equals(cpForm.get().repeatNewPassword.trim())) {
 			cpForm.reject(Messages.get("password.edit.error.incomplete.message"));
 		}
 		
