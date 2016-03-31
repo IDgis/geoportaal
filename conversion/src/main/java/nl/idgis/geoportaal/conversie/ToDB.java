@@ -94,7 +94,7 @@ public class ToDB implements OutDestination {
 			
 			PreparedStatement attachmentStatement = connection.prepareStatement(
 					"INSERT INTO " + schema + ".md_attachment (metadata_id,attachment_name,"
-							+ "attachment_content,attachment_mimetype) VALUES (?,?,?,?)");
+							+ "attachment_content,attachment_mimetype,attachment_length) VALUES (?,?,?,?,?)");
 			
 			final String[] attachmentUrls = row.getAttachment();
 			List<String> finalAttachmentUrls = new ArrayList<String>();
@@ -116,6 +116,7 @@ public class ToDB implements OutDestination {
 					attachmentStatement.setObject(2, attachment.getFileName(), Types.VARCHAR);
 					attachmentStatement.setBinaryStream(3, attachment.getDataStream(), attachment.getLength());
 					attachmentStatement.setObject(4, attachment.getMimeType(),Types.VARCHAR);
+					attachmentStatement.setObject(5, attachment.getLength(), Types.INTEGER);
 					attachmentStatement.executeUpdate();
 				}
 				
