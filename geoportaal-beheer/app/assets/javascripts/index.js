@@ -369,7 +369,7 @@ require([
 			});
 			
 			var statusForm = dom.byId('js-status-form');
-			if(recordsChecked.length > 20) {
+			if(recordsChecked.length === 0 || recordsChecked.length > 20) {
 				$('#status-modal').modal({})
 			} else {
 				statusForm.submit();
@@ -378,7 +378,12 @@ require([
 		
 		if(dom.byId('js-edit-supplier')) {
 			var displaySupplierSelect = on(dom.byId('js-edit-supplier'), 'click', function(e) {
-				domStyle.set(dom.byId('edit-supplier-select'), 'display', 'inline');
+				var recordsChecked = query('.js-record-checkbox:checked');
+				if(recordsChecked.length === 0) {
+					$('#supplier-modal').modal({})
+				} else {
+					domStyle.set(dom.byId('edit-supplier-select'), 'display', 'inline');
+				}
 			});
 		}
 		
