@@ -209,16 +209,20 @@
 						<h4 class="modal-title">@Messages.get("index.modal.status.title")</h4>
 					</div>
 					<div class="modal-body">
-						<p>
-							@Messages.get("index.modal.action.label") <b><span id="js-status-records-count">0</span></b>
-						</p>
-						<p>
-							@Messages.get("index.modal.confirmation")
-						</p>
+						<div class="js-records-selected">
+							<p>
+								@Messages.get("index.modal.action.label") <b><span id="js-status-records-count">0</span></b>
+							</p>
+							<p>
+								@Messages.get("index.modal.confirmation")
+							</p>
+						</div>
+						
+						<p class="js-records-none-selected">@Messages.get("index.modal.none.selected")</p>
 					</div>
 					<div class="modal-footer">
 						<button type="button" class="btn btn-default" data-dismiss="modal">@Messages.get("cancel")</button>
-						<button type="submit" class="btn btn-primary">@Messages.get("execute")</button>
+						<button type="submit" class="btn btn-primary js-execute-btn">@Messages.get("execute")</button>
 					</div>
 				</div>
 			</div>
@@ -256,7 +260,7 @@
 							<span>@Messages.get("index.modal.delete.definitive")</span>
 						</p>
 						
-						<p class="js-records-none-selected">@Messages.get("index.modal.delete.none.selected")</p>
+						<p class="js-records-none-selected">@Messages.get("index.modal.none.selected")</p>
 					</div>
 					<div class="modal-footer">
 						<button type="button" class="btn btn-default" data-dismiss="modal">@Messages.get("cancel")</button>
@@ -286,16 +290,20 @@
 						<h4 class="modal-title">@Messages.get("index.modal.supplier.title")</h4>
 					</div>
 					<div class="modal-body">
-						<p>
-							@Messages.get("index.modal.action.label") <b><span id="js-supplier-records-count">0</span></b>
-						</p>
-						<p>
-							@Messages.get("index.modal.confirmation")
-						</p>
+						<div class="js-records-selected">
+							<p>
+								@Messages.get("index.modal.action.label") <b><span id="js-supplier-records-count">0</span></b>
+							</p>
+							<p>
+								@Messages.get("index.modal.confirmation")
+							</p>
+						</div>
+						
+						<p class="js-records-none-selected">@Messages.get("index.modal.none.selected")</p>
 					</div>
 					<div class="modal-footer">
 						<button type="button" class="btn btn-default" data-dismiss="modal">@Messages.get("cancel")</button>
-						<button type="submit" class="btn btn-primary">@Messages.get("execute")</button>
+						<button type="submit" class="btn btn-primary js-execute-btn">@Messages.get("execute")</button>
 					</div>
 				</div>
 			</div>
