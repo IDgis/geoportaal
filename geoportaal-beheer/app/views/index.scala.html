@@ -18,6 +18,7 @@
 	)
 
 @import play.i18n._
+@import play.mvc.Controller.flash
 @import models.QMetadata.metadata
 @import models.QStatus.status
 @import models.QMdFormat.mdFormat
@@ -27,6 +28,15 @@
 
 @main(Messages.get("index.header"), textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch, 
 	routes.Assets.versioned("javascripts/index.js").url) {
+	
+	@if(flash.containsKey("attachmentSkipped")) {
+		<div>
+			<div class="alert alert-warning">
+				@flash.get("attachmentSkipped")
+			</div>
+		</div>
+	}
+	
 	<div class="welkom">
 		<p>@Messages.get("index.intro")</p>
 	</div>

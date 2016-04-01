@@ -311,6 +311,8 @@ public class Metadata extends Controller {
 							.set(mdAttachment.attachmentMimetype, fp.getContentType())
 							.set(mdAttachment.attachmentLength, input.length)
 							.execute();
+					} else {
+						flash("attachmentSkipped", Messages.get("index.warning.attachment.skipped"));
 					}
 				}
 			}
@@ -710,6 +712,8 @@ public class Metadata extends Controller {
 							.set(mdAttachment.attachmentMimetype, fp.getContentType())
 							.set(mdAttachment.attachmentLength, input.length)
 							.execute();
+						} else {
+							flash("attachmentSkipped", Messages.get("index.warning.attachment.skipped"));
 						}
 					}
 				}
