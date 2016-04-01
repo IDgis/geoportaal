@@ -37,7 +37,7 @@ index.button.action.label=Acties voor geselecteerde records:
 index.button.action.concept=Concept
 index.button.action.approval=Ter goedkeuring
 index.button.action.publish=Publiceren
-index.button.action.delete=Verwijderen
+index.button.action.delete=Verwijderen naar prullenbak
 index.button.action.supplier.edit=Leverancier wijzigen
 index.warning.published.record=U heeft 1 of meerdere records geselecteerd, die reeds zijn gepubliceerd. U kunt hiervan niet de status veranderen. Wilt u toch de status veranderen, neem dan contact op met de beheerders van het Geoportaal.
 
