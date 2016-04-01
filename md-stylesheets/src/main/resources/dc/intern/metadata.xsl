@@ -725,14 +725,14 @@
 					<xsl:when test="substring(substring-after(.,'http'),1,3) = '://'">
 						<xsl:value-of select="substring-before(.,'http://')"/>
 						<xsl:text> </xsl:text>
-						<a href="http://{substring-after(.,'http://')}">
+						<a href="http://{substring-after(.,'http://')}" target="_blank">
 							http://<xsl:value-of select="substring-after(.,'http://')"/>
 						</a>
 					</xsl:when>
 					<xsl:when test="substring(substring-after(.,'https'),1,3) = '://'">
 						<xsl:value-of select="substring-before(.,'https://')"/>
 						<xsl:text> </xsl:text>
-						<a href="https://{substring-after(.,'https://')}">
+						<a href="https://{substring-after(.,'https://')}" target="_blank">
 							https://<xsl:value-of select="substring-after(.,'https://')"/>
 						</a>
 					</xsl:when>

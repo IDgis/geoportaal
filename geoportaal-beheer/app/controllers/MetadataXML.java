@@ -17,6 +17,7 @@ import static models.QUseLimitation.useLimitation;
 import static models.QUseLimitationLabel.useLimitationLabel;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -26,7 +27,7 @@ import com.querydsl.core.Tuple;
 
 import actions.DefaultAuthenticator;
 import models.DublinCoreXML;
-import play.i18n.*;
+import play.i18n.Messages;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
@@ -75,12 +76,20 @@ public class MetadataXML extends Controller {
 				.where(metadata.uuid.eq(metadataUuid))
 				.fetchOne();
 			
-			// Fetch the attachments
-			List<String> attachments = tx.select(mdAttachment.attachmentName)
+			// Fetch the attachments from the database
+			List<String> attachmentsDB = tx.select(mdAttachment.attachmentName)
 					.from(mdAttachment)
 					.where(mdAttachment.metadataId.eq(datasetRow.get(metadata.id)))
 					.orderBy(mdAttachment.attachmentName.asc())
 					.fetch();
+			
+			// Convert attachments from database to requests
+			String host = request().host();
+			List<String> attachments = new ArrayList<String>();
+			for(String att : attachmentsDB) {
+				String url = controllers.routes.Metadata.openAttachment(att, datasetRow.get(metadata.uuid)).toString();
+				attachments.add("http://" + host + url);
+			}
 			
 			// Fetch the id of the creator
 			Integer creatorId = datasetRow.get(metadata.creator);
