@@ -293,13 +293,27 @@ public class Metadata extends Controller {
 					
 					inputStream.close();
 					
-					tx.insert(mdAttachment)
-						.set(mdAttachment.metadataId, metadataId)
-						.set(mdAttachment.attachmentName, fp.getFilename())
-						.set(mdAttachment.attachmentContent, input)
-						.set(mdAttachment.attachmentMimetype, fp.getContentType())
-						.set(mdAttachment.attachmentLength, input.length)
-						.execute();
+					// Check if attachmentname already exists in the database
+					Long countDuplicate = tx.select(mdAttachment.attachmentName)
+						.from(mdAttachment)
+						.where(mdAttachment.attachmentName.eq(fp.getFilename()))
+						.where(mdAttachment.metadataId.eq(metadataId))
+						.fetchCount();
+					
+					Integer countDuplicateInt = countDuplicate.intValue();
+					
+					// Only insert attachment if attachmentname doesn't exist yet in the database
+					if(countDuplicateInt.equals(0)) {
+						tx.insert(mdAttachment)
+							.set(mdAttachment.metadataId, metadataId)
+							.set(mdAttachment.attachmentName, fp.getFilename())
+							.set(mdAttachment.attachmentContent, input)
+							.set(mdAttachment.attachmentMimetype, fp.getContentType())
+							.set(mdAttachment.attachmentLength, input.length)
+							.execute();
+					} else {
+						flash("attachmentSkipped", Messages.get("index.warning.attachment.skipped"));
+					}
 				}
 			}
 			
@@ -680,13 +694,27 @@ public class Metadata extends Controller {
 						
 						inputStream.close();
 						
-						tx.insert(mdAttachment)
+						// Check if attachmentname already exists in the database
+						Long countDuplicate = tx.select(mdAttachment.attachmentName)
+							.from(mdAttachment)
+							.where(mdAttachment.attachmentName.eq(fp.getFilename()))
+							.where(mdAttachment.metadataId.eq(metadataId))
+							.fetchCount();
+						
+						Integer countDuplicateInt = countDuplicate.intValue();
+						
+						// Only insert attachment if attachmentname doesn't exist yet in the database
+						if(countDuplicateInt.equals(0)) {
+							tx.insert(mdAttachment)
 							.set(mdAttachment.metadataId, metadataId)
 							.set(mdAttachment.attachmentName, fp.getFilename())
 							.set(mdAttachment.attachmentContent, input)
 							.set(mdAttachment.attachmentMimetype, fp.getContentType())
 							.set(mdAttachment.attachmentLength, input.length)
 							.execute();
+						} else {
+							flash("attachmentSkipped", Messages.get("index.warning.attachment.skipped"));
+						}
 					}
 				}
 				
