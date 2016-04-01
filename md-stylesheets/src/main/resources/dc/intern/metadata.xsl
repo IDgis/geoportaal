@@ -298,6 +298,8 @@
 			</div>
 			<div class="blok">
 				<xsl:apply-templates select="rdf:Description/dcterms:relation"/>
+			</div>
+			<div class="blok">
 				<xsl:apply-templates select="rdf:Description/dc:relation"/>
 			</div>
 			<div class="blok">
