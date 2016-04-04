@@ -2,20 +2,6 @@ $(function () {
   $('[data-toggle="popover"]').popover()
 })
 
-if(!Modernizr.inputtypes.date) {
-	$('#js-date-update-start').datepicker({
-		dateFormat: 'dd-mm-yy',
-		altField: '#js-hidden-date-update-start',
-		altFormat: 'yy-mm-dd'
-	});
-	
-	$('#js-date-update-end').datepicker({
-		dateFormat: 'dd-mm-yy',
-		altField: '#js-hidden-date-update-end',
-		altFormat: 'yy-mm-dd'
-	});
-}
-
 require([
 	'dojo/dom',
 	'dojo/query',
@@ -27,31 +13,47 @@ require([
 	'dojo/dom-construct',
 	'dojo/dom-style',
 	'dojo/request/xhr',
+	'dojo/parser',
+	'dijit/registry',
+	
+	'dijit/form/DateTextBox',
 	'dojo/NodeList-traverse',
 	
 	'dojo/domReady!'
-	], function(dom, query, on, array, lang, win, domAttr, domConstruct, domStyle, xhr) {
+	], function(dom, query, on, array, lang, win, domAttr, domConstruct, domStyle, xhr, parser, registry) {
 	
 		var datesArray = query('input[type=date]');
 		if(!Modernizr.inputtypes.date) {
 			array.forEach(datesArray, function(item) {
+				var className = domAttr.get(item, 'class');
+				var id = domAttr.get(item, 'id');
+				var title = domAttr.get(item, 'title');
 				var name = domAttr.get(item, 'name');
-				domAttr.remove(item, 'name');
-				domAttr.set(query(item).query('~ input')[0], 'name', name);
+				var value = domAttr.get(item, 'value');
+				var language = domAttr.get(item, 'data-language');
+				
+				var newItem = domConstruct.create('input');
+				domAttr.set(newItem, 'class', className);
+				domAttr.set(newItem, 'id', id);
+				domAttr.set(newItem, 'type', 'text');
+				domAttr.set(newItem, 'data-toggle', 'tooltip');
+				domAttr.set(newItem, 'data-placement', 'top');
+				domAttr.set(newItem, 'title', title);
+				domAttr.set(newItem, 'name', name);
+				domAttr.set(newItem, 'data-dojo-type', 'dijit/form/DateTextBox');
+				domAttr.set(newItem, 'data-dojo-props', "lang:'" + language + "'");
+				
+				domConstruct.place(newItem, item.parentNode);
+				domConstruct.destroy(item);
+				
+				parser.parse();
+				
+				if(value !== '') {
+					registry.byId(id).set('value', value);
+				}
 			});
 			
-			array.forEach(datesArray, function(item) {
-				var dateLocal = domAttr.get(item, 'data-date-value-local');
-				var dateUS = domAttr.get(item, 'data-date-value-US');
-				
-				domAttr.set(item, 'value', dateLocal);
-				domAttr.set(query(item).query('~ input')[0], 'value', dateUS);
-			});
-		} else {
-			array.forEach(datesArray, function(item) {
-				var date = domAttr.get(item, 'data-date-value-US');
-				domAttr.set(item, 'value', date);
-			});
+			
 		}
 		
 		var allRecords = query('.js-record-checkbox');
@@ -416,24 +418,21 @@ require([
 			var code = e.keyCode
 			
 			if(code === 13) {
-				console.log('called');
 				var searchButton = dom.byId('search-button');
 				var form = dom.byId('js-form');
 				
 				var formData = new FormData();
 				
-				var dateStartChrome = domAttr.get(dom.byId('js-date-update-start'), 'value');
-				var dateStartRest = domAttr.get(dom.byId('js-hidden-date-update-start'), 'value');
-				var dateEndChrome = domAttr.get(dom.byId('js-date-update-end'), 'value');
-				var dateEndRest = domAttr.get(dom.byId('js-hidden-date-update-end'), 'value');
-				
 				if(!Modernizr.inputtypes.date) {
-					formData.append('dateUpdateStart', dateStartRest);
-					formData.append('dateUpdateEnd', dateEndRest);
+					var dateStart = domAttr.get(query('#js-date-update-start ~ input')[0], 'value');
+					var dateEnd = domAttr.get(query('#js-date-update-end ~ input')[0], 'value');
 				} else {
-					formData.append('dateUpdateStart', dateStartChrome);
-					formData.append('dateUpdateEnd', dateEndChrome);
+					var dateStart = domAttr.get(dom.byId('js-date-update-start'), 'value');
+					var dateEnd = domAttr.get(dom.byId('js-date-update-end'), 'value');
 				}
+				
+				formData.append('dateUpdateStart', dateStart);
+				formData.append('dateUpdateEnd', dateEnd);
 				
 				xhr(jsRoutes.controllers.Index.validateForm().url, {
 						handleAs: "html",
@@ -462,18 +461,16 @@ require([
 			
 			var formData = new FormData();
 			
-			var dateStartChrome = domAttr.get(dom.byId('js-date-update-start'), 'value');
-			var dateStartRest = domAttr.get(dom.byId('js-hidden-date-update-start'), 'value');
-			var dateEndChrome = domAttr.get(dom.byId('js-date-update-end'), 'value');
-			var dateEndRest = domAttr.get(dom.byId('js-hidden-date-update-end'), 'value');
-			
 			if(!Modernizr.inputtypes.date) {
-				formData.append('dateUpdateStart', dateStartRest);
-				formData.append('dateUpdateEnd', dateEndRest);
+				var dateStart = domAttr.get(query('#js-date-update-start ~ input')[0], 'value');
+				var dateEnd = domAttr.get(query('#js-date-update-end ~ input')[0], 'value');
 			} else {
-				formData.append('dateUpdateStart', dateStartChrome);
-				formData.append('dateUpdateEnd', dateEndChrome);
+				var dateStart = domAttr.get(dom.byId('js-date-update-start'), 'value');
+				var dateEnd = domAttr.get(dom.byId('js-date-update-end'), 'value');
 			}
+			
+			formData.append('dateUpdateStart', dateStart);
+			formData.append('dateUpdateEnd', dateEnd);
 			
 			xhr(jsRoutes.controllers.Index.validateForm().url, {
 					handleAs: "html",
