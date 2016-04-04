@@ -52,8 +52,6 @@ require([
 					registry.byId(id).set('value', value);
 				}
 			});
-			
-			
 		}
 		
 		var allRecords = query('.js-record-checkbox');

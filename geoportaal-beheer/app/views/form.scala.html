@@ -1,6 +1,5 @@
 @(create: Boolean,
-	todayUS: String,
-	todayLocal: String,  
+	today: String,
 	datasetRow: com.querydsl.core.Tuple, 
 	subjectsDataset: java.util.List[com.querydsl.core.Tuple],
 	attachmentsDataset: java.util.List[com.querydsl.core.Tuple], 
@@ -9,8 +8,7 @@
 	rightsList: java.util.List[com.querydsl.core.Tuple], 
 	useLimitationList: java.util.List[com.querydsl.core.Tuple],
 	mdFormatList: java.util.List[com.querydsl.core.Tuple],
-	sdfUS: java.text.SimpleDateFormat,
-	sdfLocal: java.text.SimpleDateFormat,
+	sdf: java.text.SimpleDateFormat,
 	subjectList: java.util.List[com.querydsl.core.Tuple],
 	search: models.Search,
 	validate: Boolean,
@@ -19,6 +17,7 @@
 )
 
 @import play.i18n._
+@import play.mvc.Http
 @import models.QMetadata.metadata
 @import models.QTypeInformation.typeInformation
 @import models.QCreator.creator
@@ -301,14 +300,12 @@
 			<div class="col-sm-4">
 				<input class="form-control js-date" type="date" data-toggle="tooltip" data-placement="top" 
 				title="@Messages.get("form.date.create.title")" id="js-date-creation" name="dateSourceCreation"
-				data-create="@create" data-validate="@validate" data-date-create-today-US="@todayUS" data-date-create-today-local="@todayLocal"
+				data-language="@Http.Context.current().lang().code()"
+				data-validate="@validate" if(@create) {value="@today"}
 				@if(validate && previousValues.get("metadata").getDateSourceCreation != null) {
-					data-date-value-US="@sdfUS.format(previousValues.get("metadata").getDateSourceCreation.getTime())"
-					data-date-value-local="@sdfLocal.format(previousValues.get("metadata").getDateSourceCreation.getTime())"}
+					value="@sdf.format(previousValues.get("metadata").getDateSourceCreation.getTime())"}
 				@if(!validate && !create) {
-					data-date-value-US="@sdfUS.format(datasetRow.get(metadata.dateSourceCreation).getTime())"
-					data-date-value-local="@sdfLocal.format(datasetRow.get(metadata.dateSourceCreation).getTime())"}>
-				<input type="hidden" id="js-hidden-date-creation">
+					value="@sdf.format(datasetRow.get(metadata.dateSourceCreation).getTime())"}>
 			</div>
 			<div class="col-sm-offset-3 col-sm-2">
 				<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" tabindex="-1"
@@ -320,15 +317,13 @@
 		<div class="form-group">
 			<label class="col-sm-3 control-label">@Messages.get("form.date.publication.label")</label>
 			<div class="col-sm-4">
-				<input class="form-control js-date" type="date" data-toggle="tooltip"  data-placement="top" 
-				title="@Messages.get("form.date.publication.title")" id="js-date-publication" name="dateSourcePublication"
+				<input class="form-control js-date" type="date" data-toggle="tooltip" data-placement="top" 
+				title="@Messages.get("form.date.publication.title")" id="js-date-publication" name="dateSourcePublication" 
+				data-language="@Http.Context.current().lang().code()"
 				@if(validate && previousValues.get("metadata").getDateSourcePublication != null) {
-					data-date-value-US="@sdfUS.format(previousValues.get("metadata").getDateSourcePublication.getTime())"
-					data-date-value-local="@sdfLocal.format(previousValues.get("metadata").getDateSourcePublication.getTime())"}
+					value="@sdf.format(previousValues.get("metadata").getDateSourcePublication.getTime())"}
 				@if(!validate && !create && datasetRow.get(metadata.dateSourcePublication) != null) {
-					data-date-value-US="@sdfUS.format(datasetRow.get(metadata.dateSourcePublication).getTime())"
-					data-date-value-local="@sdfLocal.format(datasetRow.get(metadata.dateSourcePublication).getTime())"}>
-				<input type="hidden" id="js-hidden-date-publication">
+					value="@sdf.format(datasetRow.get(metadata.dateSourcePublication).getTime())"}>
 			</div>
 			<div class="col-sm-offset-3 col-sm-2">
 				<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" tabindex="-1"
@@ -342,13 +337,11 @@
 			<div class="col-sm-4">
 				<input class="form-control js-date" type="date" data-toggle="tooltip" data-placement="top" 
 				title="@Messages.get("form.date.revision.title")" id="js-date-revision" name="dateSourceRevision"
+				data-language="@Http.Context.current().lang().code()"
 				@if(validate && previousValues.get("metadata").getDateSourceRevision != null) {
-					data-date-value-US="@sdfUS.format(previousValues.get("metadata").getDateSourceRevision.getTime())"
-					data-date-value-local="@sdfLocal.format(previousValues.get("metadata").getDateSourceRevision.getTime())"}
+					value="@sdf.format(previousValues.get("metadata").getDateSourceRevision.getTime())"}
 				@if(!validate && !create && datasetRow.get(metadata.dateSourceRevision) != null) {
-					data-date-value-US="@sdfUS.format(datasetRow.get(metadata.dateSourceRevision).getTime())"
-					data-date-value-local="@sdfLocal.format(datasetRow.get(metadata.dateSourceRevision).getTime())"}>
-				<input type="hidden" id="js-hidden-date-revision">
+					value="@sdf.format(datasetRow.get(metadata.dateSourceRevision).getTime())"}>
 			</div>
 			<div class="col-sm-offset-3 col-sm-2">
 				<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" tabindex="-1"
@@ -362,13 +355,11 @@
 			<div class="col-sm-4">
 				<input class="form-control js-date" type="date" data-toggle="tooltip" data-placement="top" 
 				title="@Messages.get("form.date.valid.from.title")" id="js-date-valid-from" name="dateSourceValidFrom"
+				data-language="@Http.Context.current().lang().code()"
 				@if(validate && previousValues.get("metadata").getDateSourceValidFrom != null) {
-					data-date-value-US="@sdfUS.format(previousValues.get("metadata").getDateSourceValidFrom.getTime())"
-					data-date-value-local="@sdfLocal.format(previousValues.get("metadata").getDateSourceValidFrom.getTime())"}
+					value="@sdf.format(previousValues.get("metadata").getDateSourceValidFrom.getTime())"}
 				@if(!validate && !create && datasetRow.get(metadata.dateSourceValidFrom) != null) {
-					data-date-value-US="@sdfUS.format(datasetRow.get(metadata.dateSourceValidFrom).getTime())"
-					data-date-value-local="@sdfLocal.format(datasetRow.get(metadata.dateSourceValidFrom).getTime())"}>
-				<input type="hidden" id="js-hidden-date-valid-from">
+					value="@sdf.format(datasetRow.get(metadata.dateSourceValidFrom).getTime())"}>
 			</div>
 			<div class="col-sm-offset-3 col-sm-2">
 				<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" tabindex="-1"
@@ -382,13 +373,11 @@
 			<div class="col-sm-4">
 				<input class="form-control js-date" type="date" data-toggle="tooltip" data-placement="top" 
 				title="@Messages.get("form.date.valid.end.title")" id="js-date-valid-until" name="dateSourceValidUntil"
+				data-language="@Http.Context.current().lang().code()"
 				@if(validate && previousValues.get("metadata").getDateSourceValidUntil != null) {
-					data-date-value-US="@sdfUS.format(previousValues.get("metadata").getDateSourceValidUntil.getTime())"
-					data-date-value-local="@sdfLocal.format(previousValues.get("metadata").getDateSourceValidUntil.getTime())"}
+					value="@sdf.format(previousValues.get("metadata").getDateSourceValidUntil.getTime())"}
 				@if(!validate && !create && datasetRow.get(metadata.dateSourceValidUntil) != null) {
-					data-date-value-US="@sdfUS.format(datasetRow.get(metadata.dateSourceValidUntil).getTime())"
-					data-date-value-local="@sdfLocal.format(datasetRow.get(metadata.dateSourceValidUntil).getTime())"}>
-				<input type="hidden" id="js-hidden-date-valid-until">
+					value="@sdf.format(datasetRow.get(metadata.dateSourceValidUntil).getTime())"}>
 			</div>
 			<div class="col-sm-offset-3 col-sm-2">
 				<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" tabindex="-1"

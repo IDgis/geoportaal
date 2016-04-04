@@ -2,38 +2,6 @@ $(function () {
   $('[data-toggle="popover"]').popover()
 })
 
-if(!Modernizr.inputtypes.date) {
-	$('#js-date-creation').datepicker({
-		dateFormat: 'dd-mm-yy',
-		altField: '#js-hidden-date-creation',
-		altFormat: 'yy-mm-dd'
-	});
-	
-	$('#js-date-publication').datepicker({
-		dateFormat: 'dd-mm-yy',
-		altField: '#js-hidden-date-publication',
-		altFormat: 'yy-mm-dd'
-	});
-	
-	$('#js-date-revision').datepicker({
-		dateFormat: 'dd-mm-yy',
-		altField: '#js-hidden-date-revision',
-		altFormat: 'yy-mm-dd'
-	});
-	
-	$('#js-date-valid-from').datepicker({
-		dateFormat: 'dd-mm-yy',
-		altField: '#js-hidden-date-valid-from',
-		altFormat: 'yy-mm-dd'
-	});
-	
-	$('#js-date-valid-until').datepicker({
-		dateFormat: 'dd-mm-yy',
-		altField: '#js-hidden-date-valid-until',
-		altFormat: 'yy-mm-dd'
-	});
-}
-
 require([
 	'dojo/dom',
 	'dojo/query',
@@ -45,10 +13,14 @@ require([
 	'dojo/dom-construct',
 	'dojo/dom-style',
 	'dojo/request/xhr',
+	'dojo/parser',
+	'dijit/registry',
+	
+	'dijit/form/DateTextBox',
 	'dojo/NodeList-traverse',
 	
 	'dojo/domReady!'
-	], function(dom, query, on, lang, win, array, domAttr, domConstruct, domStyle, xhr) {
+	], function(dom, query, on, lang, win, array, domAttr, domConstruct, domStyle, xhr, parser, registry) {
 		
 		var create = domAttr.get(dom.byId('js-date-creation'), 'data-create');
 		var validate = domAttr.get(dom.byId('js-date-creation'), 'data-validate');
@@ -56,54 +28,33 @@ require([
 		var datesArray = query('input[type=date]');
 		if(!Modernizr.inputtypes.date) {
 			array.forEach(datesArray, function(item) {
+				var className = domAttr.get(item, 'class');
+				var id = domAttr.get(item, 'id');
+				var title = domAttr.get(item, 'title');
 				var name = domAttr.get(item, 'name');
-				domAttr.remove(item, 'name');
-				domAttr.set(query(item).query('~ input')[0], 'name', name);
+				var value = domAttr.get(item, 'value');
+				var language = domAttr.get(item, 'data-language');
+				
+				var newItem = domConstruct.create('input');
+				domAttr.set(newItem, 'class', className);
+				domAttr.set(newItem, 'id', id);
+				domAttr.set(newItem, 'type', 'text');
+				domAttr.set(newItem, 'data-toggle', 'tooltip');
+				domAttr.set(newItem, 'data-placement', 'top');
+				domAttr.set(newItem, 'title', title);
+				domAttr.set(newItem, 'name', name);
+				domAttr.set(newItem, 'data-dojo-type', 'dijit/form/DateTextBox');
+				domAttr.set(newItem, 'data-dojo-props', "lang:'" + language + "'");
+				
+				domConstruct.place(newItem, item.parentNode);
+				domConstruct.destroy(item);
+				
+				parser.parse();
+				
+				if(value !== '') {
+					registry.byId(id).set('value', value);
+				}
 			});
-
-			if(create === "true") {
-				if(validate === "true") {
-					array.forEach(datesArray, function(item) {
-						var validateDate = domAttr.get(item, 'data-date-value-US');
-						var validateDateLocal = domAttr.get(item, 'data-date-value-local');
-						
-						domAttr.set(item, 'value', validateDateLocal);
-						domAttr.set(query(item).query('~ input')[0], 'value', validateDate);
-					});
-				} else {
-					var todayLocal = domAttr.get(dom.byId('js-date-creation'), 'data-date-create-today-local');
-					var todayUS = domAttr.get(dom.byId('js-date-creation'), 'data-date-create-today-US');
-					
-					domAttr.set(dom.byId('js-date-creation'), 'value', todayLocal);
-					domAttr.set(dom.byId('js-hidden-date-creation'), 'value', todayUS);
-				}
-			} else {
-				array.forEach(datesArray, function(item) {
-					var dateLocal = domAttr.get(item, 'data-date-value-local');
-					var dateUS = domAttr.get(item, 'data-date-value-US');
-					
-					domAttr.set(item, 'value', dateLocal);
-					domAttr.set(query(item).query('~ input')[0], 'value', dateUS);
-				});
-			}
-		} else {
-			if(create === "true") {
-				if(validate === "true") {
-					array.forEach(datesArray, function(item) {
-						var validateDate = domAttr.get(item, 'data-date-value-US');
-						domAttr.set(item, 'value', validateDate);
-					});
-				} else {
-					var today = domAttr.get(dom.byId('js-date-creation'), 'data-date-create-today-US');
-					domAttr.set(dom.byId('js-date-creation'), 'value', today);
-				}
-			} else {
-				array.forEach(datesArray, function(item) {
-					var date = domAttr.get(item, 'data-date-value-US');
-					
-					domAttr.set(item, 'value', date);
-				});
-			}
 		}
 	
 		var addAttachment = on(win.doc, '.js-add-attachment:click', function(e) {
@@ -177,16 +128,31 @@ require([
 			var locationVal = domAttr.get(dom.byId('js-location'), 'value');
 			var fileIdVal = domAttr.get(dom.byId('js-file-id'), 'value');
 			
-			var dateCreationChrome = domAttr.get(dom.byId('js-date-creation'), 'value');
-			var dateCreationRest = domAttr.get(dom.byId('js-hidden-date-creation'), 'value');
-			var datePublicationChrome = domAttr.get(dom.byId('js-date-publication'), 'value');
-			var datePublicationRest = domAttr.get(dom.byId('js-hidden-date-publication'), 'value');
-			var dateRevisionChrome = domAttr.get(dom.byId('js-date-revision'), 'value');
-			var dateRevisionRest = domAttr.get(dom.byId('js-hidden-date-revision'), 'value');
-			var dateValidFromChrome = domAttr.get(dom.byId('js-date-valid-from'), 'value');
-			var dateValidFromRest = domAttr.get(dom.byId('js-hidden-date-valid-from'), 'value');
-			var dateValidUntilChrome = domAttr.get(dom.byId('js-date-valid-until'), 'value');
-			var dateValidUntilRest = domAttr.get(dom.byId('js-hidden-date-valid-until'), 'value');
+			if(!Modernizr.inputtypes.date) {
+				var dateCreation = domAttr.get(query('#js-date-creation ~ input')[0], 'value');
+				var datePublication = domAttr.get(query('#js-date-publication ~ input')[0], 'value');
+				var dateRevision = domAttr.get(query('#js-date-revision ~ input')[0], 'value');
+				var dateValidFrom = domAttr.get(query('#js-date-valid-from ~ input')[0], 'value');
+				var dateValidUntil = domAttr.get(query('#js-date-valid-until ~ input')[0], 'value');
+			} else {
+				var dateCreation = domAttr.get(dom.byId('js-date-creation'), 'value');
+				var datePublication = domAttr.get(dom.byId('js-date-publication'), 'value');
+				var dateRevision = domAttr.get(dom.byId('js-date-revision'), 'value');
+				var dateValidFrom = domAttr.get(dom.byId('js-date-valid-from'), 'value');
+				var dateValidUntil = domAttr.get(dom.byId('js-date-valid-until'), 'value');
+			}
+			
+			formData.append('dateSourceCreation', dateCreation);
+			formData.append('dateSourcePublication', datePublication);
+			formData.append('dateSourceRevision', dateRevision);
+			formData.append('dateSourceValidFrom', dateValidFrom);
+			formData.append('dateSourceValidUntil', dateValidUntil);
+			
+			var dateCreation = domAttr.get(query('#js-date-creation ~ input')[0], 'value');
+			var datePublication = domAttr.get(query('#js-date-publication ~ input')[0], 'value');
+			var dateRevision = domAttr.get(query('#js-date-revision ~ input')[0], 'value');
+			var dateValidFrom = domAttr.get(query('#js-date-valid-from ~ input')[0], 'value');
+			var dateValidUntil = domAttr.get(query('#js-date-valid-until ~ input')[0], 'value');
 			
 			var subjectList = query('.js-subject-input:checked');
 			var creatorVal = domAttr.get(dom.byId('js-creator-select'), 'value');
@@ -202,19 +168,7 @@ require([
 				
 				formData.append('creatorOther', otherCreatorVal);
 			}
-			if(!Modernizr.inputtypes.date) {
-				formData.append('dateSourceCreation', dateCreationRest);
-				formData.append('dateSourcePublication', datePublicationRest);
-				formData.append('dateSourceRevision', dateRevisionRest);
-				formData.append('dateSourceValidFrom', dateValidFromRest);
-				formData.append('dateSourceValidUntil', dateValidUntilRest);
-			} else {
-				formData.append('dateSourceCreation', dateCreationChrome);
-				formData.append('dateSourcePublication', datePublicationChrome);
-				formData.append('dateSourceRevision', dateRevisionChrome);
-				formData.append('dateSourceValidFrom', dateValidFromChrome);
-				formData.append('dateSourceValidUntil', dateValidUntilChrome);
-			}
+			
 			array.forEach(subjectList, function(item) {
 				var subjectValue = domAttr.get(item, 'value');
 				formData.append('subject[]', subjectValue);
