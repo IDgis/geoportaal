@@ -78,8 +78,7 @@ public class Metadata extends Controller {
 		Boolean create = true;
 		
 		// Create strings according to yyyy-MM-dd and dd-MM-yyyy formats
-		String todayUS = new SimpleDateFormat("yyyy-MM-dd").format(new Date().getTime());
-		String todayLocal = new SimpleDateFormat("dd-MM-yyyy").format(new Date().getTime());
+		String today = new SimpleDateFormat("yyyy-MM-dd").format(new Date().getTime());
 		
 		// Create search object
 		Search search = new Search(textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch);
@@ -127,8 +126,8 @@ public class Metadata extends Controller {
 				.fetch();
 			
 			// Return form page
-			return ok(views.html.form.render(create, todayUS, todayLocal, null, null, null, typeInformationList, creatorsList, rightsList, 
-					useLimitationList, mdFormatList, null, null, subjectList, search, false, null, null));
+			return ok(views.html.form.render(create, today, null, null, null, typeInformationList, creatorsList, rightsList, 
+					useLimitationList, mdFormatList, null, subjectList, search, false, null, null));
 		});
 	}
 	
@@ -444,15 +443,14 @@ public class Metadata extends Controller {
 				.fetch();
 			
 			// Create SimpleDateFormat in yyyy-MM-dd and dd-MM-yyyy format
-			SimpleDateFormat sdfUS = new SimpleDateFormat("yyyy-MM-dd");
-			SimpleDateFormat sdfLocal = new SimpleDateFormat("dd-MM-yyyy");
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 			
 			// Create DecimalFormat with two decimals
 			DecimalFormat df = new DecimalFormat("0.##");
 			
 			// Return form page
-			return ok(views.html.form.render(create, "", "", datasetRow, subjectsDataset, attachmentsDataset, typeInformationList, creatorsList, 
-				rightsList, useLimitationList, mdFormatList, sdfUS, sdfLocal, subjectList, search, false, null, df));
+			return ok(views.html.form.render(create, "", datasetRow, subjectsDataset, attachmentsDataset, typeInformationList, creatorsList, 
+				rightsList, useLimitationList, mdFormatList, sdf, subjectList, search, false, null, df));
 		});
 	}
 	
@@ -978,12 +976,10 @@ public class Metadata extends Controller {
 	public Result validateFormServer(Boolean create, Tuple datasetRow, List<Tuple> attachmentsDataset, String textSearch, String supplierSearch, 
 			String statusSearch, String mdFormatSearch, String dateStartSearch, String dateEndSearch, Map<String, DublinCore> previousValues) {
 		// Create strings according to yyyy-MM-dd and dd-MM-yyyy formats
-		String todayUS = new SimpleDateFormat("yyyy-MM-dd").format(new Date().getTime());
-		String todayLocal = new SimpleDateFormat("dd-MM-yyyy").format(new Date().getTime());
+		String today = new SimpleDateFormat("yyyy-MM-dd").format(new Date().getTime());
 		
 		// Create SimpleDateFormat objects according to yyyy-MM-dd and dd-MM-yyyy formats
-		SimpleDateFormat sdfUS = new SimpleDateFormat("yyyy-MM-dd");
-		SimpleDateFormat sdfLocal = new SimpleDateFormat("dd-MM-yyyy");
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		
 		// Create boolean indicating that the resulting values originates from a validation
 		Boolean validate = true;
@@ -1037,8 +1033,8 @@ public class Metadata extends Controller {
 			DecimalFormat df = new DecimalFormat("0.##");
 			
 			// Return form page
-			return ok(views.html.form.render(create, todayUS, todayLocal, datasetRow, null, attachmentsDataset, typeInformationList, creatorsList, rightsList, 
-					useLimitationList, mdFormatList, sdfUS, sdfLocal, subjectList, search, validate, previousValues, df));
+			return ok(views.html.form.render(create, today, datasetRow, null, attachmentsDataset, typeInformationList, creatorsList, rightsList, 
+					useLimitationList, mdFormatList, sdf, subjectList, search, validate, previousValues, df));
 		});
 	}
 	

@@ -2,8 +2,7 @@
 	supplierList: java.util.List[com.querydsl.core.Tuple],
 	statusList: java.util.List[com.querydsl.core.Tuple],
 	mdFormatList: java.util.List[com.querydsl.core.Tuple],
-	sdfUS: java.text.SimpleDateFormat,
-	sdfLocal: java.text.SimpleDateFormat,
+	sdf: java.text.SimpleDateFormat,
 	roleId: Integer,
 	textSearch: String,
 	supplierSearch: String,
@@ -19,6 +18,7 @@
 
 @import play.i18n._
 @import play.mvc.Controller.flash
+@import play.mvc.Http
 @import models.QMetadata.metadata
 @import models.QStatus.status
 @import models.QMdFormat.mdFormat
@@ -127,10 +127,8 @@
 				<label class="col-sm-3 control-label">@Messages.get("index.date.start.label")</label>
 				<div class="col-sm-4">
 					<input class="form-control js-date" id="js-date-update-start" type="date" data-toggle="tooltip" data-placement="top" 
-					title="@Messages.get("index.date.start.title")" name="dateUpdateStart"
-					@if(tsStartSearch != null) {data-date-value-US="@sdfUS.format(tsStartSearch.getTime())"} 
-					@if(tsStartSearch != null) {data-date-value-local="@sdfLocal.format(tsStartSearch.getTime())"}>
-					<input type="hidden" id="js-hidden-date-update-start">
+					title="@Messages.get("index.date.start.title")" name="dateUpdateStart" data-language="@Http.Context.current().lang().code()"
+					@if(tsStartSearch != null) {value="@sdf.format(tsStartSearch.getTime())"}>
 				</div>
 				<div class="col-sm-2">
 					<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" tabindex="-1"
@@ -140,13 +138,11 @@
 				</div>
 			</div>
 			<div class="form-group">
-				<label class="col-sm-3 control-label">@Messages.get("index.date.end.label")</label>
+				<label class="col-sm-3 control-label" for="js-date-update-end">@Messages.get("index.date.end.label")</label>
 				<div class="col-sm-4">
 					<input class="form-control js-date" id="js-date-update-end" type="date" data-toggle="tooltip" data-placement="top" 
-					title="@Messages.get("index.date.end.title")" name="dateUpdateEnd"
-					@if(tsEndSearch != null) {data-date-value-US="@sdfUS.format(tsEndSearch.getTime())"} 
-					@if(tsEndSearch != null) {data-date-value-local="@sdfLocal.format(tsEndSearch.getTime())"}>
-					<input type="hidden" id="js-hidden-date-update-end">
+					title="@Messages.get("index.date.end.title")" name="dateUpdateEnd" data-language="@Http.Context.current().lang().code()"
+					@if(tsEndSearch != null) {value="@sdf.format(tsEndSearch.getTime())"}>
 				</div>
 				<div class="col-sm-2">
 					<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" tabindex="-1"
@@ -195,7 +191,7 @@
 		<strong>@Messages.get("index.warning.published.record")</strong>
 	</div>
 	
-	@views.html.list(datasetRows, sdfLocal, roleId, textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch, sort, checkedList)
+	@views.html.list(datasetRows, sdf, roleId, textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch, sort, checkedList)
 	<div id="version-info">
 		@Messages.get("application.name"): @getClass().getPackage().getImplementationVersion()
 	</div>

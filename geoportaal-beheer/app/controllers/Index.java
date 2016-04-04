@@ -99,9 +99,8 @@ public class Index extends Controller {
 				.orderBy(mdFormatLabel.label.asc())
 				.fetch();
 			
-			// Create a SimpleDateFormat object for the yyyy-MM-dd and dd-MM-yyyy formats
-			SimpleDateFormat sdfUS = new SimpleDateFormat("yyyy-MM-dd");
-			SimpleDateFormat sdfLocal = new SimpleDateFormat("dd-MM-yyyy");
+			// Create a SimpleDateFormat object for the yyyy-MM-dd format
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 			
 			// Fetches the role of the logged in user
 			Integer roleId = tx.select(user.roleId)
@@ -195,7 +194,7 @@ public class Index extends Controller {
 			final Date finalDateStartSearch;
 			if(dateStartSearch != null && !dateStartSearch.trim().isEmpty()) {
 				try {
-					finalDateStartSearch = sdfUS.parse(dateStartSearch);
+					finalDateStartSearch = sdf.parse(dateStartSearch);
 				} catch(ParseException e) {
 					throw new IllegalArgumentException("wrong dateStartSearch", e);
 				}
@@ -207,7 +206,7 @@ public class Index extends Controller {
 			final Date finalDateEndSearch;
 			if(dateEndSearch != null && !dateEndSearch.trim().isEmpty()) {
 				try {
-					finalDateEndSearch = sdfUS.parse(dateEndSearch);
+					finalDateEndSearch = sdf.parse(dateEndSearch);
 				} catch(ParseException e) {
 					throw new IllegalArgumentException("wrong dateEndSearch", e);
 				}
@@ -287,7 +286,7 @@ public class Index extends Controller {
 			}
 			
 			// Return index page
-			return ok(views.html.index.render(datasetRows, supplierList, statusList, mdFormatList, sdfUS, sdfLocal, roleId, textSearch, 
+			return ok(views.html.index.render(datasetRows, supplierList, statusList, mdFormatList, sdf, roleId, textSearch, 
 				supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch, timestampStartSearch, resetTimestampEndSearch, sort,
 				checkedList));
 		});
