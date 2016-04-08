@@ -1,0 +1,17 @@
+repositories {
+	maven {
+		name "idgis-public"
+		url "http://nexus.idgis.eu/content/groups/public/"
+		credentials {
+			username nexusUser 
+			password nexusPassword
+		}
+	}
+	jcenter()
+}
+
+dependencies {
+	compile "com.querydsl:querydsl-sql-codegen:4.0.6"
+	compile "com.github.houbie:lesscss-gradle-plugin:1.0.3-less-1.7.0"
+	compile "com.bmuschko:gradle-docker-plugin:2.6.5"
+}

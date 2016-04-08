@@ -1,0 +1,2 @@
+rootProject.name = 'geoportaal-publiek'
+include 'querydsl-tsvector'

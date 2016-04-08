@@ -1,0 +1,94 @@
+@(title: String)(content: Html)
+
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>@title</title>
+		<link rel="stylesheet" media="screen" href="@routes.Assets.versioned("stylesheets/main.css")">
+		<link rel="stylesheet" media="screen" href="@routes.Assets.versioned("lib/bootstrap/css/bootstrap.min.css")">
+		
+	</head>
+	<body>
+	<div class="page">
+		<div class="logo">
+			<a>
+				<img src="@routes.Assets.versioned("images/logo_overijssel.png")"></img>
+			</a>
+		</div>
+		
+		<div class="titelbalk">
+			<h1 class="header">Welkom bij het Geoportaal</h1>
+		</div>
+		
+		<div class="grid">
+			<div class="tabs">
+				<a href="">
+					<div class="toptaak-element" id="js-element-index">
+						<div class="toptaak-outer">
+							<div class="@if(title == "Home") {toptaak-inner-active} else {toptaak-inner}">
+								<div class="tab-element">
+									<span class="toptaak-titel">
+										Home
+									</span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</a>
+				<a href="">
+					<div class="toptaak-element" id="js-element-index">
+						<div class="toptaak-outer">
+							<div class="@if(title == "Uitgebreid zoeken") {toptaak-inner-active} else {toptaak-inner}">
+								<div class="tab-element">
+									<span class="toptaak-titel">
+										Uitgebreid zoeken
+									</span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</a>
+				<a href="">
+					<div class="toptaak-element" id="js-element-index">
+						<div class="toptaak-outer">
+							<div class="@if(title == "Bladeren") {toptaak-inner-active} else {toptaak-inner}">
+								<div class="tab-element">
+									<span class="toptaak-titel">
+										Bladeren
+									</span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</a>
+				<a href="">
+					<div class="toptaak-element" id="js-element-index">
+						<div class="toptaak-outer">
+							<div class="@if(title == "Over deze site") {toptaak-inner-active} else {toptaak-inner}">
+								<div class="tab-element">
+									<span class="toptaak-titel">
+										Over deze site
+									</span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</a>
+				<a href="">
+					<div class="toptaak-element" id="js-element-index">
+						<div class="toptaak-outer">
+							<div class="@if(title == "Contact") {toptaak-inner-active} else {toptaak-inner}">
+								<div class="tab-element">
+									<span class="toptaak-titel">
+										Contact
+									</span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</a>
+			</div>
+			@content
+		</div>
+	</body>
+</html>

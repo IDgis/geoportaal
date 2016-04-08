@@ -1,0 +1,10 @@
+logs
+target
+.classpath
+.settings
+.project
+bin/
+*.tmp
+.gradle
+build/
+velocity.log
