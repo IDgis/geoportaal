@@ -1,5 +1,3 @@
-@(message: String)
-
 @main("Home") {
 	
 <div class="welkom">
@@ -10,7 +8,7 @@
 </div>
 
 
-@helper.form(action = routes.HomeController.index(), 'class -> "search-bar col-md-offset-1") {
+@helper.form(action = routes.Index.index(), 'class -> "search-bar col-md-offset-1") {
 	<div class="form-group">
 		<span class="search-label">Zoek</span>
 	</div>
@@ -28,7 +26,7 @@
 	</div>
 </div>
 	
-<div class="metadata-paragraph">	
+<div class="metadata-paragraph">
 	<div class="home-metadata">
 		<div class="row">
 			<div class="col-md-12">
