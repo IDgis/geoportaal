@@ -23,4 +23,8 @@ public class Index extends Controller {
 	public Result contact() {
 		return ok(contact.render());
 	}
+	
+	public Result about() {
+		return ok(about.render());
+	}
 }
