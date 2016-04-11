@@ -4,9 +4,11 @@
 
 # An example controller showing a sample home page
 GET			/						controllers.Index.index
+GET			/search					controllers.Index.search
+GET			/browse					controllers.Index.browse
 GET			/contact				controllers.Index.contact
 GET			/about					controllers.Index.about
-GET			/search					controllers.Index.search
+
 
 # Map static resources from the /public folder to the /assets URL path
 GET			/assets/*file			controllers.Assets.versioned(path="/public", file: Asset)

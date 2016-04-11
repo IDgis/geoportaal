@@ -54,10 +54,17 @@ div.editor-knoppen {margin-bottom:20px;margin-left:15px;}
 .files-info {font-size:17px;font-weight:bold;}
 
 .metadata-paragraph {margin-left:40px;}
-.home-metadata {padding:10px 0px;border-bottom:1px solid #cbcbcb;margin-top:15px;margin-bottom:15px;}
-
+.home-metadata, .search-metadata, .browse-metadata {padding:10px 0px;border-bottom:1px solid #cbcbcb;margin-top:15px;margin-bottom:15px;}
+.search-metadata > .row > .description, .browse-metadata > .row > .description {display:none;}
+#browse-area {margin: 0px 0px 0px 0px;}
+.browse-metadata > .row > .browse-title > .titel {margin-top:0;}
 .link {background:none!important;border:none;padding:0!important;cursor:pointer;color:#255c9f;text-decoration:underline;}
 
 .filter-options {margin-top: 10px;margin-bottom: 20px;padding: 0px 0px 0px 15px;}
 .data-navigation {margin-top: 10px;margin-bottom: 10px;padding: 0px 20px 0px 0px;}
 #expand-area {margin-top:5px;}
+
+#header-subjects {margin-top: 20px;margin-bottom: 0px;padding: 0px 0px 0px 15px;}
+#browse-info{font-size: 17px;font-weight: bold;}
+#subjects-list {border-right: 4px solid #A9A9A9;margin: 20px 10px 20px 20px;}
+#subject-selection-buttons {margin: 0px 0px 10px 0px;}

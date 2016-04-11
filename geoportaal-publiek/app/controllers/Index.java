@@ -31,4 +31,8 @@ public class Index extends Controller {
 	public Result search() {
 		return ok(search.render());
 	}
+	
+	public Result browse() {
+		return ok(browse.render());
+	}
 }
