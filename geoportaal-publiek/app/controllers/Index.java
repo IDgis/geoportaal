@@ -27,4 +27,8 @@ public class Index extends Controller {
 	public Result about() {
 		return ok(about.render());
 	}
+	
+	public Result search() {
+		return ok(search.render());
+	}
 }

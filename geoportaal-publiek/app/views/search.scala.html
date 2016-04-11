@@ -1,0 +1,79 @@
+@main("Uitgebreid zoeken") {
+	<div class="welkom">
+		<p>Hier kunt u op termen zoeken naar kaarten van de provincie.</p>
+	</div>
+	
+	@helper.form(action = routes.Index.index(), 'class -> "search-bar col-md-offset-1") {
+		<div class="form-group">
+			<span class="search-label">Zoek</span>
+		</div>
+		<div class="form-group">
+			<input class="form-control search-field" type="text" placeholder="Zoek op term"></input>
+		</div>
+		<div class="form-group">
+			<button type="button" class="knop" id="search-button">Zoek</button>
+		</div>
+	}
+	
+	<div class="col-md-12">
+		<div class="data-navigation">
+			<div class="row">
+				<span class="col-md-9">1 resultaat</span>
+				<div class="pull-right">
+					<div class="row btn-group btn-group-sm">
+							<button id="previous" type="button" class="btn btn-default">&laquo;</button>
+							<button id="data-page-1" type="button" class="btn btn-default">1</button>
+							<button id="data-page-2" type="button" class="btn btn-default">2</button>
+							<button id="next" type="button" class="btn btn-default">&raquo;</button>
+					</div>
+					<div class="row" id="expand-area">
+						<label class="checkbox-inline">
+							<input id="js-expand-all" type="checkbox"><span id="js-label-expand-all">Resultaten uitklappen</span>
+						</label>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+		
+	<div class="col-md-12">
+		<div class="filter-options">
+			<div class="row">
+				<label class="checkbox-inline">
+					<input type="checkbox" date-type="dataset" checked>Zoeken naar <strong>GIS bestanden</strong>
+				</label>
+			</div>
+			<div class="row">
+				<label class="checkbox-inline">
+					<input type="checkbox" date-type="service" checked>Zoeken naar <strong>Services</strong>
+				</label>
+				
+			</div>
+			<div class="row">
+				<label class="checkbox-inline">
+					<input type="checkbox" date-type="dc" checked>Zoeken naar <strong>Statische kaarten</strong>
+				</label>
+			</div>
+		</div>
+	</div>
+	
+	<div class="metadata-paragraph">
+		<div class="home-metadata">
+			<div class="row">
+				<div class="col-md-12">
+					<p class="titel">
+						<a class="titel">Essen (22-Dec-2014, Provincie Overijssel)</a>
+					</p>
+				</div>
+				<div class="col-md-12">
+					<p>De essen in Overijssel. Het essenbestand is samengesteld uit 2 bronbestanden. Enerzijds bestaat 
+					het bestand uit de hoge bruine en zwarte enkeerdgronden uit de bodemkaart (Alterra), anderzijds zijn op basis van diverse 
+					kenmerken (hoogte, grondsoort, historisch grondgebruik etc.) de essen bepaald. Dit project heeft plaatsgevonden...</p>
+					
+					<a class="link">Metadata</a>
+					<button class="link" type="button">Download</button>
+				</div>
+			</div>
+		</div>
+	</div>
+}
