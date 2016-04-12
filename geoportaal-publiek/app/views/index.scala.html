@@ -1,28 +1,27 @@
-@main("Home") {
+@import play.i18n._
+
+@main(Messages.get("index.header")) {
 	
 <div class="welkom">
-	<p>Welkom bij het Geoportaal van de provincie Overijssel. Hier kunt u zoeken naar kaarten van de 
-	provincie. Er zijn beschrijvingen en voorbeeldkaartjes te vinden. Ook zijn veel bestanden vrij beschikbaar voor 
-	eigen gebruik. Heeft u vragen, aarzel dan niet om contact met ons op te nemen. De informatie in het portaal wordt 
-	voortdurend actueel gehouden.</p>
+	<p>@Messages.get("index.intro")</p>
 </div>
 
 
 @helper.form(action = routes.Index.index(), 'class -> "search-bar col-md-offset-1") {
 	<div class="form-group">
-		<span class="search-label">Zoek</span>
+		<span class="search-label">@Messages.get("search.label")</span>
 	</div>
 	<div class="form-group">
-		<input class="form-control search-field" type="text" placeholder="Zoek op term"></input>
+		<input class="form-control search-field" type="text" placeholder="@Messages.get("search.placeholder")"></input>
 	</div>
 	<div class="form-group">
-		<button type="button" class="knop" id="search-button">Zoek</button>
+		<button type="button" class="knop" id="search-button">@Messages.get("button.search")</button>
 	</div>
 }
 
 <div class="header-recent-files">
 	<div class="col-md-12">
-		<span class="files-info">Vijf meest recente bestanden:</span>
+		<span class="files-info">@Messages.get("index.files.info.recent")</span>
 	</div>
 </div>
 	
@@ -39,8 +38,8 @@
 				het bestand uit de hoge bruine en zwarte enkeerdgronden uit de bodemkaart (Alterra), anderzijds zijn op basis van diverse 
 				kenmerken (hoogte, grondsoort, historisch grondgebruik etc.) de essen bepaald. Dit project heeft plaatsgevonden...</p>
 				
-				<a class="link">Metadata</a>
-				<button class="link" type="button">Download</button>
+				<a class="link">@Messages.get("button.metadata")</a>
+				<button class="link" type="button">@Messages.get("button.download")</button>
 			</div>
 		</div>
 	</div>

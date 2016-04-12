@@ -1,18 +1,20 @@
-@main("Contact") {
+@import play.i18n._
+
+@main(Messages.get("contact.header")) {
 	<div class="welkom">
-		<p>Hieronder staat de contact informatie van de provincie Overijssel.</p>
+		<p>@Messages.get("contact.intro")</p>
 	</div>
 	
 	<div>
 		<p>
-			<strong>Adres:</strong> Luttenbergstraat 2, 8012 EE Zwolle
+			<strong>@Messages.get("contact.address.label")</strong> @Messages.get("contact.address.value")
 		</p>
 		<p>
-			<strong>Telefoonnummer:</strong> 038 499 88 99
+			<strong>@Messages.get("contact.phone.label")</strong> @Messages.get("contact.phone.value")
 		</p>
 		<p>
-			<strong>E-mailadres:</strong> 
-			<a class="link" href="mailto:beleidsinformatie@@overijssel.nl">beleidsinformatie@@overijssel.nl</a>
+			<strong>@Messages.get("contact.email.label")</strong> 
+			<a class="link" href="mailto:@Messages.get("contact.email.value")">@Messages.get("contact.email.value")</a>
 		</p>
 	</div>
 }

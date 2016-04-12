@@ -1,24 +1,26 @@
-@main("Uitgebreid zoeken") {
+@import play.i18n._
+
+@main(Messages.get("search.header")) {
 	<div class="welkom">
-		<p>Hier kunt u op termen zoeken naar kaarten van de provincie.</p>
+		<p>@Messages.get("search.intro")</p>
 	</div>
 	
 	@helper.form(action = routes.Index.index(), 'class -> "search-bar col-md-offset-1") {
 		<div class="form-group">
-			<span class="search-label">Zoek</span>
+			<span class="search-label">@Messages.get("search.label")</span>
 		</div>
 		<div class="form-group">
-			<input class="form-control search-field" type="text" placeholder="Zoek op term"></input>
+			<input class="form-control search-field" type="text" placeholder="@Messages.get("search.placeholder")"></input>
 		</div>
 		<div class="form-group">
-			<button type="button" class="knop" id="search-button">Zoek</button>
+			<button type="button" class="knop" id="search-button">@Messages.get("button.search")</button>
 		</div>
 	}
 	
 	<div class="col-md-12">
 		<div class="data-navigation">
 			<div class="row">
-				<span class="col-md-9">1 resultaat</span>
+				<span class="col-md-9">1 @Messages.get("result.count.label.one")</span>
 				<div class="pull-right">
 					<div class="row btn-group btn-group-sm">
 							<button id="previous" type="button" class="btn btn-default">&laquo;</button>
@@ -28,7 +30,7 @@
 					</div>
 					<div class="row" id="expand-area">
 						<label class="checkbox-inline">
-							<input id="js-expand-all" type="checkbox"><span id="js-label-expand-all">Resultaten uitklappen</span>
+							<input id="js-expand-all" type="checkbox"><span id="js-label-expand-all">@Messages.get("results.expand")</span>
 						</label>
 					</div>
 				</div>
@@ -40,18 +42,21 @@
 		<div class="filter-options">
 			<div class="row">
 				<label class="checkbox-inline">
-					<input type="checkbox" date-type="dataset" checked>Zoeken naar <strong>GIS bestanden</strong>
+					<input type="checkbox" date-type="dataset" checked>
+						@Messages.get("search.checkboxes.label") <strong>@Messages.get("search.checkboxes.dataset")</strong>
 				</label>
 			</div>
 			<div class="row">
 				<label class="checkbox-inline">
-					<input type="checkbox" date-type="service" checked>Zoeken naar <strong>Services</strong>
+					<input type="checkbox" date-type="service" checked>
+						@Messages.get("search.checkboxes.label") <strong>@Messages.get("search.checkboxes.service")</strong>
 				</label>
 				
 			</div>
 			<div class="row">
 				<label class="checkbox-inline">
-					<input type="checkbox" date-type="dc" checked>Zoeken naar <strong>Statische kaarten</strong>
+					<input type="checkbox" date-type="dc" checked>
+						@Messages.get("search.checkboxes.label") <strong>@Messages.get("search.checkboxes.dc")</strong>
 				</label>
 			</div>
 		</div>
@@ -70,8 +75,8 @@
 					het bestand uit de hoge bruine en zwarte enkeerdgronden uit de bodemkaart (Alterra), anderzijds zijn op basis van diverse 
 					kenmerken (hoogte, grondsoort, historisch grondgebruik etc.) de essen bepaald. Dit project heeft plaatsgevonden...</p>
 					
-					<a class="link">Metadata</a>
-					<button class="link" type="button">Download</button>
+					<a class="link">@Messages.get("button.metadata")</a>
+					<button class="link" type="button">@Messages.get("button.download")</button>
 				</div>
 			</div>
 		</div>

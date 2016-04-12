@@ -1,5 +1,7 @@
-@main("Over deze site") {
+@import play.i18n._
+
+@main(Messages.get("about.header")) {
 	<div class="welkom">
-		<p>Hier komt de tekst met informatie over de provincie Overijssel te staan.</p>
+		<p>@Messages.get("about.intro")</p>
 	</div>
 }
