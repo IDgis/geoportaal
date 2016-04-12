@@ -1,48 +1,37 @@
 html {overflow-y:scroll;overflow-x:hidden;}
 body {background-color:#FFFFFF;font-family:Verdana;box-sizing:content-box;}
-div.page {margin:0px auto 20px auto;width:1100px;padding:0px 20px;border-left:1px solid #AAAAAA;border-right:1px solid #AAAAAA;}
-
 div {display:block;}
 p {line-height:25px;font-size:16px;margin-top:0;margin-bottom:0;}
 
+div.page {margin:0px auto 20px auto;width:1100px;padding:0px 20px;border-left:1px solid #AAAAAA;border-right:1px solid #AAAAAA;}
 div.logo {margin-top:20px;margin-bottom:20px;}
-div.titelbalk {margin-top:20px;margin-bottom:20px;}
-h1.header {padding:.3em .5em;border-radius:0 12px 0 0;background-color:#831625;margin-left:0;margin-right:0;color:#ffffff;font-size:1.625em;
-	font-weight:bold;font-style:normal;line-height:47px;}
-	
-.grid {margin-top:20px;margin-bottom:20px;padding-top:5px;padding-bottom:5px;}
-.grid:after {content:'';display:block;clear:both;}
-.toptaak-element {float:left;width:19.95%;height:85px;display:block;}
-.toptaak-outer {height:100%;padding:1px;}
-.toptaak-inner {height:100%;background-color:#255c9f;}
-.toptaak-inner-active {height:100%;background-color:#0096D2;}
-.toptaak-inner:hover {background-color:#0096D2;cursor:pointer;}
-.toptaak-titel {color:#ffffff;display:inline-block;text-align:left;margin-top:13px;margin-left:50px;line-height:1.2em;font-size:18px;
-	padding-right:20px;width:100%;}
-
-div.welkom {margin-top:20px;margin-bottom:20px;padding:10px 0;}
-div.info {margin-top:20px;margin-bottom:20px;padding:10px 0;}
-p.titel {margin-top: 12px;margin-bottom: 12px;}
-a.titel {color: #255c9f;text-decoration: underline;font-weight: bold;}
-p.alineastart {margin-top:20px;}
-#knoppen {margin-top:40px;margin-bottom:40px;}
-.knop {background-color:#831625;color:#ffffff;font-weight:bold;padding:6px 12px;border:1px solid transparent;border-radius: 4px;}
-.knop-correctie {position:relative;left:-5px;}
-.knop:hover {text-decoration:none;background-color:#DC0000;color:#ffffff;}
-.knop:focus {background-color:#DC0000;color:#ffffff;text-decoration:none;}
-.help-knop {padding-top:7px;padding-bottom:8px;line-height:20px;}
-
+div.header {margin-top:20px;margin-bottom:20px;}
+div.intro {margin-top:20px;margin-bottom:20px;padding:10px 0;}
 div.tabs {margin-left:auto;margin-right:auto;width:100%;}
 div.tabs:after {content:'';display:block;clear:both;}
 div.tab-element {height:100%;width:100%;background-position:15px 15px;width:155px !important;height:80px !important;
 	background-repeat:no-repeat;}
 
-#edit-supplier-select {display:none;width:unset;}
-.admin-buttons {margin-top:10px;margin-bottom:10px;margin-left:20px;position:relative;left:-13px;}
-div.overzicht-records {margin-top:20px;margin-bottom:20px;margin-left:20px;}
-div.alle-records {margin-top:20px;margin-bottom:20px;margin-left:20px;}
-div.label-actions-selected-records {margin-top:20px;margin-bottom:10px;margin-left:20px;position:relative;left:-13px;}
-div.editor-knoppen {margin-bottom:20px;margin-left:15px;}
+h1.header {padding:.3em .5em;border-radius:0 12px 0 0;background-color:#831625;margin-left:0;margin-right:0;color:#ffffff;font-size:1.625em;
+	font-weight:bold;font-style:normal;line-height:47px;}
+
+p.title {margin-top: 12px;margin-bottom: 12px;}
+
+a.title {color: #255c9f;text-decoration: underline;font-weight: bold;}
+
+.grid {margin-top:20px;margin-bottom:20px;padding-top:5px;padding-bottom:5px;}
+.grid:after {content:'';display:block;clear:both;}
+.task-element {float:left;width:19.95%;height:85px;display:block;}
+.task-outer {height:100%;padding:1px;}
+.task-inner {height:100%;background-color:#255c9f;}
+.task-inner-active {height:100%;background-color:#0096D2;}
+.task-inner:hover {background-color:#0096D2;cursor:pointer;}
+.task-title {color:#ffffff;display:inline-block;text-align:left;margin-top:13px;margin-left:50px;line-height:1.2em;font-size:18px;
+	padding-right:20px;width:100%;}
+
+.button-ovs {background-color:#831625;color:#ffffff;font-weight:bold;padding:6px 12px;border:1px solid transparent;border-radius: 4px;}
+.button-ovs:hover {text-decoration:none;background-color:#DC0000;color:#ffffff;}
+.button-ovs:focus {background-color:#DC0000;color:#ffffff;text-decoration:none;}
 
 #search-button {padding-left:12px;padding-right:12px;position:relative;top:-1px;}
 
