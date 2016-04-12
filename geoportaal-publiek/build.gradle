@@ -1,0 +1,124 @@
+buildscript {
+	repositories {
+		jcenter()
+	}
+
+	dependencies {
+		classpath 'org.ajoberstar:gradle-git:1.3.2'
+	}
+}
+
+import nl.idgis.gradle.querydsl.QueryDSLPlugin
+import nl.idgis.gradle.play.PlayJavaPlugin
+import nl.idgis.gradle.docker.DockerPlugin
+
+apply plugin: 'eclipse'
+apply plugin: PlayJavaPlugin
+apply plugin: QueryDSLPlugin
+apply plugin: DockerPlugin
+apply plugin: 'org.ajoberstar.release-opinion'
+
+ext {
+	scalaAbiVersion = '2.11'
+}
+
+docker {
+	url = "http://${dockerHost}:2375"
+}
+
+queryDSL {
+	databaseHost = project.databaseHost
+}
+
+repositories {
+	jcenter ()
+	mavenCentral ()
+	
+	ivy {
+		name "typesafe-ivy-release"
+		url "https://repo.typesafe.com/typesafe/ivy-releases"
+		layout "ivy"
+	}
+	
+	// Add IDgis repositories:
+	maven {
+		name "idgis-public"
+		url "http://nexus.idgis.eu/content/groups/public/"
+		credentials {
+			username nexusUser 
+			password nexusPassword
+		}
+	}
+	maven {
+		name "idgis-restricted"
+		url "http://nexus.idgis.eu/content/groups/restricted/"
+		credentials {
+			username nexusUser 
+			password nexusPassword
+		}
+	}	
+}
+
+dependencies {
+	queryDSLMetaDataExporter project(':querydsl-tsvector')
+	queryDSLMetaDataExporter "org.postgresql:postgresql:9.4-1202-jdbc42"
+	
+	// Play default dependencies (Scala version 2.11):
+	play "com.typesafe.play:play-java-jdbc_2.11:2.4.6"		// javaJdbc
+	play "com.typesafe.play:play-cache_2.11:2.4.6"			// cache
+	play "com.typesafe.play:play-java-ws_2.11:2.4.6"			// javaWs
+	play "com.typesafe.play:play-jdbc-evolutions_2.11:2.4.6"	// evolutions
+	play "nl.idgis.commons:commons-utils:0.0.14"
+	
+	// Geoportaal dependencies:
+	play "org.webjars:webjars-play_${scalaAbiVersion}:2.4.0-2"
+	play project(':querydsl-tsvector')
+	play "org.webjars:dojo:1.10.4"
+	play "org.webjars:bootstrap:3.3.5"
+	play "org.webjars:modernizr:2.8.3"
+	play "org.postgresql:postgresql:9.4-1202-jdbc42"
+	play ("nl.idgis.sys:provisioning-registration:1.1.3-SNAPSHOT") {
+		exclude module: "ch.qos.logback"
+		exclude module: "logback-classic"
+	}
+	play "nl.idgis.geoportaal:md-stylesheets:1.0.7"
+	
+}
+
+model {
+	components {
+		play {
+			platform play: '2.4.6', java: '1.8'
+			
+			// The injected routes generator is required to be compatible with
+			// Play version 2.4 and up. 
+			injectedRoutesGenerator = true
+			
+			sources {
+				twirlTemplates {
+					source {
+						include "**/*.xml"
+					}
+				}
+			}
+		}
+	}
+	
+	distributions {
+		 playBinary {
+			tasks.withType(org.gradle.jvm.tasks.Jar) {
+				manifest {
+					attributes("Implementation-Title": project.name)
+					if(project.version) {
+						attributes("Implementation-Version": project.version)
+					}
+				}
+			}
+		 }
+	}
+}
+
+// Configure gradle-git release procedure (https://github.com/ajoberstar/gradle-git):
+release {
+	grgit = org.ajoberstar.grgit.Grgit.open (file (".."))
+}

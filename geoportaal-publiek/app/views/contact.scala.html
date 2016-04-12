@@ -1,0 +1,20 @@
+@import play.i18n._
+
+@main(Messages.get("contact.header")) {
+	<div class="intro">
+		<p>@Messages.get("contact.intro")</p>
+	</div>
+	
+	<div>
+		<p>
+			<strong>@Messages.get("contact.address.label")</strong> @Messages.get("contact.address.value")
+		</p>
+		<p>
+			<strong>@Messages.get("contact.phone.label")</strong> @Messages.get("contact.phone.value")
+		</p>
+		<p>
+			<strong>@Messages.get("contact.email.label")</strong> 
+			<a class="link" href="mailto:@Messages.get("contact.email.value")">@Messages.get("contact.email.value")</a>
+		</p>
+	</div>
+}

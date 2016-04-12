@@ -1,0 +1,47 @@
+@import play.i18n._
+
+@main(Messages.get("index.header")) {
+	
+<div class="intro">
+	<p>@Messages.get("index.intro")</p>
+</div>
+
+
+@helper.form(action = routes.Index.index(), 'class -> "search-bar col-md-offset-1") {
+	<div class="form-group">
+		<span class="search-label">@Messages.get("search.label")</span>
+	</div>
+	<div class="form-group">
+		<input class="form-control search-field" type="text" placeholder="@Messages.get("search.placeholder")"></input>
+	</div>
+	<div class="form-group">
+		<button type="button" class="button-ovs" id="search-button">@Messages.get("button.search")</button>
+	</div>
+}
+
+<div class="header-recent-files">
+	<div class="col-md-12">
+		<span class="files-info">@Messages.get("index.files.info.recent")</span>
+	</div>
+</div>
+	
+<div class="metadata-paragraph">
+	<div class="home-metadata">
+		<div class="row">
+			<div class="col-md-12">
+				<p class="title">
+					<a class="title">Essen (22-Dec-2014, Provincie Overijssel)</a>
+				</p>
+			</div>
+			<div class="col-md-12">
+				<p>De essen in Overijssel. Het essenbestand is samengesteld uit 2 bronbestanden. Enerzijds bestaat 
+				het bestand uit de hoge bruine en zwarte enkeerdgronden uit de bodemkaart (Alterra), anderzijds zijn op basis van diverse 
+				kenmerken (hoogte, grondsoort, historisch grondgebruik etc.) de essen bepaald. Dit project heeft plaatsgevonden...</p>
+				
+				<a class="link">@Messages.get("button.metadata")</a>
+				<button class="link" type="button">@Messages.get("button.download")</button>
+			</div>
+		</div>
+	</div>
+</div>
+}

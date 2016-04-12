@@ -1,0 +1,96 @@
+@(title: String)(content: Html)
+
+@import play.i18n._
+
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>@title</title>
+		<link rel="stylesheet" media="screen" href="@routes.Assets.versioned("stylesheets/main.css")">
+		<link rel="stylesheet" media="screen" href="@routes.Assets.versioned("lib/bootstrap/css/bootstrap.min.css")">
+		
+	</head>
+	<body>
+	<div class="page">
+		<div class="logo">
+			<a>
+				<img src="@routes.Assets.versioned("images/logo_overijssel.png")"></img>
+			</a>
+		</div>
+		
+		<div class="header">
+			<h1 class="header">@title</h1>
+		</div>
+		
+		<div class="grid">
+			<div class="tabs">
+				<a href="@routes.Index.index()">
+					<div class="task-element" id="js-element-index">
+						<div class="task-outer">
+							<div class="@if(title == Messages.get("index.header")) {task-inner-active} else {task-inner}">
+								<div class="tab-element">
+									<span class="task-title">
+										@Messages.get("tab.index")
+									</span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</a>
+				<a href="@routes.Index.search()">
+					<div class="task-element" id="js-element-index">
+						<div class="task-outer">
+							<div class="@if(title == Messages.get("search.header")) {task-inner-active} else {task-inner}">
+								<div class="tab-element">
+									<span class="task-title">
+										@Messages.get("tab.search")
+									</span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</a>
+				<a href="@routes.Index.browse()">
+					<div class="task-element" id="js-element-index">
+						<div class="task-outer">
+							<div class="@if(title == Messages.get("browse.header")) {task-inner-active} else {task-inner}">
+								<div class="tab-element">
+									<span class="task-title">
+										@Messages.get("tab.browse")
+									</span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</a>
+				<a href="@routes.Index.about()">
+					<div class="task-element" id="js-element-index">
+						<div class="task-outer">
+							<div class="@if(title == Messages.get("about.header")) {task-inner-active} else {task-inner}">
+								<div class="tab-element">
+									<span class="task-title">
+										@Messages.get("tab.about")
+									</span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</a>
+				<a href="@routes.Index.contact()">
+					<div class="task-element" id="js-element-index">
+						<div class="task-outer">
+							<div class="@if(title == Messages.get("contact.header")) {task-inner-active} else {task-inner}">
+								<div class="tab-element">
+									<span class="task-title">
+										@Messages.get("tab.contact")
+									</span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</a>
+			</div>
+		</div>
+		@content
+	</body>
+</html>
