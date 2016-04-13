@@ -56,3 +56,9 @@ a.title {color: #255c9f;text-decoration: underline;font-weight: bold;}
 #browse-info{font-size: 17px;font-weight: bold;}
 #subjects-list {border-right: 4px solid #A9A9A9;margin: 20px 10px 20px 20px;}
 #subject-selection-buttons {margin: 0px 0px 10px 0px;}
+
+#home-icon {background-position:15px 15px;background-size:25px;}
+#search-icon {background-position:15px 15px;background-size:25px;}
+#browse-icon {background-position:15px 15px;background-size:25px;}
+#about-icon {background-position:15px 15px;background-size:25px;}
+#contact-icon {background-position:15px 15px;background-size:25px;}
