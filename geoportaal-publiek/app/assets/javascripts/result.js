@@ -45,4 +45,20 @@ require([
 				}
 			});
 		});
+		
+		// Check all subjects
+		on(dom.byId('js-subject-select-all'), 'click', function(e) {
+			var subjects = query('.js-subject');
+			array.forEach(subjects, function(item) {
+				domAttr.set(item, 'checked', true);
+			});
+		});
+		
+		// Uncheck all subjects
+		on(dom.byId('js-subject-select-none'), 'click', function(e) {
+			var subjects = query('.js-subject');
+			array.forEach(subjects, function(item) {
+				domAttr.set(item, 'checked', false);
+			});
+		});
 });
