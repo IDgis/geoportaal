@@ -1,6 +1,6 @@
 @import play.i18n._
 
-@main(Messages.get("browse.header")) {
+@main(Messages.get("browse.header"), routes.Assets.versioned("javascripts/result.js").url) {
 	<div class="intro">
 		<p>@Messages.get("browse.intro")</p>
 	</div>
@@ -20,17 +20,17 @@
 	<div class="col-md-12">
 		<div class="data-navigation">
 			<div class="row">
-				<span class="col-md-9">1 @Messages.get("result.count.label.one")</span>
+				<span class="col-md-3">1 @Messages.get("result.count.label.one")</span>
 				<div class="pull-right">
 					<div class="row btn-group btn-group-sm">
 							<button id="previous" type="button" class="btn btn-default">&laquo;</button>
 							<button id="data-page-1" type="button" class="btn btn-default">1</button>
-							<button id="data-page-2" type="button" class="btn btn-default">2</button>
 							<button id="next" type="button" class="btn btn-default">&raquo;</button>
 					</div>
 					<div class="row" id="expand-area">
 						<label class="checkbox-inline">
-							<input id="js-expand-all" type="checkbox"><span id="js-label-expand-all">@Messages.get("results.expand")</span>
+							<input id="js-expand-all" type="checkbox">
+							<span id="js-label-expand-all">@Messages.get("results.expand")</span>
 						</label>
 					</div>
 				</div>
@@ -147,6 +147,23 @@
 			</div>
 		</div>
 		<div class="col-md-7" id="browse-area">
+			<div class="browse-metadata">
+				<div class="row">
+					<div class="col-md-12 browse-title">
+						<p class="title">
+							<a class="title">Essen (22-Dec-2014, Provincie Overijssel)</a>
+						</p>
+					</div>
+					<div class="col-md-12 description">
+						<p>De essen in Overijssel. Het essenbestand is samengesteld uit 2 bronbestanden. Enerzijds bestaat 
+						het bestand uit de hoge bruine en zwarte enkeerdgronden uit de bodemkaart (Alterra), anderzijds zijn op basis van diverse 
+						kenmerken (hoogte, grondsoort, historisch grondgebruik etc.) de essen bepaald. Dit project heeft plaatsgevonden...</p>
+						
+						<a class="link">@Messages.get("button.metadata")</a>
+						<button class="link" type="submit">@Messages.get("button.download")</button>
+					</div>
+				</div>
+			</div>
 			<div class="browse-metadata">
 				<div class="row">
 					<div class="col-md-12 browse-title">

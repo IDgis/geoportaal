@@ -1,6 +1,6 @@
 @import play.i18n._
 
-@main(Messages.get("index.header")) {
+@main(Messages.get("index.header"), routes.Assets.versioned("javascripts/result.js").url) {
 	
 <div class="intro">
 	<p>@Messages.get("index.intro")</p>
