@@ -46,30 +46,61 @@ require([
 		// Check all subjects
 		if(dom.byId('js-subject-select-all')) {
 			on(dom.byId('js-subject-select-all'), 'click', function(e) {
-				var subjects = query('.js-subject');
+				var subjects = query('.js-data-subject');
 				array.forEach(subjects, function(item) {
 					domAttr.set(item, 'checked', true);
 				});
+				
+				filterTypeSubject(e);
+				setExpandAllCheckBox();
 			});
 		}
 		
 		// Uncheck all subjects
 		if(dom.byId('js-subject-select-none')) {
 			on(dom.byId('js-subject-select-none'), 'click', function(e) {
-				var subjects = query('.js-subject');
+				var subjects = query('.js-data-subject');
 				array.forEach(subjects, function(item) {
 					domAttr.set(item, 'checked', false);
 				});
+				
+				filterTypeSubject(e);
+				setExpandAllCheckBox();
 			});
 		}
 		
-		// Filter on metadata type
-		on(win.doc, '.js-data-type-check:change', function(e) {
-			var checkTypes = query('.js-data-type-check');
-			array.forEach(checkTypes, function(item) {
+		// Filter event for metadata type
+		on(win.doc, '.js-data-type:change', function(e) {
+			filterTypeSubject(e);
+			setExpandAllCheckBox();
+		});
+		
+		// Filter event for subjects
+		on(win.doc, '.js-data-subject:change', function(e) {
+			filterTypeSubject(e);
+			setExpandAllCheckBox();
+		});
+		
+		// Filter actions on metadata types or subjects
+		function filterTypeSubject(e) {
+			var boolType = domAttr.has(e.target, 'data-md-type');
+			
+			if(boolType) {
+				var arrayResult = query('.js-data-type');
+			} else {
+				var arrayResult = query('.js-data-subject');
+			}
+			
+			array.forEach(arrayResult, function(item) {
 				var checkStatus = domAttr.get(item, 'checked');
-				var dataType = domAttr.get(item, 'data-md-type');
-				var mds = query('.search-metadata[data-md-type="' + dataType + '"]');
+				if(boolType) {
+					var typeVal = domAttr.get(item, 'data-md-type');
+					var mds = query('.search-metadata[data-md-type="' + typeVal + '"]');
+				} else {
+					var subjectVal = domAttr.get(item, 'data-md-subject');
+					var mds = query('.browse-metadata[data-md-subject="' + subjectVal + '"]');
+				}
+				
 				
 				if(checkStatus) {
 					array.forEach(mds, function(item) {
@@ -81,9 +112,7 @@ require([
 					});
 				}
 			});
-			
-			setExpandAllCheckBox();
-		});
+		}
 		
 		// Determine what the expand all checkbox should be set as
 		function setExpandAllCheckBox() {
