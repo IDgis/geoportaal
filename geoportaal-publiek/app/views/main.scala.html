@@ -13,7 +13,7 @@
 	</head>
 	<body>
 	<div class="page">
-		<div class="logo">
+		<div>
 			<a>
 				<img src="@routes.Assets.versioned("images/logo_overijssel.png")"></img>
 			</a>
@@ -29,7 +29,7 @@
 					<div class="task-element" id="js-element-index">
 						<div class="task-outer">
 							<div class="@if(title == Messages.get("index.header")) {task-inner-active} else {task-inner}">
-								<div class="tab-element">
+								<div class="tab-element" id="home-icon" style="background-image:url(@routes.Assets.versioned("images/home.png"))">
 									<span class="task-title">
 										@Messages.get("tab.index")
 									</span>
@@ -42,7 +42,7 @@
 					<div class="task-element" id="js-element-index">
 						<div class="task-outer">
 							<div class="@if(title == Messages.get("search.header")) {task-inner-active} else {task-inner}">
-								<div class="tab-element">
+								<div class="tab-element" id="search-icon" style="background-image:url(@routes.Assets.versioned("images/search.png"))">
 									<span class="task-title">
 										@Messages.get("tab.search")
 									</span>
@@ -55,7 +55,7 @@
 					<div class="task-element" id="js-element-index">
 						<div class="task-outer">
 							<div class="@if(title == Messages.get("browse.header")) {task-inner-active} else {task-inner}">
-								<div class="tab-element">
+								<div class="tab-element" id="browse-icon" style="background-image:url(@routes.Assets.versioned("images/browse.png"))">
 									<span class="task-title">
 										@Messages.get("tab.browse")
 									</span>
@@ -68,7 +68,7 @@
 					<div class="task-element" id="js-element-index">
 						<div class="task-outer">
 							<div class="@if(title == Messages.get("about.header")) {task-inner-active} else {task-inner}">
-								<div class="tab-element">
+								<div class="tab-element" id="about-icon" style="background-image:url(@routes.Assets.versioned("images/about.png"))">
 									<span class="task-title">
 										@Messages.get("tab.about")
 									</span>
@@ -81,7 +81,7 @@
 					<div class="task-element" id="js-element-index">
 						<div class="task-outer">
 							<div class="@if(title == Messages.get("contact.header")) {task-inner-active} else {task-inner}">
-								<div class="tab-element">
+								<div class="tab-element" id="contact-icon" style="background-image:url(@routes.Assets.versioned("images/contact.png"))">
 									<span class="task-title">
 										@Messages.get("tab.contact")
 									</span>
@@ -91,8 +91,8 @@
 					</div>
 				</a>
 			</div>
+			@content
 		</div>
-		@content
 		@if(!"".equals(jsMain)) {
 			<script src="@routes.Assets.versioned("lib/dojo/dojo/dojo.js")" type="text/javascript"></script>
 			<script src="@jsMain" type="text/javascript"></script>
