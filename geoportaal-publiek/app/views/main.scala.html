@@ -13,7 +13,7 @@
 	</head>
 	<body>
 	<div class="page">
-		<div class="logo">
+		<div>
 			<a>
 				<img src="@routes.Assets.versioned("images/logo_overijssel.png")"></img>
 			</a>
@@ -91,8 +91,8 @@
 					</div>
 				</a>
 			</div>
+			@content
 		</div>
-		@content
 		@if(!"".equals(jsMain)) {
 			<script src="@routes.Assets.versioned("lib/dojo/dojo/dojo.js")" type="text/javascript"></script>
 			<script src="@jsMain" type="text/javascript"></script>
