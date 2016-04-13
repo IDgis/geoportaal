@@ -42,20 +42,20 @@
 		<div class="filter-options">
 			<div class="row">
 				<label class="checkbox-inline">
-					<input type="checkbox" date-type="dataset" checked>
+					<input class="js-data-type-check" type="checkbox" data-md-type="dataset" checked>
 						@Messages.get("search.checkboxes.label") <strong>@Messages.get("search.checkboxes.dataset")</strong>
 				</label>
 			</div>
 			<div class="row">
 				<label class="checkbox-inline">
-					<input type="checkbox" date-type="service" checked>
+					<input class="js-data-type-check" type="checkbox" data-md-type="service" checked>
 						@Messages.get("search.checkboxes.label") <strong>@Messages.get("search.checkboxes.service")</strong>
 				</label>
 				
 			</div>
 			<div class="row">
 				<label class="checkbox-inline">
-					<input type="checkbox" date-type="dc" checked>
+					<input class="js-data-type-check" type="checkbox" data-md-type="dc" checked>
 						@Messages.get("search.checkboxes.label") <strong>@Messages.get("search.checkboxes.dc")</strong>
 				</label>
 			</div>
@@ -63,7 +63,7 @@
 	</div>
 	
 	<div class="metadata-paragraph">
-		<div class="search-metadata">
+		<div class="search-metadata" data-md-type="service">
 			<div class="row">
 				<div class="col-md-12">
 					<p class="title">
@@ -80,7 +80,24 @@
 				</div>
 			</div>
 		</div>
-		<div class="search-metadata">
+		<div class="search-metadata" data-md-type="dc">
+			<div class="row">
+				<div class="col-md-12">
+					<p class="title">
+						<a class="title">Essen (22-Dec-2014, Provincie Overijssel)</a>
+					</p>
+				</div>
+				<div class="col-md-12 description">
+					<p>De essen in Overijssel. Het essenbestand is samengesteld uit 2 bronbestanden. Enerzijds bestaat 
+					het bestand uit de hoge bruine en zwarte enkeerdgronden uit de bodemkaart (Alterra), anderzijds zijn op basis van diverse 
+					kenmerken (hoogte, grondsoort, historisch grondgebruik etc.) de essen bepaald. Dit project heeft plaatsgevonden...</p>
+					
+					<a class="link">@Messages.get("button.metadata")</a>
+					<button class="link" type="button">@Messages.get("button.download")</button>
+				</div>
+			</div>
+		</div>
+		<div class="search-metadata" data-md-type="dataset">
 			<div class="row">
 				<div class="col-md-12">
 					<p class="title">
