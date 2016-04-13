@@ -7,7 +7,6 @@ result.count.label.zero=Geen resultaat
 result.count.label.one=resultaat
 result.count.label.multiple=resultaten
 results.expand=Resultaten uitklappen
-results.collapse=Resultaten dichtklappen
 
 tab.index=Home
 tab.search=Uitgebreid zoeken
