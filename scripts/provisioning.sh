@@ -95,6 +95,12 @@ if [ $(sudo -u postgres psql --list -qA | grep geoportaal-beheer | wc -l) -eq 0 
 	sudo -u postgres createdb -l en_US.UTF-8 -E UTF-8 geoportaal-beheer
 fi
 
+if [ $(sudo -u postgres psql --list -qA | grep geoportaal-publiek | wc -l) -eq 0 ]; then
+	echo "Creating geoportaal-publiek database ..."
+	
+	sudo -u postgres createdb -l en_US.UTF-8 -E UTF-8 geoportaal-publiek
+fi
+
 # Install a FTP server and configure it:
 sudo cp /vagrant/scripts/vsftpd.conf /etc/vsftpd.conf
 mkdir /etc/vsftpd
