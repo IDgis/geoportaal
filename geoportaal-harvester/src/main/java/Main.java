@@ -54,15 +54,10 @@ public class Main {
 		for (int i = 0; i < 3; i++) {
 			String href = responses[i].getHref();
 			if(href.endsWith(".xml")) {
-				URL url = new URL(protocol + "://" + host + href);
-				InputStream input = url.openStream();
-				Document doc = db.parse(input);
-				
-				System.out.println(doc.getElementsByTagName("title").item(0).getTextContent().trim());
-				
-				convertDatasetValues(doc);
-				
-				input.close();
+				try(InputStream input = new URL(protocol + "://" + host + href).openStream();) {
+					Document doc = db.parse(input);
+					convertDatasetValues(doc);
+				}
 			}
 		}
 	}
