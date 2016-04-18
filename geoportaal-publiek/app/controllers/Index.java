@@ -1,21 +1,22 @@
 package controllers;
 
-import play.mvc.*;
+import static models.QMdType.mdType;
+import static models.QMdTypeLabel.mdTypeLabel;
 
+import java.util.List;
+
+import javax.inject.Inject;
+
+import com.querydsl.core.Tuple;
+
+import play.i18n.Lang;
+import play.mvc.*;
+import util.QueryDSL;
 import views.html.*;
 
-/**
- * This controller contains an action to handle HTTP requests
- * to the application's home page.
- */
 public class Index extends Controller {
-
-	/**
-	 * An action that renders an HTML page with a welcome message.
-	 * The configuration in the <code>routes</code> file means that
-	 * this method will be called when the application receives a
-	 * <code>GET</code> request with a path of <code>/</code>.
-	 */
+	@Inject QueryDSL q;
+	
 	public Result index() {
 		return ok(index.render());
 	}
@@ -29,7 +30,17 @@ public class Index extends Controller {
 	}
 	
 	public Result search() {
-		return ok(search.render());
+		return q.withTransaction(tx -> {
+			Lang curLang = Http.Context.current().lang();
+			
+			List<Tuple> mdTypes = tx.select(mdType.name, mdTypeLabel.title)
+				.from(mdType)
+				.join(mdTypeLabel).on(mdType.id.eq(mdTypeLabel.mdTypeId))
+				.where(mdTypeLabel.language.eq(curLang.code()))
+				.fetch();
+			
+			return ok(search.render(mdTypes));
+		});
 	}
 	
 	public Result browse() {
