@@ -21,9 +21,6 @@ index.files.info.recent=Vijf meest recente bestanden:
 search.header=Uitgebreid zoeken
 search.intro=Hier kunt u op termen zoeken naar kaarten van de provincie.
 search.checkboxes.label=Zoeken naar
-search.checkboxes.dataset=GIS bestanden
-search.checkboxes.service=Services
-search.checkboxes.dc=Statische kaarten
 
 browse.header=Bladeren
 browse.intro=Hier kunt u bladeren naar kaarten van de provincie.

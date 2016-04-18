@@ -1,4 +1,9 @@
+@(mdTypes: java.util.List[com.querydsl.core.Tuple])
+
 @import play.i18n._
+@import play.mvc.Http
+@import models.QMdType.mdType
+@import models.QMdTypeLabel.mdTypeLabel
 
 @main(Messages.get("search.header"), routes.Assets.versioned("javascripts/result.js").url) {
 	<div class="intro">
@@ -40,25 +45,14 @@
 		
 	<div>
 		<div class="filter-options">
-			<div class="row">
-				<label class="checkbox-inline">
-					<input class="js-data-type" type="checkbox" data-md-type="dataset" checked>
-						@Messages.get("search.checkboxes.label") <strong>@Messages.get("search.checkboxes.dataset")</strong>
-				</label>
-			</div>
-			<div class="row">
-				<label class="checkbox-inline">
-					<input class="js-data-type" type="checkbox" data-md-type="service" checked>
-						@Messages.get("search.checkboxes.label") <strong>@Messages.get("search.checkboxes.service")</strong>
-				</label>
-				
-			</div>
-			<div class="row">
-				<label class="checkbox-inline">
-					<input class="js-data-type" type="checkbox" data-md-type="dc" checked>
-						@Messages.get("search.checkboxes.label") <strong>@Messages.get("search.checkboxes.dc")</strong>
-				</label>
-			</div>
+			@for(metaType <- mdTypes) {
+				<div class="row">
+					<label class="checkbox-inline">
+						<input class="js-data-type" type="checkbox" data-md-type="@metaType.get(mdType.name)" checked>
+							@Messages.get("search.checkboxes.label") <strong>@metaType.get(mdTypeLabel.title)</strong>
+					</label>
+				</div>
+			}
 		</div>
 	</div>
 	
