@@ -20,8 +20,11 @@ Vagrant.configure(2) do |config|
 	# Forward the exhibitor port:
 	config.vm.network "forwarded_port", guest: 8081, host: 8082, auto_correct: true
 	
-	# Forward the play-app port:
+	# Forward the geoportaal-beheer play-app port:
 	# config.vm.network "forwarded_port", guest: 9000, host: 9000
+	
+	# Forward the geoportaal-publiek play-app port:
+	# config.vm.network "forwarded_port", guest: 9005, host: 9005
 	
 	# Forward the apache port:
 	config.vm.network "forwarded_port", guest: 80, host: 80
