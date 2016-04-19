@@ -301,7 +301,7 @@
 				<input class="form-control js-date" type="date" data-toggle="tooltip" data-placement="top" 
 				title="@Messages.get("form.date.create.title")" id="js-date-creation" name="dateSourceCreation"
 				data-language="@Http.Context.current().lang().code()"
-				data-validate="@validate" if(@create) {value="@today"}
+				data-validate="@validate" @if(create) {value="@today"}
 				@if(validate && previousValues.get("metadata").getDateSourceCreation != null) {
 					value="@sdf.format(previousValues.get("metadata").getDateSourceCreation.getTime())"}
 				@if(!validate && !create) {

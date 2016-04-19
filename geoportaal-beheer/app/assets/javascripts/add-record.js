@@ -148,12 +148,6 @@ require([
 			formData.append('dateSourceValidFrom', dateValidFrom);
 			formData.append('dateSourceValidUntil', dateValidUntil);
 			
-			var dateCreation = domAttr.get(query('#js-date-creation ~ input')[0], 'value');
-			var datePublication = domAttr.get(query('#js-date-publication ~ input')[0], 'value');
-			var dateRevision = domAttr.get(query('#js-date-revision ~ input')[0], 'value');
-			var dateValidFrom = domAttr.get(query('#js-date-valid-from ~ input')[0], 'value');
-			var dateValidUntil = domAttr.get(query('#js-date-valid-until ~ input')[0], 'value');
-			
 			var subjectList = query('.js-subject-input:checked');
 			var creatorVal = domAttr.get(dom.byId('js-creator-select'), 'value');
 			
