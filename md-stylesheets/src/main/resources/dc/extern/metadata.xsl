@@ -303,7 +303,7 @@
 				<xsl:apply-templates select="rdf:Description/dc:relation"/>
 			</div>
 			<div class="blok">
-				<xsl:apply-templates select="rdf:Description/dc:rights[1]"/>
+				<xsl:apply-templates select="rdf:Description/dc:rights[@rdf:datatype='gebruiksrestricties'][1]"/>
 			</div>
 		</div>
 		<div id="wie">
@@ -391,7 +391,7 @@
   			</p>
   		</xsl:if>
   	</xsl:template>
-  	<xsl:template match="rdf:RDF/rdf:Description/dc:rights[@rdf:datatype]">
+  	<xsl:template match="rdf:RDF/rdf:Description/dc:rights[@rdf:datatype='gebruiksrestricties']">
   		<xsl:if test=". != ''">
   			<p>
 	  			<b><xsl:text>Gebruiksrestricties: </xsl:text></b>
