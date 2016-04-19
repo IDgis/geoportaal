@@ -185,6 +185,19 @@ require([
 					domConstruct.place(data, result);
 				} else {
 					form.submit();
+					
+					domConstruct.destroy('js-save-form');
+					domConstruct.destroy('js-cancel-form');
+					
+					var buttonsDiv = query('.editor-knoppen div')[0];
+					var outerSpan = domConstruct.create('span');
+					var innerSpan = domConstruct.create('span');
+					
+					domAttr.set(outerSpan, 'id', 'parent-hourglass-icon');
+					domAttr.set(innerSpan, 'class', 'glyphicon glyphicon-hourglass');
+					
+					domConstruct.place(outerSpan, buttonsDiv, 'last');
+					domConstruct.place(innerSpan, outerSpan, 'last');
 				}
 			});
 		});
