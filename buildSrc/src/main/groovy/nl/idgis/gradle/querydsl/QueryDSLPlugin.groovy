@@ -3,6 +3,7 @@ package nl.idgis.gradle.querydsl;
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 
+import org.gradle.api.plugins.JavaPlugin
 import org.gradle.api.tasks.compile.JavaCompile
 import org.gradle.play.plugins.PlayPlugin
 import org.gradle.plugins.ide.eclipse.EclipsePlugin
@@ -196,6 +197,23 @@ class QueryDSLPlugin implements Plugin<Project> {
 							}
 						}
 					}
+				}
+			}
+			
+			project.plugins.withType (JavaPlugin) {
+				project.dependencies {
+					compile "com.querydsl:querydsl-sql:4.0.6"
+				}
+				project.sourceSets {
+					main {
+						java {
+							srcDir new File (project.buildDir, "queryDSL/src")
+						}
+					}
+				}
+				
+				project.getTasksByName('compileJava', false).each { compileTask ->
+					compileTask.dependsOn queryDSLTask
 				}
 			}
 			

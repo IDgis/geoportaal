@@ -40,6 +40,7 @@ subprojects {
 // java projects
 configure([
 	project(':querydsl-tsvector'),
+	project(':geoportaal-publiek-db'),
 	project(':geoportaal-harvester')]) {
 	
 	apply plugin: 'java'
@@ -55,7 +56,6 @@ configure([
 	
 	apply plugin: 'eclipse'
 	apply plugin: PlayJavaPlugin
-	apply plugin: QueryDSLPlugin
 	apply plugin: DockerPlugin
 	apply plugin: 'org.ajoberstar.release-opinion'
 	
@@ -76,9 +76,6 @@ configure([
 	}
 	
 	dependencies {
-		queryDSLMetaDataExporter project(':querydsl-tsvector')
-		queryDSLMetaDataExporter "org.postgresql:postgresql:9.4-1202-jdbc42"
-		
 		// Play default dependencies (Scala version 2.11):
 		play "com.typesafe.play:play-java-jdbc_2.11:2.4.3"			// javaJdbc
 		play "com.typesafe.play:play-cache_2.11:2.4.3"				// cache
@@ -88,7 +85,6 @@ configure([
 		
 		// Geoportaal dependencies:
 		play "org.webjars:webjars-play_${scalaAbiVersion}:2.4.0-2"
-		play project(':querydsl-tsvector')
 		play "org.webjars:dojo:1.10.4"
 		play "org.webjars:bootstrap:3.3.5"
 		play "org.webjars:modernizr:2.8.3"
@@ -133,6 +129,24 @@ configure([
 		}
 	}
 	
+	// Configure gradle-git release procedure (https://github.com/ajoberstar/gradle-git):
+	release {
+		grgit = org.ajoberstar.grgit.Grgit.open (file (".."))
+	}
+}
+
+project(':geoportaal-beheer') {
+	
+	apply plugin: QueryDSLPlugin
+	
+	dependencies {
+		queryDSLMetaDataExporter project(':querydsl-tsvector')
+		queryDSLMetaDataExporter "org.postgresql:postgresql:9.4-1202-jdbc42"
+		
+		play project(':querydsl-tsvector')		
+		play "org.springframework.security:spring-security-web:4.0.3.RELEASE"
+	}
+	
 	queryDSL {
 		databaseHost = project.databaseHost
 	}
@@ -141,15 +155,35 @@ configure([
 	release {
 		grgit = org.ajoberstar.grgit.Grgit.open (file (".."))
 	}
+		
+	tasks.withType(PlayRun) {
+		httpPort = 9000
+	}
 }
 
-project('querydsl-tsvector') {
+project(':geoportaal-publiek') {
+	
+	dependencies {
+		play project(':geoportaal-publiek-db')
+	}	
+	
+	// Configure gradle-git release procedure (https://github.com/ajoberstar/gradle-git):
+	release {
+		grgit = org.ajoberstar.grgit.Grgit.open (file (".."))
+	}
+	
+	tasks.withType(PlayRun) {
+		httpPort = 9005
+	}
+}
+
+project(':querydsl-tsvector') {
 	dependencies {
 		compile 'com.querydsl:querydsl-sql:4.0.6'
 	}
 }
 
-project('geoportaal-harvester') {
+project(':geoportaal-harvester') {
 	version = '0.1'
 	
 	repositories {
@@ -173,18 +207,21 @@ project('geoportaal-harvester') {
 	}
 }
 
-project('geoportaal-beheer') {
-	dependencies {
-		play "org.springframework.security:spring-security-web:4.0.3.RELEASE"
+project(':geoportaal-publiek-db') {
+	
+	apply plugin: QueryDSLPlugin
+	
+	queryDSL {
+		evolutionsDir = project.file "src/main/resources"
+		sourceDir = project.file "src/main/java"
+		classpath = project.configurations.compile 
+		databaseHost = project.databaseHost
 	}
 	
-	tasks.withType(PlayRun) {
-		httpPort = 9000
-	}
-}
-
-project('geoportaal-publiek') {
-	tasks.withType(PlayRun) {
-		httpPort = 9005
+	dependencies {
+		queryDSLMetaDataExporter project(':querydsl-tsvector')
+		queryDSLMetaDataExporter "org.postgresql:postgresql:9.4-1202-jdbc42"
+		
+		compile project(':querydsl-tsvector')
 	}
 }
