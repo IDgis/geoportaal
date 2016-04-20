@@ -184,7 +184,28 @@ project(':querydsl-tsvector') {
 }
 
 project(':geoportaal-harvester') {
-	version = '0.1'
+	apply plugin: 'application'
+	
+	mainClassName = "Main"
+	
+	task runApp(type: JavaExec) {
+		classpath = sourceSets.main.runtimeClasspath
+		main = 'Main'
+		
+		// These should be set in a gradle.properties file
+		environment 'db.driver', dbDriver
+		environment 'db.url', dbUrl
+		environment 'db.user', dbUser
+		environment 'db.password', dbPassword
+		
+		environment 'dataset.url', datasetUrl
+		environment 'service.url', serviceUrl
+		environment 'dataset.name', datasetName
+		environment 'service.name', serviceName
+		environment 'dataset.label', datasetLabel
+		environment 'service.label', serviceLabel
+		environment 'language', language
+	}
 	
 	repositories {
 		flatDir { dir 'lib' }
@@ -197,13 +218,12 @@ project(':geoportaal-harvester') {
 	}
 	
 	dependencies {
+		compile project(':geoportaal-publiek-db')
+		compile 'com.querydsl:querydsl-sql:4.0.6'
 		compile 'org.postgresql:postgresql:9.4.1208'
 		compile 'org.apache.jackrabbit:jackrabbit-jcr2dav:2.12.1'
+		compile 'org.springframework:spring-jdbc:4.2.5.RELEASE'
 		compile 'org.slf4j:slf4j-log4j12:1.7.21'
-	}
-	
-	jar {
-		manifest { attributes 'Main-Class': 'Main' }
 	}
 }
 

@@ -25,12 +25,28 @@ import org.apache.jackrabbit.webdav.MultiStatus;
 import org.apache.jackrabbit.webdav.MultiStatusResponse;
 import org.apache.jackrabbit.webdav.client.methods.DavMethod;
 import org.apache.jackrabbit.webdav.client.methods.PropFindMethod;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 
-public class Main {
+import com.querydsl.sql.Configuration;
+import com.querydsl.sql.PostgreSQLTemplates;
+import com.querydsl.sql.SQLQueryFactory;
+import com.querydsl.sql.SQLTemplates;
 
+public class Main {
 	public static void main(String[] args) throws Exception {
+		DriverManagerDataSource dataSource = new DriverManagerDataSource();
+		dataSource.setDriverClassName(System.getenv("db.driver"));
+		dataSource.setUrl(System.getenv("db.url"));
+		dataSource.setUsername(System.getenv("db.user"));
+		dataSource.setPassword(System.getenv("db.password"));
+		
+		SQLTemplates templates = PostgreSQLTemplates.builder().printSchema().build();
+		Configuration configuration = new Configuration(templates);
+		
+		SQLQueryFactory qf = new SQLQueryFactory(configuration, dataSource);
+		
 		HostConfiguration hostConfig = new HostConfiguration();
 		HttpConnectionManager connectionManager = new MultiThreadedHttpConnectionManager();
 		HttpConnectionManagerParams params = new HttpConnectionManagerParams();

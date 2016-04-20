@@ -2,3 +2,4 @@
 /.project
 /.vagrant
 .gradle
+.cache-main
