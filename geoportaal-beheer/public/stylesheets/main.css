@@ -96,3 +96,5 @@ input[type="file"].input-attachment {display:inline;}
 #published-warning {position:relative;left:20px;display:none;}
 
 #version-info {position:relative;left:20px;margin-top:20px;}
+
+#parent-hourglass-icon {font-size:40px;}

@@ -101,6 +101,7 @@ public class Index extends Controller {
 			
 			// Create a SimpleDateFormat object for the yyyy-MM-dd format
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+			SimpleDateFormat sdfLocal = new SimpleDateFormat("dd-MM-yyyy");
 			
 			// Fetches the role of the logged in user
 			Integer roleId = tx.select(user.roleId)
@@ -286,7 +287,7 @@ public class Index extends Controller {
 			}
 			
 			// Return index page
-			return ok(views.html.index.render(datasetRows, supplierList, statusList, mdFormatList, sdf, roleId, textSearch, 
+			return ok(views.html.index.render(datasetRows, supplierList, statusList, mdFormatList, sdf, sdfLocal, roleId, textSearch, 
 				supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch, timestampStartSearch, resetTimestampEndSearch, sort,
 				checkedList));
 		});

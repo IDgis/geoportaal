@@ -15,12 +15,11 @@ require([
 	'dojo/request/xhr',
 	'dojo/parser',
 	'dijit/registry',
-	
 	'dijit/form/DateTextBox',
-	'dojo/NodeList-traverse',
 	
+	'dojo/NodeList-traverse',
 	'dojo/domReady!'
-	], function(dom, query, on, lang, win, array, domAttr, domConstruct, domStyle, xhr, parser, registry) {
+	], function(dom, query, on, lang, win, array, domAttr, domConstruct, domStyle, xhr, parser, registry, DateTextBox) {
 		
 		var create = domAttr.get(dom.byId('js-date-creation'), 'data-create');
 		var validate = domAttr.get(dom.byId('js-date-creation'), 'data-validate');
@@ -60,8 +59,8 @@ require([
 		var addAttachment = on(win.doc, '.js-add-attachment:click', function(e) {
 			var attachment = query('.js-add-attachment').parents('.js-attachment')[0];
 			var attachmentClone = lang.clone(attachment);
-			var attachmentCloneDiv = query(attachmentClone).query('.js-attachment-input')[0];
-			var attachmentCloneTooltip = query(attachmentClone).query('.js-attachment-tooltip')[0];
+			var attachmentCloneDiv = query('.js-attachment-input', attachmentClone)[0];
+			var attachmentCloneTooltip = query('.js-attachment-tooltip', attachmentClone)[0];
 			domConstruct.destroy(attachmentCloneTooltip);
 			
 			var buttonNode = domConstruct.create("button");
@@ -90,7 +89,7 @@ require([
 		
 		var removeSavedAttachment = on(win.doc, '.delete-attachment-button:click', function(e) {
 			var attToDel = query(this).parents('.attachment-file')[0];
-			var attachmentName = domAttr.get(query(this).query('~ span')[0], 'innerHTML');
+			var attachmentName = domAttr.get(query('~ span', this)[0], 'innerHTML');
 			var idDelEl = domConstruct.create('input');
 			
 			domAttr.set(idDelEl, 'type', 'hidden');
@@ -148,12 +147,6 @@ require([
 			formData.append('dateSourceValidFrom', dateValidFrom);
 			formData.append('dateSourceValidUntil', dateValidUntil);
 			
-			var dateCreation = domAttr.get(query('#js-date-creation ~ input')[0], 'value');
-			var datePublication = domAttr.get(query('#js-date-publication ~ input')[0], 'value');
-			var dateRevision = domAttr.get(query('#js-date-revision ~ input')[0], 'value');
-			var dateValidFrom = domAttr.get(query('#js-date-valid-from ~ input')[0], 'value');
-			var dateValidUntil = domAttr.get(query('#js-date-valid-until ~ input')[0], 'value');
-			
 			var subjectList = query('.js-subject-input:checked');
 			var creatorVal = domAttr.get(dom.byId('js-creator-select'), 'value');
 			
@@ -191,6 +184,19 @@ require([
 					domConstruct.place(data, result);
 				} else {
 					form.submit();
+					
+					domConstruct.destroy('js-save-form');
+					domConstruct.destroy('js-cancel-form');
+					
+					var buttonsDiv = query('.editor-knoppen div')[0];
+					var outerSpan = domConstruct.create('span');
+					var innerSpan = domConstruct.create('span');
+					
+					domAttr.set(outerSpan, 'id', 'parent-hourglass-icon');
+					domAttr.set(innerSpan, 'class', 'glyphicon glyphicon-hourglass');
+					
+					domConstruct.place(outerSpan, buttonsDiv, 'last');
+					domConstruct.place(innerSpan, outerSpan, 'last');
 				}
 			});
 		});

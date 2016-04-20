@@ -3,6 +3,7 @@
 	statusList: java.util.List[com.querydsl.core.Tuple],
 	mdFormatList: java.util.List[com.querydsl.core.Tuple],
 	sdf: java.text.SimpleDateFormat,
+	sdfLocal: java.text.SimpleDateFormat,
 	roleId: Integer,
 	textSearch: String,
 	supplierSearch: String,
@@ -191,7 +192,7 @@
 		<strong>@Messages.get("index.warning.published.record")</strong>
 	</div>
 	
-	@views.html.list(datasetRows, sdf, roleId, textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch, sort, checkedList)
+	@views.html.list(datasetRows, sdfLocal, roleId, textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch, sort, checkedList)
 	<div id="version-info">
 		@Messages.get("application.name"): @getClass().getPackage().getImplementationVersion()
 	</div>
