@@ -2,7 +2,10 @@ package controllers;
 
 import static models.QMdType.mdType;
 import static models.QMdTypeLabel.mdTypeLabel;
+import static models.QDocument.document;
 
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -30,16 +33,26 @@ public class Index extends Controller {
 	}
 	
 	public Result search() {
+		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+		
 		return q.withTransaction(tx -> {
 			Lang curLang = Http.Context.current().lang();
 			
-			List<Tuple> mdTypes = tx.select(mdType.name, mdTypeLabel.title)
-				.from(mdType)
-				.join(mdTypeLabel).on(mdType.id.eq(mdTypeLabel.mdTypeId))
-				.where(mdTypeLabel.language.eq(curLang.code()))
-				.fetch();
+			List<Tuple> documents = tx.select(document.title, document.date, document.creator, document.description, document.thumbnail, mdType.name)
+					.from(document)
+					.join(mdType).on(document.mdTypeId.eq(mdType.id))
+					.where(document.date.isNotNull())
+					.orderBy(document.date.desc())
+					.limit(10)
+					.fetch();
 			
-			return ok(search.render(mdTypes));
+			List<Tuple> mdTypes = tx.select(mdType.name, mdTypeLabel.title)
+					.from(mdType)
+					.join(mdTypeLabel).on(mdType.id.eq(mdTypeLabel.mdTypeId))
+					.where(mdTypeLabel.language.eq(curLang.code()))
+					.fetch();
+			
+			return ok(search.render(mdTypes, documents, sdf));
 		});
 	}
 	

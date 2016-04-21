@@ -14,8 +14,7 @@ require([
 		
 		// Expand or collapse single metadata record
 		on(win.doc, '.search-metadata > .row:click, .browse-metadata > .row:click', function(e) {
-			var row = e.target.closest('.row');
-			var description = query(row).query('.description')[0];
+			var description = query('.description', e.target.closest('.row'))[0];
 			
 			var descDisplay = domStyle.get(description, 'display');
 			if(descDisplay === 'none') {

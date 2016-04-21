@@ -1,9 +1,13 @@
-@(mdTypes: java.util.List[com.querydsl.core.Tuple])
+@(mdTypes: java.util.List[com.querydsl.core.Tuple], 
+	documents: java.util.List[com.querydsl.core.Tuple],
+	sdf: java.text.SimpleDateFormat
+)
 
 @import play.i18n._
 @import play.mvc.Http
 @import models.QMdType.mdType
 @import models.QMdTypeLabel.mdTypeLabel
+@import models.QDocument.document;
 
 @main(Messages.get("search.header"), routes.Assets.versioned("javascripts/result.js").url) {
 	<div class="intro">
@@ -25,7 +29,8 @@
 	<div>
 		<div class="data-navigation">
 			<div class="row">
-				<span class="col-md-3">1 @Messages.get("result.count.label.one")</span>
+				<span class="col-md-3">@documents.size() @if(documents.size() == 0) {@Messages.get("result.count.label.zero")}
+					@if(documents.size() == 1) {@Messages.get("result.count.label.one")} else {@Messages.get("result.count.label.multiple")}</span>
 				<div class="pull-right">
 					<div class="row btn-group btn-group-sm">
 							<button id="previous" type="button" class="btn btn-default">&laquo;</button>
@@ -57,56 +62,28 @@
 	</div>
 	
 	<div class="col-md-11 col-md-offset-1">
-		<div class="search-metadata" data-md-type="service">
-			<div class="row">
-				<div class="col-md-12">
-					<p class="title">
-						<a class="title">Essen (22-Dec-2014, Provincie Overijssel)</a>
-					</p>
-				</div>
-				<div class="col-md-12 description">
-					<p>De essen in Overijssel. Het essenbestand is samengesteld uit 2 bronbestanden. Enerzijds bestaat 
-					het bestand uit de hoge bruine en zwarte enkeerdgronden uit de bodemkaart (Alterra), anderzijds zijn op basis van diverse 
-					kenmerken (hoogte, grondsoort, historisch grondgebruik etc.) de essen bepaald. Dit project heeft plaatsgevonden...</p>
-					
-					<a class="link">@Messages.get("button.metadata")</a>
-					<button class="link" type="button">@Messages.get("button.download")</button>
-				</div>
-			</div>
-		</div>
-		<div class="search-metadata" data-md-type="dc">
-			<div class="row">
-				<div class="col-md-12">
-					<p class="title">
-						<a class="title">Essen (22-Dec-2014, Provincie Overijssel)</a>
-					</p>
-				</div>
-				<div class="col-md-12 description">
-					<p>De essen in Overijssel. Het essenbestand is samengesteld uit 2 bronbestanden. Enerzijds bestaat 
-					het bestand uit de hoge bruine en zwarte enkeerdgronden uit de bodemkaart (Alterra), anderzijds zijn op basis van diverse 
-					kenmerken (hoogte, grondsoort, historisch grondgebruik etc.) de essen bepaald. Dit project heeft plaatsgevonden...</p>
-					
-					<a class="link">@Messages.get("button.metadata")</a>
-					<button class="link" type="button">@Messages.get("button.download")</button>
+		@for(doc <- documents) {
+			<div class="search-metadata" data-md-type="@doc.get(mdType.name)">
+				<div class="row">
+					<div class="col-md-12">
+						<p class="title">
+							<a class="title">@doc.get(document.title) (@sdf.format(doc.get(document.date).getTime()), @doc.get(document.creator))</a>
+						</p>
+					</div>
+					<div class="col-md-12 description">
+						<p>
+							@if(doc.get(document.description).length > 460) {
+								@doc.get(document.description).substring(0, 460)...
+							} else {
+								@doc.get(document.description)
+							}
+						</p>
+						
+						<a class="link">@Messages.get("button.metadata")</a>
+						<button class="link" type="button">@Messages.get("button.download")</button>
+					</div>
 				</div>
 			</div>
-		</div>
-		<div class="search-metadata" data-md-type="dataset">
-			<div class="row">
-				<div class="col-md-12">
-					<p class="title">
-						<a class="title">Essen (22-Dec-2014, Provincie Overijssel)</a>
-					</p>
-				</div>
-				<div class="col-md-12 description">
-					<p>De essen in Overijssel. Het essenbestand is samengesteld uit 2 bronbestanden. Enerzijds bestaat 
-					het bestand uit de hoge bruine en zwarte enkeerdgronden uit de bodemkaart (Alterra), anderzijds zijn op basis van diverse 
-					kenmerken (hoogte, grondsoort, historisch grondgebruik etc.) de essen bepaald. Dit project heeft plaatsgevonden...</p>
-					
-					<a class="link">@Messages.get("button.metadata")</a>
-					<button class="link" type="button">@Messages.get("button.download")</button>
-				</div>
-			</div>
-		</div>
+		}
 	</div>
 }
