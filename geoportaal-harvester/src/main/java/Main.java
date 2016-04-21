@@ -1,8 +1,13 @@
+import static models.QAnyText.anyText;
+import static models.QDocSubject.docSubject;
+import static models.QDocument.document;
 import static models.QMdType.mdType;
 import static models.QMdTypeLabel.mdTypeLabel;
+import static models.QSubject.subject;
 
 import java.io.InputStream;
 import java.net.URL;
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -59,12 +64,21 @@ public class Main {
 		setUrl(qf, System.getenv("dataset.url"), System.getenv("dataset.name"), System.getenv("dataset.label"), System.getenv("language"));
 		setUrl(qf, System.getenv("service.url"), System.getenv("service.name"), System.getenv("service.label"), System.getenv("language"));
 		
+		qf.delete(anyText)
+			.execute();
+		
+		qf.delete(docSubject)
+			.execute();
+		
+		qf.delete(document)
+				.execute();
+		
 		DavMethod pFind = new PropFindMethod(System.getenv("dataset.url"), DavConstants.PROPFIND_ALL_PROP, DavConstants.DEPTH_1);
 		
-		executeWebDav(client, pFind, System.getenv("dataset.url"));
+		executeWebDav(qf, client, pFind, System.getenv("dataset.url"));
 	}
 	
-	public static void executeWebDav(HttpClient client, DavMethod pFind, String url) throws Exception {
+	public static void executeWebDav(SQLQueryFactory qf, HttpClient client, DavMethod pFind, String url) throws Exception {
 		client.executeMethod(pFind);
 		MultiStatus multiStatus = pFind.getResponseBodyAsMultiStatus();
 		MultiStatusResponse[] responses = multiStatus.getResponses();
@@ -73,20 +87,20 @@ public class Main {
 		dbf.setNamespaceAware(true);
 		DocumentBuilder db = dbf.newDocumentBuilder();
 		
-		for (int i = 0; i < 6; i++) {
+		for (int i = 0; i < responses.length; i++) {
 			String href = responses[i].getHref();
 			if(href.endsWith(".xml")) {
 				String filename = href.substring(href.lastIndexOf("/") + 1);
 				
 				try(InputStream input = new URL(url + filename).openStream();) {
 					Document doc = db.parse(input);
-					convertDatasetValues(doc);
+					convertDatasetValues(qf, doc);
 				}
 			}
 		}
 	}
 	
-	public static void convertDatasetValues(Document d) throws Exception {
+	public static void convertDatasetValues(SQLQueryFactory qf, Document d) throws Exception {
 		// construct namespace context
 		Map<String, String> ns = new HashMap<>();
 		ns.put("gmd", "http://www.isotc211.org/2005/gmd");
@@ -114,9 +128,13 @@ public class Main {
 		List<String> dataIds = metaDoc.getStrings(DatasetPath.DATA_ID.path());
 		List<String> keywords = metaDoc.getStrings(DatasetPath.KEYWORD.path());
 		List<String> orgContacts = metaDoc.getStrings(DatasetPath.ORGANISATION_CONTACT.path());
-		List<String> orgNames = metaDoc.getStrings(DatasetPath.ORGANISATION_NAME.path());
 		List<String> distribNames = metaDoc.getStrings(DatasetPath.DISTRIBUTOR_NAME.path());
 		List<String> geoAreas = metaDoc.getStrings(DatasetPath.GEO_AREA.path());
+		
+		Integer mdTypeId = qf.select(mdType.id)
+				.from(mdType)
+				.where(mdType.url.eq(System.getenv("dataset.url")))
+				.fetchOne();
 		
 		LocalDate finalLD = null;
 		for(String date : dates) {
@@ -128,6 +146,77 @@ public class Main {
 					finalLD = LocalDate.parse(date);
 				}
 			}
+		}
+		
+		Timestamp ts;
+		if(finalLD != null) {
+			ts = Timestamp.valueOf(finalLD.atStartOfDay());
+		} else {
+			ts = null;
+		}
+		
+		try {
+			qf.insert(document)
+			.set(document.uuid, getValueFromList(uuids, 36))
+			.set(document.mdTypeId, mdTypeId)
+			.set(document.title, getValueFromList(titles, 200))
+			.set(document.date, ts)
+			.set(document.creator, getValueFromList(creators, 200))
+			.set(document.description, getValueFromList(abstracts, null))
+			.set(document.thumbnail, getValueFromList(thumbnails, 200))
+			.execute();
+		} catch(Exception e) {
+			throw new Exception(e.getMessage() + " " + getValueFromList(uuids, 36));
+		}
+		
+		Integer docId = qf.select(document.id)
+				.from(document)
+				.where(document.uuid.eq(getValueFromList(uuids, 36)))
+				.fetchOne();
+		
+		for(String subjectOne : subjects) {
+			Integer subjectId = qf.select(subject.id)
+					.from(subject)
+					.where(subject.name.eq(subjectOne))
+					.fetchOne();
+			
+			qf.insert(docSubject)
+					.set(docSubject.documentId, docId)
+					.set(docSubject.subjectId, subjectId)
+					.execute();
+		}
+		
+		setAnyText(qf, docId, altTitles);
+		setAnyText(qf, docId, mdIds);
+		setAnyText(qf, docId, dataIds);
+		setAnyText(qf, docId, keywords);
+		setAnyText(qf, docId, orgContacts);
+		setAnyText(qf, docId, distribNames);
+		setAnyText(qf, docId, geoAreas);
+	}
+	
+	private static void setAnyText(SQLQueryFactory qf, Integer docId, List<String> listValues) {
+		for(String value : listValues) {
+			if(value.length() <= 200) {
+				qf.insert(anyText)
+				.set(anyText.documentId, docId)
+				.set(anyText.content, value.trim())
+				.execute();
+			}
+		}
+	}
+	
+	private static String getValueFromList(List<String> listValues, Integer limit) {
+		if(listValues.size() == 0) {
+			return null;
+		} else if(limit != null) {
+			if(listValues.get(0).trim().length() > limit) {
+				return null;
+			} else {
+				return listValues.get(0).trim();
+			}
+		} else {
+			return listValues.get(0).trim();
 		}
 	}
 	

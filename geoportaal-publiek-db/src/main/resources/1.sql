@@ -7,9 +7,9 @@ CREATE TABLE gp.document (
 		uuid varchar(36) not null,
 		md_type_id integer not null,
 		title varchar(200) not null,
-		date timestamp not null,
+		date timestamp,
 		creator varchar(200),
-		abstract text,
+		description text,
 		thumbnail varchar(200)
 )
 ;
@@ -89,7 +89,7 @@ ALTER TABLE gp.doc_subject ADD CONSTRAINT FK_doc_subject_subject_id FOREIGN KEY 
 	ON DELETE NO ACTION ON UPDATE NO ACTION
 ;
 
-ALTER TABLE gp.any_text ADD CONSTRAINT FK_any_text_document_id FOREIGN KEY (document_id) REFERENCES gp.any_text (id)
+ALTER TABLE gp.any_text ADD CONSTRAINT FK_any_text_document_id FOREIGN KEY (document_id) REFERENCES gp.document (id)
 	ON DELETE NO ACTION ON UPDATE NO ACTION
 ;
 

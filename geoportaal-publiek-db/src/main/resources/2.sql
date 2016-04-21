@@ -50,7 +50,7 @@ SELECT
 	to_tsvector('dutch', coalesce((string_agg(d.uuid, ' ')), '')) ||
 	to_tsvector('dutch', coalesce((string_agg(d.title, ' ')), '')) ||
 	to_tsvector('dutch', coalesce((string_agg(d.creator, ' ')), '')) ||
-	to_tsvector('dutch', coalesce((string_agg(d.abstract, ' ')), '')) ||
+	to_tsvector('dutch', coalesce((string_agg(d.description, ' ')), '')) ||
 	to_tsvector('dutch', coalesce((string_agg(sl.title, ' ')), '')) ||
 	to_tsvector('dutch', coalesce((string_agg(an.content, ' ')), '')) tsv
 FROM gp.document d 
