@@ -1,3 +1,6 @@
+import static models.QMdType.mdType;
+import static models.QMdTypeLabel.mdTypeLabel;
+
 import java.io.InputStream;
 import java.net.URL;
 import java.time.LocalDate;
@@ -42,11 +45,6 @@ public class Main {
 		dataSource.setUsername(System.getenv("db.user"));
 		dataSource.setPassword(System.getenv("db.password"));
 		
-		SQLTemplates templates = PostgreSQLTemplates.builder().printSchema().build();
-		Configuration configuration = new Configuration(templates);
-		
-		SQLQueryFactory qf = new SQLQueryFactory(configuration, dataSource);
-		
 		HostConfiguration hostConfig = new HostConfiguration();
 		HttpConnectionManager connectionManager = new MultiThreadedHttpConnectionManager();
 		HttpConnectionManagerParams params = new HttpConnectionManagerParams();
@@ -54,12 +52,20 @@ public class Main {
 		HttpClient client = new HttpClient(connectionManager);
 		client.setHostConfiguration(hostConfig);
 		
-		String protocol = "http";
-		String host = "test-metadata.geodataoverijssel.nl";
-		String resourcePath = "/metadata/dataset/";
-		DavMethod pFind = new PropFindMethod(protocol + "://" + host + resourcePath, DavConstants.PROPFIND_ALL_PROP, DavConstants.DEPTH_1);
-		client.executeMethod(pFind);
+		SQLTemplates templates = PostgreSQLTemplates.builder().printSchema().build();
+		Configuration configuration = new Configuration(templates);
+		SQLQueryFactory qf = new SQLQueryFactory(configuration, dataSource);
 		
+		setUrl(qf, System.getenv("dataset.url"), System.getenv("dataset.name"), System.getenv("dataset.label"), System.getenv("language"));
+		setUrl(qf, System.getenv("service.url"), System.getenv("service.name"), System.getenv("service.label"), System.getenv("language"));
+		
+		DavMethod pFind = new PropFindMethod(System.getenv("dataset.url"), DavConstants.PROPFIND_ALL_PROP, DavConstants.DEPTH_1);
+		
+		executeWebDav(client, pFind, System.getenv("dataset.url"));
+	}
+	
+	public static void executeWebDav(HttpClient client, DavMethod pFind, String url) throws Exception {
+		client.executeMethod(pFind);
 		MultiStatus multiStatus = pFind.getResponseBodyAsMultiStatus();
 		MultiStatusResponse[] responses = multiStatus.getResponses();
 		
@@ -67,10 +73,12 @@ public class Main {
 		dbf.setNamespaceAware(true);
 		DocumentBuilder db = dbf.newDocumentBuilder();
 		
-		for (int i = 0; i < 3; i++) {
+		for (int i = 0; i < 6; i++) {
 			String href = responses[i].getHref();
 			if(href.endsWith(".xml")) {
-				try(InputStream input = new URL(protocol + "://" + host + href).openStream();) {
+				String filename = href.substring(href.lastIndexOf("/") + 1);
+				
+				try(InputStream input = new URL(url + filename).openStream();) {
 					Document doc = db.parse(input);
 					convertDatasetValues(doc);
 				}
@@ -98,6 +106,17 @@ public class Main {
 		List<String> creators = metaDoc.getStrings(DatasetPath.CREATOR.path());
 		List<String> abstracts = metaDoc.getStrings(DatasetPath.ABSTRACT.path());
 		List<String> thumbnails = metaDoc.getStrings(DatasetPath.THUMBNAIL.path());
+		
+		List<String> subjects = metaDoc.getStrings(DatasetPath.SUBJECT.path());
+		
+		List<String> altTitles = metaDoc.getStrings(DatasetPath.ALT_TITLE.path());
+		List<String> mdIds = metaDoc.getStrings(DatasetPath.MD_ID.path());
+		List<String> dataIds = metaDoc.getStrings(DatasetPath.DATA_ID.path());
+		List<String> keywords = metaDoc.getStrings(DatasetPath.KEYWORD.path());
+		List<String> orgContacts = metaDoc.getStrings(DatasetPath.ORGANISATION_CONTACT.path());
+		List<String> orgNames = metaDoc.getStrings(DatasetPath.ORGANISATION_NAME.path());
+		List<String> distribNames = metaDoc.getStrings(DatasetPath.DISTRIBUTOR_NAME.path());
+		List<String> geoAreas = metaDoc.getStrings(DatasetPath.GEO_AREA.path());
 		
 		LocalDate finalLD = null;
 		for(String date : dates) {
@@ -140,6 +159,33 @@ public class Main {
 		xp.setNamespaceContext(nc);
 		
 		return new MetadataDocument(d, xp);
+	}
+	
+	public static void setUrl(SQLQueryFactory qf, String url, String typeName, String typeLabelName, String language) {
+		List<Integer> mdTypes = qf.select(mdType.id)
+				.from(mdType)
+				.where(mdType.url.eq(url))
+				.fetch();
+			
+		Integer mdTypesCount = mdTypes.size();
+		
+		if(mdTypesCount.equals(0)) {
+			qf.insert(mdType)
+				.set(mdType.url, url)
+				.set(mdType.name, typeName)
+				.execute();
+			
+			Integer mdTypeId = qf.select(mdType.id)
+					.from(mdType)
+					.where(mdType.url.eq(url))
+					.fetchOne();
+			
+			qf.insert(mdTypeLabel)
+					.set(mdTypeLabel.mdTypeId, mdTypeId)
+					.set(mdTypeLabel.language, language)
+					.set(mdTypeLabel.title, typeLabelName)
+					.execute();
+		}
 	}
 	
 	public static class MetadataDocument {
