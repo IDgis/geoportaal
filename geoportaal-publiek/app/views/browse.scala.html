@@ -1,4 +1,12 @@
+@(subjects: java.util.List[com.querydsl.core.Tuple],
+	documents: java.util.List[models.DocSubject],
+	sdf: java.text.SimpleDateFormat
+)
+
 @import play.i18n._
+@import models.QDocument.document;
+@import models.QSubject.subject;
+@import models.QSubjectLabel.subjectLabel;
 
 @main(Messages.get("browse.header"), routes.Assets.versioned("javascripts/result.js").url) {
 	<div class="intro">
@@ -20,7 +28,9 @@
 	<div class="col-md-12">
 		<div class="data-navigation">
 			<div class="row">
-				<span class="col-md-3">1 @Messages.get("result.count.label.one")</span>
+				<span class="col-md-3">@if(documents.size() == 0) {@Messages.get("result.count.label.zero")}
+					@if(documents.size() == 1) {@documents.size() @Messages.get("result.count.label.one")} @if(documents.size > 1) {
+						@documents.size() @Messages.get("result.count.label.multiple")}</span>
 				<div class="pull-right">
 					<div class="row btn-group btn-group-sm">
 							<button id="previous" type="button" class="btn btn-default">&laquo;</button>
@@ -50,173 +60,44 @@
 				<button id="js-subject-select-all" type="button" class="button-ovs">@Messages.get("browse.button.select.all")</button>
 				<button id="js-subject-select-none" type="button" class="button-ovs">@Messages.get("browse.button.select.nothing")</button>
 			</div>
-			<div>
-				<label class="checkbox-inline">
-					<input class="js-data-subject" data-md-subject="inlandwaters" type="checkbox" checked>
-					<span>@Messages.get("browse.subject.inlandwaters")</span>
-				</label>
-			</div>
-			<div>
-				<label class="checkbox-inline">
-					<input class="js-data-subject" data-md-subject="structure" type="checkbox" checked>
-					<span>@Messages.get("browse.subject.structure")</span>
-				</label>
-			</div>
-			<div>
-				<label class="checkbox-inline">
-					<input class="js-data-subject" data-md-subject="society" type="checkbox" checked>
-					<span>@Messages.get("browse.subject.society")</span>
-				</label>
-			</div>
-			<div>
-				<label class="checkbox-inline">
-					<input class="js-data-subject" data-md-subject="economy" type="checkbox" checked>
-					<span>@Messages.get("browse.subject.economy")</span>
-				</label>
-			</div>				
-			<div>
-				<label class="checkbox-inline">
-					<input class="js-data-subject" data-md-subject="biota" type="checkbox" checked>
-					<span>@Messages.get("browse.subject.biota")</span>
-				</label>
-			</div>
-			<div>
-				<label class="checkbox-inline">
-					<input class="js-data-subject" data-md-subject="geoscientificinformation" type="checkbox" checked>
-					<span>@Messages.get("browse.subject.geoscientificinformation")</span>
-				</label>
-			</div>
-			<div>
-				<label class="checkbox-inline">
-					<input class="js-data-subject" data-md-subject="health" type="checkbox" checked>
-					<span>@Messages.get("browse.subject.health")</span>
-				</label>
-			</div>
-			<div>
-				<label class="checkbox-inline">
-					<input class="js-data-subject" data-md-subject="boundaries" type="checkbox" checked>
-					<span>@Messages.get("browse.subject.boundaries")</span>
-				</label>
-			</div>
-			<div>
-				<label class="checkbox-inline">
-					<input class="js-data-subject" data-md-subject="elevation" type="checkbox" checked>
-					<span>@Messages.get("browse.subject.elevation")</span>
-				</label>
-			</div>
-			<div>
-				<label class="checkbox-inline">
-					<input class="js-data-subject" data-md-subject="climatologymeteorologyatmosphere" type="checkbox" checked>
-					<span>@Messages.get("browse.subject.climatologymeteorologyatmosphere")</span>
-				</label>
-			</div>
-			<div>
-				<label class="checkbox-inline">
-					<input class="js-data-subject" data-md-subject="farming" type="checkbox" checked>
-					<span>@Messages.get("browse.subject.farming")</span>
-				</label>
-			</div>
-			<div>
-				<label class="checkbox-inline">
-					<input class="js-data-subject" data-md-subject="location" type="checkbox" checked>
-					<span>@Messages.get("browse.subject.location")</span>
-				</label>
-			</div>
-			<div>
-				<label class="checkbox-inline">
-					<input class="js-data-subject" data-md-subject="intelligencemilitary" type="checkbox" checked>
-					<span>@Messages.get("browse.subject.intelligencemilitary")</span>
-				</label>
-			</div>
-			<div>
-				<label class="checkbox-inline">
-					<input class="js-data-subject" data-md-subject="environment" type="checkbox" checked>
-					<span>@Messages.get("browse.subject.environment")</span>
-				</label>
-			</div>
-			<div>
-				<label class="checkbox-inline">
-					<input class="js-data-subject" data-md-subject="utilitiescommunication" type="checkbox" checked>
-					<span>@Messages.get("browse.subject.utilitiescommunication")</span>
-				</label>
-			</div>
-			<div>
-				<label class="checkbox-inline">
-					<input class="js-data-subject" data-md-subject="oceans" type="checkbox" checked>
-					<span>@Messages.get("browse.subject.oceans")</span>
-				</label>
-			</div>
-			<div>
-				<label class="checkbox-inline">
-					<input class="js-data-subject" data-md-subject="imagerybasemapsearthcover" type="checkbox" checked>
-					<span>@Messages.get("browse.subject.imagerybasemapsearthcover")</span>
-				</label>
-			</div>
-			<div>
-				<label class="checkbox-inline">
-					<input class="js-data-subject" data-md-subject="planningcadastre" type="checkbox" checked>
-					<span>@Messages.get("browse.subject.planningcadastre")</span>
-				</label>
-			</div>
-			<div>
-				<label class="checkbox-inline">
-					<input class="js-data-subject" data-md-subject="transportation" type="checkbox" checked>
-					<span>@Messages.get("browse.subject.transportation")</span>
-				</label>
-			</div>
+			@for(subjectOne <- subjects) {
+				<div>
+					<label class="checkbox-inline">
+						<input class="js-data-subject" data-md-subject="@subjectOne.get(subject.name)" type="checkbox" checked>
+						<span>@subjectOne.get(subjectLabel.title)</span>
+					</label>
+				</div>
+			}
 		</div>
 		<div class="col-md-7" id="browse-area">
-			<div class="browse-metadata" data-md-subject="utilitiescommunication">
-				<div class="row">
-					<div class="col-md-12 browse-title">
-						<p class="title">
-							<a class="title">Essen (22-Dec-2014, Provincie Overijssel)</a>
-						</p>
-					</div>
-					<div class="col-md-12 description">
-						<p>De essen in Overijssel. Het essenbestand is samengesteld uit 2 bronbestanden. Enerzijds bestaat 
-						het bestand uit de hoge bruine en zwarte enkeerdgronden uit de bodemkaart (Alterra), anderzijds zijn op basis van diverse 
-						kenmerken (hoogte, grondsoort, historisch grondgebruik etc.) de essen bepaald. Dit project heeft plaatsgevonden...</p>
-						
-						<a class="link">@Messages.get("button.metadata")</a>
-						<button class="link" type="submit">@Messages.get("button.download")</button>
-					</div>
-				</div>
-			</div>
-			<div class="browse-metadata" data-md-subject="geoscientificinformation">
-				<div class="row">
-					<div class="col-md-12 browse-title">
-						<p class="title">
-							<a class="title">Essen (22-Dec-2014, Provincie Overijssel)</a>
-						</p>
-					</div>
-					<div class="col-md-12 description">
-						<p>De essen in Overijssel. Het essenbestand is samengesteld uit 2 bronbestanden. Enerzijds bestaat 
-						het bestand uit de hoge bruine en zwarte enkeerdgronden uit de bodemkaart (Alterra), anderzijds zijn op basis van diverse 
-						kenmerken (hoogte, grondsoort, historisch grondgebruik etc.) de essen bepaald. Dit project heeft plaatsgevonden...</p>
-						
-						<a class="link">@Messages.get("button.metadata")</a>
-						<button class="link" type="submit">@Messages.get("button.download")</button>
+			@for(doc <- documents) {
+				<div class="browse-metadata" 
+					data-md-subject="@for(sub <- doc.getSubjects()) {@if(doc.getSubjects().indexOf(sub) == 0){@sub} else { @sub}}">
+					<div class="row">
+						<div class="col-md-12 browse-title">
+							<p class="title">
+								<a class="title">@doc.getTitle() (@sdf.format(doc.getDate().getTime()), @doc.getCreator())</a>
+							</p>
+						</div>
+						<div class="col-md-12 description">
+							<p>
+								@if(doc.getThumbnail() != null) {
+									<img src="@doc.getThumbnail()" class="md-thumbnail">
+								}
+								
+								@if(doc.getDescription().length > 460) {
+									@doc.getDescription().substring(0, 460)...
+								} else {
+									@doc.getDescription()
+								}
+							</p>
+							
+							<a class="link">@Messages.get("button.metadata")</a>
+							<button class="link" type="submit">@Messages.get("button.download")</button>
+						</div>
 					</div>
 				</div>
-			</div>
-			<div class="browse-metadata" data-md-subject="transportation">
-				<div class="row">
-					<div class="col-md-12 browse-title">
-						<p class="title">
-							<a class="title">Essen (22-Dec-2014, Provincie Overijssel)</a>
-						</p>
-					</div>
-					<div class="col-md-12 description">
-						<p>De essen in Overijssel. Het essenbestand is samengesteld uit 2 bronbestanden. Enerzijds bestaat 
-						het bestand uit de hoge bruine en zwarte enkeerdgronden uit de bodemkaart (Alterra), anderzijds zijn op basis van diverse 
-						kenmerken (hoogte, grondsoort, historisch grondgebruik etc.) de essen bepaald. Dit project heeft plaatsgevonden...</p>
-						
-						<a class="link">@Messages.get("button.metadata")</a>
-						<button class="link" type="submit">@Messages.get("button.download")</button>
-					</div>
-				</div>
-			</div>
+			}
 		</div>
 	</div>
 }

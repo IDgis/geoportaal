@@ -1,4 +1,9 @@
+@(documents: java.util.List[com.querydsl.core.Tuple],
+	sdf: java.text.SimpleDateFormat
+)
+
 @import play.i18n._
+@import models.QDocument.document;
 
 @main(Messages.get("index.header"), routes.Assets.versioned("javascripts/result.js").url) {
 	<div class="intro">
@@ -25,22 +30,32 @@
 	</div>
 		
 	<div class="col-md-11 col-md-offset-1">
-		<div class="home-metadata">
-			<div class="row">
-				<div class="col-md-12">
-					<p class="title">
-						<a class="title">Essen (22-Dec-2014, Provincie Overijssel)</a>
-					</p>
-				</div>
-				<div class="col-md-12">
-					<p>De essen in Overijssel. Het essenbestand is samengesteld uit 2 bronbestanden. Enerzijds bestaat 
-					het bestand uit de hoge bruine en zwarte enkeerdgronden uit de bodemkaart (Alterra), anderzijds zijn op basis van diverse 
-					kenmerken (hoogte, grondsoort, historisch grondgebruik etc.) de essen bepaald. Dit project heeft plaatsgevonden...</p>
-					
-					<a class="link">@Messages.get("button.metadata")</a>
-					<button class="link" type="button">@Messages.get("button.download")</button>
+		@for(doc <- documents) {
+			<div class="home-metadata">
+				<div class="row">
+					<div class="col-md-12">
+						<p class="title">
+							<a class="title">@doc.get(document.title) (@sdf.format(doc.get(document.date).getTime()), @doc.get(document.creator))</a>
+						</p>
+					</div>
+					<div class="col-md-12">
+						<p>
+							@if(doc.get(document.thumbnail) != null) {
+								<img src="@doc.get(document.thumbnail)" class="md-thumbnail">
+							}
+							
+							@if(doc.get(document.description).length > 460) {
+								@doc.get(document.description).substring(0, 460)...
+							} else {
+								@doc.get(document.description)
+							}
+						</p>
+						
+						<a class="link">@Messages.get("button.metadata")</a>
+						<button class="link" type="button">@Messages.get("button.download")</button>
+					</div>
 				</div>
 			</div>
-		</div>
+		}
 	</div>
 }
