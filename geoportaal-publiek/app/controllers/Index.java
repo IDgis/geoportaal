@@ -1,7 +1,7 @@
 package controllers;
 
-import static models.QDocument.document;
 import static models.QDocSubject.docSubject;
+import static models.QDocument.document;
 import static models.QMdType.mdType;
 import static models.QMdTypeLabel.mdTypeLabel;
 import static models.QSubject.subject;
@@ -27,7 +27,18 @@ public class Index extends Controller {
 	@Inject QueryDSL q;
 	
 	public Result index() {
-		return ok(index.render());
+		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+		
+		return q.withTransaction(tx -> {
+			List<Tuple> documents = tx.select(document.title, document.date, document.creator, document.description, document.thumbnail)
+					.from(document)
+					.where(document.date.isNotNull())
+					.orderBy(document.date.desc())
+					.limit(5)
+					.fetch();
+			
+			return ok(index.render(documents, sdf));
+		});
 	}
 	
 	public Result contact() {
@@ -43,7 +54,11 @@ public class Index extends Controller {
 		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
 		
 		return q.withTransaction(tx -> {
-			
+			List<Tuple> mdTypes = tx.select(mdType.name, mdTypeLabel.title)
+					.from(mdType)
+					.join(mdTypeLabel).on(mdType.id.eq(mdTypeLabel.mdTypeId))
+					.where(mdTypeLabel.language.eq(curLang.code()))
+					.fetch();
 			
 			List<Tuple> documents = tx.select(document.title, document.date, document.creator, document.description, document.thumbnail, mdType.name)
 					.from(document)
@@ -51,12 +66,6 @@ public class Index extends Controller {
 					.where(document.date.isNotNull())
 					.orderBy(document.date.desc())
 					.limit(5)
-					.fetch();
-			
-			List<Tuple> mdTypes = tx.select(mdType.name, mdTypeLabel.title)
-					.from(mdType)
-					.join(mdTypeLabel).on(mdType.id.eq(mdTypeLabel.mdTypeId))
-					.where(mdTypeLabel.language.eq(curLang.code()))
 					.fetch();
 			
 			return ok(search.render(mdTypes, documents, sdf));
@@ -91,13 +100,8 @@ public class Index extends Controller {
 						.orderBy(subject.id.asc())
 						.fetch();
 				
-				List<String> subs = new ArrayList<>();
-				for(String sub : docSubjects) {
-					subs.add(sub);
-				}
-				
 				DocSubject ds = new DocSubject(doc.get(document.title), doc.get(document.date), doc.get(document.creator), 
-						doc.get(document.description), doc.get(document.thumbnail), subs);
+						doc.get(document.description), doc.get(document.thumbnail), docSubjects);
 				
 				finalDocuments.add(ds);
 			}

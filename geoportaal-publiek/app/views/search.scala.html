@@ -5,9 +5,9 @@
 
 @import play.i18n._
 @import play.mvc.Http
+@import models.QDocument.document;
 @import models.QMdType.mdType
 @import models.QMdTypeLabel.mdTypeLabel
-@import models.QDocument.document;
 
 @main(Messages.get("search.header"), routes.Assets.versioned("javascripts/result.js").url) {
 	<div class="intro">
