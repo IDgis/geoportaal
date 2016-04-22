@@ -62,3 +62,5 @@ a.title {color: #255c9f;text-decoration: underline;font-weight: bold;}
 #browse-icon {background-position:15px 15px;background-size:25px;}
 #about-icon {background-position:15px 15px;background-size:25px;}
 #contact-icon {background-position:15px 15px;background-size:25px;}
+
+.md-thumbnail {float:right;width:120px;height:120px;padding-left:20px;padding-bottom:10px;}

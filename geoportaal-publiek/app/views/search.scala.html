@@ -73,6 +73,10 @@
 					</div>
 					<div class="col-md-12 description">
 						<p>
+							@if(doc.get(document.thumbnail) != null) {
+								<img src="@doc.get(document.thumbnail)" class="md-thumbnail">
+							}
+							
 							@if(doc.get(document.description).length > 460) {
 								@doc.get(document.description).substring(0, 460)...
 							} else {
