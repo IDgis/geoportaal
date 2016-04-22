@@ -29,8 +29,9 @@
 	<div>
 		<div class="data-navigation">
 			<div class="row">
-				<span class="col-md-3">@documents.size() @if(documents.size() == 0) {@Messages.get("result.count.label.zero")}
-					@if(documents.size() == 1) {@Messages.get("result.count.label.one")} else {@Messages.get("result.count.label.multiple")}</span>
+				<span class="col-md-3">@if(documents.size() == 0) {@Messages.get("result.count.label.zero")}
+					@if(documents.size() == 1) {@documents.size() @Messages.get("result.count.label.one")} @if(documents.size > 1) {
+						@documents.size() @Messages.get("result.count.label.multiple")}</span>
 				<div class="pull-right">
 					<div class="row btn-group btn-group-sm">
 							<button id="previous" type="button" class="btn btn-default">&laquo;</button>

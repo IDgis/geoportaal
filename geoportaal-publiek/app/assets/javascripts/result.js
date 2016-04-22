@@ -83,31 +83,47 @@ require([
 		// Filter actions on metadata types or subjects
 		function filterTypeSubject(e) {
 			var boolType = domAttr.has(e.target, 'data-md-type');
+			var arrayChecksValue = [];
 			
 			if(boolType) {
-				var arrayResult = query('.js-data-type');
+				var arrayResult = query('.search-metadata');
+				var arrayChecks = query('.js-data-type:checked');
+				array.forEach(arrayChecks, function(item) {
+					var value = domAttr.get(item, 'data-md-type');
+					arrayChecksValue.push(value);
+				});
 			} else {
-				var arrayResult = query('.js-data-subject');
+				var arrayResult = query('.browse-metadata');
+				var arrayChecks = query('.js-data-subject:checked');
+				array.forEach(arrayChecks, function(item) {
+					var value = domAttr.get(item, 'data-md-subject');
+					arrayChecksValue.push(value);
+				});
 			}
 			
+			var arrayChecksValueJoin = arrayChecksValue.join([separator = ' ']);
+			
 			array.forEach(arrayResult, function(item) {
-				var checkStatus = domAttr.get(item, 'checked');
 				if(boolType) {
 					var typeVal = domAttr.get(item, 'data-md-type');
-					var mds = query('.search-metadata[data-md-type="' + typeVal + '"]');
+					
+					domStyle.set(item, 'display', 'none');
+					if(arrayChecksValueJoin.indexOf(typeVal) > -1) {
+						domStyle.set(item, 'display', 'block');
+					}
 				} else {
 					var subjectVal = domAttr.get(item, 'data-md-subject');
-					var mds = query('.browse-metadata[data-md-subject="' + subjectVal + '"]');
-				}
-				
-				
-				if(checkStatus) {
-					array.forEach(mds, function(item) {
-						domStyle.set(item, 'display', 'block');
-					});
-				} else {
-					array.forEach(mds, function(item) {
-						domStyle.set(item, 'display', 'none');
+					var subjectValArray = subjectVal.split(' ');
+					
+					domStyle.set(item, 'display', 'none');
+					var executeDisplay = true;
+					array.forEach(subjectValArray, function(subject) {
+						if(executeDisplay && arrayChecksValueJoin.indexOf(subject) > -1) {
+							if(subject !== "") {
+								domStyle.set(item, 'display', 'block');
+								executeDisplay = false;
+							}
+						}
 					});
 				}
 			});
