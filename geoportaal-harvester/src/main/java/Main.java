@@ -157,21 +157,21 @@ public class Main {
 		
 		try {
 			qf.insert(document)
-			.set(document.uuid, getValueFromList(uuids, 36))
+			.set(document.uuid, getValueFromList(uuids))
 			.set(document.mdTypeId, mdTypeId)
-			.set(document.title, getValueFromList(titles, 200))
+			.set(document.title, getValueFromList(titles))
 			.set(document.date, ts)
-			.set(document.creator, getValueFromList(creators, 200))
-			.set(document.description, getValueFromList(abstracts, null))
-			.set(document.thumbnail, getValueFromList(thumbnails, 200))
+			.set(document.creator, getValueFromList(creators))
+			.set(document.description, getValueFromList(abstracts))
+			.set(document.thumbnail, getValueFromList(thumbnails))
 			.execute();
 		} catch(Exception e) {
-			throw new Exception(e.getMessage() + " " + getValueFromList(uuids, 36));
+			throw new Exception(e.getMessage() + " " + getValueFromList(uuids));
 		}
 		
 		Integer docId = qf.select(document.id)
 				.from(document)
-				.where(document.uuid.eq(getValueFromList(uuids, 36)))
+				.where(document.uuid.eq(getValueFromList(uuids)))
 				.fetchOne();
 		
 		for(String subjectOne : subjects) {
@@ -196,25 +196,17 @@ public class Main {
 	}
 	
 	private static void setAnyText(SQLQueryFactory qf, Integer docId, List<String> listValues) {
-		for(String value : listValues) {
-			if(value.length() <= 200) {
-				qf.insert(anyText)
-				.set(anyText.documentId, docId)
-				.set(anyText.content, value.trim())
-				.execute();
-			}
+		for(String value : listValues) {			
+			qf.insert(anyText)
+			.set(anyText.documentId, docId)
+			.set(anyText.content, value.trim())
+			.execute();			
 		}
 	}
 	
-	private static String getValueFromList(List<String> listValues, Integer limit) {
+	private static String getValueFromList(List<String> listValues) {
 		if(listValues.size() == 0) {
 			return null;
-		} else if(limit != null) {
-			if(listValues.get(0).trim().length() > limit) {
-				return null;
-			} else {
-				return listValues.get(0).trim();
-			}
 		} else {
 			return listValues.get(0).trim();
 		}
