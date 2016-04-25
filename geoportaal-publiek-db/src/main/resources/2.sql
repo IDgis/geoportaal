@@ -55,8 +55,8 @@ SELECT
 	to_tsvector('dutch', coalesce((string_agg(an.content, ' ')), '')) tsv
 FROM gp.document d 
 LEFT JOIN gp.doc_subject ds ON d.id=ds.document_id
-JOIN gp.subject s ON ds.subject_id=s.id
-JOIN gp.subject_label sl ON s.id=sl.subject_id
+LEFT JOIN gp.subject s ON ds.subject_id=s.id
+LEFT JOIN gp.subject_label sl ON s.id=sl.subject_id
 LEFT JOIN gp.any_text an ON d.id=an.document_id
 GROUP BY d.id
 ;
