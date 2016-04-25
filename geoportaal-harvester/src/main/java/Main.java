@@ -33,7 +33,11 @@ import org.apache.jackrabbit.webdav.MultiStatus;
 import org.apache.jackrabbit.webdav.MultiStatusResponse;
 import org.apache.jackrabbit.webdav.client.methods.DavMethod;
 import org.apache.jackrabbit.webdav.client.methods.PropFindMethod;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.support.TransactionTemplate;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 
@@ -50,6 +54,9 @@ public class Main {
 		dataSource.setUsername(System.getenv("db.user"));
 		dataSource.setPassword(System.getenv("db.password"));
 		
+		PlatformTransactionManager TransactionManager = new DataSourceTransactionManager(dataSource);
+		TransactionTemplate tt = new TransactionTemplate(TransactionManager);
+		
 		HostConfiguration hostConfig = new HostConfiguration();
 		HttpConnectionManager connectionManager = new MultiThreadedHttpConnectionManager();
 		HttpConnectionManagerParams params = new HttpConnectionManagerParams();
@@ -59,23 +66,31 @@ public class Main {
 		
 		SQLTemplates templates = PostgreSQLTemplates.builder().printSchema().build();
 		Configuration configuration = new Configuration(templates);
-		SQLQueryFactory qf = new SQLQueryFactory(configuration, dataSource);
+		SQLQueryFactory qf = new SQLQueryFactory(configuration, () -> DataSourceUtils.getConnection(dataSource));
 		
 		setUrl(qf, System.getenv("dataset.url"), System.getenv("dataset.name"), System.getenv("dataset.label"), System.getenv("language"));
 		setUrl(qf, System.getenv("service.url"), System.getenv("service.name"), System.getenv("service.label"), System.getenv("language"));
 		
-		qf.delete(anyText)
-			.execute();
-		
-		qf.delete(docSubject)
-			.execute();
-		
-		qf.delete(document)
-				.execute();
-		
-		DavMethod pFind = new PropFindMethod(System.getenv("dataset.url"), DavConstants.PROPFIND_ALL_PROP, DavConstants.DEPTH_1);
-		
-		executeWebDav(qf, client, pFind, System.getenv("dataset.url"));
+		tt.execute((status) -> {
+			try {			
+				qf.delete(anyText)
+					.execute();
+				
+				qf.delete(docSubject)
+					.execute();
+				
+				qf.delete(document)
+					.execute();
+				
+				DavMethod pFind = new PropFindMethod(System.getenv("dataset.url"), DavConstants.PROPFIND_ALL_PROP, DavConstants.DEPTH_1);
+				
+				executeWebDav(qf, client, pFind, System.getenv("dataset.url"));
+				
+				return true;
+			} catch(Exception e) {
+				throw new RuntimeException(e);
+			}
+		});
 	}
 	
 	public static void executeWebDav(SQLQueryFactory qf, HttpClient client, DavMethod pFind, String url) throws Exception {
