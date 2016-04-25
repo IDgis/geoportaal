@@ -138,22 +138,32 @@ public class Main {
 		
 		MetadataDocument metaDoc = parseDocument(d, ns, pf);
 		
-		List<String> uuids = metaDoc.getStrings(DatasetPath.UUID.path());
-		List<String> titles = metaDoc.getStrings(DatasetPath.TITLE.path());
-		List<String> dates = metaDoc.getStrings(DatasetPath.DATE.path());
-		List<String> creators = metaDoc.getStrings(DatasetPath.CREATOR.path());
-		List<String> abstracts = metaDoc.getStrings(DatasetPath.ABSTRACT.path());
-		List<String> thumbnails = metaDoc.getStrings(DatasetPath.THUMBNAIL.path());
+		List<String> listUuid = metaDoc.getStrings(DatasetPath.UUID.path());
+		List<String> listTitle = metaDoc.getStrings(DatasetPath.TITLE.path());
+		List<String> listDate = metaDoc.getStrings(DatasetPath.DATE.path());
+		List<String> listOrganisationCreator = metaDoc.getStrings(DatasetPath.ORGANISATION_CREATOR.path());
+		List<String> listDescription = metaDoc.getStrings(DatasetPath.ABSTRACT.path());
+		List<String> listThumbnail = metaDoc.getStrings(DatasetPath.THUMBNAIL.path());
 		
-		List<String> subjects = metaDoc.getStrings(DatasetPath.SUBJECT.path());
+		List<String> listSubject = metaDoc.getStrings(DatasetPath.SUBJECT.path());
 		
-		List<String> altTitles = metaDoc.getStrings(DatasetPath.ALT_TITLE.path());
-		List<String> mdIds = metaDoc.getStrings(DatasetPath.MD_ID.path());
-		List<String> dataIds = metaDoc.getStrings(DatasetPath.DATA_ID.path());
-		List<String> keywords = metaDoc.getStrings(DatasetPath.KEYWORD.path());
-		List<String> orgContacts = metaDoc.getStrings(DatasetPath.ORGANISATION_CONTACT.path());
-		List<String> distribNames = metaDoc.getStrings(DatasetPath.DISTRIBUTOR_NAME.path());
-		List<String> geoAreas = metaDoc.getStrings(DatasetPath.GEO_AREA.path());
+		List<String> listIndividualNameCreator = metaDoc.getStrings(DatasetPath.INDIVIDUAL_NAME_CREATOR.path());
+		List<String> listAltTitle = metaDoc.getStrings(DatasetPath.ALT_TITLE.path());
+		List<String> listMdId = metaDoc.getStrings(DatasetPath.MD_ID.path());
+		List<String> listDataId = metaDoc.getStrings(DatasetPath.DATA_ID.path());
+		List<String> listKeyword = metaDoc.getStrings(DatasetPath.KEYWORD.path());
+		List<String> listIndividualNameContact = metaDoc.getStrings(DatasetPath.INDIVIDUAL_NAME_CONTACT.path());
+		List<String> listOrganisationContact = metaDoc.getStrings(DatasetPath.ORGANISATION_CONTACT.path());
+		List<String> listIndividualNameDistributor = metaDoc.getStrings(DatasetPath.INDIVIDUAL_NAME_DISTRIBUTOR.path());
+		List<String> listOrganisationDistributor = metaDoc.getStrings(DatasetPath.ORGSANISATION_DISTRIBUTOR.path());
+		List<String> listGeoArea = metaDoc.getStrings(DatasetPath.GEO_AREA.path());
+		List<String> listPurpose = metaDoc.getStrings(DatasetPath.PURPOSE.path());
+		List<String> listUseLimitation = metaDoc.getStrings(DatasetPath.USE_LIMITATION.path());
+		List<String> listDescriptionSource = metaDoc.getStrings(DatasetPath.DESCRIPTION_SOURCE.path());
+		List<String> listPotentialUse = metaDoc.getStrings(DatasetPath.POTENTIAL_USE.path());
+		List<String> listOtherConstraint = metaDoc.getStrings(DatasetPath.OTHER_CONSTRAINTS.path());
+		List<String> listRelatedDataset = metaDoc.getStrings(DatasetPath.RELATED_DATASET.path());
+		
 		
 		Integer mdTypeId = qf.select(mdType.id)
 				.from(mdType)
@@ -161,7 +171,7 @@ public class Main {
 				.fetchOne();
 		
 		LocalDate finalLD = null;
-		for(String date : dates) {
+		for(String date : listDate) {
 			if(finalLD == null) {
 				finalLD = LocalDate.parse(date);
 			} else {
@@ -181,24 +191,24 @@ public class Main {
 		
 		try {
 			qf.insert(document)
-			.set(document.uuid, getValueFromList(uuids))
+			.set(document.uuid, getValueFromList(listUuid))
 			.set(document.mdTypeId, mdTypeId)
-			.set(document.title, getValueFromList(titles))
+			.set(document.title, getValueFromList(listTitle))
 			.set(document.date, ts)
-			.set(document.creator, getValueFromList(creators))
-			.set(document.description, getValueFromList(abstracts))
-			.set(document.thumbnail, getValueFromList(thumbnails))
+			.set(document.creator, getValueFromList(listOrganisationCreator))
+			.set(document.description, getValueFromList(listDescription))
+			.set(document.thumbnail, getValueFromList(listThumbnail))
 			.execute();
 		} catch(Exception e) {
-			throw new Exception(e.getMessage() + " " + getValueFromList(uuids));
+			throw new Exception(e.getMessage() + " " + getValueFromList(listUuid));
 		}
 		
 		Integer docId = qf.select(document.id)
 				.from(document)
-				.where(document.uuid.eq(getValueFromList(uuids)))
+				.where(document.uuid.eq(getValueFromList(listUuid)))
 				.fetchOne();
 		
-		for(String subjectOne : subjects) {
+		for(String subjectOne : listSubject) {
 			Integer subjectId = qf.select(subject.id)
 					.from(subject)
 					.where(subject.name.eq(subjectOne))
@@ -210,13 +220,23 @@ public class Main {
 					.execute();
 		}
 		
-		setAnyText(qf, docId, altTitles);
-		setAnyText(qf, docId, mdIds);
-		setAnyText(qf, docId, dataIds);
-		setAnyText(qf, docId, keywords);
-		setAnyText(qf, docId, orgContacts);
-		setAnyText(qf, docId, distribNames);
-		setAnyText(qf, docId, geoAreas);
+		setAnyText(qf, docId, listIndividualNameCreator);
+		setAnyText(qf, docId, listAltTitle);
+		setAnyText(qf, docId, listMdId);
+		setAnyText(qf, docId, listDataId);
+		setAnyText(qf, docId, listKeyword);
+		setAnyText(qf, docId, listIndividualNameContact);
+		setAnyText(qf, docId, listOrganisationContact);
+		setAnyText(qf, docId, listIndividualNameDistributor);
+		setAnyText(qf, docId, listOrganisationDistributor);
+		setAnyText(qf, docId, listGeoArea);
+		setAnyText(qf, docId, listPurpose);
+		setAnyText(qf, docId, listUseLimitation);
+		setAnyText(qf, docId, listDescriptionSource);
+		setAnyText(qf, docId, listPotentialUse);
+		setAnyText(qf, docId, listOtherConstraint);
+		setAnyText(qf, docId, listRelatedDataset);
+		
 	}
 	
 	private static void setAnyText(SQLQueryFactory qf, Integer docId, List<String> listValues) {
