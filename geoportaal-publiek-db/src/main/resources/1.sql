@@ -4,13 +4,13 @@ CREATE SCHEMA gp;
 
 CREATE TABLE gp.document (
 		id serial,
-		uuid varchar(36) not null,
+		uuid text not null,
 		md_type_id integer not null,
-		title varchar(200) not null,
+		title text not null,
 		date timestamp,
-		creator varchar(200),
+		creator text,
 		description text,
-		thumbnail varchar(200)
+		thumbnail text
 )
 ;
 
@@ -23,37 +23,37 @@ CREATE TABLE gp.doc_subject (
 
 CREATE TABLE gp.subject (
 		id serial,
-		name varchar(50) not null
+		name text not null
 )
 ;
 
 CREATE TABLE gp.subject_label (
 		id serial,
 		subject_id integer not null,
-		language varchar(20) not null,
-		title varchar(200) not null
+		language text not null,
+		title text not null
 )
 ;
 
 CREATE TABLE gp.md_type (
 		id serial,
-		url varchar(200) not null,
-		name varchar(20) not null
+		url text not null,
+		name text not null
 )
 ;
 
 CREATE TABLE gp.md_type_label (
 		id serial,
 		md_type_id integer not null,
-		language varchar(20) not null,
-		title varchar(100) not null
+		language text not null,
+		title text not null
 )
 ;
 
 CREATE TABLE gp.any_text (
 		id serial,
 		document_id integer not null,
-		content varchar(200) not null
+		content text not null
 )
 ;
 
