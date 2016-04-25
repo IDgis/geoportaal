@@ -1,12 +1,14 @@
 import static models.QAnyText.anyText;
 import static models.QDocSubject.docSubject;
 import static models.QDocument.document;
+import static models.QDocumentSearch.documentSearch;
 import static models.QMdType.mdType;
 import static models.QMdTypeLabel.mdTypeLabel;
 import static models.QSubject.subject;
 
 import java.io.InputStream;
 import java.net.URL;
+import java.sql.Statement;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -33,7 +35,11 @@ import org.apache.jackrabbit.webdav.MultiStatus;
 import org.apache.jackrabbit.webdav.MultiStatusResponse;
 import org.apache.jackrabbit.webdav.client.methods.DavMethod;
 import org.apache.jackrabbit.webdav.client.methods.PropFindMethod;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.support.TransactionTemplate;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 
@@ -50,6 +56,9 @@ public class Main {
 		dataSource.setUsername(System.getenv("db.user"));
 		dataSource.setPassword(System.getenv("db.password"));
 		
+		PlatformTransactionManager TransactionManager = new DataSourceTransactionManager(dataSource);
+		TransactionTemplate tt = new TransactionTemplate(TransactionManager);
+		
 		HostConfiguration hostConfig = new HostConfiguration();
 		HttpConnectionManager connectionManager = new MultiThreadedHttpConnectionManager();
 		HttpConnectionManagerParams params = new HttpConnectionManagerParams();
@@ -59,23 +68,38 @@ public class Main {
 		
 		SQLTemplates templates = PostgreSQLTemplates.builder().printSchema().build();
 		Configuration configuration = new Configuration(templates);
-		SQLQueryFactory qf = new SQLQueryFactory(configuration, dataSource);
+		SQLQueryFactory qf = new SQLQueryFactory(configuration, () -> DataSourceUtils.getConnection(dataSource));
 		
 		setUrl(qf, System.getenv("dataset.url"), System.getenv("dataset.name"), System.getenv("dataset.label"), System.getenv("language"));
 		setUrl(qf, System.getenv("service.url"), System.getenv("service.name"), System.getenv("service.label"), System.getenv("language"));
 		
-		qf.delete(anyText)
-			.execute();
-		
-		qf.delete(docSubject)
-			.execute();
-		
-		qf.delete(document)
-				.execute();
-		
-		DavMethod pFind = new PropFindMethod(System.getenv("dataset.url"), DavConstants.PROPFIND_ALL_PROP, DavConstants.DEPTH_1);
-		
-		executeWebDav(qf, client, pFind, System.getenv("dataset.url"));
+		tt.execute((status) -> {
+			try {			
+				qf.delete(anyText)
+					.execute();
+				
+				qf.delete(docSubject)
+					.execute();
+				
+				qf.delete(document)
+					.execute();
+				
+				DavMethod pFind = new PropFindMethod(System.getenv("dataset.url"), DavConstants.PROPFIND_ALL_PROP, DavConstants.DEPTH_1);
+				
+				executeWebDav(qf, client, pFind, System.getenv("dataset.url"));
+				
+				// Refresh materialized view
+				try(Statement stmt = DataSourceUtils.getConnection(dataSource).createStatement()) {
+					stmt.execute("refresh materialized view concurrently \"" 
+							+ documentSearch.getSchemaName() + "\".\"" 
+							+ documentSearch.getTableName() + "\"");
+				 }
+				
+				return true;
+			} catch(Exception e) {
+				throw new RuntimeException(e);
+			}
+		});
 	}
 	
 	public static void executeWebDav(SQLQueryFactory qf, HttpClient client, DavMethod pFind, String url) throws Exception {
@@ -157,21 +181,21 @@ public class Main {
 		
 		try {
 			qf.insert(document)
-			.set(document.uuid, getValueFromList(uuids, 36))
+			.set(document.uuid, getValueFromList(uuids))
 			.set(document.mdTypeId, mdTypeId)
-			.set(document.title, getValueFromList(titles, 200))
+			.set(document.title, getValueFromList(titles))
 			.set(document.date, ts)
-			.set(document.creator, getValueFromList(creators, 200))
-			.set(document.description, getValueFromList(abstracts, null))
-			.set(document.thumbnail, getValueFromList(thumbnails, 200))
+			.set(document.creator, getValueFromList(creators))
+			.set(document.description, getValueFromList(abstracts))
+			.set(document.thumbnail, getValueFromList(thumbnails))
 			.execute();
 		} catch(Exception e) {
-			throw new Exception(e.getMessage() + " " + getValueFromList(uuids, 36));
+			throw new Exception(e.getMessage() + " " + getValueFromList(uuids));
 		}
 		
 		Integer docId = qf.select(document.id)
 				.from(document)
-				.where(document.uuid.eq(getValueFromList(uuids, 36)))
+				.where(document.uuid.eq(getValueFromList(uuids)))
 				.fetchOne();
 		
 		for(String subjectOne : subjects) {
@@ -196,25 +220,17 @@ public class Main {
 	}
 	
 	private static void setAnyText(SQLQueryFactory qf, Integer docId, List<String> listValues) {
-		for(String value : listValues) {
-			if(value.length() <= 200) {
-				qf.insert(anyText)
-				.set(anyText.documentId, docId)
-				.set(anyText.content, value.trim())
-				.execute();
-			}
+		for(String value : listValues) {			
+			qf.insert(anyText)
+			.set(anyText.documentId, docId)
+			.set(anyText.content, value.trim())
+			.execute();			
 		}
 	}
 	
-	private static String getValueFromList(List<String> listValues, Integer limit) {
+	private static String getValueFromList(List<String> listValues) {
 		if(listValues.size() == 0) {
 			return null;
-		} else if(limit != null) {
-			if(listValues.get(0).trim().length() > limit) {
-				return null;
-			} else {
-				return listValues.get(0).trim();
-			}
 		} else {
 			return listValues.get(0).trim();
 		}
