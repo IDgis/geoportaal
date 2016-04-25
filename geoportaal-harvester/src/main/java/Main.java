@@ -1,12 +1,14 @@
 import static models.QAnyText.anyText;
 import static models.QDocSubject.docSubject;
 import static models.QDocument.document;
+import static models.QDocumentSearch.documentSearch;
 import static models.QMdType.mdType;
 import static models.QMdTypeLabel.mdTypeLabel;
 import static models.QSubject.subject;
 
 import java.io.InputStream;
 import java.net.URL;
+import java.sql.Statement;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -85,6 +87,13 @@ public class Main {
 				DavMethod pFind = new PropFindMethod(System.getenv("dataset.url"), DavConstants.PROPFIND_ALL_PROP, DavConstants.DEPTH_1);
 				
 				executeWebDav(qf, client, pFind, System.getenv("dataset.url"));
+				
+				// Refresh materialized view
+				try(Statement stmt = DataSourceUtils.getConnection(dataSource).createStatement()) {
+					stmt.execute("refresh materialized view concurrently \"" 
+							+ documentSearch.getSchemaName() + "\".\"" 
+							+ documentSearch.getTableName() + "\"");
+				 }
 				
 				return true;
 			} catch(Exception e) {
