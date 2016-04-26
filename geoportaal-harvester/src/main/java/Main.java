@@ -213,6 +213,16 @@ public class Main {
 			ts = null;
 		}
 		
+		List<String> listFinalThumbnail = new ArrayList<>();
+		for(String thumbnail : listThumbnail) {
+			String finalThumbnail = "";
+			if(thumbnail.trim().startsWith("http")) {
+				finalThumbnail = thumbnail.trim().replaceAll("\\\\", "/");
+			}
+			
+			listFinalThumbnail.add(finalThumbnail);
+		}
+		
 		try {
 			qf.insert(document)
 			.set(document.uuid, getValueFromList(listUuid))
@@ -221,7 +231,7 @@ public class Main {
 			.set(document.date, ts)
 			.set(document.creator, getValueFromList(listOrganisationCreator))
 			.set(document.description, getValueFromList(listDescription))
-			.set(document.thumbnail, getValueFromList(listThumbnail))
+			.set(document.thumbnail, getValueFromList(listFinalThumbnail))
 			.execute();
 		} catch(Exception e) {
 			throw new Exception(e.getMessage() + " " + getValueFromList(listUuid));
