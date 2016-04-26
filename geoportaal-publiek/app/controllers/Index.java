@@ -88,6 +88,7 @@ public class Index extends Controller {
 					.from(document)
 					.join(mdType).on(document.mdTypeId.eq(mdType.id))
 					.where(document.date.isNotNull())
+					.where(mdType.name.ne("service"))
 					.orderBy(document.date.desc())
 					.limit(5)
 					.fetch();
