@@ -76,6 +76,7 @@ public class Main {
 		
 		tt.execute((status) -> {
 			try {			
+				// Delete values from previous harvest
 				qf.delete(anyText)
 					.execute();
 				
@@ -85,18 +86,30 @@ public class Main {
 				qf.delete(document)
 					.execute();
 				
+				// Restart sequences
+				executeStatement(dataSource, "alter sequence \"" 
+						+ anyText.getSchemaName() + "\".\"" 
+						+ anyText.getTableName() + "_id_seq\" restart with 1");
+				
+				executeStatement(dataSource, "alter sequence \"" 
+						+ docSubject.getSchemaName() + "\".\"" 
+						+ docSubject.getTableName() + "_id_seq\" restart with 1");
+				
+				executeStatement(dataSource, "alter sequence \"" 
+						+ document.getSchemaName() + "\".\"" 
+						+ document.getTableName() + "_id_seq\" restart with 1");
+				
 				DavMethod pFindDataset = new PropFindMethod(System.getenv("dataset.url"), DavConstants.PROPFIND_ALL_PROP, DavConstants.DEPTH_1);
 				DavMethod pFindService = new PropFindMethod(System.getenv("service.url"), DavConstants.PROPFIND_ALL_PROP, DavConstants.DEPTH_1);
 				
+				// Fill database
 				executeWebDav(qf, client, pFindDataset, System.getenv("dataset.url"), MetadataType.DATASET);
 				executeWebDav(qf, client, pFindService, System.getenv("service.url"), MetadataType.SERVICE);
 				
 				// Refresh materialized view
-				try(Statement stmt = DataSourceUtils.getConnection(dataSource).createStatement()) {
-					stmt.execute("refresh materialized view concurrently \"" 
-							+ documentSearch.getSchemaName() + "\".\"" 
-							+ documentSearch.getTableName() + "\"");
-				 }
+				executeStatement(dataSource, "refresh materialized view concurrently \"" 
+						+ documentSearch.getSchemaName() + "\".\"" 
+						+ documentSearch.getTableName() + "\"");
 				
 				return true;
 			} catch(Exception e) {
@@ -408,6 +421,12 @@ public class Main {
 					.set(mdTypeLabel.language, language)
 					.set(mdTypeLabel.title, typeLabelName)
 					.execute();
+		}
+	}
+	
+	public static void executeStatement(DriverManagerDataSource dataSource, String statement) throws Exception {
+		try(Statement stmt = DataSourceUtils.getConnection(dataSource).createStatement()) {
+			stmt.execute(statement);
 		}
 	}
 	
