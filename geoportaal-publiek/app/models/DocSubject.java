@@ -10,9 +10,10 @@ public class DocSubject {
 	private String description;
 	private String thumbnail;
 	private List<String> subjects;
+	private String metadataType;
 	
 	public DocSubject(String title, Timestamp date, String creator, String description, String thumbnail,
-			List<String> subjects) {
+			List<String> subjects, String metadataType) {
 		super();
 		this.title = title;
 		this.date = date;
@@ -20,6 +21,7 @@ public class DocSubject {
 		this.description = description;
 		this.thumbnail = thumbnail;
 		this.subjects = subjects;
+		this.metadataType = metadataType;
 	}
 
 	public String getTitle() {
@@ -68,6 +70,14 @@ public class DocSubject {
 
 	public void setSubjects(List<String> subjects) {
 		this.subjects = subjects;
+	}
+
+	public String getMetadataType() {
+		return metadataType;
+	}
+
+	public void setMetadataType(String metadataType) {
+		this.metadataType = metadataType;
 	}
 	
 }

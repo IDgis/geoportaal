@@ -7,6 +7,7 @@ import static models.QMdTypeLabel.mdTypeLabel;
 import static models.QSubject.subject;
 
 import java.io.InputStream;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.sql.Statement;
 import java.sql.Timestamp;
@@ -75,6 +76,7 @@ public class Main {
 		
 		tt.execute((status) -> {
 			try {			
+				// Delete values from previous harvest
 				qf.delete(anyText)
 					.execute();
 				
@@ -84,16 +86,30 @@ public class Main {
 				qf.delete(document)
 					.execute();
 				
-				DavMethod pFind = new PropFindMethod(System.getenv("dataset.url"), DavConstants.PROPFIND_ALL_PROP, DavConstants.DEPTH_1);
+				// Restart sequences
+				executeStatement(dataSource, "alter sequence \"" 
+						+ anyText.getSchemaName() + "\".\"" 
+						+ anyText.getTableName() + "_id_seq\" restart with 1");
 				
-				executeWebDav(qf, client, pFind, System.getenv("dataset.url"));
+				executeStatement(dataSource, "alter sequence \"" 
+						+ docSubject.getSchemaName() + "\".\"" 
+						+ docSubject.getTableName() + "_id_seq\" restart with 1");
+				
+				executeStatement(dataSource, "alter sequence \"" 
+						+ document.getSchemaName() + "\".\"" 
+						+ document.getTableName() + "_id_seq\" restart with 1");
+				
+				DavMethod pFindDataset = new PropFindMethod(System.getenv("dataset.url"), DavConstants.PROPFIND_ALL_PROP, DavConstants.DEPTH_1);
+				DavMethod pFindService = new PropFindMethod(System.getenv("service.url"), DavConstants.PROPFIND_ALL_PROP, DavConstants.DEPTH_1);
+				
+				// Fill database
+				executeWebDav(qf, client, pFindDataset, System.getenv("dataset.url"), MetadataType.DATASET);
+				executeWebDav(qf, client, pFindService, System.getenv("service.url"), MetadataType.SERVICE);
 				
 				// Refresh materialized view
-				try(Statement stmt = DataSourceUtils.getConnection(dataSource).createStatement()) {
-					stmt.execute("refresh materialized view concurrently \"" 
-							+ documentSearch.getSchemaName() + "\".\"" 
-							+ documentSearch.getTableName() + "\"");
-				 }
+				executeStatement(dataSource, "refresh materialized view concurrently \"" 
+						+ documentSearch.getSchemaName() + "\".\"" 
+						+ documentSearch.getTableName() + "\"");
 				
 				return true;
 			} catch(Exception e) {
@@ -102,7 +118,7 @@ public class Main {
 		});
 	}
 	
-	public static void executeWebDav(SQLQueryFactory qf, HttpClient client, DavMethod pFind, String url) throws Exception {
+	public static void executeWebDav(SQLQueryFactory qf, HttpClient client, DavMethod pFind, String url, MetadataType metadataType) throws Exception {
 		client.executeMethod(pFind);
 		MultiStatus multiStatus = pFind.getResponseBodyAsMultiStatus();
 		MultiStatusResponse[] responses = multiStatus.getResponses();
@@ -113,12 +129,21 @@ public class Main {
 		
 		for (int i = 0; i < responses.length; i++) {
 			String href = responses[i].getHref();
+			
 			if(href.endsWith(".xml")) {
 				String filename = href.substring(href.lastIndexOf("/") + 1);
 				
 				try(InputStream input = new URL(url + filename).openStream();) {
 					Document doc = db.parse(input);
-					convertDatasetValues(qf, doc);
+					switch(metadataType) {
+						case DATASET:
+							convertDatasetValues(qf, doc);
+							break;
+						case SERVICE:
+							convertServiceValues(qf, doc);
+							break;
+						case DC:
+					}
 				}
 			}
 		}
@@ -129,7 +154,6 @@ public class Main {
 		Map<String, String> ns = new HashMap<>();
 		ns.put("gmd", "http://www.isotc211.org/2005/gmd");
 		ns.put("gco", "http://www.isotc211.org/2005/gco");
-		ns.put("gml", "http://www.opengis.net/gml");
 		
 		Map<String, String> pf = new HashMap<>();
 		for(Map.Entry<String, String> e : ns.entrySet()) {
@@ -161,7 +185,7 @@ public class Main {
 		List<String> listUseLimitation = metaDoc.getStrings(DatasetPath.USE_LIMITATION.path());
 		List<String> listDescriptionSource = metaDoc.getStrings(DatasetPath.DESCRIPTION_SOURCE.path());
 		List<String> listPotentialUse = metaDoc.getStrings(DatasetPath.POTENTIAL_USE.path());
-		List<String> listOtherConstraint = metaDoc.getStrings(DatasetPath.OTHER_CONSTRAINTS.path());
+		List<String> listOtherConstraint = metaDoc.getStrings(DatasetPath.OTHER_CONSTRAINT.path());
 		List<String> listRelatedDataset = metaDoc.getStrings(DatasetPath.RELATED_DATASET.path());
 		
 		
@@ -239,6 +263,93 @@ public class Main {
 		
 	}
 	
+	public static void convertServiceValues(SQLQueryFactory qf, Document d) throws Exception {
+		// construct namespace context
+		Map<String, String> ns = new HashMap<>();
+		ns.put("gmd", "http://www.isotc211.org/2005/gmd");
+		ns.put("gco", "http://www.isotc211.org/2005/gco");
+		ns.put("srv", "http://www.isotc211.org/2005/srv");
+		
+		Map<String, String> pf = new HashMap<>();
+		for(Map.Entry<String, String> e : ns.entrySet()) {
+			pf.put(e.getValue(), e.getKey());
+		}
+		
+		MetadataDocument metaDoc = parseDocument(d, ns, pf);
+		
+		List<String> listUuid = metaDoc.getStrings(ServicePath.UUID.path());
+		List<String> listTitle = metaDoc.getStrings(ServicePath.TITLE.path());
+		List<String> listDate = metaDoc.getStrings(ServicePath.DATE.path());
+		List<String> listOrganisationCreator = metaDoc.getStrings(ServicePath.ORGANISATION_CREATOR.path());
+		List<String> listDescription = metaDoc.getStrings(ServicePath.ABSTRACT.path());
+		
+		List<String> listUseLimitation = metaDoc.getStrings(ServicePath.USE_LIMITATION.path());
+		List<String> listOtherConstraint = metaDoc.getStrings(ServicePath.OTHER_CONSTRAINT.path());
+		List<String> listIndividualNameCreator = metaDoc.getStrings(ServicePath.INDIVIDUAL_NAME_CREATOR.path());
+		List<String> listOrganisationContact = metaDoc.getStrings(ServicePath.ORGANISATION_CONTACT.path());
+		List<String> listIndividualNameContact = metaDoc.getStrings(ServicePath.INDIVIDUAL_NAME_CONTACT.path());
+		List<String> listGeoArea = metaDoc.getStrings(ServicePath.GEO_AREA.path());
+		List<String> listLayer = metaDoc.getStrings(ServicePath.LAYER.path());
+		List<String> listAttachedFile = metaDoc.getStrings(ServicePath.ATTACHED_FILE.path());
+		List<String> listKeyword = metaDoc.getStrings(ServicePath.KEYWORD.path());
+		
+		Integer mdTypeId = qf.select(mdType.id)
+				.from(mdType)
+				.where(mdType.url.eq(System.getenv("service.url")))
+				.fetchOne();
+		
+		LocalDate finalLD = null;
+		for(String date : listDate) {
+			if(finalLD == null) {
+				finalLD = LocalDate.parse(date);
+			} else {
+				LocalDate tempLD = LocalDate.parse(date);
+				if(tempLD.isAfter(finalLD)) {
+					finalLD = LocalDate.parse(date);
+				}
+			}
+		}
+		
+		Timestamp ts;
+		if(finalLD != null) {
+			ts = Timestamp.valueOf(finalLD.atStartOfDay());
+		} else {
+			ts = null;
+		}
+		
+		String thumbnail = null;
+		
+		try {
+			qf.insert(document)
+			.set(document.uuid, getValueFromList(listUuid))
+			.set(document.mdTypeId, mdTypeId)
+			.set(document.title, getValueFromList(listTitle))
+			.set(document.date, ts)
+			.set(document.creator, getValueFromList(listOrganisationCreator))
+			.set(document.description, getValueFromList(listDescription))
+			.set(document.thumbnail, thumbnail)
+			.execute();
+		} catch(Exception e) {
+			e.printStackTrace();
+			throw new Exception(e.getCause() + " " + getValueFromList(listUuid));
+		}
+		
+		Integer docId = qf.select(document.id)
+				.from(document)
+				.where(document.uuid.eq(getValueFromList(listUuid)))
+				.fetchOne();
+		
+		setAnyText(qf, docId, listUseLimitation);
+		setAnyText(qf, docId, listOtherConstraint);
+		setAnyText(qf, docId, listIndividualNameCreator);
+		setAnyText(qf, docId, listOrganisationContact);
+		setAnyText(qf, docId, listIndividualNameContact);
+		setAnyText(qf, docId, listGeoArea);
+		setAnyText(qf, docId, listLayer);
+		setAnyText(qf, docId, listAttachedFile);
+		setAnyText(qf, docId, listKeyword);
+	}
+	
 	private static void setAnyText(SQLQueryFactory qf, Integer docId, List<String> listValues) {
 		for(String value : listValues) {			
 			qf.insert(anyText)
@@ -313,6 +424,16 @@ public class Main {
 		}
 	}
 	
+	public static void executeStatement(DriverManagerDataSource dataSource, String statement) throws Exception {
+		try(Statement stmt = DataSourceUtils.getConnection(dataSource).createStatement()) {
+			stmt.execute(statement);
+		}
+	}
+	
+	public enum MetadataType {
+		DATASET, SERVICE, DC;
+	}
+	
 	public static class MetadataDocument {
 		private final Document d;
 		private final XPath xp;
@@ -323,8 +444,8 @@ public class Main {
 		}
 		
 		List<String> getStrings(String path) throws Exception {
-			if(!path.endsWith("text()")) {
-				throw new RuntimeException("path should end with text()");
+			if(!path.endsWith("text()") && !path.endsWith("@uuidref")) {
+				throw new RuntimeException("path should end with text() or @uuidref");
 			}
 			
 			List<String> retval = new ArrayList<>();

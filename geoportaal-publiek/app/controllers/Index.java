@@ -30,8 +30,9 @@ public class Index extends Controller {
 		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
 		
 		return q.withTransaction(tx -> {
-			List<Tuple> documents = tx.select(document.title, document.date, document.creator, document.description, document.thumbnail)
+			List<Tuple> documents = tx.select(document.title, document.date, document.creator, document.description, document.thumbnail, mdType.name)
 					.from(document)
+					.join(mdType).on(document.mdTypeId.eq(mdType.id))
 					.where(document.date.isNotNull())
 					.orderBy(document.date.desc())
 					.limit(5)
@@ -83,9 +84,11 @@ public class Index extends Controller {
 					.where(subjectLabel.language.eq(curLang.code()))
 					.fetch();
 			
-			List<Tuple> documents = tx.select(document.uuid, document.title, document.date, document.creator, document.description, document.thumbnail)
+			List<Tuple> documents = tx.select(document.uuid, document.title, document.date, document.creator, document.description, document.thumbnail, mdType.name)
 					.from(document)
+					.join(mdType).on(document.mdTypeId.eq(mdType.id))
 					.where(document.date.isNotNull())
+					.where(mdType.name.ne("service"))
 					.orderBy(document.date.desc())
 					.limit(5)
 					.fetch();
@@ -101,7 +104,7 @@ public class Index extends Controller {
 						.fetch();
 				
 				DocSubject ds = new DocSubject(doc.get(document.title), doc.get(document.date), doc.get(document.creator), 
-						doc.get(document.description), doc.get(document.thumbnail), docSubjects);
+						doc.get(document.description), doc.get(document.thumbnail), docSubjects, doc.get(mdType.name));
 				
 				finalDocuments.add(ds);
 			}
