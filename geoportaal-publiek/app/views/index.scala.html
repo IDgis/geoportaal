@@ -4,6 +4,7 @@
 
 @import play.i18n._
 @import models.QDocument.document;
+@import models.QMdType.mdType;
 
 @main(Messages.get("index.header"), routes.Assets.versioned("javascripts/result.js").url) {
 	<div class="intro">
@@ -52,7 +53,9 @@
 						</p>
 						
 						<a class="link">@Messages.get("button.metadata")</a>
-						<button class="link" type="button">@Messages.get("button.download")</button>
+						@if(!doc.get(mdType.name).equals("service")) {
+							<button class="link" type="button">@Messages.get("button.download")</button>
+						}
 					</div>
 				</div>
 			</div>
