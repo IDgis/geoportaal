@@ -73,6 +73,7 @@ public class Main {
 		
 		setUrl(qf, System.getenv("dataset.url"), System.getenv("dataset.name"), System.getenv("dataset.label"), System.getenv("language"));
 		setUrl(qf, System.getenv("service.url"), System.getenv("service.name"), System.getenv("service.label"), System.getenv("language"));
+		setUrl(qf, System.getenv("dc.url"), System.getenv("dc.name"), System.getenv("dc.label"), System.getenv("language"));
 		
 		tt.execute((status) -> {
 			try {			
@@ -104,8 +105,8 @@ public class Main {
 				DavMethod pFindDc = new PropFindMethod(System.getenv("dc.url"), DavConstants.PROPFIND_ALL_PROP, DavConstants.DEPTH_1);
 				
 				// Fill database
-				//executeWebDav(qf, client, pFindDataset, System.getenv("dataset.url"), MetadataType.DATASET);
-				//executeWebDav(qf, client, pFindService, System.getenv("service.url"), MetadataType.SERVICE);
+				executeWebDav(qf, client, pFindDataset, System.getenv("dataset.url"), MetadataType.DATASET);
+				executeWebDav(qf, client, pFindService, System.getenv("service.url"), MetadataType.SERVICE);
 				executeWebDav(qf, client, pFindDc, System.getenv("dc.url"), MetadataType.DC);
 				
 				// Refresh materialized view
@@ -129,9 +130,8 @@ public class Main {
 		dbf.setNamespaceAware(true);
 		DocumentBuilder db = dbf.newDocumentBuilder();
 		
-		for (int i = 0; i < 5; i++) {
+		for (int i = 0; i < responses.length; i++) {
 			String href = responses[i].getHref();
-			System.out.println(href);
 			
 			if(href.endsWith(".xml")) {
 				String filename = href.substring(href.lastIndexOf("/") + 1);
@@ -146,7 +146,7 @@ public class Main {
 							convertServiceValues(qf, doc);
 							break;
 						case DC:
-							
+							convertDcValues(qf, doc);
 					}
 				}
 			}
@@ -335,14 +335,14 @@ public class Main {
 		
 		try {
 			qf.insert(document)
-			.set(document.uuid, getValueFromList(listUuid))
-			.set(document.mdTypeId, mdTypeId)
-			.set(document.title, getValueFromList(listTitle))
-			.set(document.date, ts)
-			.set(document.creator, getValueFromList(listOrganisationCreator))
-			.set(document.description, getValueFromList(listDescription))
-			.set(document.thumbnail, thumbnail)
-			.execute();
+				.set(document.uuid, getValueFromList(listUuid))
+				.set(document.mdTypeId, mdTypeId)
+				.set(document.title, getValueFromList(listTitle))
+				.set(document.date, ts)
+				.set(document.creator, getValueFromList(listOrganisationCreator))
+				.set(document.description, getValueFromList(listDescription))
+				.set(document.thumbnail, thumbnail)
+				.execute();
 		} catch(Exception e) {
 			e.printStackTrace();
 			throw new Exception(e.getCause() + " " + getValueFromList(listUuid));
@@ -362,6 +362,96 @@ public class Main {
 		setAnyText(qf, docId, listLayer);
 		setAnyText(qf, docId, listAttachedFile);
 		setAnyText(qf, docId, listKeyword);
+	}
+	
+	public static void convertDcValues(SQLQueryFactory qf, Document d) throws Exception {
+		// construct namespace context
+		Map<String, String> ns = new HashMap<>();
+		ns.put("rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#");
+		ns.put("dc", "http://purl.org/dc/elements/1.1/");
+		ns.put("dcterms", "http://purl.org/dc/terms/");
+		
+		Map<String, String> pf = new HashMap<>();
+		for(Map.Entry<String, String> e : ns.entrySet()) {
+			pf.put(e.getValue(), e.getKey());
+		}
+		
+		MetadataDocument metaDoc = parseDocument(d, ns, pf);
+		
+		List<String> listUuid = metaDoc.getStrings(DcPath.UUID.path());
+		List<String> listTitle = metaDoc.getStrings(DcPath.TITLE.path());
+		List<String> listDate = metaDoc.getStrings(DcPath.DATE.path());
+		List<String> listOrganisationCreator = metaDoc.getStrings(DcPath.ORGANISATION_CREATOR.path());
+		List<String> listDescription = metaDoc.getStrings(DcPath.ABSTRACT.path());
+		
+		List<String> listLocation = metaDoc.getStrings(DcPath.LOCATION.path());
+		List<String> listNumber = metaDoc.getStrings(DcPath.NUMBER.path());
+		List<String> listType = metaDoc.getStrings(DcPath.TYPE.path());
+		List<String> listPublisher = metaDoc.getStrings(DcPath.PUBLISHER.path());
+		List<String> listContributor = metaDoc.getStrings(DcPath.CONTRIBUTOR.path());
+		List<String> listRights = metaDoc.getStrings(DcPath.RIGHTS.path());
+		List<String> listFormat = metaDoc.getStrings(DcPath.FORMAT.path());
+		List<String> listSource = metaDoc.getStrings(DcPath.SOURCE.path());
+		List<String> listSubject = metaDoc.getStrings(DcPath.SUBJECT.path());
+		List<String> listLanguage = metaDoc.getStrings(DcPath.LANGUAGE.path());
+		
+		Integer mdTypeId = qf.select(mdType.id)
+				.from(mdType)
+				.where(mdType.url.eq(System.getenv("dc.url")))
+				.fetchOne();
+		
+		LocalDate ld = LocalDate.parse(getValueFromList(listDate));
+		Timestamp ts;
+		if(ld != null) {
+			ts = Timestamp.valueOf(ld.atStartOfDay());
+		} else {
+			ts = null;
+		}
+		
+		String thumbnail = null;
+		
+		try {
+			qf.insert(document)
+			.set(document.uuid, getValueFromList(listUuid))
+			.set(document.mdTypeId, mdTypeId)
+			.set(document.title, getValueFromList(listTitle))
+			.set(document.date, ts)
+			.set(document.creator, getValueFromList(listOrganisationCreator))
+			.set(document.description, getValueFromList(listDescription))
+			.set(document.thumbnail, thumbnail)
+			.execute();
+		} catch(Exception e) {
+			e.printStackTrace();
+			throw new Exception(e.getCause() + " " + getValueFromList(listUuid));
+		}
+		
+		Integer docId = qf.select(document.id)
+				.from(document)
+				.where(document.uuid.eq(getValueFromList(listUuid)))
+				.fetchOne();
+		
+		for(String subjectOne : listSubject) {
+			Integer subjectId = qf.select(subject.id)
+					.from(subject)
+					.where(subject.name.eq(subjectOne))
+					.fetchOne();
+			
+			qf.insert(docSubject)
+					.set(docSubject.documentId, docId)
+					.set(docSubject.subjectId, subjectId)
+					.execute();
+		}
+		
+		setAnyText(qf, docId, listLocation);
+		setAnyText(qf, docId, listNumber);
+		setAnyText(qf, docId, listType);
+		setAnyText(qf, docId, listPublisher);
+		setAnyText(qf, docId, listContributor);
+		setAnyText(qf, docId, listRights);
+		setAnyText(qf, docId, listFormat);
+		setAnyText(qf, docId, listSource);
+		setAnyText(qf, docId, listSubject);
+		setAnyText(qf, docId, listLanguage);
 	}
 	
 	private static void setAnyText(SQLQueryFactory qf, Integer docId, List<String> listValues) {
