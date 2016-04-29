@@ -65,6 +65,7 @@ public class DublinCoreMetadata extends SimpleWebDAV {
 		return q.withTransaction(tx -> {
 			return tx.select(metadata.uuid, metadata.dateSourceRevision)
 				.from(metadata)
+				.orderBy(metadata.id.asc())
 				.fetch()
 				.stream()
 				.map(dataset -> new DefaultResourceDescription(dataset.get(metadata.uuid) + ".xml", 
@@ -126,6 +127,10 @@ public class DublinCoreMetadata extends SimpleWebDAV {
 				.where(metadata.uuid.eq(metadataUuid))
 				.fetchOne();
 			
+			if(datasetRow == null) {
+				return Optional.<Resource>empty();
+			}
+			
 			// Fetch the attachments from the database
 			List<String> attachmentsDB = tx.select(mdAttachment.attachmentName)
 					.from(mdAttachment)
@@ -134,11 +139,10 @@ public class DublinCoreMetadata extends SimpleWebDAV {
 					.fetch();
 			
 			// Convert attachments from database to requests
-			String host = "localhost:9000";
 			List<String> attachments = new ArrayList<String>();
 			for(String att : attachmentsDB) {
 				String url = controllers.routes.Metadata.openAttachment(att, datasetRow.get(metadata.uuid)).toString();
-				attachments.add("http://" + host + url);
+				attachments.add("http://" + play.Play.application().configuration().getString("geoportaal.host") + url);
 			}
 			
 			// Fetch the id of the creator
@@ -223,7 +227,7 @@ public class DublinCoreMetadata extends SimpleWebDAV {
 			String useLimitation = Messages.get("xml.uselimitation");
 			
 			// Returns the XML page
-			return Optional.ofNullable(new DefaultResource("application/xml", views.xml.metadata.render(dcx, sdf, useLimitation).body().getBytes()));
+			return Optional.<Resource>of(new DefaultResource("application/xml", views.xml.metadata.render(dcx, sdf, useLimitation).body().getBytes("UTF-8")));
 		});
 	}
 }
