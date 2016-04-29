@@ -65,6 +65,7 @@ public class DublinCoreMetadata extends SimpleWebDAV {
 		return q.withTransaction(tx -> {
 			return tx.select(metadata.uuid, metadata.dateSourceRevision)
 				.from(metadata)
+				.orderBy(metadata.id.asc())
 				.fetch()
 				.stream()
 				.map(dataset -> new DefaultResourceDescription(dataset.get(metadata.uuid) + ".xml", 
@@ -125,6 +126,10 @@ public class DublinCoreMetadata extends SimpleWebDAV {
 				.join(useLimitationLabel).on(useLimitation.id.eq(useLimitationLabel.useLimitationId))
 				.where(metadata.uuid.eq(metadataUuid))
 				.fetchOne();
+			
+			if(datasetRow == null) {
+				return Optional.<Resource>empty();
+			}
 			
 			// Fetch the attachments from the database
 			List<String> attachmentsDB = tx.select(mdAttachment.attachmentName)
@@ -222,7 +227,7 @@ public class DublinCoreMetadata extends SimpleWebDAV {
 			String useLimitation = Messages.get("xml.uselimitation");
 			
 			// Returns the XML page
-			return Optional.ofNullable(new DefaultResource("application/xml", views.xml.metadata.render(dcx, sdf, useLimitation).body().getBytes()));
+			return Optional.<Resource>of(new DefaultResource("application/xml", views.xml.metadata.render(dcx, sdf, useLimitation).body().getBytes("UTF-8")));
 		});
 	}
 }
