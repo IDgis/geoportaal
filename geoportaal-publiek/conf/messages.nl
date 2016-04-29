@@ -1,6 +1,8 @@
 button.search=Zoek
 button.metadata=Metadata
 button.download=Download
+button.previous=Vorige
+button.next=Volgende
 search.label=Zoek
 search.placeholder=Zoek op term
 result.count.label.zero=Geen resultaat

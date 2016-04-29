@@ -34,9 +34,16 @@
 						@documents.size() @Messages.get("result.count.label.multiple")}</span>
 				<div class="pull-right">
 					<div class="row btn-group btn-group-sm">
-							<button id="previous" type="button" class="btn btn-default">&laquo;</button>
-							<button id="data-page-1" type="button" class="btn btn-default">1</button>
-							<button id="next" type="button" class="btn btn-default">&raquo;</button>
+						<nav>
+							<ul id="pager-adjusted" class="pager">
+								<li class="disabled">
+									<a>@Messages.get("button.previous")</a>
+								</li>
+								<li>
+									<a>@Messages.get("button.next")</a>
+								</li>
+							</ul>
+						</nav>
 					</div>
 					<div class="row" id="expand-area">
 						<label class="checkbox-inline">

@@ -42,14 +42,6 @@ public class Index extends Controller {
 		});
 	}
 	
-	public Result contact() {
-		return ok(contact.render());
-	}
-	
-	public Result about() {
-		return ok(about.render());
-	}
-	
 	public Result search() {
 		Lang curLang = Http.Context.current().lang();
 		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
@@ -66,7 +58,7 @@ public class Index extends Controller {
 					.join(mdType).on(document.mdTypeId.eq(mdType.id))
 					.where(document.date.isNotNull())
 					.orderBy(document.date.desc())
-					.limit(5)
+					.limit(10)
 					.fetch();
 			
 			return ok(search.render(mdTypes, documents, sdf));
@@ -90,7 +82,7 @@ public class Index extends Controller {
 					.where(document.date.isNotNull())
 					.where(mdType.name.ne("service"))
 					.orderBy(document.date.desc())
-					.limit(5)
+					.limit(10)
 					.fetch();
 			
 			List<DocSubject> finalDocuments = new ArrayList<>();
@@ -111,5 +103,13 @@ public class Index extends Controller {
 			
 			return ok(browse.render(subjects, finalDocuments, sdf));
 		});
+	}
+	
+	public Result about() {
+		return ok(about.render());
+	}
+	
+	public Result contact() {
+		return ok(contact.render());
 	}
 }
