@@ -82,6 +82,12 @@ public class DublinCoreMetadata extends SimpleWebDAV {
 		});
 	}
 	
+	/**
+	 * Provides the properties of the metadata document
+	 *
+	 * @param name the UUID of the metadata
+	 * @return a {@link Optional} with the {@link ResourceProperties} of the metadata
+	 */
 	@Override
 	public Optional<ResourceProperties> properties(String name) {
 		return q.withTransaction(tx -> {
@@ -98,7 +104,7 @@ public class DublinCoreMetadata extends SimpleWebDAV {
 	/**
 	 * Generates an XML page according to the DublinCore standard
 	 * 
-	 * @param metadataUuid the UUID of the metadata
+	 * @param name the UUID of the metadata
 	 * @return the {@link Optional} with the {@link Resource} which contains 
 	 * the content and content type of the XML page
 	 */
