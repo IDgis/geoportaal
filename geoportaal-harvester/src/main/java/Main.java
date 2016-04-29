@@ -101,10 +101,12 @@ public class Main {
 				
 				DavMethod pFindDataset = new PropFindMethod(System.getenv("dataset.url"), DavConstants.PROPFIND_ALL_PROP, DavConstants.DEPTH_1);
 				DavMethod pFindService = new PropFindMethod(System.getenv("service.url"), DavConstants.PROPFIND_ALL_PROP, DavConstants.DEPTH_1);
+				DavMethod pFindDc = new PropFindMethod(System.getenv("dc.url"), DavConstants.PROPFIND_ALL_PROP, DavConstants.DEPTH_1);
 				
 				// Fill database
-				executeWebDav(qf, client, pFindDataset, System.getenv("dataset.url"), MetadataType.DATASET);
-				executeWebDav(qf, client, pFindService, System.getenv("service.url"), MetadataType.SERVICE);
+				//executeWebDav(qf, client, pFindDataset, System.getenv("dataset.url"), MetadataType.DATASET);
+				//executeWebDav(qf, client, pFindService, System.getenv("service.url"), MetadataType.SERVICE);
+				executeWebDav(qf, client, pFindDc, System.getenv("dc.url"), MetadataType.DC);
 				
 				// Refresh materialized view
 				executeStatement(dataSource, "refresh materialized view concurrently \"" 
@@ -127,8 +129,9 @@ public class Main {
 		dbf.setNamespaceAware(true);
 		DocumentBuilder db = dbf.newDocumentBuilder();
 		
-		for (int i = 0; i < responses.length; i++) {
+		for (int i = 0; i < 5; i++) {
 			String href = responses[i].getHref();
+			System.out.println(href);
 			
 			if(href.endsWith(".xml")) {
 				String filename = href.substring(href.lastIndexOf("/") + 1);
@@ -143,6 +146,7 @@ public class Main {
 							convertServiceValues(qf, doc);
 							break;
 						case DC:
+							
 					}
 				}
 			}

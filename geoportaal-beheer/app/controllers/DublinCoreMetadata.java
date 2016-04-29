@@ -16,42 +16,92 @@ import static models.QTypeInformationLabel.typeInformationLabel;
 import static models.QUseLimitation.useLimitation;
 import static models.QUseLimitationLabel.useLimitationLabel;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
-import javax.inject.Inject;
+import java.util.Optional;
+import java.util.stream.Stream;
 
 import com.querydsl.core.Tuple;
 
-import actions.DefaultAuthenticator;
 import models.DublinCoreXML;
+import nl.idgis.dav.model.DefaultResource;
+import nl.idgis.dav.model.DefaultResourceDescription;
+import nl.idgis.dav.model.DefaultResourceProperties;
+import nl.idgis.dav.model.Resource;
+import nl.idgis.dav.model.ResourceDescription;
+import nl.idgis.dav.model.ResourceProperties;
+import nl.idgis.dav.router.SimpleWebDAV;
+import play.Play;
 import play.i18n.Messages;
-import play.mvc.Controller;
-import play.mvc.Result;
-import play.mvc.Security;
 import util.QueryDSL;
 
-/**
- * The class for the entity to generate XML of the DublinCore metadata
- * 
- * @author Sandro
- *
- */
-@Security.Authenticated(DefaultAuthenticator.class)
-public class MetadataXML extends Controller {
-	@Inject QueryDSL q;
+public class DublinCoreMetadata extends SimpleWebDAV {
+	QueryDSL q = Play.application().injector().instanceOf(QueryDSL.class);
+	
+	public DublinCoreMetadata() {
+		this("/");
+	}
+	
+	public DublinCoreMetadata(String prefix) {
+		super(prefix);
+	}
+	
+	@Override
+	public DublinCoreMetadata withPrefix(String prefix) {
+		return new DublinCoreMetadata(prefix);
+	}
+	
+	/**
+	 * Generates a list of all UUID's
+	 * 
+	 * @return a {@link Stream} of {@link ResourceDescription} of the UUID's
+	 */
+	@Override
+	public Stream<ResourceDescription> descriptions() {
+		return q.withTransaction(tx -> {
+			return tx.select(metadata.uuid, metadata.dateSourceRevision)
+				.from(metadata)
+				.fetch()
+				.stream()
+				.map(dataset -> new DefaultResourceDescription(dataset.get(metadata.uuid) + ".xml", 
+					new DefaultResourceProperties(false, dataset.get(metadata.dateSourceRevision))));
+		});
+	}
+	
+	@Override
+	public Optional<ResourceProperties> properties(String name) {
+		return q.withTransaction(tx -> {
+			Date date = tx.select(metadata.dateSourceRevision)
+					.from(metadata)
+					.where(metadata.uuid.eq(name))
+					.fetchOne();
+			
+			if(date == null) {
+				return Optional.<ResourceProperties>empty();
+			} else {
+				return Optional.<ResourceProperties>of(
+						new DefaultResourceProperties(
+								false,
+								date));
+			}
+		});
+	}
 	
 	/**
 	 * Generates an XML page according to the DublinCore standard
 	 * 
 	 * @param metadataUuid the UUID of the metadata
-	 * @return the {@link Result} of the XML page
+	 * @return the {@link Optional} with the {@link Resource} which contains 
+	 * the content and content type of the XML page
 	 */
-	public Result generateXml(String metadataUuid) {
-		// Sets the content type of the response to XML
-		response().setContentType("application/xml");
+	@Override
+	public Optional<Resource> resource(String name) throws MalformedURLException, IOException {
+		// Strips the extension from the string
+		String metadataUuid = name.substring(0, name.indexOf(".xml"));
 		
 		// Create an object to easily format dates
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -84,7 +134,7 @@ public class MetadataXML extends Controller {
 					.fetch();
 			
 			// Convert attachments from database to requests
-			String host = request().host();
+			String host = "localhost:9000";
 			List<String> attachments = new ArrayList<String>();
 			for(String att : attachmentsDB) {
 				String url = controllers.routes.Metadata.openAttachment(att, datasetRow.get(metadata.uuid)).toString();
@@ -173,7 +223,7 @@ public class MetadataXML extends Controller {
 			String useLimitation = Messages.get("xml.uselimitation");
 			
 			// Returns the XML page
-			return ok(views.xml.metadata.render(dcx, sdf, useLimitation));
+			return Optional.ofNullable(new DefaultResource("application/xml", views.xml.metadata.render(dcx, sdf, useLimitation).body().getBytes()));
 		});
 	}
 }
