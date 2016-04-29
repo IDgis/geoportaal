@@ -134,11 +134,10 @@ public class DublinCoreMetadata extends SimpleWebDAV {
 					.fetch();
 			
 			// Convert attachments from database to requests
-			String host = "localhost:9000";
 			List<String> attachments = new ArrayList<String>();
 			for(String att : attachmentsDB) {
 				String url = controllers.routes.Metadata.openAttachment(att, datasetRow.get(metadata.uuid)).toString();
-				attachments.add("http://" + host + url);
+				attachments.add("http://" + play.Play.application().configuration().getString("geoportaal.host") + url);
 			}
 			
 			// Fetch the id of the creator
