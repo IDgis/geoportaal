@@ -70,7 +70,9 @@ public class DublinCoreMetadata extends SimpleWebDAV {
 	@Override
 	public Stream<ResourceDescription> descriptions() {
 		return q.withTransaction(tx -> {
-			return tx.select(metadata.uuid, metadata.dateSourceRevision)
+			return tx.select(
+					metadata.uuid, 
+					metadata.dateSourceRevision.coalesce(metadata.dateSourceCreation).as(metadata.dateSourceRevision))
 				.from(metadata)
 				.orderBy(metadata.id.asc())
 				.fetch()
@@ -84,7 +86,7 @@ public class DublinCoreMetadata extends SimpleWebDAV {
 	public Optional<ResourceProperties> properties(String name) {
 		return q.withTransaction(tx -> {
 			Optional<Date> optionalDate = Optional.ofNullable(
-				tx.select(metadata.dateSourceRevision)
+				tx.select(metadata.dateSourceRevision.coalesce(metadata.dateSourceCreation))
 					.from(metadata)
 					.where(metadata.uuid.eq(name))
 					.fetchOne());
