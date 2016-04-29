@@ -58,18 +58,32 @@ public class DublinCoreMetadata extends SimpleWebDAV {
 	@Override
 	public Stream<ResourceDescription> descriptions() {
 		return q.withTransaction(tx -> {
-			return tx.select(metadata.uuid, metadata.dateSourceCreation)
+			return tx.select(metadata.uuid, metadata.dateSourceRevision)
 				.from(metadata)
 				.fetch()
 				.stream()
 				.map(dataset -> new DefaultResourceDescription(dataset.get(metadata.uuid) + ".xml", 
-					new DefaultResourceProperties(false, dataset.get(metadata.dateSourceCreation))));
+					new DefaultResourceProperties(false, dataset.get(metadata.dateSourceRevision))));
 		});
 	}
 	
 	@Override
 	public Optional<ResourceProperties> properties(String name) {
-		return null;
+		return q.withTransaction(tx -> {
+			Date date = tx.select(metadata.dateSourceRevision)
+					.from(metadata)
+					.where(metadata.uuid.eq(name))
+					.fetchOne();
+			
+			if(date == null) {
+				return Optional.<ResourceProperties>empty();
+			} else {
+				return Optional.<ResourceProperties>of(
+						new DefaultResourceProperties(
+								false,
+								date));
+			}
+		});
 	}
 	
 	/**
