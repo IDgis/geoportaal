@@ -91,7 +91,7 @@
 							}
 						</p>
 						
-						<a class="link">@Messages.get("button.metadata")</a>
+						@views.html.metadatalink(doc.get(mdType.url), doc.get(document.uuid))
 						@if(!doc.get(mdType.name).equals("service")) {
 							<button class="link" type="button">@Messages.get("button.download")</button>
 						}

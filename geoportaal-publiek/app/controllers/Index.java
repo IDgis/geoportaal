@@ -30,7 +30,8 @@ public class Index extends Controller {
 		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
 		
 		return q.withTransaction(tx -> {
-			List<Tuple> documents = tx.select(document.title, document.date, document.creator, document.description, document.thumbnail, mdType.name)
+			List<Tuple> documents = tx.select(document.title, document.uuid, document.date, document.creator, document.description, 
+					document.thumbnail, mdType.url, mdType.name)
 					.from(document)
 					.join(mdType).on(document.mdTypeId.eq(mdType.id))
 					.where(document.date.isNotNull())
@@ -53,7 +54,8 @@ public class Index extends Controller {
 					.where(mdTypeLabel.language.eq(curLang.code()))
 					.fetch();
 			
-			List<Tuple> documents = tx.select(document.title, document.date, document.creator, document.description, document.thumbnail, mdType.name)
+			List<Tuple> documents = tx.select(document.title, document.uuid, document.date, document.creator, document.description, 
+					document.thumbnail, mdType.url, mdType.name)
 					.from(document)
 					.join(mdType).on(document.mdTypeId.eq(mdType.id))
 					.where(document.date.isNotNull())
@@ -76,7 +78,8 @@ public class Index extends Controller {
 					.where(subjectLabel.language.eq(curLang.code()))
 					.fetch();
 			
-			List<Tuple> documents = tx.select(document.uuid, document.title, document.date, document.creator, document.description, document.thumbnail, mdType.name)
+			List<Tuple> documents = tx.select(document.uuid, document.title, document.date, document.creator, document.description, 
+					document.thumbnail, mdType.url, mdType.name)
 					.from(document)
 					.join(mdType).on(document.mdTypeId.eq(mdType.id))
 					.where(document.date.isNotNull())
@@ -95,8 +98,8 @@ public class Index extends Controller {
 						.orderBy(subject.id.asc())
 						.fetch();
 				
-				DocSubject ds = new DocSubject(doc.get(document.title), doc.get(document.date), doc.get(document.creator), 
-						doc.get(document.description), doc.get(document.thumbnail), docSubjects, doc.get(mdType.name));
+				DocSubject ds = new DocSubject(doc.get(document.uuid), doc.get(document.title), doc.get(document.date), doc.get(document.creator), 
+						doc.get(document.description), doc.get(document.thumbnail), docSubjects, doc.get(mdType.url), doc.get(mdType.name));
 				
 				finalDocuments.add(ds);
 			}

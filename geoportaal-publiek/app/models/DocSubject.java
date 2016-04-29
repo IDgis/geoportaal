@@ -4,24 +4,36 @@ import java.sql.Timestamp;
 import java.util.List;
 
 public class DocSubject {
+	private String uuid;
 	private String title;
 	private Timestamp date;
 	private String creator;
 	private String description;
 	private String thumbnail;
 	private List<String> subjects;
+	private String metadataUrl;
 	private String metadataType;
 	
-	public DocSubject(String title, Timestamp date, String creator, String description, String thumbnail,
-			List<String> subjects, String metadataType) {
+	public DocSubject(String uuid, String title, Timestamp date, String creator, String description, String thumbnail,
+			List<String> subjects, String metadataUrl, String metadataType) {
 		super();
+		this.uuid = uuid;
 		this.title = title;
 		this.date = date;
 		this.creator = creator;
 		this.description = description;
 		this.thumbnail = thumbnail;
 		this.subjects = subjects;
+		this.metadataUrl = metadataUrl;
 		this.metadataType = metadataType;
+	}
+
+	public String getUuid() {
+		return uuid;
+	}
+
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
 	}
 
 	public String getTitle() {
@@ -70,6 +82,14 @@ public class DocSubject {
 
 	public void setSubjects(List<String> subjects) {
 		this.subjects = subjects;
+	}
+
+	public String getMetadataUrl() {
+		return metadataUrl;
+	}
+
+	public void setMetadataUrl(String metadataUrl) {
+		this.metadataUrl = metadataUrl;
 	}
 
 	public String getMetadataType() {
