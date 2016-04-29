@@ -25,9 +25,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import javax.inject.Inject;
+
 import com.querydsl.core.Tuple;
 
 import models.DublinCoreXML;
+
 import nl.idgis.dav.model.DefaultResource;
 import nl.idgis.dav.model.DefaultResourceDescription;
 import nl.idgis.dav.model.DefaultResourceProperties;
@@ -35,24 +38,28 @@ import nl.idgis.dav.model.Resource;
 import nl.idgis.dav.model.ResourceDescription;
 import nl.idgis.dav.model.ResourceProperties;
 import nl.idgis.dav.router.SimpleWebDAV;
-import play.Play;
+
 import play.i18n.Messages;
+
 import util.QueryDSL;
 
 public class DublinCoreMetadata extends SimpleWebDAV {
-	QueryDSL q = Play.application().injector().instanceOf(QueryDSL.class);
+	private final QueryDSL q;
 	
-	public DublinCoreMetadata() {
-		this("/");
+	@Inject
+	public DublinCoreMetadata(QueryDSL q) {
+		this(q, "/");
 	}
 	
-	public DublinCoreMetadata(String prefix) {
+	public DublinCoreMetadata(QueryDSL q, String prefix) {
 		super(prefix);
+		
+		this.q = q;
 	}
 	
 	@Override
 	public DublinCoreMetadata withPrefix(String prefix) {
-		return new DublinCoreMetadata(prefix);
+		return new DublinCoreMetadata(q, prefix);
 	}
 	
 	/**
@@ -63,7 +70,9 @@ public class DublinCoreMetadata extends SimpleWebDAV {
 	@Override
 	public Stream<ResourceDescription> descriptions() {
 		return q.withTransaction(tx -> {
-			return tx.select(metadata.uuid, metadata.dateSourceRevision)
+			return tx.select(
+					metadata.uuid, 
+					metadata.dateSourceRevision.coalesce(metadata.dateSourceCreation).as(metadata.dateSourceRevision))
 				.from(metadata)
 				.orderBy(metadata.id.asc())
 				.fetch()
@@ -73,29 +82,29 @@ public class DublinCoreMetadata extends SimpleWebDAV {
 		});
 	}
 	
+	/**
+	 * Provides the properties of the metadata document
+	 *
+	 * @param name the UUID of the metadata
+	 * @return a {@link Optional} with the {@link ResourceProperties} of the metadata
+	 */
 	@Override
 	public Optional<ResourceProperties> properties(String name) {
 		return q.withTransaction(tx -> {
-			Date date = tx.select(metadata.dateSourceRevision)
+			Optional<Date> optionalDate = Optional.ofNullable(
+				tx.select(metadata.dateSourceRevision.coalesce(metadata.dateSourceCreation))
 					.from(metadata)
 					.where(metadata.uuid.eq(name))
-					.fetchOne();
-			
-			if(date == null) {
-				return Optional.<ResourceProperties>empty();
-			} else {
-				return Optional.<ResourceProperties>of(
-						new DefaultResourceProperties(
-								false,
-								date));
-			}
+					.fetchOne());
+					
+			return optionalDate.map(date -> new DefaultResourceProperties(false, date));
 		});
 	}
 	
 	/**
 	 * Generates an XML page according to the DublinCore standard
 	 * 
-	 * @param metadataUuid the UUID of the metadata
+	 * @param name the UUID of the metadata
 	 * @return the {@link Optional} with the {@link Resource} which contains 
 	 * the content and content type of the XML page
 	 */
