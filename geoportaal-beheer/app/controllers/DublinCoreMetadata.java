@@ -25,9 +25,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import javax.inject.Inject;
+
 import com.querydsl.core.Tuple;
 
 import models.DublinCoreXML;
+
 import nl.idgis.dav.model.DefaultResource;
 import nl.idgis.dav.model.DefaultResourceDescription;
 import nl.idgis.dav.model.DefaultResourceProperties;
@@ -35,24 +38,28 @@ import nl.idgis.dav.model.Resource;
 import nl.idgis.dav.model.ResourceDescription;
 import nl.idgis.dav.model.ResourceProperties;
 import nl.idgis.dav.router.SimpleWebDAV;
-import play.Play;
+
 import play.i18n.Messages;
+
 import util.QueryDSL;
 
 public class DublinCoreMetadata extends SimpleWebDAV {
-	QueryDSL q = Play.application().injector().instanceOf(QueryDSL.class);
+	private final QueryDSL q;
 	
-	public DublinCoreMetadata() {
-		this("/");
+	@Inject
+	public DublinCoreMetadata(QueryDSL q) {
+		this(q, "/");
 	}
 	
-	public DublinCoreMetadata(String prefix) {
+	public DublinCoreMetadata(QueryDSL q, String prefix) {
 		super(prefix);
+		
+		this.q = q;
 	}
 	
 	@Override
 	public DublinCoreMetadata withPrefix(String prefix) {
-		return new DublinCoreMetadata(prefix);
+		return new DublinCoreMetadata(q, prefix);
 	}
 	
 	/**
