@@ -83,19 +83,13 @@ public class DublinCoreMetadata extends SimpleWebDAV {
 	@Override
 	public Optional<ResourceProperties> properties(String name) {
 		return q.withTransaction(tx -> {
-			Date date = tx.select(metadata.dateSourceRevision)
+			Optional<Date> optionalDate = Optional.ofNullable(
+				tx.select(metadata.dateSourceRevision)
 					.from(metadata)
 					.where(metadata.uuid.eq(name))
-					.fetchOne();
-			
-			if(date == null) {
-				return Optional.<ResourceProperties>empty();
-			} else {
-				return Optional.<ResourceProperties>of(
-						new DefaultResourceProperties(
-								false,
-								date));
-			}
+					.fetchOne());
+					
+			return optionalDate.map(date -> new DefaultResourceProperties(false, date));
 		});
 	}
 	
