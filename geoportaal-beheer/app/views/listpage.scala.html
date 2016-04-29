@@ -16,13 +16,17 @@
 @import models.QStatusLabel.statusLabel
 @import models.QUser.user
 
+@metadataUrl(fileId: String) = @{
+	play.Play.application().configuration().getString("geoportaal.metadata.dc") + fileId + ".xml" 
+}
+
 <tr class="js-index-page js-index-page-@page">
 	<td>
 		<input type="checkbox" class="js-check js-record-checkbox" data-uuid="@datasetRow.get(metadata.uuid)"
 			data-role="@roleId" data-status="@datasetRow.get(metadata.status)" @if(checkedList.contains(datasetRow.get(metadata.uuid))) {checked}>
 	</td>
 	<td>
-		<a href="@routes.MetadataXML.generateXml(datasetRow.get(metadata.uuid))" target="_blank">
+		<a href="@metadataUrl(datasetRow.get(metadata.uuid))" target="_blank">
 			<span class="action-button glyphicon glyphicon-eye-open" title="@Messages.get("list.action.view")"></span>
 		</a>
 		<a href="@routes.Metadata.renderEditForm(datasetRow.get(metadata.uuid), textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch)"
