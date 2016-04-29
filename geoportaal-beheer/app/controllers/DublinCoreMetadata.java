@@ -54,7 +54,12 @@ public class DublinCoreMetadata extends SimpleWebDAV {
 	public DublinCoreMetadata withPrefix(String prefix) {
 		return new DublinCoreMetadata(prefix);
 	}
-
+	
+	/**
+	 * Generates a list of all UUID's
+	 * 
+	 * @return a {@link Stream} of {@link ResourceDescription} of the UUID's
+	 */
 	@Override
 	public Stream<ResourceDescription> descriptions() {
 		return q.withTransaction(tx -> {
