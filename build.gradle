@@ -201,10 +201,13 @@ project(':geoportaal-harvester') {
 		
 		environment 'dataset.url', datasetUrl
 		environment 'service.url', serviceUrl
+		environment 'dc.url', dcUrl
 		environment 'dataset.name', datasetName
 		environment 'service.name', serviceName
+		environment 'dc.name', dcName
 		environment 'dataset.label', datasetLabel
 		environment 'service.label', serviceLabel
+		environment 'dc.label', dcLabel
 		environment 'language', language
 	}
 	

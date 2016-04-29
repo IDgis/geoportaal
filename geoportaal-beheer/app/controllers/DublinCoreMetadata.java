@@ -30,6 +30,7 @@ import com.querydsl.core.Tuple;
 import models.DublinCoreXML;
 import nl.idgis.dav.model.DefaultResource;
 import nl.idgis.dav.model.DefaultResourceDescription;
+import nl.idgis.dav.model.DefaultResourceProperties;
 import nl.idgis.dav.model.Resource;
 import nl.idgis.dav.model.ResourceDescription;
 import nl.idgis.dav.model.ResourceProperties;
@@ -56,7 +57,14 @@ public class DublinCoreMetadata extends SimpleWebDAV {
 
 	@Override
 	public Stream<ResourceDescription> descriptions() {
-		return null;
+		return q.withTransaction(tx -> {
+			return tx.select(metadata.uuid, metadata.dateSourceCreation)
+				.from(metadata)
+				.fetch()
+				.stream()
+				.map(dataset -> new DefaultResourceDescription(dataset.get(metadata.uuid) + ".xml", 
+					new DefaultResourceProperties(false, dataset.get(metadata.dateSourceCreation))));
+		});
 	}
 	
 	@Override
