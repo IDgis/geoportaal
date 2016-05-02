@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.swing.text.Document;
 
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.dsl.Wildcard;
@@ -58,17 +59,17 @@ public class Index extends Controller {
 					.where(mdTypeLabel.language.eq(curLang.code()))
 					.fetch();
 			
-			SQLQuery<Tuple> documents = tx.select(document.title, document.uuid, document.date, document.creator, document.description, 
+			SQLQuery<Tuple> queryDocuments = tx.select(document.title, document.uuid, document.date, document.creator, document.description, 
 					document.thumbnail, mdType.url, mdType.name)
 					.from(document)
 					.join(mdType).on(document.mdTypeId.eq(mdType.id))
 					.where(document.date.isNotNull());
 			
-			Integer count = documents
+			Integer count = queryDocuments
 					.fetch()
 					.size();
 			
-			List<Tuple> finalDocuments = documents.orderBy(document.date.desc())
+			List<Tuple> documents = queryDocuments.orderBy(document.date.desc(), document.title.asc())
 					.offset(start)
 					.limit(10)
 					.fetch();
@@ -83,11 +84,11 @@ public class Index extends Controller {
 			Integer startLast = count - (count % 10);
 			Integer pageLast = startLast / 10;
 			
-			return ok(search.render(mdTypes, finalDocuments, sdf, count, start, startPrevious, startNext, startLast, pageLast));
+			return ok(search.render(mdTypes, documents, sdf, count, start, startPrevious, startNext, startLast, pageLast));
 		});
 	}
 	
-	public Result browse() {
+	public Result browse(Integer start) {
 		Lang curLang = Http.Context.current().lang();
 		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
 		
@@ -98,13 +99,19 @@ public class Index extends Controller {
 					.where(subjectLabel.language.eq(curLang.code()))
 					.fetch();
 			
-			List<Tuple> documents = tx.select(document.uuid, document.title, document.date, document.creator, document.description, 
+			SQLQuery<Tuple> queryDocuments = tx.select(document.uuid, document.title, document.date, document.creator, document.description, 
 					document.thumbnail, mdType.url, mdType.name)
 					.from(document)
 					.join(mdType).on(document.mdTypeId.eq(mdType.id))
 					.where(document.date.isNotNull())
-					.where(mdType.name.ne("service"))
-					.orderBy(document.date.desc())
+					.where(mdType.name.ne("service"));
+			
+			Integer count = queryDocuments
+					.fetch()
+					.size();
+			
+			List<Tuple> documents = queryDocuments.orderBy(document.date.desc(), document.title.asc())
+					.offset(start)
 					.limit(10)
 					.fetch();
 			
@@ -124,7 +131,17 @@ public class Index extends Controller {
 				finalDocuments.add(ds);
 			}
 			
-			return ok(browse.render(subjects, finalDocuments, sdf));
+			Integer startNext = start + 10;
+			Integer startPrevious = start -10;
+			
+			if(startPrevious < 0) {
+				startPrevious = 0;
+			}
+			
+			Integer startLast = count - (count % 10);
+			Integer pageLast = startLast / 10;
+			
+			return ok(browse.render(subjects, finalDocuments, sdf, count, start, startPrevious, startNext, startLast, pageLast));
 		});
 	}
 	
