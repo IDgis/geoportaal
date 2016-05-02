@@ -4,7 +4,7 @@
 
 # An example controller showing a sample home page
 GET			/						controllers.Index.index
-GET			/search					controllers.Index.search
+GET			/search					controllers.Index.search(start: Int ?= 0)
 GET			/browse					controllers.Index.browse
 GET			/contact				controllers.Index.contact
 GET			/about					controllers.Index.about

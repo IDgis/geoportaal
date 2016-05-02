@@ -15,6 +15,10 @@ import java.util.List;
 import javax.inject.Inject;
 
 import com.querydsl.core.Tuple;
+import com.querydsl.core.types.dsl.Wildcard;
+import com.querydsl.sql.SQLExpressions;
+import com.querydsl.sql.SQLQuery;
+import com.querydsl.sql.WindowOver;
 
 import models.DocSubject;
 
@@ -43,7 +47,7 @@ public class Index extends Controller {
 		});
 	}
 	
-	public Result search() {
+	public Result search(Integer start) {
 		Lang curLang = Http.Context.current().lang();
 		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
 		
@@ -54,16 +58,32 @@ public class Index extends Controller {
 					.where(mdTypeLabel.language.eq(curLang.code()))
 					.fetch();
 			
-			List<Tuple> documents = tx.select(document.title, document.uuid, document.date, document.creator, document.description, 
+			SQLQuery<Tuple> documents = tx.select(document.title, document.uuid, document.date, document.creator, document.description, 
 					document.thumbnail, mdType.url, mdType.name)
 					.from(document)
 					.join(mdType).on(document.mdTypeId.eq(mdType.id))
-					.where(document.date.isNotNull())
-					.orderBy(document.date.desc())
+					.where(document.date.isNotNull());
+			
+			Integer count = documents
+					.fetch()
+					.size();
+			
+			List<Tuple> finalDocuments = documents.orderBy(document.date.desc())
+					.offset(start)
 					.limit(10)
 					.fetch();
 			
-			return ok(search.render(mdTypes, documents, sdf));
+			Integer startNext = start + 10;
+			Integer startPrevious = start -10;
+			
+			if(startPrevious < 0) {
+				startPrevious = 0;
+			}
+			
+			Integer startLast = count - (count % 10);
+			Integer pageLast = startLast / 10;
+			
+			return ok(search.render(mdTypes, finalDocuments, sdf, count, start, startPrevious, startNext, startLast, pageLast));
 		});
 	}
 	

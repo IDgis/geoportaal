@@ -65,3 +65,5 @@ a.title {color: #255c9f;text-decoration: underline;font-weight: bold;}
 
 .md-thumbnail {float:right;width:120px;height:120px;padding-left:20px;padding-bottom:10px;}
 #pager-adjusted {margin-top:0;margin-bottom:5px;}
+
+.paging-disabled {pointer-events:none;}
