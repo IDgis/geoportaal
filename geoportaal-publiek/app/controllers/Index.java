@@ -102,9 +102,12 @@ public class Index extends Controller {
 		});
 	}
 	
-	public Result browse(Integer start) {
+	public Result browse(Integer start, String subjectsString, Boolean filter) {
 		Lang curLang = Http.Context.current().lang();
 		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+		
+		String[] subjectsArray = subjectsString.split("\\++");
+		List<String> subjectsList = Arrays.asList(subjectsArray);
 		
 		return q.withTransaction(tx -> {
 			List<Tuple> subjects = tx.select(subject.name, subjectLabel.title)
@@ -119,7 +122,10 @@ public class Index extends Controller {
 					.join(mdType).on(document.mdTypeId.eq(mdType.id))
 					.where(document.date.isNotNull())
 					.where(document.description.isNotNull())
-					.where(mdType.name.ne("service"));
+					.where(document.id.in(SQLExpressions.select(docSubject.documentId)
+							.from(docSubject)
+							.join(subject).on(docSubject.subjectId.eq(subject.id))
+							.where(subject.name.in(subjectsList))));
 			
 			Integer count = queryDocuments
 					.fetch()
@@ -160,7 +166,11 @@ public class Index extends Controller {
 			
 			Integer pageLast = startLast / 10 + 1;
 			
-			return ok(browse.render(subjects, finalDocuments, sdf, count, start, startPrevious, startNext, startLast, pageLast));
+			if(filter) {
+				return ok(browseresult.render(subjects, finalDocuments, sdf, subjectsString, count, start, startPrevious, startNext, startLast, pageLast));
+			}
+			
+			return ok(browse.render(subjects, finalDocuments, sdf, subjectsString, count, start, startPrevious, startNext, startLast, pageLast));
 		});
 	}
 	
@@ -180,7 +190,8 @@ public class Index extends Controller {
 	public Result jsRoutes() {
 		return ok(Routes.javascriptRouter("jsRoutes",
 			controllers.routes.javascript.Assets.versioned(),
-			controllers.routes.javascript.Index.search()
+			controllers.routes.javascript.Index.search(),
+			controllers.routes.javascript.Index.browse()
 		)).as("text/javascript");
 	}
 }
