@@ -10,6 +10,7 @@ import static models.QSubjectLabel.subjectLabel;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -22,7 +23,7 @@ import com.querydsl.sql.SQLQuery;
 import com.querydsl.sql.WindowOver;
 
 import models.DocSubject;
-
+import play.Routes;
 import play.i18n.Lang;
 import play.mvc.*;
 import util.QueryDSL;
@@ -48,9 +49,12 @@ public class Index extends Controller {
 		});
 	}
 	
-	public Result search(Integer start) {
+	public Result search(Integer start, String typesString, Boolean filter) {
 		Lang curLang = Http.Context.current().lang();
 		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+		
+		String[] typesArray = typesString.split("\\++");
+		List<String> types = Arrays.asList(typesArray);
 		
 		return q.withTransaction(tx -> {
 			List<Tuple> mdTypes = tx.select(mdType.name, mdTypeLabel.title)
@@ -63,7 +67,9 @@ public class Index extends Controller {
 					document.thumbnail, mdType.url, mdType.name)
 					.from(document)
 					.join(mdType).on(document.mdTypeId.eq(mdType.id))
-					.where(document.date.isNotNull());
+					.where(document.date.isNotNull())
+					.where(document.description.isNotNull())
+					.where(mdType.name.in(types));
 			
 			Integer count = queryDocuments
 					.fetch()
@@ -82,9 +88,17 @@ public class Index extends Controller {
 			}
 			
 			Integer startLast = count - (count % 10);
-			Integer pageLast = startLast / 10;
+			if(count % 10 == 0) {
+				startLast -= 10;
+			}
 			
-			return ok(search.render(mdTypes, documents, sdf, count, start, startPrevious, startNext, startLast, pageLast));
+			Integer pageLast = startLast / 10 + 1;
+			
+			if(filter) {
+				return ok(searchresult.render(mdTypes, documents, sdf, typesString, count, start, startPrevious, startNext, startLast, pageLast));
+			}
+			
+			return ok(search.render(mdTypes, documents, sdf, typesString, count, start, startPrevious, startNext, startLast, pageLast));
 		});
 	}
 	
@@ -104,6 +118,7 @@ public class Index extends Controller {
 					.from(document)
 					.join(mdType).on(document.mdTypeId.eq(mdType.id))
 					.where(document.date.isNotNull())
+					.where(document.description.isNotNull())
 					.where(mdType.name.ne("service"));
 			
 			Integer count = queryDocuments
@@ -139,7 +154,11 @@ public class Index extends Controller {
 			}
 			
 			Integer startLast = count - (count % 10);
-			Integer pageLast = startLast / 10;
+			if(count % 10 == 0) {
+				startLast -= 10;
+			}
+			
+			Integer pageLast = startLast / 10 + 1;
 			
 			return ok(browse.render(subjects, finalDocuments, sdf, count, start, startPrevious, startNext, startLast, pageLast));
 		});
@@ -151,5 +170,17 @@ public class Index extends Controller {
 	
 	public Result contact() {
 		return ok(contact.render());
+	}
+	
+	/**
+	 * Make controller methods available in JavaScript
+	 * 
+	 * @return the {@link Result} of the controller methods as JavaScript script
+	 */
+	public Result jsRoutes() {
+		return ok(Routes.javascriptRouter("jsRoutes",
+			controllers.routes.javascript.Assets.versioned(),
+			controllers.routes.javascript.Index.search()
+		)).as("text/javascript");
 	}
 }

@@ -1,5 +1,6 @@
 require([
 	'dojo/dom',
+	'dojo/dom-construct',
 	'dojo/query',
 	'dojo/on',
 	'dojo/_base/array',
@@ -7,10 +8,11 @@ require([
 	'dojo/_base/window',
 	'dojo/dom-attr',
 	'dojo/dom-style',
+	'dojo/request/xhr',
 	
 	'dojo/NodeList-traverse',
 	'dojo/domReady!'
-	], function(dom, query, on, array, lang, win, domAttr, domStyle) {
+	], function(dom, domConstruct, query, on, array, lang, win, domAttr, domStyle, xhr) {
 		
 		// Expand or collapse single metadata record
 		on(win.doc, '.search-metadata > .row:click, .browse-metadata > .row:click', function(e) {
@@ -70,7 +72,23 @@ require([
 		
 		// Filter event for metadata type
 		on(win.doc, '.js-data-type:change', function(e) {
-			filterTypeSubject(e);
+			var arrayTypes = [];
+			var types = query('.js-data-type:checked');
+			array.forEach(types, function(item) {
+				var type = domAttr.get(item, 'data-md-type');
+				arrayTypes.push(type);
+			});
+			
+			var typesString = arrayTypes.join('+');
+			
+			var start = domAttr.get(dom.byId('js-start-current'), 'value');
+			xhr(jsRoutes.controllers.Index.search(start, typesString, true).url, {
+				handleAs: "html"	
+			}).then(function(data) {
+				domConstruct.empty(dom.byId('js-search-results-all'));
+				domConstruct.place(data, dom.byId('js-search-results-all'));
+			});
+			
 			setExpandAllCheckBox();
 		});
 		
