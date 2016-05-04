@@ -87,6 +87,7 @@ require([
 			}).then(function(data) {
 				domConstruct.empty(dom.byId('js-search-results-all'));
 				domConstruct.place(data, dom.byId('js-search-results-all'));
+				domAttr.set(dom.byId('js-element-string'), 'value', elementString);
 				setExpandAllCheckBox();
 			});
 		}
@@ -106,6 +107,7 @@ require([
 			}).then(function(data) {
 				domConstruct.empty(dom.byId('js-browse-results-all'));
 				domConstruct.place(data, dom.byId('js-browse-results-all'));
+				domAttr.set(dom.byId('js-element-string'), 'value', elementString);
 				setExpandAllCheckBox();
 			});
 		}

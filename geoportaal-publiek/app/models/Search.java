@@ -1,8 +1,27 @@
 package models;
 
 public class Search {
-	private String elementsString;
 	private String text;
+	private String elementsString;
+	private String page;
+	
+	public Search() {
+	}
+	
+	public Search(String text, String elementsString, String page) {
+		super();
+		this.text = text;
+		this.elementsString = elementsString;
+		this.page = page;
+	}
+	
+	public String getText() {
+		return text;
+	}
+
+	public void setText(String text) {
+		this.text = text;
+	}
 	
 	public String getElementsString() {
 		return elementsString;
@@ -12,17 +31,11 @@ public class Search {
 		this.elementsString = elementsString;
 	}
 
-	public String getText() {
-		return text;
+	public String getPage() {
+		return page;
 	}
 
-	public void setText(String text) {
-		this.text = text;
-	}
-
-	public Search(String elementsString, String text) {
-		super();
-		this.elementsString = elementsString;
-		this.text = text;
+	public void setPage(String page) {
+		this.page = page;
 	}
 }

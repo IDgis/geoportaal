@@ -23,7 +23,9 @@ import com.querydsl.sql.SQLQuery;
 import com.querydsl.sql.WindowOver;
 
 import models.DocSubject;
+import models.Search;
 import play.Routes;
+import play.data.Form;
 import play.i18n.Lang;
 import play.mvc.*;
 import util.QueryDSL;
@@ -47,6 +49,20 @@ public class Application extends Controller {
 			
 			return ok(index.render(documents, sdf));
 		});
+	}
+	
+	public Result searchText() {
+		// Fetches the form
+		Form<Search> searchForm = Form.form(Search.class);
+		Search s = searchForm.bindFromRequest().get();
+		
+		if("search".equals(s.getPage())) {
+			return redirect(controllers.routes.Application.search(0, s.getElementsString(), false));
+		} if("browse".equals(s.getPage())) {
+			return redirect(controllers.routes.Application.browse(0, s.getElementsString(), false));
+		} else {
+			return notFound("404 - not found");
+		}
 	}
 	
 	public Result search(Integer start, String typesString, Boolean filter) {

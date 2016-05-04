@@ -9,6 +9,8 @@ GET			/browse					controllers.Application.browse(start: Int ?= 0, subjects: Stri
 GET			/contact				controllers.Application.contact
 GET			/about					controllers.Application.about
 
+POST		/searchtext				controllers.Application.searchText()
+
 GET			/routes.js				controllers.Application.jsRoutes()
 
 # Map static resources from the /public folder to the /assets URL path
