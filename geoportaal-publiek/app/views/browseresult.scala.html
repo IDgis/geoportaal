@@ -97,9 +97,6 @@
 						</p>
 						
 						@views.html.metadatalink(doc.getMetadataUrl(), doc.getUuid())
-						@if(!doc.getMetadataType.equals("service")) {
-							<button class="link" type="submit">@Messages.get("button.download")</button>
-						}
 					</div>
 				</div>
 			</div>
