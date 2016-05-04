@@ -1,6 +1,13 @@
 @(subjects: java.util.List[com.querydsl.core.Tuple],
 	documents: java.util.List[models.DocSubject],
-	sdf: java.text.SimpleDateFormat
+	sdf: java.text.SimpleDateFormat,
+	subjectsString: String,
+	count: Integer,
+	start: Integer,
+	startPrevious: Integer,
+	startNext: Integer,
+	startLast: Integer,
+	pageLast: Integer
 )
 
 @import play.i18n._
@@ -13,7 +20,7 @@
 		<p>@Messages.get("browse.intro")</p>
 	</div>
 	
-	@helper.form(action = routes.Index.index(), 'class -> "search-bar col-md-offset-1") {
+	@helper.form(action = routes.Application.index(), 'class -> "search-bar col-md-offset-1") {
 		<div class="form-group">
 			<span class="search-label">@Messages.get("search.label")</span>
 		</div>
@@ -25,81 +32,9 @@
 		</div>
 	}
 	
-	<div class="col-md-12">
-		<div class="data-navigation">
-			<div class="row">
-				<span class="col-md-3">@if(documents.size() == 0) {@Messages.get("result.count.label.zero")}
-					@if(documents.size() == 1) {@documents.size() @Messages.get("result.count.label.one")} @if(documents.size > 1) {
-						@documents.size() @Messages.get("result.count.label.multiple")}</span>
-				<div class="pull-right">
-					<div class="row btn-group btn-group-sm">
-							<button id="previous" type="button" class="btn btn-default">&laquo;</button>
-							<button id="data-page-1" type="button" class="btn btn-default">1</button>
-							<button id="next" type="button" class="btn btn-default">&raquo;</button>
-					</div>
-					<div class="row" id="expand-area">
-						<label class="checkbox-inline">
-							<input id="js-expand-all" type="checkbox">
-							<span id="js-label-expand-all">@Messages.get("results.expand")</span>
-						</label>
-					</div>
-				</div>
-			</div>
-		</div>
+	<div id="js-browse-results-all">
+		@views.html.browseresult(subjects, documents, sdf, subjectsString, count, start, startPrevious, startNext, startLast, pageLast)
 	</div>
 	
-	<div class="row" id="header-subjects">
-		<div class="col-md-12">
-			<span id="browse-info">@Messages.get("browse.subject.list.label")</span>
-		</div>
-	</div>
-	
-	<div class="row">
-		<div class="col-md-4" id="subjects-list">
-			<div id="subject-selection-buttons">
-				<button id="js-subject-select-all" type="button" class="button-ovs">@Messages.get("browse.button.select.all")</button>
-				<button id="js-subject-select-none" type="button" class="button-ovs">@Messages.get("browse.button.select.nothing")</button>
-			</div>
-			@for(subjectOne <- subjects) {
-				<div>
-					<label class="checkbox-inline">
-						<input class="js-data-subject" data-md-subject="@subjectOne.get(subject.name)" type="checkbox" checked>
-						<span>@subjectOne.get(subjectLabel.title)</span>
-					</label>
-				</div>
-			}
-		</div>
-		<div class="col-md-7" id="browse-area">
-			@for(doc <- documents) {
-				<div class="browse-metadata" 
-					data-md-subject="@for(sub <- doc.getSubjects()) {@if(doc.getSubjects().indexOf(sub) == 0){@sub} else { @sub}}">
-					<div class="row">
-						<div class="col-md-12 browse-title">
-							<p class="title">
-								<a class="title">@doc.getTitle() (@sdf.format(doc.getDate().getTime()), @doc.getCreator())</a>
-							</p>
-						</div>
-						<div class="col-md-12 description">
-							<p>
-								@if(doc.getThumbnail() != null) {
-									<img src="@doc.getThumbnail()" class="md-thumbnail">
-								}
-								
-								@if(doc.getDescription().length > 460) {
-									@doc.getDescription().substring(0, 460)...
-								} else {
-									@doc.getDescription()
-								}
-							</p>
-							
-							<a class="link">@Messages.get("button.metadata")</a>
-							@if(!doc.getMetadataType.equals("service")) {
-								<button class="link" type="submit">@Messages.get("button.download")</button>
-							}
-						</div>
-					</div>
-				</div>
-			}
-		</div>
-	</div>
+	<input type="hidden" id="js-start-current" value="@start">
 }

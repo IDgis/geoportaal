@@ -1,0 +1,105 @@
+@(subjects: java.util.List[com.querydsl.core.Tuple],
+	documents: java.util.List[models.DocSubject],
+	sdf: java.text.SimpleDateFormat,
+	subjectsString: String,
+	count: Integer,
+	start: Integer,
+	startPrevious: Integer,
+	startNext: Integer,
+	startLast: Integer,
+	pageLast: Integer
+)
+
+@import play.i18n._
+@import models.QDocument.document;
+@import models.QSubject.subject;
+@import models.QSubjectLabel.subjectLabel;
+
+<div class="col-md-12">
+	<div class="data-navigation">
+		<div class="row">
+			<span class="col-md-3">@if(count == 0) {@Messages.get("result.count.label.zero")}
+				@if(count == 1) {@count @Messages.get("result.count.label.one")} @if(count > 1) {
+					@count @Messages.get("result.count.label.multiple")}</span>
+			<div class="pull-right">
+				<div class="row btn-group btn-group-sm">
+					<nav>
+						<ul id="pager-adjusted" class="pager">
+							<li @if(start.equals(0)) {class="disabled paging-disabled"}>
+								<a href="@routes.Application.browse(0, subjectsString, false)">@Messages.get("button.first")</a>
+							</li>
+							<li @if(start.equals(0)) {class="disabled paging-disabled"}>
+								<a href="@routes.Application.browse(startPrevious, subjectsString, false)">@Messages.get("button.previous")</a>
+							</li>
+							<li @if(startNext >= count) {class="disabled paging-disabled"}>
+								<a href="@routes.Application.browse(startNext, subjectsString, false)">@Messages.get("button.next")</a>
+							</li>
+							<li @if(startNext >= count) {class="disabled paging-disabled"}>
+								<a href="@routes.Application.browse(startLast, subjectsString, false)">@Messages.get("button.last") (@pageLast)</a>
+							</li>
+						</ul>
+					</nav>
+				</div>
+				<div class="row" id="expand-area">
+					<label class="checkbox-inline">
+						<input id="js-expand-all" class="js-expand-all-evt" type="checkbox">
+						<span id="js-label-expand-all">@Messages.get("results.expand")</span>
+					</label>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="row" id="header-subjects">
+	<div class="col-md-12">
+		<span id="browse-info">@Messages.get("browse.subject.list.label")</span>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-md-4" id="subjects-list">
+		<div id="subject-selection-buttons">
+			<button class="button-ovs js-subject-select-all" type="button">@Messages.get("browse.button.select.all")</button>
+			<button class="button-ovs js-subject-select-none" type="button">@Messages.get("browse.button.select.nothing")</button>
+		</div>
+		@for(subjectOne <- subjects) {
+			<div>
+				<label class="checkbox-inline">
+					<input class="js-data-subject" data-md-subject="@subjectOne.get(subject.name)" type="checkbox" 
+					@if(subjectsString.contains(subjectOne.get(subject.name))) {checked}>
+					<span>@subjectOne.get(subjectLabel.title)</span>
+				</label>
+			</div>
+		}
+	</div>
+	<div class="col-md-7" id="browse-area">
+		@for(doc <- documents) {
+			<div class="browse-metadata" 
+				data-md-subject="@for(sub <- doc.getSubjects()) {@if(doc.getSubjects().indexOf(sub) == 0){@sub} else { @sub}}">
+				<div class="row">
+					<div class="col-md-12 browse-title">
+						<p class="title">
+							<a class="title">@doc.getTitle() (@sdf.format(doc.getDate().getTime()), @doc.getCreator())</a>
+						</p>
+					</div>
+					<div class="col-md-12 description">
+						<p>
+							@if(doc.getThumbnail() != null) {
+								<img src="@doc.getThumbnail()" class="md-thumbnail">
+							}
+							
+							@if(doc.getDescription().length > 460) {
+								@doc.getDescription().substring(0, 460)...
+							} else {
+								@doc.getDescription()
+							}
+						</p>
+						
+						@views.html.metadatalink(doc.getMetadataUrl(), doc.getUuid())
+					</div>
+				</div>
+			</div>
+		}
+	</div>
+</div>

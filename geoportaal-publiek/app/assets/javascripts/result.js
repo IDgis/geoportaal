@@ -1,5 +1,6 @@
 require([
 	'dojo/dom',
+	'dojo/dom-construct',
 	'dojo/query',
 	'dojo/on',
 	'dojo/_base/array',
@@ -7,10 +8,11 @@ require([
 	'dojo/_base/window',
 	'dojo/dom-attr',
 	'dojo/dom-style',
+	'dojo/request/xhr',
 	
 	'dojo/NodeList-traverse',
 	'dojo/domReady!'
-	], function(dom, query, on, array, lang, win, domAttr, domStyle) {
+	], function(dom, domConstruct, query, on, array, lang, win, domAttr, domStyle, xhr) {
 		
 		// Expand or collapse single metadata record
 		on(win.doc, '.search-metadata > .row:click, .browse-metadata > .row:click', function(e) {
@@ -27,105 +29,84 @@ require([
 		});
 		
 		// Expand or collapse all metadata records
-		if(dom.byId('js-expand-all')) {
-			on(dom.byId('js-expand-all'), 'change', function(e) {
-				var descList = query('.search-metadata > .row > .description, .browse-metadata > .row > .description');
-				var checkStatus = domAttr.get(dom.byId('js-expand-all'), 'checked');
-				
-				array.forEach(descList, function(item) {
-					if(checkStatus === true) {
-						domStyle.set(item, 'display', 'block');
-					} else {
-						domStyle.set(item, 'display', 'none');
-					}
-				});
+		on(win.doc, '.js-expand-all-evt:change', function(e) {
+			var descList = query('.search-metadata > .row > .description, .browse-metadata > .row > .description');
+			var checkStatus = domAttr.get(dom.byId('js-expand-all'), 'checked');
+			
+			array.forEach(descList, function(item) {
+				if(checkStatus === true) {
+					domStyle.set(item, 'display', 'block');
+				} else {
+					domStyle.set(item, 'display', 'none');
+				}
 			});
-		}
+		});
 		
 		// Check all subjects
-		if(dom.byId('js-subject-select-all')) {
-			on(dom.byId('js-subject-select-all'), 'click', function(e) {
-				var subjects = query('.js-data-subject');
-				array.forEach(subjects, function(item) {
-					domAttr.set(item, 'checked', true);
-				});
-				
-				filterTypeSubject(e);
-				setExpandAllCheckBox();
+		on(win.doc, '.js-subject-select-all:click', function(e) {
+			var subjects = query('.js-data-subject');
+			array.forEach(subjects, function(item) {
+				domAttr.set(item, 'checked', true);
 			});
-		}
+			
+			filterSubjects();
+		});
 		
 		// Uncheck all subjects
-		if(dom.byId('js-subject-select-none')) {
-			on(dom.byId('js-subject-select-none'), 'click', function(e) {
-				var subjects = query('.js-data-subject');
-				array.forEach(subjects, function(item) {
-					domAttr.set(item, 'checked', false);
-				});
-				
-				filterTypeSubject(e);
-				setExpandAllCheckBox();
+		on(win.doc, '.js-subject-select-none:click', function(e) {
+			var subjects = query('.js-data-subject');
+			array.forEach(subjects, function(item) {
+				domAttr.set(item, 'checked', false);
 			});
-		}
+			
+			filterSubjects();
+		});
 		
 		// Filter event for metadata type
 		on(win.doc, '.js-data-type:change', function(e) {
-			filterTypeSubject(e);
-			setExpandAllCheckBox();
+			filterTypes();
 		});
 		
 		// Filter event for subjects
 		on(win.doc, '.js-data-subject:change', function(e) {
-			filterTypeSubject(e);
-			setExpandAllCheckBox();
+			filterSubjects();
 		});
 		
-		// Filter actions on metadata types or subjects
-		function filterTypeSubject(e) {
-			var boolType = domAttr.has(e.target, 'data-md-type');
-			var arrayChecksValue = [];
+		function filterTypes() {
+			var arrayElements = [];
+			var elements = query('.js-data-type:checked');
+			array.forEach(elements, function(item) {
+				var element = domAttr.get(item, 'data-md-type');
+				arrayElements.push(element);
+			});
 			
-			if(boolType) {
-				var arrayResult = query('.search-metadata');
-				var arrayChecks = query('.js-data-type:checked');
-				array.forEach(arrayChecks, function(item) {
-					var value = domAttr.get(item, 'data-md-type');
-					arrayChecksValue.push(value);
-				});
-			} else {
-				var arrayResult = query('.browse-metadata');
-				var arrayChecks = query('.js-data-subject:checked');
-				array.forEach(arrayChecks, function(item) {
-					var value = domAttr.get(item, 'data-md-subject');
-					arrayChecksValue.push(value);
-				});
-			}
+			var elementString = arrayElements.join('+');
+			var start = domAttr.get(dom.byId('js-start-current'), 'value');
+			xhr(jsRoutes.controllers.Application.search(start, elementString, true).url, {
+				handleAs: "html"	
+			}).then(function(data) {
+				domConstruct.empty(dom.byId('js-search-results-all'));
+				domConstruct.place(data, dom.byId('js-search-results-all'));
+				setExpandAllCheckBox();
+			});
+		}
+		
+		function filterSubjects() {
+			var arrayElements = [];
+			var elements = query('.js-data-subject:checked');
+			array.forEach(elements, function(item) {
+				var element = domAttr.get(item, 'data-md-subject');
+				arrayElements.push(element);
+			});
 			
-			var arrayChecksValueJoin = arrayChecksValue.join([separator = ' ']);
-			
-			array.forEach(arrayResult, function(item) {
-				if(boolType) {
-					var typeVal = domAttr.get(item, 'data-md-type');
-					
-					domStyle.set(item, 'display', 'none');
-					if(arrayChecksValueJoin.indexOf(typeVal) > -1) {
-						domStyle.set(item, 'display', 'block');
-					}
-				} else {
-					var subjectVal = domAttr.get(item, 'data-md-subject');
-					var subjectValArray = subjectVal.split(' ');
-					
-					domStyle.set(item, 'display', 'none');
-					var executeDisplay = true;
-					array.forEach(subjectValArray, function(subject) {
-						if(executeDisplay && arrayChecksValueJoin.indexOf(subject) > -1) {
-							if(subject !== "") {
-								domStyle.set(item, 'display', 'block');
-								executeDisplay = false;
-							}
-						}
-					});
-				}
+			var elementString = arrayElements.join('+');
+			var start = domAttr.get(dom.byId('js-start-current'), 'value');
+			xhr(jsRoutes.controllers.Application.browse(start, elementString, true).url, {
+				handleAs: "html"	
+			}).then(function(data) {
+				domConstruct.empty(dom.byId('js-browse-results-all'));
+				domConstruct.place(data, dom.byId('js-browse-results-all'));
+				setExpandAllCheckBox();
 			});
 		}
 		

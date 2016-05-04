@@ -1,0 +1,10 @@
+@(url: String,
+	uuid: String)
+	
+@import play.i18n._
+
+@metadataUrl() = @{
+	url + uuid + ".xml" 
+}
+
+<a class="link" href="@metadataUrl()" target="_blank">@Messages.get("button.metadata")</a>

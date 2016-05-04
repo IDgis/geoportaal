@@ -1,6 +1,13 @@
 @(mdTypes: java.util.List[com.querydsl.core.Tuple], 
 	documents: java.util.List[com.querydsl.core.Tuple],
-	sdf: java.text.SimpleDateFormat
+	sdf: java.text.SimpleDateFormat,
+	typesString: String,
+	count: Integer,
+	start: Integer,
+	startPrevious: Integer, 
+	startNext: Integer,
+	startLast: Integer,
+	pageLast: Integer	
 )
 
 @import play.i18n._
@@ -14,7 +21,7 @@
 		<p>@Messages.get("search.intro")</p>
 	</div>
 	
-	@helper.form(action = routes.Index.index(), 'class -> "search-bar col-md-offset-1") {
+	@helper.form(action = routes.Application.index(), 'class -> "search-bar col-md-offset-1") {
 		<div class="form-group">
 			<span class="search-label">@Messages.get("search.label")</span>
 		</div>
@@ -26,71 +33,9 @@
 		</div>
 	}
 	
-	<div>
-		<div class="data-navigation">
-			<div class="row">
-				<span class="col-md-3">@if(documents.size() == 0) {@Messages.get("result.count.label.zero")}
-					@if(documents.size() == 1) {@documents.size() @Messages.get("result.count.label.one")} @if(documents.size > 1) {
-						@documents.size() @Messages.get("result.count.label.multiple")}</span>
-				<div class="pull-right">
-					<div class="row btn-group btn-group-sm">
-							<button id="previous" type="button" class="btn btn-default">&laquo;</button>
-							<button id="data-page-1" type="button" class="btn btn-default">1</button>
-							<button id="next" type="button" class="btn btn-default">&raquo;</button>
-					</div>
-					<div class="row" id="expand-area">
-						<label class="checkbox-inline">
-							<input id="js-expand-all" type="checkbox">
-							<span id="js-label-expand-all">@Messages.get("results.expand")</span>
-						</label>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-		
-	<div>
-		<div class="filter-options">
-			@for(metaType <- mdTypes) {
-				<div class="row">
-					<label class="checkbox-inline">
-						<input class="js-data-type" type="checkbox" data-md-type="@metaType.get(mdType.name)" checked>
-							@Messages.get("search.checkboxes.label") <strong>@metaType.get(mdTypeLabel.title)</strong>
-					</label>
-				</div>
-			}
-		</div>
+	<div id="js-search-results-all">
+		@views.html.searchresult(mdTypes, documents, sdf, typesString, count, start, startPrevious, startNext, startLast, pageLast)
 	</div>
 	
-	<div class="col-md-11 col-md-offset-1">
-		@for(doc <- documents) {
-			<div class="search-metadata" data-md-type="@doc.get(mdType.name)">
-				<div class="row">
-					<div class="col-md-12">
-						<p class="title">
-							<a class="title">@doc.get(document.title) (@sdf.format(doc.get(document.date).getTime()), @doc.get(document.creator))</a>
-						</p>
-					</div>
-					<div class="col-md-12 description">
-						<p>
-							@if(doc.get(document.thumbnail) != null) {
-								<img src="@doc.get(document.thumbnail)" class="md-thumbnail">
-							}
-							
-							@if(doc.get(document.description).length > 460) {
-								@doc.get(document.description).substring(0, 460)...
-							} else {
-								@doc.get(document.description)
-							}
-						</p>
-						
-						<a class="link">@Messages.get("button.metadata")</a>
-						@if(!doc.get(mdType.name).equals("service")) {
-							<button class="link" type="button">@Messages.get("button.download")</button>
-						}
-					</div>
-				</div>
-			</div>
-		}
-	</div>
+	<input type="hidden" id="js-start-current" value="@start">
 }
