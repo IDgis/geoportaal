@@ -1,6 +1,7 @@
 @(mdTypes: java.util.List[com.querydsl.core.Tuple], 
 	documents: java.util.List[com.querydsl.core.Tuple],
 	sdf: java.text.SimpleDateFormat,
+	textSearch: String,
 	typesString: String,
 	count: Integer,
 	start: Integer,
@@ -26,7 +27,7 @@
 			<span class="search-label">@Messages.get("search.label")</span>
 		</div>
 		<div class="form-group">
-			<input class="form-control search-field" type="text" placeholder="@Messages.get("search.placeholder")" name="text"></input>
+			<input class="form-control search-field" type="text" placeholder="@Messages.get("search.placeholder")" name="text" value="@textSearch"></input>
 			<input type="hidden" id="js-element-string" name="elementsString" value="@typesString">
 			<input type="hidden" name="page" value="search">
 		</div>
@@ -36,8 +37,9 @@
 	}
 	
 	<div id="js-search-results-all">
-		@views.html.searchresult(mdTypes, documents, sdf, typesString, count, start, startPrevious, startNext, startLast, pageLast)
+		@views.html.searchresult(mdTypes, documents, sdf, textSearch, typesString, count, start, startPrevious, startNext, startLast, pageLast)
 	</div>
 	
 	<input type="hidden" id="js-start-current" value="@start">
+	<input type="hidden" id="js-text-search" value="@textSearch">
 }
