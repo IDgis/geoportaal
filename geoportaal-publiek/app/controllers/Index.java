@@ -75,11 +75,6 @@ public class Index extends Controller {
 					.fetch()
 					.size();
 			
-			List<Tuple> documents = queryDocuments.orderBy(document.date.desc(), document.title.asc())
-					.offset(start)
-					.limit(10)
-					.fetch();
-			
 			Integer startNext = start + 10;
 			Integer startPrevious = start -10;
 			
@@ -94,11 +89,31 @@ public class Index extends Controller {
 			
 			Integer pageLast = startLast / 10 + 1;
 			
-			if(filter) {
-				return ok(searchresult.render(mdTypes, documents, sdf, typesString, count, start, startPrevious, startNext, startLast, pageLast));
+			Integer finalStart = start;
+			if(start >= count) {
+				finalStart = count - (count % 10);
+				if(count % 10 == 0) {
+					finalStart -= 10;
+				}
+				
+				startNext = finalStart + 10;
+				startPrevious = finalStart -10;
+				
+				if(finalStart < 0) {
+					finalStart = 0;
+				}
 			}
 			
-			return ok(search.render(mdTypes, documents, sdf, typesString, count, start, startPrevious, startNext, startLast, pageLast));
+			List<Tuple> documents = queryDocuments.orderBy(document.date.desc(), document.title.asc())
+					.offset(finalStart)
+					.limit(10)
+					.fetch();
+			
+			if(filter) {
+				return ok(searchresult.render(mdTypes, documents, sdf, typesString, count, finalStart, startPrevious, startNext, startLast, pageLast));
+			}
+			
+			return ok(search.render(mdTypes, documents, sdf, typesString, count, finalStart, startPrevious, startNext, startLast, pageLast));
 		});
 	}
 	
@@ -131,8 +146,37 @@ public class Index extends Controller {
 					.fetch()
 					.size();
 			
+			Integer startNext = start + 10;
+			Integer startPrevious = start -10;
+			
+			if(startPrevious < 0) {
+				startPrevious = 0;
+			}
+			
+			Integer startLast = count - (count % 10);
+			if(count % 10 == 0) {
+				startLast -= 10;
+			}
+			
+			Integer pageLast = startLast / 10 + 1;
+			
+			Integer finalStart = start;
+			if(start >= count) {
+				finalStart = count - (count % 10);
+				if(count % 10 == 0) {
+					finalStart -= 10;
+				}
+				
+				startNext = finalStart + 10;
+				startPrevious = finalStart -10;
+				
+				if(finalStart < 0) {
+					finalStart = 0;
+				}
+			}
+			
 			List<Tuple> documents = queryDocuments.orderBy(document.date.desc(), document.title.asc())
-					.offset(start)
+					.offset(finalStart)
 					.limit(10)
 					.fetch();
 			
@@ -152,25 +196,11 @@ public class Index extends Controller {
 				finalDocuments.add(ds);
 			}
 			
-			Integer startNext = start + 10;
-			Integer startPrevious = start -10;
-			
-			if(startPrevious < 0) {
-				startPrevious = 0;
-			}
-			
-			Integer startLast = count - (count % 10);
-			if(count % 10 == 0) {
-				startLast -= 10;
-			}
-			
-			Integer pageLast = startLast / 10 + 1;
-			
 			if(filter) {
-				return ok(browseresult.render(subjects, finalDocuments, sdf, subjectsString, count, start, startPrevious, startNext, startLast, pageLast));
+				return ok(browseresult.render(subjects, finalDocuments, sdf, subjectsString, count, finalStart, startPrevious, startNext, startLast, pageLast));
 			}
 			
-			return ok(browse.render(subjects, finalDocuments, sdf, subjectsString, count, start, startPrevious, startNext, startLast, pageLast));
+			return ok(browse.render(subjects, finalDocuments, sdf, subjectsString, count, finalStart, startPrevious, startNext, startLast, pageLast));
 		});
 	}
 	
