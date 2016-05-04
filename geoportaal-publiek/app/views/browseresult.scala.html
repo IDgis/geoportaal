@@ -1,6 +1,7 @@
 @(subjects: java.util.List[com.querydsl.core.Tuple],
 	documents: java.util.List[models.DocSubject],
 	sdf: java.text.SimpleDateFormat,
+	textSearch: String,
 	subjectsString: String,
 	count: Integer,
 	start: Integer,
@@ -26,16 +27,16 @@
 					<nav>
 						<ul id="pager-adjusted" class="pager">
 							<li @if(start.equals(0)) {class="disabled paging-disabled"}>
-								<a href="@routes.Application.browse(0, "", subjectsString, false)">@Messages.get("button.first")</a>
+								<a href="@routes.Application.browse(0, textSearch, subjectsString, false)">@Messages.get("button.first")</a>
 							</li>
 							<li @if(start.equals(0)) {class="disabled paging-disabled"}>
-								<a href="@routes.Application.browse(startPrevious, "", subjectsString, false)">@Messages.get("button.previous")</a>
+								<a href="@routes.Application.browse(startPrevious, textSearch, subjectsString, false)">@Messages.get("button.previous")</a>
 							</li>
 							<li @if(startNext >= count) {class="disabled paging-disabled"}>
-								<a href="@routes.Application.browse(startNext, "", subjectsString, false)">@Messages.get("button.next")</a>
+								<a href="@routes.Application.browse(startNext, textSearch, subjectsString, false)">@Messages.get("button.next")</a>
 							</li>
 							<li @if(startNext >= count) {class="disabled paging-disabled"}>
-								<a href="@routes.Application.browse(startLast, "", subjectsString, false)">@Messages.get("button.last") (@pageLast)</a>
+								<a href="@routes.Application.browse(startLast, textSearch, subjectsString, false)">@Messages.get("button.last") (@pageLast)</a>
 							</li>
 						</ul>
 					</nav>

@@ -103,7 +103,8 @@ require([
 			
 			var elementString = arrayElements.join('+');
 			var start = domAttr.get(dom.byId('js-start-current'), 'value');
-			xhr(jsRoutes.controllers.Application.browse(start, '', elementString, true).url, {
+			var textSearch = domAttr.get(dom.byId('js-text-search'), 'value');
+			xhr(jsRoutes.controllers.Application.browse(start, textSearch, elementString, true).url, {
 				handleAs: "html"	
 			}).then(function(data) {
 				domConstruct.empty(dom.byId('js-browse-results-all'));
