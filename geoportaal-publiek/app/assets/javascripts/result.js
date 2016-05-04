@@ -29,20 +29,18 @@ require([
 		});
 		
 		// Expand or collapse all metadata records
-		if(dom.byId('js-expand-all')) {
-			on(dom.byId('js-expand-all'), 'change', function(e) {
-				var descList = query('.search-metadata > .row > .description, .browse-metadata > .row > .description');
-				var checkStatus = domAttr.get(dom.byId('js-expand-all'), 'checked');
-				
-				array.forEach(descList, function(item) {
-					if(checkStatus === true) {
-						domStyle.set(item, 'display', 'block');
-					} else {
-						domStyle.set(item, 'display', 'none');
-					}
-				});
+		on(win.doc, '.js-expand-all-evt:change', function(e) {
+			var descList = query('.search-metadata > .row > .description, .browse-metadata > .row > .description');
+			var checkStatus = domAttr.get(dom.byId('js-expand-all'), 'checked');
+			
+			array.forEach(descList, function(item) {
+				if(checkStatus === true) {
+					domStyle.set(item, 'display', 'block');
+				} else {
+					domStyle.set(item, 'display', 'none');
+				}
 			});
-		}
+		});
 		
 		// Check all subjects
 		on(win.doc, '.js-subject-select-all:click', function(e) {
