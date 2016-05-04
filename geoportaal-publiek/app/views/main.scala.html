@@ -25,7 +25,7 @@
 		
 		<div class="grid">
 			<div class="tabs">
-				<a href="@routes.Index.index()">
+				<a href="@routes.Application.index()">
 					<div class="task-element" id="js-element-index">
 						<div class="task-outer">
 							<div class="@if(title == Messages.get("index.header")) {task-inner-active} else {task-inner}">
@@ -38,7 +38,7 @@
 						</div>
 					</div>
 				</a>
-				<a href="@routes.Index.search()">
+				<a href="@routes.Application.search()">
 					<div class="task-element" id="js-element-index">
 						<div class="task-outer">
 							<div class="@if(title == Messages.get("search.header")) {task-inner-active} else {task-inner}">
@@ -51,7 +51,7 @@
 						</div>
 					</div>
 				</a>
-				<a href="@routes.Index.browse()">
+				<a href="@routes.Application.browse()">
 					<div class="task-element" id="js-element-index">
 						<div class="task-outer">
 							<div class="@if(title == Messages.get("browse.header")) {task-inner-active} else {task-inner}">
@@ -64,7 +64,7 @@
 						</div>
 					</div>
 				</a>
-				<a href="@routes.Index.about()">
+				<a href="@routes.Application.about()">
 					<div class="task-element" id="js-element-index">
 						<div class="task-outer">
 							<div class="@if(title == Messages.get("about.header")) {task-inner-active} else {task-inner}">
@@ -77,7 +77,7 @@
 						</div>
 					</div>
 				</a>
-				<a href="@routes.Index.contact()">
+				<a href="@routes.Application.contact()">
 					<div class="task-element" id="js-element-index">
 						<div class="task-outer">
 							<div class="@if(title == Messages.get("contact.header")) {task-inner-active} else {task-inner}">
@@ -96,7 +96,7 @@
 		@if(!"".equals(jsMain)) {
 			<script src="@routes.Assets.versioned("lib/dojo/dojo/dojo.js")" type="text/javascript"></script>
 			<script src="@jsMain" type="text/javascript"></script>
-			<script src="@routes.Index.jsRoutes()" type="text/javascript"></script>
+			<script src="@routes.Application.jsRoutes()" type="text/javascript"></script>
 		}
 	</body>
 </html>

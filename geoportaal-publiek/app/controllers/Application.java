@@ -29,7 +29,7 @@ import play.mvc.*;
 import util.QueryDSL;
 import views.html.*;
 
-public class Index extends Controller {
+public class Application extends Controller {
 	@Inject QueryDSL q;
 	
 	public Result index() {
@@ -220,8 +220,8 @@ public class Index extends Controller {
 	public Result jsRoutes() {
 		return ok(Routes.javascriptRouter("jsRoutes",
 			controllers.routes.javascript.Assets.versioned(),
-			controllers.routes.javascript.Index.search(),
-			controllers.routes.javascript.Index.browse()
+			controllers.routes.javascript.Application.search(),
+			controllers.routes.javascript.Application.browse()
 		)).as("text/javascript");
 	}
 }

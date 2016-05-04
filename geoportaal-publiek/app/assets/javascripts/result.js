@@ -82,7 +82,7 @@ require([
 			
 			var elementString = arrayElements.join('+');
 			var start = domAttr.get(dom.byId('js-start-current'), 'value');
-			xhr(jsRoutes.controllers.Index.search(start, elementString, true).url, {
+			xhr(jsRoutes.controllers.Application.search(start, elementString, true).url, {
 				handleAs: "html"	
 			}).then(function(data) {
 				domConstruct.empty(dom.byId('js-search-results-all'));
@@ -101,7 +101,7 @@ require([
 			
 			var elementString = arrayElements.join('+');
 			var start = domAttr.get(dom.byId('js-start-current'), 'value');
-			xhr(jsRoutes.controllers.Index.browse(start, elementString, true).url, {
+			xhr(jsRoutes.controllers.Application.browse(start, elementString, true).url, {
 				handleAs: "html"	
 			}).then(function(data) {
 				domConstruct.empty(dom.byId('js-browse-results-all'));
