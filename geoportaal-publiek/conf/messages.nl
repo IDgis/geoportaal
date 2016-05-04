@@ -11,6 +11,8 @@ result.count.label.one=resultaat
 result.count.label.multiple=resultaten
 results.expand=Resultaten uitklappen
 
+tsv.language=dutch
+
 tab.index=Home
 tab.search=Uitgebreid zoeken
 tab.browse=Bladeren

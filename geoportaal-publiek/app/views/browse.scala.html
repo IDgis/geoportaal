@@ -1,6 +1,7 @@
 @(subjects: java.util.List[com.querydsl.core.Tuple],
 	documents: java.util.List[models.DocSubject],
 	sdf: java.text.SimpleDateFormat,
+	textSearch: String,
 	subjectsString: String,
 	count: Integer,
 	start: Integer,
@@ -20,21 +21,24 @@
 		<p>@Messages.get("browse.intro")</p>
 	</div>
 	
-	@helper.form(action = routes.Application.index(), 'class -> "search-bar col-md-offset-1") {
+	@helper.form(action = routes.Application.searchText(), 'class -> "search-bar col-md-offset-1") {
 		<div class="form-group">
 			<span class="search-label">@Messages.get("search.label")</span>
 		</div>
 		<div class="form-group">
-			<input class="form-control search-field" type="text" placeholder="@Messages.get("search.placeholder")"></input>
+			<input class="form-control search-field" type="text" placeholder="@Messages.get("search.placeholder")" name="text" value="@textSearch"></input>
+			<input type="hidden" id="js-element-string" name="elementsString" value="@subjectsString">
+			<input type="hidden" name="page" value="browse">
 		</div>
 		<div class="form-group">
-			<button type="button" class="button-ovs" id="search-button">@Messages.get("button.search")</button>
+			<button type="submit" class="button-ovs" id="search-button">@Messages.get("button.search")</button>
 		</div>
 	}
 	
 	<div id="js-browse-results-all">
-		@views.html.browseresult(subjects, documents, sdf, subjectsString, count, start, startPrevious, startNext, startLast, pageLast)
+		@views.html.browseresult(subjects, documents, sdf, textSearch, subjectsString, count, start, startPrevious, startNext, startLast, pageLast)
 	</div>
 	
 	<input type="hidden" id="js-start-current" value="@start">
+	<input type="hidden" id="js-text-search" value="@textSearch">
 }

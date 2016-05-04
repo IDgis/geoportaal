@@ -1,5 +1,6 @@
 package controllers;
 
+import static models.QDocumentSearch.documentSearch;
 import static models.QDocSubject.docSubject;
 import static models.QDocument.document;
 import static models.QMdType.mdType;
@@ -12,6 +13,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.swing.text.Document;
@@ -23,8 +25,11 @@ import com.querydsl.sql.SQLQuery;
 import com.querydsl.sql.WindowOver;
 
 import models.DocSubject;
+import models.Search;
 import play.Routes;
+import play.data.Form;
 import play.i18n.Lang;
+import play.i18n.Messages;
 import play.mvc.*;
 import util.QueryDSL;
 import views.html.*;
@@ -49,8 +54,23 @@ public class Application extends Controller {
 		});
 	}
 	
-	public Result search(Integer start, String typesString, Boolean filter) {
+	public Result searchText() {
+		// Fetches the form
+		Form<Search> searchForm = Form.form(Search.class);
+		Search s = searchForm.bindFromRequest().get();
+		
+		if("search".equals(s.getPage())) {
+			return redirect(controllers.routes.Application.search(0, s.getText(), s.getElementsString(), false));
+		} if("browse".equals(s.getPage())) {
+			return redirect(controllers.routes.Application.browse(0, s.getText(), s.getElementsString(), false));
+		} else {
+			return notFound("404 - not found");
+		}
+	}
+	
+	public Result search(Integer start, String textSearch, String typesString, Boolean filter) {
 		Lang curLang = Http.Context.current().lang();
+		String tsvLang = Messages.get("tsv.language");
 		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
 		
 		String[] typesArray = typesString.split("\\++");
@@ -70,6 +90,40 @@ public class Application extends Controller {
 					.where(document.date.isNotNull())
 					.where(document.description.isNotNull())
 					.where(mdType.name.in(types));
+			
+			// Strip characters from text search string that conflict with Postgres full-text search
+			String textSearchFirstStrip = textSearch.replace("&", "");
+			String textSearchSecondStrip = textSearchFirstStrip.replace("(", "");
+			String textSearchThirdStrip = textSearchSecondStrip.replace(")", "");
+			String textSearchFinalStrip = textSearchThirdStrip.replace(":", "");
+			
+			// Convert text search string to an array
+			String[] textSearchTerms = textSearchFinalStrip.split("\\s+");
+			
+			// Convert array of text search words to list
+			List<String> finalListTextSearch = new ArrayList<String>();
+			List<String> textListTermsSearch = Arrays.asList(textSearchTerms);
+			for(String word : textListTermsSearch) {
+				if(word.length() > 0) {
+					finalListTextSearch.add(word + ":*");
+				}
+			}
+			
+			// Create a string of all the words in the text search list with a '&' between them
+			String tsQuery = 
+				finalListTextSearch.stream()
+					.filter(str -> !str.isEmpty())
+					.collect(Collectors.joining(" & "));
+			
+			// Filter records on text search words
+			if(!tsQuery.isEmpty()) {
+				queryDocuments.where(
+					tx.selectOne()
+						.from(documentSearch)
+						.where(documentSearch.documentId.eq(document.id))
+						.where(documentSearch.tsv.query(tsvLang, tsQuery))
+						.exists());
+			}
 			
 			Integer count = queryDocuments
 					.fetch()
@@ -110,15 +164,16 @@ public class Application extends Controller {
 					.fetch();
 			
 			if(filter) {
-				return ok(searchresult.render(mdTypes, documents, sdf, typesString, count, finalStart, startPrevious, startNext, startLast, pageLast));
+				return ok(searchresult.render(mdTypes, documents, sdf, textSearch, typesString, count, finalStart, startPrevious, startNext, startLast, pageLast));
 			}
 			
-			return ok(search.render(mdTypes, documents, sdf, typesString, count, finalStart, startPrevious, startNext, startLast, pageLast));
+			return ok(search.render(mdTypes, documents, sdf, textSearch, typesString, count, finalStart, startPrevious, startNext, startLast, pageLast));
 		});
 	}
 	
-	public Result browse(Integer start, String subjectsString, Boolean filter) {
+	public Result browse(Integer start, String textSearch, String subjectsString, Boolean filter) {
 		Lang curLang = Http.Context.current().lang();
+		String tsvLang = Messages.get("tsv.language");
 		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
 		
 		String[] subjectsArray = subjectsString.split("\\++");
@@ -141,6 +196,40 @@ public class Application extends Controller {
 							.from(docSubject)
 							.join(subject).on(docSubject.subjectId.eq(subject.id))
 							.where(subject.name.in(subjectsList))));
+			
+			// Strip characters from text search string that conflict with Postgres full-text search
+			String textSearchFirstStrip = textSearch.replace("&", "");
+			String textSearchSecondStrip = textSearchFirstStrip.replace("(", "");
+			String textSearchThirdStrip = textSearchSecondStrip.replace(")", "");
+			String textSearchFinalStrip = textSearchThirdStrip.replace(":", "");
+			
+			// Convert text search string to an array
+			String[] textSearchTerms = textSearchFinalStrip.split("\\s+");
+			
+			// Convert array of text search words to list
+			List<String> finalListTextSearch = new ArrayList<String>();
+			List<String> textListTermsSearch = Arrays.asList(textSearchTerms);
+			for(String word : textListTermsSearch) {
+				if(word.length() > 0) {
+					finalListTextSearch.add(word + ":*");
+				}
+			}
+			
+			// Create a string of all the words in the text search list with a '&' between them
+			String tsQuery = 
+				finalListTextSearch.stream()
+					.filter(str -> !str.isEmpty())
+					.collect(Collectors.joining(" & "));
+			
+			// Filter records on text search words
+			if(!tsQuery.isEmpty()) {
+				queryDocuments.where(
+					tx.selectOne()
+						.from(documentSearch)
+						.where(documentSearch.documentId.eq(document.id))
+						.where(documentSearch.tsv.query(tsvLang, tsQuery))
+						.exists());
+			}
 			
 			Integer count = queryDocuments
 					.fetch()
@@ -197,10 +286,10 @@ public class Application extends Controller {
 			}
 			
 			if(filter) {
-				return ok(browseresult.render(subjects, finalDocuments, sdf, subjectsString, count, finalStart, startPrevious, startNext, startLast, pageLast));
+				return ok(browseresult.render(subjects, finalDocuments, sdf, textSearch, subjectsString, count, finalStart, startPrevious, startNext, startLast, pageLast));
 			}
 			
-			return ok(browse.render(subjects, finalDocuments, sdf, subjectsString, count, finalStart, startPrevious, startNext, startLast, pageLast));
+			return ok(browse.render(subjects, finalDocuments, sdf, textSearch, subjectsString, count, finalStart, startPrevious, startNext, startLast, pageLast));
 		});
 	}
 	

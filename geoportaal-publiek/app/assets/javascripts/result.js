@@ -82,11 +82,13 @@ require([
 			
 			var elementString = arrayElements.join('+');
 			var start = domAttr.get(dom.byId('js-start-current'), 'value');
-			xhr(jsRoutes.controllers.Application.search(start, elementString, true).url, {
+			var textSearch = domAttr.get(dom.byId('js-text-search'), 'value');
+			xhr(jsRoutes.controllers.Application.search(start, textSearch, elementString, true).url, {
 				handleAs: "html"	
 			}).then(function(data) {
 				domConstruct.empty(dom.byId('js-search-results-all'));
 				domConstruct.place(data, dom.byId('js-search-results-all'));
+				domAttr.set(dom.byId('js-element-string'), 'value', elementString);
 				setExpandAllCheckBox();
 			});
 		}
@@ -101,11 +103,13 @@ require([
 			
 			var elementString = arrayElements.join('+');
 			var start = domAttr.get(dom.byId('js-start-current'), 'value');
-			xhr(jsRoutes.controllers.Application.browse(start, elementString, true).url, {
+			var textSearch = domAttr.get(dom.byId('js-text-search'), 'value');
+			xhr(jsRoutes.controllers.Application.browse(start, textSearch, elementString, true).url, {
 				handleAs: "html"	
 			}).then(function(data) {
 				domConstruct.empty(dom.byId('js-browse-results-all'));
 				domConstruct.place(data, dom.byId('js-browse-results-all'));
+				domAttr.set(dom.byId('js-element-string'), 'value', elementString);
 				setExpandAllCheckBox();
 			});
 		}
