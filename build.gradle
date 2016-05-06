@@ -156,10 +156,6 @@ project(':geoportaal-beheer') {
 	release {
 		grgit = org.ajoberstar.grgit.Grgit.open (file (".."))
 	}
-		
-	tasks.withType(PlayRun) {
-		httpPort = 9000
-	}
 }
 
 project(':geoportaal-publiek') {
@@ -171,10 +167,6 @@ project(':geoportaal-publiek') {
 	// Configure gradle-git release procedure (https://github.com/ajoberstar/gradle-git):
 	release {
 		grgit = org.ajoberstar.grgit.Grgit.open (file (".."))
-	}
-	
-	tasks.withType(PlayRun) {
-		httpPort = 9005
 	}
 }
 
