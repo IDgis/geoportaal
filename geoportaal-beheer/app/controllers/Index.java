@@ -59,7 +59,6 @@ import views.html.*;
  */
 @Security.Authenticated(DefaultAuthenticator.class)
 public class Index extends Controller {
-	@Inject ZooKeeper zk;
 	@Inject QueryDSL q;
 	
 	/**
