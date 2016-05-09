@@ -106,9 +106,9 @@ public class Main {
 				DavMethod pFindDc = new PropFindMethod(System.getenv("DC_URL"), DavConstants.PROPFIND_ALL_PROP, DavConstants.DEPTH_1);
 				
 				// Fill database
-				executeWebDav(qf, client, pFindDataset, System.getenv("DATASET_URL"), MetadataType.DATASET);
-				executeWebDav(qf, client, pFindService, System.getenv("SERVICE_URL"), MetadataType.SERVICE);
-				executeWebDav(qf, client, pFindDc, System.getenv("DC_URL"), MetadataType.DC);
+				//executeWebDav(qf, client, pFindDataset, System.getenv("DATASET_URL"), MetadataType.DATASET);
+				//executeWebDav(qf, client, pFindService, System.getenv("SERVICE_URL"), MetadataType.SERVICE);
+				//executeWebDav(qf, client, pFindDc, System.getenv("DC_URL"), MetadataType.DC);
 				
 				// Refresh materialized view
 				executeStatement(dataSource, "refresh materialized view concurrently \"" 
@@ -550,6 +550,25 @@ public class Main {
 					.set(mdTypeLabel.language, language)
 					.set(mdTypeLabel.title, typeLabelName)
 					.execute();
+		} else {
+			Integer mdTypeId = qf.select(mdType.id)
+					.from(mdType)
+					.where(mdType.url.eq(url))
+					.fetchOne();
+			
+			Integer mdTypeLabelId = qf.select(mdTypeLabel.id)
+					.from(mdTypeLabel)
+					.where(mdTypeLabel.mdTypeId.eq(mdTypeId))
+					.where(mdTypeLabel.language.eq(language))
+					.fetchOne();
+			
+			if(mdTypeLabelId == null) {
+				qf.insert(mdTypeLabel)
+					.set(mdTypeLabel.mdTypeId, mdTypeId)
+					.set(mdTypeLabel.language, language)
+					.set(mdTypeLabel.title, typeLabelName)
+					.execute();
+			}
 		}
 	}
 	
