@@ -237,7 +237,8 @@ project(':geoportaal-harvester') {
 	task buildImage(type: DockerBuildImage) {
 		dependsOn createDockerfile
 		inputDir = project.file('build/docker')
-		tag = "${rootProject.name}_${project.name}:${project.version}"
+		def tagVersion = "${project.version}".replaceAll ("\\+", "-")
+		tag = "${project.name}:${tagVersion}"
 	}
 }
 
