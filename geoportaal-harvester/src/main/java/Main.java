@@ -1,3 +1,4 @@
+import static models.QAccess.access;
 import static models.QAnyText.anyText;
 import static models.QDocSubject.docSubject;
 import static models.QDocument.document;
@@ -52,10 +53,10 @@ import com.querydsl.sql.SQLTemplates;
 public class Main {
 	public static void main(String[] args) throws Exception {
 		DriverManagerDataSource dataSource = new DriverManagerDataSource();
-		dataSource.setDriverClassName(System.getenv("db.driver"));
-		dataSource.setUrl(System.getenv("db.url"));
-		dataSource.setUsername(System.getenv("db.user"));
-		dataSource.setPassword(System.getenv("db.password"));
+		dataSource.setDriverClassName(System.getenv("DB_DRIVER"));
+		dataSource.setUrl(System.getenv("DB_URL"));
+		dataSource.setUsername(System.getenv("DB_USER"));
+		dataSource.setPassword(System.getenv("DB_PASSWORD"));
 		
 		PlatformTransactionManager TransactionManager = new DataSourceTransactionManager(dataSource);
 		TransactionTemplate tt = new TransactionTemplate(TransactionManager);
@@ -71,9 +72,9 @@ public class Main {
 		Configuration configuration = new Configuration(templates);
 		SQLQueryFactory qf = new SQLQueryFactory(configuration, () -> DataSourceUtils.getConnection(dataSource));
 		
-		setUrl(qf, System.getenv("dataset.url"), System.getenv("dataset.name"), System.getenv("dataset.label"), System.getenv("language"));
-		setUrl(qf, System.getenv("service.url"), System.getenv("service.name"), System.getenv("service.label"), System.getenv("language"));
-		setUrl(qf, System.getenv("dc.url"), System.getenv("dc.name"), System.getenv("dc.label"), System.getenv("language"));
+		setUrl(qf, System.getenv("DATASET_URL"), System.getenv("DATASET_NAME"), System.getenv("DATASET_LABEL"), System.getenv("LANGUAGE"));
+		setUrl(qf, System.getenv("SERVICE_URL"), System.getenv("SERVICE_NAME"), System.getenv("SERVICE_LABEL"), System.getenv("LANGUAGE"));
+		setUrl(qf, System.getenv("DC_URL"), System.getenv("DC_NAME"), System.getenv("DC_LABEL"), System.getenv("LANGUAGE"));
 		
 		tt.execute((status) -> {
 			try {			
@@ -100,14 +101,14 @@ public class Main {
 						+ document.getSchemaName() + "\".\"" 
 						+ document.getTableName() + "_id_seq\" restart with 1");
 				
-				DavMethod pFindDataset = new PropFindMethod(System.getenv("dataset.url"), DavConstants.PROPFIND_ALL_PROP, DavConstants.DEPTH_1);
-				DavMethod pFindService = new PropFindMethod(System.getenv("service.url"), DavConstants.PROPFIND_ALL_PROP, DavConstants.DEPTH_1);
-				DavMethod pFindDc = new PropFindMethod(System.getenv("dc.url"), DavConstants.PROPFIND_ALL_PROP, DavConstants.DEPTH_1);
+				DavMethod pFindDataset = new PropFindMethod(System.getenv("DATASET_URL"), DavConstants.PROPFIND_ALL_PROP, DavConstants.DEPTH_1);
+				DavMethod pFindService = new PropFindMethod(System.getenv("SERVICE_URL"), DavConstants.PROPFIND_ALL_PROP, DavConstants.DEPTH_1);
+				DavMethod pFindDc = new PropFindMethod(System.getenv("DC_URL"), DavConstants.PROPFIND_ALL_PROP, DavConstants.DEPTH_1);
 				
 				// Fill database
-				executeWebDav(qf, client, pFindDataset, System.getenv("dataset.url"), MetadataType.DATASET);
-				executeWebDav(qf, client, pFindService, System.getenv("service.url"), MetadataType.SERVICE);
-				executeWebDav(qf, client, pFindDc, System.getenv("dc.url"), MetadataType.DC);
+				executeWebDav(qf, client, pFindDataset, System.getenv("DATASET_URL"), MetadataType.DATASET);
+				executeWebDav(qf, client, pFindService, System.getenv("SERVICE_URL"), MetadataType.SERVICE);
+				executeWebDav(qf, client, pFindDc, System.getenv("DC_URL"), MetadataType.DC);
 				
 				// Refresh materialized view
 				executeStatement(dataSource, "refresh materialized view concurrently \"" 
@@ -195,7 +196,7 @@ public class Main {
 		
 		Integer mdTypeId = qf.select(mdType.id)
 				.from(mdType)
-				.where(mdType.url.eq(System.getenv("dataset.url")))
+				.where(mdType.url.eq(System.getenv("DATASET_URL")))
 				.fetchOne();
 		
 		LocalDate finalLD = null;
@@ -227,6 +228,13 @@ public class Main {
 			listFinalThumbnail.add(finalThumbnail);
 		}
 		
+		Integer accessId;
+		if(Math.random() < 0.5) {
+			accessId = 1;
+		} else {
+			accessId = 2;
+		}
+		
 		try {
 			qf.insert(document)
 			.set(document.uuid, getValueFromList(listUuid))
@@ -236,6 +244,7 @@ public class Main {
 			.set(document.creator, getValueFromList(listOrganisationCreator))
 			.set(document.description, getValueFromList(listDescription))
 			.set(document.thumbnail, getValueFromList(listFinalThumbnail))
+			.set(document.accessId, accessId)
 			.execute();
 		} catch(Exception e) {
 			throw new Exception(e.getMessage() + " " + getValueFromList(listUuid));
@@ -309,7 +318,7 @@ public class Main {
 		
 		Integer mdTypeId = qf.select(mdType.id)
 				.from(mdType)
-				.where(mdType.url.eq(System.getenv("service.url")))
+				.where(mdType.url.eq(System.getenv("SERVICE_URL")))
 				.fetchOne();
 		
 		LocalDate finalLD = null;
@@ -333,6 +342,13 @@ public class Main {
 		
 		String thumbnail = null;
 		
+		Integer accessId;
+		if(Math.random() < 0.5) {
+			accessId = 1;
+		} else {
+			accessId = 2;
+		}
+		
 		try {
 			qf.insert(document)
 				.set(document.uuid, getValueFromList(listUuid))
@@ -342,6 +358,7 @@ public class Main {
 				.set(document.creator, getValueFromList(listOrganisationCreator))
 				.set(document.description, getValueFromList(listDescription))
 				.set(document.thumbnail, thumbnail)
+				.set(document.accessId, accessId)
 				.execute();
 		} catch(Exception e) {
 			e.printStackTrace();
@@ -397,7 +414,7 @@ public class Main {
 		
 		Integer mdTypeId = qf.select(mdType.id)
 				.from(mdType)
-				.where(mdType.url.eq(System.getenv("dc.url")))
+				.where(mdType.url.eq(System.getenv("DC_URL")))
 				.fetchOne();
 		
 		LocalDate ld = LocalDate.parse(getValueFromList(listDate));
@@ -410,6 +427,13 @@ public class Main {
 		
 		String thumbnail = null;
 		
+		Integer accessId;
+		if(Math.random() < 0.5) {
+			accessId = 1;
+		} else {
+			accessId = 2;
+		}
+		
 		try {
 			qf.insert(document)
 			.set(document.uuid, getValueFromList(listUuid))
@@ -419,6 +443,7 @@ public class Main {
 			.set(document.creator, getValueFromList(listOrganisationCreator))
 			.set(document.description, getValueFromList(listDescription))
 			.set(document.thumbnail, thumbnail)
+			.set(document.accessId, accessId)
 			.execute();
 		} catch(Exception e) {
 			e.printStackTrace();
@@ -455,11 +480,11 @@ public class Main {
 	}
 	
 	private static void setAnyText(SQLQueryFactory qf, Integer docId, List<String> listValues) {
-		for(String value : listValues) {			
+		for(String value : listValues) {
 			qf.insert(anyText)
 			.set(anyText.documentId, docId)
 			.set(anyText.content, value.trim())
-			.execute();			
+			.execute();
 		}
 	}
 	
