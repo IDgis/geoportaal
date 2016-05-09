@@ -16,7 +16,8 @@
 @import models.QSubject.subject;
 @import models.QSubjectLabel.subjectLabel;
 
-@main(Messages.get("browse.header"), routes.Assets.versioned("javascripts/result.js").url) {
+@main(if("intern".equals(play.Play.application().configuration().getString("portal.access"))) { Messages.get("browse.header.intern") } else { 
+	Messages.get("index.header.intern") }, routes.Assets.versioned("javascripts/result.js").url) {
 	<div class="intro">
 		<p>@Messages.get("browse.intro")</p>
 	</div>

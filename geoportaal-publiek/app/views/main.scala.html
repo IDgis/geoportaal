@@ -28,7 +28,8 @@
 				<a href="@routes.Application.index()">
 					<div class="task-element" id="js-element-index">
 						<div class="task-outer">
-							<div class="@if(title == Messages.get("index.header")) {task-inner-active} else {task-inner}">
+							<div class="@if(title == Messages.get("index.header") || title == Messages.get("index.header.intern")) {task-inner-active} else {
+								task-inner}">
 								<div class="tab-element" id="home-icon" style="background-image:url(@routes.Assets.versioned("images/home.png"))">
 									<span class="task-title">
 										@Messages.get("tab.index")
@@ -41,7 +42,8 @@
 				<a href="@routes.Application.search()">
 					<div class="task-element" id="js-element-index">
 						<div class="task-outer">
-							<div class="@if(title == Messages.get("search.header")) {task-inner-active} else {task-inner}">
+							<div class="@if(title == Messages.get("search.header") || title == Messages.get("search.header.intern")) {task-inner-active} else {
+								task-inner}">
 								<div class="tab-element" id="search-icon" style="background-image:url(@routes.Assets.versioned("images/search.png"))">
 									<span class="task-title">
 										@Messages.get("tab.search")
@@ -54,7 +56,8 @@
 				<a href="@routes.Application.browse()">
 					<div class="task-element" id="js-element-index">
 						<div class="task-outer">
-							<div class="@if(title == Messages.get("browse.header")) {task-inner-active} else {task-inner}">
+							<div class="@if(title == Messages.get("browse.header") || title == Messages.get("browse.header.intern")) {task-inner-active} else {
+								task-inner}">
 								<div class="tab-element" id="browse-icon" style="background-image:url(@routes.Assets.versioned("images/browse.png"))">
 									<span class="task-title">
 										@Messages.get("tab.browse")
@@ -67,7 +70,8 @@
 				<a href="@routes.Application.about()">
 					<div class="task-element" id="js-element-index">
 						<div class="task-outer">
-							<div class="@if(title == Messages.get("about.header")) {task-inner-active} else {task-inner}">
+							<div class="@if(title == Messages.get("about.header") || title == Messages.get("about.header.intern")) {task-inner-active} else {
+								task-inner}">
 								<div class="tab-element" id="about-icon" style="background-image:url(@routes.Assets.versioned("images/about.png"))">
 									<span class="task-title">
 										@Messages.get("tab.about")
@@ -80,7 +84,8 @@
 				<a href="@routes.Application.contact()">
 					<div class="task-element" id="js-element-index">
 						<div class="task-outer">
-							<div class="@if(title == Messages.get("contact.header")) {task-inner-active} else {task-inner}">
+							<div class="@if(title == Messages.get("contact.header") || title == Messages.get("contact.header.intern")) {task-inner-active} else {
+								task-inner}">
 								<div class="tab-element" id="contact-icon" style="background-image:url(@routes.Assets.versioned("images/contact.png"))">
 									<span class="task-title">
 										@Messages.get("tab.contact")
