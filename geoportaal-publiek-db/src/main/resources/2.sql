@@ -44,6 +44,11 @@ INSERT INTO gp.subject_label VALUES
 		(19, 19, 'nl', 'Transport en logistiek')
 ;
 
+INSERT INTO gp.access values
+		(1, 'intern'),
+		(2, 'extern')
+;
+
 CREATE materialized VIEW gp.document_search as
 SELECT 
 	d.id document_id,
@@ -68,4 +73,5 @@ CREATE UNIQUE INDEX document_search_document_id_idx ON gp.document_search USING 
 
 DELETE FROM gp.subject_label;
 DELETE FROM gp.subject;
+DELETE FROM gp.access;
 DROP MATERIALIZED VIEW IF EXISTS gp.document_search;
