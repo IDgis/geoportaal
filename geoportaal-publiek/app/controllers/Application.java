@@ -1,5 +1,6 @@
 package controllers;
 
+import static models.QAccess.access;
 import static models.QDocumentSearch.documentSearch;
 import static models.QDocSubject.docSubject;
 import static models.QDocument.document;
@@ -41,12 +42,28 @@ public class Application extends Controller {
 		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
 		
 		return q.withTransaction(tx -> {
-			List<Tuple> documents = tx.select(document.title, document.uuid, document.date, document.creator, document.description, 
+			Boolean intern = false;
+			if("intern".equals(play.Play.application().configuration().getString("portal.access"))) {
+				intern = true;
+			}
+			
+			SQLQuery<Tuple> queryDocuments = tx.select(document.title, document.uuid, document.date, document.creator, document.description, 
 					document.thumbnail, mdType.url, mdType.name)
 					.from(document)
 					.join(mdType).on(document.mdTypeId.eq(mdType.id))
 					.where(document.date.isNotNull())
-					.orderBy(document.date.desc())
+					.where(document.description.isNotNull());
+			
+			if(intern) {
+				Integer accessId = tx.select(access.id)
+					.from(access)
+					.where(access.name.eq("intern"))
+					.fetchOne();
+				
+				queryDocuments.where(document.accessId.eq(accessId));
+			}
+			
+			List<Tuple> documents = queryDocuments.orderBy(document.date.desc(), document.title.asc())
 					.limit(5)
 					.fetch();
 			
@@ -77,6 +94,11 @@ public class Application extends Controller {
 		List<String> types = Arrays.asList(typesArray);
 		
 		return q.withTransaction(tx -> {
+			Boolean intern = false;
+			if("intern".equals(play.Play.application().configuration().getString("portal.access"))) {
+				intern = true;
+			}
+			
 			List<Tuple> mdTypes = tx.select(mdType.name, mdTypeLabel.title)
 					.from(mdType)
 					.join(mdTypeLabel).on(mdType.id.eq(mdTypeLabel.mdTypeId))
@@ -90,6 +112,15 @@ public class Application extends Controller {
 					.where(document.date.isNotNull())
 					.where(document.description.isNotNull())
 					.where(mdType.name.in(types));
+			
+			if(intern) {
+				Integer accessId = tx.select(access.id)
+					.from(access)
+					.where(access.name.eq("intern"))
+					.fetchOne();
+				
+				queryDocuments.where(document.accessId.eq(accessId));
+			}
 			
 			// Strip characters from text search string that conflict with Postgres full-text search
 			String textSearchFirstStrip = textSearch.replace("&", "");
@@ -180,6 +211,11 @@ public class Application extends Controller {
 		List<String> subjectsList = Arrays.asList(subjectsArray);
 		
 		return q.withTransaction(tx -> {
+			Boolean intern = false;
+			if("intern".equals(play.Play.application().configuration().getString("portal.access"))) {
+				intern = true;
+			}
+			
 			List<Tuple> subjects = tx.select(subject.name, subjectLabel.title)
 					.from(subject)
 					.join(subjectLabel).on(subject.id.eq(subjectLabel.subjectId))
@@ -196,6 +232,15 @@ public class Application extends Controller {
 							.from(docSubject)
 							.join(subject).on(docSubject.subjectId.eq(subject.id))
 							.where(subject.name.in(subjectsList))));
+			
+			if(intern) {
+				Integer accessId = tx.select(access.id)
+					.from(access)
+					.where(access.name.eq("intern"))
+					.fetchOne();
+				
+				queryDocuments.where(document.accessId.eq(accessId));
+			}
 			
 			// Strip characters from text search string that conflict with Postgres full-text search
 			String textSearchFirstStrip = textSearch.replace("&", "");
