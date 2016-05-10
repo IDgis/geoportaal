@@ -72,43 +72,41 @@ public class Main {
 		Configuration configuration = new Configuration(templates);
 		SQLQueryFactory qf = new SQLQueryFactory(configuration, () -> DataSourceUtils.getConnection(dataSource));
 		
-		setUrl(qf, System.getenv("DATASET_URL"), System.getenv("DATASET_NAME"), System.getenv("DATASET_LABEL"), System.getenv("LANGUAGE"));
-		setUrl(qf, System.getenv("SERVICE_URL"), System.getenv("SERVICE_NAME"), System.getenv("SERVICE_LABEL"), System.getenv("LANGUAGE"));
-		setUrl(qf, System.getenv("DC_URL"), System.getenv("DC_NAME"), System.getenv("DC_LABEL"), System.getenv("LANGUAGE"));
-		
 		tt.execute((status) -> {
 			try {			
 				// Delete values from previous harvest
-				qf.delete(anyText)
+				qf.delete(mdType)
+					.where(mdType.url.eq(System.getenv("DATA_URL")))
 					.execute();
 				
-				qf.delete(docSubject)
+				qf.insert(mdType)
+					.set(mdType.url, System.getenv("DATA_URL"))
+					.set(mdType.name, System.getenv("DATA_NAME"))
 					.execute();
 				
-				qf.delete(document)
-					.execute();
+				Integer mdTypeId = qf.select(mdType.id)
+						.from(mdType)
+						.where(mdType.url.eq(System.getenv("DATA_URL")))
+						.fetchOne();
 				
-				// Restart sequences
-				executeStatement(dataSource, "alter sequence \"" 
-						+ anyText.getSchemaName() + "\".\"" 
-						+ anyText.getTableName() + "_id_seq\" restart with 1");
+				qf.insert(mdTypeLabel)
+						.set(mdTypeLabel.mdTypeId, mdTypeId)
+						.set(mdTypeLabel.language, System.getenv("LANGUAGE"))
+						.set(mdTypeLabel.title, System.getenv("DATA_LABEL"))
+						.execute();
 				
-				executeStatement(dataSource, "alter sequence \"" 
-						+ docSubject.getSchemaName() + "\".\"" 
-						+ docSubject.getTableName() + "_id_seq\" restart with 1");
-				
-				executeStatement(dataSource, "alter sequence \"" 
-						+ document.getSchemaName() + "\".\"" 
-						+ document.getTableName() + "_id_seq\" restart with 1");
-				
-				DavMethod pFindDataset = new PropFindMethod(System.getenv("DATASET_URL"), DavConstants.PROPFIND_ALL_PROP, DavConstants.DEPTH_1);
-				DavMethod pFindService = new PropFindMethod(System.getenv("SERVICE_URL"), DavConstants.PROPFIND_ALL_PROP, DavConstants.DEPTH_1);
-				DavMethod pFindDc = new PropFindMethod(System.getenv("DC_URL"), DavConstants.PROPFIND_ALL_PROP, DavConstants.DEPTH_1);
+				DavMethod pFindDataset = new PropFindMethod(System.getenv("DATA_URL"), DavConstants.PROPFIND_ALL_PROP, DavConstants.DEPTH_1);
+				DavMethod pFindService = new PropFindMethod(System.getenv("DATA_URL"), DavConstants.PROPFIND_ALL_PROP, DavConstants.DEPTH_1);
+				DavMethod pFindDc = new PropFindMethod(System.getenv("DATA_URL"), DavConstants.PROPFIND_ALL_PROP, DavConstants.DEPTH_1);
 				
 				// Fill database
-				//executeWebDav(qf, client, pFindDataset, System.getenv("DATASET_URL"), MetadataType.DATASET);
-				//executeWebDav(qf, client, pFindService, System.getenv("SERVICE_URL"), MetadataType.SERVICE);
-				//executeWebDav(qf, client, pFindDc, System.getenv("DC_URL"), MetadataType.DC);
+				if(System.getenv("DATA_NAME").equals("dataset")) {
+					executeWebDav(qf, client, pFindDataset, System.getenv("DATA_URL"), MetadataType.DATASET);
+				} else if(System.getenv("DATA_NAME").equals("service")) {
+					executeWebDav(qf, client, pFindService, System.getenv("DATA_URL"), MetadataType.SERVICE);
+				} else if(System.getenv("DATA_NAME").equals("dc")) {
+					executeWebDav(qf, client, pFindDc, System.getenv("DATA_URL"), MetadataType.DC);
+				}
 				
 				// Refresh materialized view
 				executeStatement(dataSource, "refresh materialized view concurrently \"" 
@@ -196,7 +194,7 @@ public class Main {
 		
 		Integer mdTypeId = qf.select(mdType.id)
 				.from(mdType)
-				.where(mdType.url.eq(System.getenv("DATASET_URL")))
+				.where(mdType.url.eq(System.getenv("DATA_URL")))
 				.fetchOne();
 		
 		LocalDate finalLD = null;
@@ -247,7 +245,7 @@ public class Main {
 			.set(document.accessId, accessId)
 			.execute();
 		} catch(Exception e) {
-			throw new Exception(e.getMessage() + " " + getValueFromList(listUuid));
+			throw new Exception(e.getCause() + " " + getValueFromList(listUuid));
 		}
 		
 		Integer docId = qf.select(document.id)
@@ -318,7 +316,7 @@ public class Main {
 		
 		Integer mdTypeId = qf.select(mdType.id)
 				.from(mdType)
-				.where(mdType.url.eq(System.getenv("SERVICE_URL")))
+				.where(mdType.url.eq(System.getenv("DATA_URL")))
 				.fetchOne();
 		
 		LocalDate finalLD = null;
@@ -414,7 +412,7 @@ public class Main {
 		
 		Integer mdTypeId = qf.select(mdType.id)
 				.from(mdType)
-				.where(mdType.url.eq(System.getenv("DC_URL")))
+				.where(mdType.url.eq(System.getenv("DATA_URL")))
 				.fetchOne();
 		
 		LocalDate ld = LocalDate.parse(getValueFromList(listDate));
@@ -524,52 +522,6 @@ public class Main {
 		xp.setNamespaceContext(nc);
 		
 		return new MetadataDocument(d, xp);
-	}
-	
-	public static void setUrl(SQLQueryFactory qf, String url, String typeName, String typeLabelName, String language) {
-		List<Integer> mdTypes = qf.select(mdType.id)
-				.from(mdType)
-				.where(mdType.url.eq(url))
-				.fetch();
-			
-		Integer mdTypesCount = mdTypes.size();
-		
-		if(mdTypesCount.equals(0)) {
-			qf.insert(mdType)
-				.set(mdType.url, url)
-				.set(mdType.name, typeName)
-				.execute();
-			
-			Integer mdTypeId = qf.select(mdType.id)
-					.from(mdType)
-					.where(mdType.url.eq(url))
-					.fetchOne();
-			
-			qf.insert(mdTypeLabel)
-					.set(mdTypeLabel.mdTypeId, mdTypeId)
-					.set(mdTypeLabel.language, language)
-					.set(mdTypeLabel.title, typeLabelName)
-					.execute();
-		} else {
-			Integer mdTypeId = qf.select(mdType.id)
-					.from(mdType)
-					.where(mdType.url.eq(url))
-					.fetchOne();
-			
-			Integer mdTypeLabelId = qf.select(mdTypeLabel.id)
-					.from(mdTypeLabel)
-					.where(mdTypeLabel.mdTypeId.eq(mdTypeId))
-					.where(mdTypeLabel.language.eq(language))
-					.fetchOne();
-			
-			if(mdTypeLabelId == null) {
-				qf.insert(mdTypeLabel)
-					.set(mdTypeLabel.mdTypeId, mdTypeId)
-					.set(mdTypeLabel.language, language)
-					.set(mdTypeLabel.title, typeLabelName)
-					.execute();
-			}
-		}
 	}
 	
 	public static void executeStatement(DriverManagerDataSource dataSource, String statement) throws Exception {
