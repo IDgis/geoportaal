@@ -71,7 +71,7 @@ public class Main {
 							+ "\"contributor\";\"date\";\"issued\";\"valid_start\";\"valid_end\";"
 							+ "\"type\";\"format\";\"identifier\";\"references\";\"relation_id\";"
 							+ "\"source\";\"language\";\"relation_attachment\";\"http_status_code\";"
-							+ "\"http_content_length\";\"rights_file\";\"rights_use\";\"temporal_start\";"
+							+ "\"http_content_length_in_mb\";\"rights_file\";\"rights_use\";\"temporal_start\";"
 							+ "\"temportal_end\";\"bbox_lowercorner\";\"bbox_uppercorner\"");
 		} else {
 			out = new ToDB();
