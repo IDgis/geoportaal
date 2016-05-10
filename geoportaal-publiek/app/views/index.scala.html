@@ -7,7 +7,7 @@
 @import models.QMdType.mdType;
 
 @main(if("intern".equals(play.Play.application().configuration().getString("portal.access"))) { Messages.get("index.header.intern") } else { 
-	Messages.get("index.header.intern") }, routes.Assets.versioned("javascripts/result.js").url) {
+	Messages.get("index.header") }, routes.Assets.versioned("javascripts/result.js").url) {
 	<div class="intro">
 		<p>@Messages.get("index.intro")</p>
 	</div>
