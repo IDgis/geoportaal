@@ -97,7 +97,7 @@ public class ToCSV implements OutDestination {
 		for(String httpURL : httpURLs) {
 			String contLength = requestContentLength(httpURL);
 
-			httpContentLengths.add(contLength + "MB");
+			httpContentLengths.add(contLength);
 			writerCL.write(fileName + ",");
 			writerCL.write(requestContentLength(httpURL));
 			writerCL.newLine();
