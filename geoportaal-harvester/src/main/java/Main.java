@@ -148,6 +148,8 @@ public class Main {
 				}
 			}
 		}
+		
+		System.out.println("Harvesting has been completed");
 	}
 	
 	public static void convertDatasetValues(SQLQueryFactory qf, Document d) throws Exception {
