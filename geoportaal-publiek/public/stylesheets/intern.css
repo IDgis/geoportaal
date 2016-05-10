@@ -1,0 +1,9 @@
+.task-inner {background-color:#831625;}
+.task-inner-active {background-color:#dc0000;}
+.task-inner:hover {background-color:#dc0000;}
+
+.button-ovs {background-color:#255c9f;}
+.button-ovs:hover {background-color:#0096D2;}
+.button-ovs:focus {background-color:#0096D2;}
+
+h1.header {background-color:#255c9f;}

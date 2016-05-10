@@ -7,6 +7,9 @@
 	<head>
 		<title>@title</title>
 		<link rel="stylesheet" media="screen" href="@routes.Assets.versioned("stylesheets/main.css")">
+		@if("intern".equals(play.Play.application().configuration().getString("portal.access"))) {
+			<link rel="stylesheet" media="screen" href="@routes.Assets.versioned("stylesheets/intern.css")">
+		}
 		<link rel="stylesheet" media="screen" href="@routes.Assets.versioned("lib/bootstrap/css/bootstrap.min.css")">
 		
 		
