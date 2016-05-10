@@ -95,17 +95,15 @@ public class Main {
 						.set(mdTypeLabel.title, System.getenv("DATA_LABEL"))
 						.execute();
 				
-				DavMethod pFindDataset = new PropFindMethod(System.getenv("DATA_URL"), DavConstants.PROPFIND_ALL_PROP, DavConstants.DEPTH_1);
-				DavMethod pFindService = new PropFindMethod(System.getenv("DATA_URL"), DavConstants.PROPFIND_ALL_PROP, DavConstants.DEPTH_1);
-				DavMethod pFindDc = new PropFindMethod(System.getenv("DATA_URL"), DavConstants.PROPFIND_ALL_PROP, DavConstants.DEPTH_1);
+				DavMethod pFind = new PropFindMethod(System.getenv("DATA_URL"), DavConstants.PROPFIND_ALL_PROP, DavConstants.DEPTH_1);
 				
 				// Fill database
 				if(System.getenv("DATA_NAME").equals("dataset")) {
-					executeWebDav(qf, client, pFindDataset, System.getenv("DATA_URL"), MetadataType.DATASET);
+					executeWebDav(qf, client, pFind, System.getenv("DATA_URL"), MetadataType.DATASET);
 				} else if(System.getenv("DATA_NAME").equals("service")) {
-					executeWebDav(qf, client, pFindService, System.getenv("DATA_URL"), MetadataType.SERVICE);
+					executeWebDav(qf, client, pFind, System.getenv("DATA_URL"), MetadataType.SERVICE);
 				} else if(System.getenv("DATA_NAME").equals("dc")) {
-					executeWebDav(qf, client, pFindDc, System.getenv("DATA_URL"), MetadataType.DC);
+					executeWebDav(qf, client, pFind, System.getenv("DATA_URL"), MetadataType.DC);
 				}
 				
 				// Refresh materialized view
