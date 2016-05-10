@@ -1,6 +1,7 @@
 @import play.i18n._
 
-@main(Messages.get("about.header"), "") {
+@main(if("intern".equals(play.Play.application().configuration().getString("portal.access"))) { Messages.get("about.header.intern") } else { 
+	Messages.get("index.header.intern") }, "") {
 	<div class="intro">
 		<p>@Messages.get("about.intro")</p>
 	</div>
