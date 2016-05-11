@@ -1,3 +1,5 @@
+import static java.util.concurrent.TimeUnit.*;
+
 import static models.QAccess.access;
 import static models.QAnyText.anyText;
 import static models.QDocSubject.docSubject;
@@ -19,6 +21,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
 
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.parsers.DocumentBuilder;
@@ -51,7 +56,19 @@ import com.querydsl.sql.SQLQueryFactory;
 import com.querydsl.sql.SQLTemplates;
 
 public class Main {
+	private final static ScheduledExecutorService scheduler =
+			Executors.newScheduledThreadPool(1);
+	
 	public static void main(String[] args) throws Exception {
+		final Runnable harvest = new Runnable() {
+			public void run() { doHarvest(); }
+		};
+		
+		final ScheduledFuture<?> harvestHandle =
+				scheduler.scheduleAtFixedRate(harvest, 0, 30, MINUTES);	
+	}
+	
+	public static void doHarvest() {
 		DriverManagerDataSource dataSource = new DriverManagerDataSource();
 		dataSource.setDriverClassName(System.getenv("DB_DRIVER"));
 		dataSource.setUrl(System.getenv("DB_URL"));
