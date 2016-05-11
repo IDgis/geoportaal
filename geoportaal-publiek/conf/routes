@@ -3,7 +3,7 @@
 # ~~~~
 
 # An example controller showing a sample home page
-GET			/						controllers.Application.index
+GET			/index					controllers.Application.index
 GET			/search					controllers.Application.search(start: Int ?= 0, text: String ?= "", types: String ?= "dataset+service+dc", filter: Boolean ?= false)
 GET			/browse					controllers.Application.browse(start: Int ?= 0, text: String ?= "", subjects: String ?= "inlandWaters+structure+society+economy+biota+geoscientificInformation+health+boundaries+elevation+climatologyMeteorologyAtmosphere+farming+location+intelligenceMilitary+environment+utilitiesCommunication+oceans+imageryBaseMapsEarthCover+planningCadastre+transportation", filter: Boolean ?= false)
 GET			/contact				controllers.Application.contact

@@ -18,7 +18,7 @@
 @import models.QMdTypeLabel.mdTypeLabel
 
 @main(if("intern".equals(play.Play.application().configuration().getString("portal.access"))) { Messages.get("search.header.intern") } else { 
-	Messages.get("index.header.intern") }, routes.Assets.versioned("javascripts/result.js").url) {
+	Messages.get("search.header") }, routes.Assets.versioned("javascripts/result.js").url) {
 	<div class="intro">
 		<p>@Messages.get("search.intro")</p>
 	</div>
