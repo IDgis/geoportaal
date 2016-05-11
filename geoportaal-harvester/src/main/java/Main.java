@@ -64,8 +64,11 @@ public class Main {
 			public void run() { doHarvest(); }
 		};
 		
+		Integer interval = Integer.parseInt(System.getenv("HARVEST_INTERVAL"));
+		System.out.println("Harvesting scheduled with an interval of " + interval + " minutes");
+		
 		final ScheduledFuture<?> harvestHandle =
-				scheduler.scheduleAtFixedRate(harvest, 0, 30, MINUTES);	
+				scheduler.scheduleAtFixedRate(harvest, 0, interval, MINUTES);	
 	}
 	
 	public static void doHarvest() {
@@ -165,8 +168,6 @@ public class Main {
 				}
 			}
 		}
-		
-		System.out.println("Harvesting has been completed");
 	}
 	
 	public static void convertDatasetValues(SQLQueryFactory qf, Document d) throws Exception {
