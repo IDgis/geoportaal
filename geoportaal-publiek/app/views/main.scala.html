@@ -20,6 +20,11 @@
 			<a>
 				<img src="@routes.Assets.versioned("images/logo_overijssel.png")"></img>
 			</a>
+			@if("intern".equals(play.Play.application().configuration().getString("portal.access"))) {
+				<a class="btn btn-default pull-right" href="@play.Play.application().configuration().getString("admin.url")" target="_blank">
+					@Messages.get("button.admin")
+				</a>
+			}
 		</div>
 		
 		<div class="header">
