@@ -192,6 +192,7 @@ project(':geoportaal-harvester') {
 		environment 'DATA_NAME', 'dc'
 		environment 'DATA_LABEL', 'Statische kaarten'
 		environment 'LANGUAGE', 'nl'
+		environment 'HARVEST_INTERVAL', '30'
 	}
 	
 	repositories {
