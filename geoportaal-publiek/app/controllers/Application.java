@@ -54,10 +54,10 @@ public class Application extends Controller {
 					.where(document.date.isNotNull())
 					.where(document.description.isNotNull());
 			
-			if(intern) {
+			if(!intern) {
 				Integer accessId = tx.select(access.id)
 					.from(access)
-					.where(access.name.eq("intern"))
+					.where(access.name.eq("extern"))
 					.fetchOne();
 				
 				queryDocuments.where(document.accessId.eq(accessId));
@@ -113,10 +113,10 @@ public class Application extends Controller {
 					.where(document.description.isNotNull())
 					.where(mdType.name.in(types));
 			
-			if(intern) {
+			if(!intern) {
 				Integer accessId = tx.select(access.id)
 					.from(access)
-					.where(access.name.eq("intern"))
+					.where(access.name.eq("extern"))
 					.fetchOne();
 				
 				queryDocuments.where(document.accessId.eq(accessId));
@@ -233,10 +233,10 @@ public class Application extends Controller {
 							.join(subject).on(docSubject.subjectId.eq(subject.id))
 							.where(subject.name.in(subjectsList))));
 			
-			if(intern) {
+			if(!intern) {
 				Integer accessId = tx.select(access.id)
 					.from(access)
-					.where(access.name.eq("intern"))
+					.where(access.name.eq("extern"))
 					.fetchOne();
 				
 				queryDocuments.where(document.accessId.eq(accessId));
