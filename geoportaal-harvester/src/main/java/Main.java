@@ -60,8 +60,12 @@ public class Main {
 			Executors.newScheduledThreadPool(1);
 	
 	public static void main(String[] args) throws Exception {
-		final Runnable harvest = new Runnable() {
-			public void run() { doHarvest(); }
+		final Runnable harvest = () -> {
+			 try {
+				doHarvest();
+			} catch(Exception e) {
+				e.printStackTrace();
+			}
 		};
 		
 		Integer interval = Integer.parseInt(System.getenv("HARVEST_INTERVAL"));
@@ -165,6 +169,8 @@ public class Main {
 						case DC:
 							convertDcValues(qf, doc);
 					}
+				} catch(Exception e) {
+					e.printStackTrace();
 				}
 			}
 		}
@@ -244,11 +250,21 @@ public class Main {
 			listFinalThumbnail.add(finalThumbnail);
 		}
 		
-		Integer accessId;
-		if(Math.random() < 0.5) {
-			accessId = 1;
-		} else {
-			accessId = 2;
+		Integer internId = qf.select(access.id)
+				.from(access)
+				.where(access.name.eq("intern"))
+				.fetchOne();
+		
+		Integer externId = qf.select(access.id)
+				.from(access)
+				.where(access.name.eq("extern"))
+				.fetchOne();
+		
+		Integer accessId = internId;
+		for(String useLimitation : listUseLimitation) {
+			if(useLimitation.equals("Geoportaal extern")) {
+				accessId = externId;
+			}
 		}
 		
 		try {
