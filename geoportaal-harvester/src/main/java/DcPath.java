@@ -13,6 +13,7 @@ public enum DcPath {
 	PUBLISHER ("/rdf:RDF/rdf:Description/dc:publisher/text()"),
 	CONTRIBUTOR ("/rdf:RDF/rdf:Description/dc:contributor/text()"),
 	RIGHTS ("/rdf:RDF/rdf:Description/dc:rights/text()"),
+	USE_LIMITATION ("/rdf:RDF/rdf:Description/dc:rights[@rdf:datatype='gebruiksrestricties'][1]/text()"),
 	FORMAT ("/rdf:RDF/rdf:Description/dc:format/text()"),
 	SOURCE ("/rdf:RDF/rdf:Description/dc:source/text()"),
 	SUBJECT ("/rdf:RDF/rdf:Description/dc:subject/text()"),
