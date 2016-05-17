@@ -188,7 +188,7 @@ project(':geoportaal-harvester') {
 		environment 'DB_USER', dbUser
 		environment 'DB_PASSWORD', dbPassword
 		
-		environment 'DATA_URL', 'https://test-admin.geoportaaloverijssel.nl/metadata/dc/'
+		environment 'DATA_URL', 'http://localhost:9000/metadata/dc/'
 		environment 'DATA_NAME', 'dc'
 		environment 'DATA_LABEL', 'Statische kaarten'
 		environment 'LANGUAGE', 'nl'

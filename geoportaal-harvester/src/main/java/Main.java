@@ -68,7 +68,7 @@ public class Main {
 		System.out.println("Harvesting scheduled with an interval of " + interval + " minutes");
 		
 		final ScheduledFuture<?> harvestHandle =
-				scheduler.scheduleAtFixedRate(harvest, 0, interval, MINUTES);	
+				scheduler.scheduleAtFixedRate(harvest, 0, interval, MINUTES);
 	}
 	
 	public static void doHarvest() {
@@ -423,6 +423,7 @@ public class Main {
 		List<String> listPublisher = metaDoc.getStrings(DcPath.PUBLISHER.path());
 		List<String> listContributor = metaDoc.getStrings(DcPath.CONTRIBUTOR.path());
 		List<String> listRights = metaDoc.getStrings(DcPath.RIGHTS.path());
+		List<String> listUseLimitations = metaDoc.getStrings(DcPath.USE_LIMITATION.path());
 		List<String> listFormat = metaDoc.getStrings(DcPath.FORMAT.path());
 		List<String> listSource = metaDoc.getStrings(DcPath.SOURCE.path());
 		List<String> listSubject = metaDoc.getStrings(DcPath.SUBJECT.path());
@@ -443,11 +444,21 @@ public class Main {
 		
 		String thumbnail = null;
 		
+		Integer internId = qf.select(access.id)
+				.from(access)
+				.where(access.name.eq("intern"))
+				.fetchOne();
+		
+		Integer externId = qf.select(access.id)
+				.from(access)
+				.where(access.name.eq("extern"))
+				.fetchOne();
+		
 		Integer accessId;
-		if(Math.random() < 0.5) {
-			accessId = 1;
+		if(getValueFromList(listUseLimitations).equals("Alleen voor intern gebruik")) {
+			accessId = internId;
 		} else {
-			accessId = 2;
+			accessId = externId;
 		}
 		
 		try {
