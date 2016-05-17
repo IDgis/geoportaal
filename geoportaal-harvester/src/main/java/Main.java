@@ -374,11 +374,23 @@ public class Main {
 		
 		String thumbnail = null;
 		
+		Boolean secured = Boolean.parseBoolean(System.getenv("DATA_SECURED"));
+		
+		Integer internId = qf.select(access.id)
+				.from(access)
+				.where(access.name.eq("intern"))
+				.fetchOne();
+		
+		Integer externId = qf.select(access.id)
+				.from(access)
+				.where(access.name.eq("extern"))
+				.fetchOne();
+		
 		Integer accessId;
-		if(Math.random() < 0.5) {
-			accessId = 1;
+		if(secured) {
+			accessId = internId;
 		} else {
-			accessId = 2;
+			accessId = externId;
 		}
 		
 		try {
