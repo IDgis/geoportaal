@@ -16,7 +16,8 @@ import nl.idgis.gradle.play.PlayJavaPlugin
 import nl.idgis.gradle.docker.DockerPlugin
 
 subprojects {
-		
+	apply plugin: 'org.ajoberstar.release-opinion'
+	
 	repositories {
 		mavenCentral ()
 		
@@ -36,7 +37,12 @@ subprojects {
 				username nexusUser 
 				password nexusPassword
 			}
-		}	
+		}
+	}
+	
+	// Configure gradle-git release procedure (https://github.com/ajoberstar/gradle-git):
+	release {
+		grgit = org.ajoberstar.grgit.Grgit.open (file (".."))
 	}
 }
 
@@ -58,7 +64,6 @@ configure([
 	apply plugin: 'eclipse'
 	apply plugin: PlayJavaPlugin
 	apply plugin: DockerPlugin
-	apply plugin: 'org.ajoberstar.release-opinion'
 	
 	ext {
 		scalaAbiVersion = '2.11'
@@ -125,11 +130,6 @@ configure([
 			 }
 		}
 	}
-	
-	// Configure gradle-git release procedure (https://github.com/ajoberstar/gradle-git):
-	release {
-		grgit = org.ajoberstar.grgit.Grgit.open (file (".."))
-	}
 }
 
 project(':geoportaal-beheer') {
@@ -148,22 +148,12 @@ project(':geoportaal-beheer') {
 	queryDSL {
 		databaseHost = project.databaseHost
 	}
-	
-	// Configure gradle-git release procedure (https://github.com/ajoberstar/gradle-git):
-	release {
-		grgit = org.ajoberstar.grgit.Grgit.open (file (".."))
-	}
 }
 
 project(':geoportaal-publiek') {
 	
 	dependencies {
 		play project(':geoportaal-publiek-db')
-	}	
-	
-	// Configure gradle-git release procedure (https://github.com/ajoberstar/gradle-git):
-	release {
-		grgit = org.ajoberstar.grgit.Grgit.open (file (".."))
 	}
 }
 
