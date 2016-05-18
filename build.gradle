@@ -224,7 +224,7 @@ project(':geoportaal-harvester') {
 		dependsOn createDockerfile
 		inputDir = project.file('build/docker')
 		def tagVersion = "${project.version}".replaceAll ("\\+", "-")
-		tag = "${project.name}:${tagVersion}"
+		tag = "idgis/${project.name}:${tagVersion}"
 	}
 }
 

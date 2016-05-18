@@ -105,7 +105,7 @@ class DockerPlugin implements Plugin<Project> {
 								
 								task.inputDir = project.file "${project.buildDir}/docker/${binary.name}"
 								task.quiet = false
-								task.tag = "${project.name}:${tagVersion}"
+								task.tag = "idgis/${project.name}:${tagVersion}"
 							}
 							
 							buildDockerImages.dependsOn buildImageTask
