@@ -95,7 +95,7 @@ configure([
 			exclude module: "ch.qos.logback"
 			exclude module: "logback-classic"
 		}
-		play "nl.idgis.geoportaal:md-stylesheets:1.0.10"
+		play "nl.idgis.geoportaal:md-stylesheets:1.0.11"
 	}
 	
 	model {
