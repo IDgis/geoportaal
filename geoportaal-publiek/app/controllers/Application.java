@@ -153,6 +153,8 @@ public class Application extends Controller {
 					.fetch()
 					.size();
 			
+			Integer page = (start + 10) / 10;
+			
 			Integer startNext = start + 10;
 			Integer startPrevious = start -10;
 			
@@ -188,10 +190,10 @@ public class Application extends Controller {
 					.fetch();
 			
 			if(filter) {
-				return ok(searchresult.render(documents, sdf, textSearch, typesString, count, finalStart, startPrevious, startNext, startLast, pageLast));
+				return ok(searchresult.render(documents, sdf, textSearch, typesString, count, page, finalStart, startPrevious, startNext, startLast, pageLast));
 			}
 			
-			return ok(search.render(documents, sdf, textSearch, typesString, count, finalStart, startPrevious, startNext, startLast, pageLast));
+			return ok(search.render(documents, sdf, textSearch, typesString, count, page, finalStart, startPrevious, startNext, startLast, pageLast));
 		});
 	}
 	
@@ -274,6 +276,8 @@ public class Application extends Controller {
 					.fetch()
 					.size();
 			
+			Integer page = (start + 10) / 10;
+			
 			Integer startNext = start + 10;
 			Integer startPrevious = start -10;
 			
@@ -325,10 +329,10 @@ public class Application extends Controller {
 			}
 			
 			if(filter) {
-				return ok(browseresult.render(subjects, finalDocuments, sdf, textSearch, subjectsString, count, finalStart, startPrevious, startNext, startLast, pageLast));
+				return ok(browseresult.render(subjects, finalDocuments, sdf, textSearch, subjectsString, count, page, finalStart, startPrevious, startNext, startLast, pageLast));
 			}
 			
-			return ok(browse.render(subjects, finalDocuments, sdf, textSearch, subjectsString, count, finalStart, startPrevious, startNext, startLast, pageLast));
+			return ok(browse.render(subjects, finalDocuments, sdf, textSearch, subjectsString, count, page, finalStart, startPrevious, startNext, startLast, pageLast));
 		});
 	}
 	

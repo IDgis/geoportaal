@@ -3,6 +3,7 @@
 	textSearch: String,
 	typesString: String,
 	count: Integer,
+	page: Integer,
 	start: Integer,
 	startPrevious: Integer,
 	startNext: Integer,
@@ -20,7 +21,7 @@
 		<div class="row">
 			<span class="col-md-3">@if(count == 0) {@Messages.get("result.count.label.zero")}
 				@if(count == 1) {@count @Messages.get("result.count.label.one")} @if(count > 1) {
-					@count @Messages.get("result.count.label.multiple")}</span>
+					@count @Messages.get("result.count.label.multiple")}@if(count > 0) {, pagina @page}</span>
 			<div class="pull-right">
 				<div class="row btn-group btn-group-sm">
 					<nav>

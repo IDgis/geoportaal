@@ -3,6 +3,7 @@
 	textSearch: String,
 	typesString: String,
 	count: Integer,
+	page:Integer,
 	start: Integer,
 	startPrevious: Integer, 
 	startNext: Integer,
@@ -34,7 +35,7 @@
 	}
 	
 	<div id="js-search-results-all">
-		@views.html.searchresult(documents, sdf, textSearch, typesString, count, start, startPrevious, startNext, startLast, pageLast)
+		@views.html.searchresult(documents, sdf, textSearch, typesString, count, page, start, startPrevious, startNext, startLast, pageLast)
 	</div>
 	
 	@if("intern".equals(play.Play.application().configuration().getString("portal.access"))) {

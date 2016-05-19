@@ -4,6 +4,7 @@
 	textSearch: String,
 	subjectsString: String,
 	count: Integer,
+	page: Integer,
 	start: Integer,
 	startPrevious: Integer,
 	startNext: Integer,
@@ -34,7 +35,7 @@
 	}
 	
 	<div id="js-browse-results-all">
-		@views.html.browseresult(subjects, documents, sdf, textSearch, subjectsString, count, start, startPrevious, startNext, startLast, pageLast)
+		@views.html.browseresult(subjects, documents, sdf, textSearch, subjectsString, count, page, start, startPrevious, startNext, startLast, pageLast)
 	</div>
 	
 	<input type="hidden" id="js-start-current" value="@start">
