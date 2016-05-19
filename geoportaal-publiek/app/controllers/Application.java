@@ -220,6 +220,7 @@ public class Application extends Controller {
 					.from(subject)
 					.join(subjectLabel).on(subject.id.eq(subjectLabel.subjectId))
 					.where(subjectLabel.language.eq(curLang.code()))
+					.orderBy(subjectLabel.title.asc())
 					.fetch();
 			
 			SQLQuery<Tuple> queryDocuments = tx.select(document.uuid, document.title, document.date, document.creator, document.description, 
