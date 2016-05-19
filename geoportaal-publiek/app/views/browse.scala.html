@@ -4,6 +4,7 @@
 	textSearch: String,
 	subjectsString: String,
 	count: Integer,
+	page: Integer,
 	start: Integer,
 	startPrevious: Integer,
 	startNext: Integer,
@@ -12,9 +13,6 @@
 )
 
 @import play.i18n._
-@import models.QDocument.document;
-@import models.QSubject.subject;
-@import models.QSubjectLabel.subjectLabel;
 
 @main(if("intern".equals(play.Play.application().configuration().getString("portal.access"))) { Messages.get("browse.header.intern") } else { 
 	Messages.get("browse.header") }, routes.Assets.versioned("javascripts/result.js").url) {
@@ -37,7 +35,7 @@
 	}
 	
 	<div id="js-browse-results-all">
-		@views.html.browseresult(subjects, documents, sdf, textSearch, subjectsString, count, start, startPrevious, startNext, startLast, pageLast)
+		@views.html.browseresult(subjects, documents, sdf, textSearch, subjectsString, count, page, start, startPrevious, startNext, startLast, pageLast)
 	</div>
 	
 	<input type="hidden" id="js-start-current" value="@start">

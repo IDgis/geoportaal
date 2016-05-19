@@ -6,7 +6,6 @@ import static models.QDocSubject.docSubject;
 import static models.QDocument.document;
 import static models.QDocumentSearch.documentSearch;
 import static models.QMdType.mdType;
-import static models.QMdTypeLabel.mdTypeLabel;
 import static models.QSubject.subject;
 
 import java.io.InputStream;
@@ -107,17 +106,6 @@ public class Main {
 					.set(mdType.url, System.getenv("DATA_URL"))
 					.set(mdType.name, System.getenv("DATA_NAME"))
 					.execute();
-				
-				Integer mdTypeId = qf.select(mdType.id)
-						.from(mdType)
-						.where(mdType.url.eq(System.getenv("DATA_URL")))
-						.fetchOne();
-				
-				qf.insert(mdTypeLabel)
-						.set(mdTypeLabel.mdTypeId, mdTypeId)
-						.set(mdTypeLabel.language, System.getenv("LANGUAGE"))
-						.set(mdTypeLabel.title, System.getenv("DATA_LABEL"))
-						.execute();
 				
 				DavMethod pFind = new PropFindMethod(System.getenv("DATA_URL"), DavConstants.PROPFIND_ALL_PROP, DavConstants.DEPTH_1);
 				

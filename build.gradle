@@ -180,8 +180,6 @@ project(':geoportaal-harvester') {
 		
 		environment 'DATA_URL', 'http://test-metadata.geodataoverijssel.nl/metadata/service/'
 		environment 'DATA_NAME', 'service'
-		environment 'DATA_LABEL', 'Services'
-		environment 'LANGUAGE', 'nl'
 		environment 'DATA_SECURED', 'false'
 		environment 'HARVEST_INTERVAL', '30'
 	}

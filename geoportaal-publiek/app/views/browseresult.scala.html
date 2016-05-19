@@ -4,6 +4,7 @@
 	textSearch: String,
 	subjectsString: String,
 	count: Integer,
+	page: Integer,
 	start: Integer,
 	startPrevious: Integer,
 	startNext: Integer,
@@ -12,16 +13,15 @@
 )
 
 @import play.i18n._
-@import models.QDocument.document;
-@import models.QSubject.subject;
-@import models.QSubjectLabel.subjectLabel;
+@import models.QSubject.subject
+@import models.QSubjectLabel.subjectLabel
 
 <div class="col-md-12">
 	<div class="data-navigation">
 		<div class="row">
 			<span class="col-md-3">@if(count == 0) {@Messages.get("result.count.label.zero")}
 				@if(count == 1) {@count @Messages.get("result.count.label.one")} @if(count > 1) {
-					@count @Messages.get("result.count.label.multiple")}</span>
+					@count @Messages.get("result.count.label.multiple")}@if(count > 0) {, pagina @page}</span>
 			<div class="pull-right">
 				<div class="row btn-group btn-group-sm">
 					<nav>
@@ -81,7 +81,7 @@
 				<div class="row">
 					<div class="col-md-12 browse-title">
 						<p class="title">
-							<a class="title">@doc.getTitle() (@sdf.format(doc.getDate().getTime()), @doc.getCreator())</a>
+							<a class="md-title">@doc.getTitle() (@sdf.format(doc.getDate().getTime()), @doc.getCreator())</a>
 						</p>
 					</div>
 					<div class="col-md-12 description">

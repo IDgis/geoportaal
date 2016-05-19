@@ -5,7 +5,6 @@ import static models.QDocumentSearch.documentSearch;
 import static models.QDocSubject.docSubject;
 import static models.QDocument.document;
 import static models.QMdType.mdType;
-import static models.QMdTypeLabel.mdTypeLabel;
 import static models.QSubject.subject;
 import static models.QSubjectLabel.subjectLabel;
 
@@ -99,12 +98,6 @@ public class Application extends Controller {
 				intern = true;
 			}
 			
-			List<Tuple> mdTypes = tx.select(mdType.name, mdTypeLabel.title)
-					.from(mdType)
-					.join(mdTypeLabel).on(mdType.id.eq(mdTypeLabel.mdTypeId))
-					.where(mdTypeLabel.language.eq(curLang.code()))
-					.fetch();
-			
 			SQLQuery<Tuple> queryDocuments = tx.select(document.title, document.uuid, document.date, document.creator, document.description, 
 					document.thumbnail, mdType.url, mdType.name)
 					.from(document)
@@ -160,6 +153,8 @@ public class Application extends Controller {
 					.fetch()
 					.size();
 			
+			Integer page = (start + 10) / 10;
+			
 			Integer startNext = start + 10;
 			Integer startPrevious = start -10;
 			
@@ -195,10 +190,10 @@ public class Application extends Controller {
 					.fetch();
 			
 			if(filter) {
-				return ok(searchresult.render(mdTypes, documents, sdf, textSearch, typesString, count, finalStart, startPrevious, startNext, startLast, pageLast));
+				return ok(searchresult.render(documents, sdf, textSearch, typesString, count, page, finalStart, startPrevious, startNext, startLast, pageLast));
 			}
 			
-			return ok(search.render(mdTypes, documents, sdf, textSearch, typesString, count, finalStart, startPrevious, startNext, startLast, pageLast));
+			return ok(search.render(documents, sdf, textSearch, typesString, count, page, finalStart, startPrevious, startNext, startLast, pageLast));
 		});
 	}
 	
@@ -220,6 +215,7 @@ public class Application extends Controller {
 					.from(subject)
 					.join(subjectLabel).on(subject.id.eq(subjectLabel.subjectId))
 					.where(subjectLabel.language.eq(curLang.code()))
+					.orderBy(subjectLabel.title.asc())
 					.fetch();
 			
 			SQLQuery<Tuple> queryDocuments = tx.select(document.uuid, document.title, document.date, document.creator, document.description, 
@@ -280,6 +276,8 @@ public class Application extends Controller {
 					.fetch()
 					.size();
 			
+			Integer page = (start + 10) / 10;
+			
 			Integer startNext = start + 10;
 			Integer startPrevious = start -10;
 			
@@ -331,10 +329,10 @@ public class Application extends Controller {
 			}
 			
 			if(filter) {
-				return ok(browseresult.render(subjects, finalDocuments, sdf, textSearch, subjectsString, count, finalStart, startPrevious, startNext, startLast, pageLast));
+				return ok(browseresult.render(subjects, finalDocuments, sdf, textSearch, subjectsString, count, page, finalStart, startPrevious, startNext, startLast, pageLast));
 			}
 			
-			return ok(browse.render(subjects, finalDocuments, sdf, textSearch, subjectsString, count, finalStart, startPrevious, startNext, startLast, pageLast));
+			return ok(browse.render(subjects, finalDocuments, sdf, textSearch, subjectsString, count, page, finalStart, startPrevious, startNext, startLast, pageLast));
 		});
 	}
 	
