@@ -1270,6 +1270,7 @@
 			  			</a>
 			  		</p>
 		  		</xsl:when>
+		  		<xsl:when test=". = ''"></xsl:when>
 		  		<xsl:otherwise>
 			  		<p>
 			  			<b><xsl:value-of select="gmd:CI_OnlineResource/gmd:protocol/gco:CharacterString"/>: </b>
