@@ -14,6 +14,10 @@ results.expand=Resultaten uitklappen
 
 tsv.language=dutch
 
+metadata.type.dataset=GIS bestanden
+metadata.type.service=Services
+metadata.type.dc=Statische kaarten
+
 tab.index=Home
 tab.search=Uitgebreid zoeken
 tab.browse=Bladeren

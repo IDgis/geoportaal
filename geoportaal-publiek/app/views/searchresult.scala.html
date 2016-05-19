@@ -1,5 +1,4 @@
-@(mdTypes: java.util.List[com.querydsl.core.Tuple],
-	documents: java.util.List[com.querydsl.core.Tuple],
+@(documents: java.util.List[com.querydsl.core.Tuple],
 	sdf: java.text.SimpleDateFormat,
 	textSearch: String,
 	typesString: String,
@@ -13,9 +12,8 @@
 
 @import play.i18n._
 @import play.mvc.Http
-@import models.QDocument.document;
+@import models.QDocument.document
 @import models.QMdType.mdType
-@import models.QMdTypeLabel.mdTypeLabel
 
 <div>
 	<div class="data-navigation">
@@ -55,15 +53,27 @@
 	
 <div>
 	<div class="filter-options">
-		@for(metaType <- mdTypes) {
-			<div class="row">
-				<label class="checkbox-inline">
-					<input class="js-data-type" type="checkbox" data-md-type="@metaType.get(mdType.name)" 
-					@if(typesString.contains(metaType.get(mdType.name))) {checked}>
-						@Messages.get("search.checkboxes.label") <strong>@metaType.get(mdTypeLabel.title)</strong>
-				</label>
-			</div>
-		}
+		<div class="row">
+			<label class="checkbox-inline">
+				<input class="js-data-type" type="checkbox" data-md-type="dataset"
+				@if(typesString.contains("dataset")) {checked}>
+					@Messages.get("search.checkboxes.label") <strong>@Messages.get("metadata.type.dataset")</strong>
+			</label>
+		</div>
+		<div class="row">
+			<label class="checkbox-inline">
+				<input class="js-data-type" type="checkbox" data-md-type="service"
+				@if(typesString.contains("service")) {checked}>
+					@Messages.get("search.checkboxes.label") <strong>@Messages.get("metadata.type.service")</strong>
+			</label>
+		</div>
+		<div class="row">
+			<label class="checkbox-inline">
+				<input class="js-data-type" type="checkbox" data-md-type="dc"
+				@if(typesString.contains("dc")) {checked}>
+					@Messages.get("search.checkboxes.label") <strong>@Messages.get("metadata.type.dc")</strong>
+			</label>
+		</div>
 	</div>
 </div>
 

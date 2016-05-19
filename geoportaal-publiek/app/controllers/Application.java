@@ -5,7 +5,6 @@ import static models.QDocumentSearch.documentSearch;
 import static models.QDocSubject.docSubject;
 import static models.QDocument.document;
 import static models.QMdType.mdType;
-import static models.QMdTypeLabel.mdTypeLabel;
 import static models.QSubject.subject;
 import static models.QSubjectLabel.subjectLabel;
 
@@ -99,12 +98,6 @@ public class Application extends Controller {
 				intern = true;
 			}
 			
-			List<Tuple> mdTypes = tx.select(mdType.name, mdTypeLabel.title)
-					.from(mdType)
-					.join(mdTypeLabel).on(mdType.id.eq(mdTypeLabel.mdTypeId))
-					.where(mdTypeLabel.language.eq(curLang.code()))
-					.fetch();
-			
 			SQLQuery<Tuple> queryDocuments = tx.select(document.title, document.uuid, document.date, document.creator, document.description, 
 					document.thumbnail, mdType.url, mdType.name)
 					.from(document)
@@ -195,10 +188,10 @@ public class Application extends Controller {
 					.fetch();
 			
 			if(filter) {
-				return ok(searchresult.render(mdTypes, documents, sdf, textSearch, typesString, count, finalStart, startPrevious, startNext, startLast, pageLast));
+				return ok(searchresult.render(documents, sdf, textSearch, typesString, count, finalStart, startPrevious, startNext, startLast, pageLast));
 			}
 			
-			return ok(search.render(mdTypes, documents, sdf, textSearch, typesString, count, finalStart, startPrevious, startNext, startLast, pageLast));
+			return ok(search.render(documents, sdf, textSearch, typesString, count, finalStart, startPrevious, startNext, startLast, pageLast));
 		});
 	}
 	
