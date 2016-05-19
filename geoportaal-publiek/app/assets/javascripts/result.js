@@ -15,7 +15,7 @@ require([
 	], function(dom, domConstruct, query, on, array, lang, win, domAttr, domStyle, xhr) {
 		
 		// Expand or collapse single metadata record
-		on(win.doc, '.search-metadata > .row:click, .browse-metadata > .row:click', function(e) {
+		on(win.doc, '.md-title:click', function(e) {
 			var description = query('.description', e.target.closest('.row'))[0];
 			
 			var descDisplay = domStyle.get(description, 'display');
