@@ -5,6 +5,7 @@ import static models.QUser.user;
 import javax.inject.Inject;
 
 import actions.DefaultAuthenticator;
+import play.i18n.Messages;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
@@ -27,7 +28,11 @@ public class Report extends Controller {
 				.where(user.username.eq(session("username")))
 				.fetchOne();
 			
-			return ok(views.html.report.render(roleId));
+			if(!roleId.equals(2)) {
+				return ok(views.html.report.render(roleId));
+			} else {
+				return status(UNAUTHORIZED, Messages.get("unauthorized"));
+			}
 		});
 	}
 }
