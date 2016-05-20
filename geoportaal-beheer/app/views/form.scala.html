@@ -10,6 +10,7 @@
 	mdFormatList: java.util.List[com.querydsl.core.Tuple],
 	sdf: java.text.SimpleDateFormat,
 	subjectList: java.util.List[com.querydsl.core.Tuple],
+	roleId: Integer,
 	search: models.Search,
 	validate: Boolean,
 	previousValues: java.util.Map[String, DublinCore],
@@ -35,7 +36,7 @@
 @import models.QSubjectLabel.subjectLabel
 
 @main(if(create) {Messages.get("form.create.header")} else {Messages.get("form.edit.header")}, search.getText(), search.getSupplier(), search.getStatus(), 
-	search.getFormat(), search.getDateUpdateStart(), search.getDateUpdateEnd(), routes.Assets.versioned("javascripts/add-record.js").url) {
+	search.getFormat(), search.getDateUpdateStart(), search.getDateUpdateEnd(), roleId, routes.Assets.versioned("javascripts/add-record.js").url) {
 	<div class="welkom">
 		<p class="welkom">@Messages.get("form.intro")</p>
 	</div>

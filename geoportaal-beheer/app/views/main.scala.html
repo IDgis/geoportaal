@@ -5,6 +5,7 @@
 	mdFormatSearch: String,
 	dateStartSearch: String,
 	dateEndSearch: String,
+	roleId: Integer,
 	jsMain: String)(content: Html)
 
 @import play.i18n._
@@ -17,6 +18,9 @@
 		<link rel="stylesheet" media="screen" href="@routes.Assets.versioned("lib/dojo/dijit/themes/claro/claro.css")">
 		<link rel="stylesheet" media="screen" href="@routes.Assets.versioned("lib/bootstrap/css/bootstrap.min.css")">
 		<link rel="stylesheet" media="screen" href="@routes.Assets.versioned("stylesheets/main.css")">
+		@if(!roleId.equals(2)) {
+			<link rel="stylesheet" media="screen" href="@routes.Assets.versioned("stylesheets/tabs-admin.css")">
+		}
 	</head>
 	<body class="claro">
 		<div class="page">
@@ -57,19 +61,21 @@
 							</div>
 						</div>
 					</a>
-					<a href="@routes.Report.renderReport()">
-						<div class="toptaak-element" id="js-element-report">
-							<div class="toptaak-outer">
-								<div class="@if(title == Messages.get("report.header")) {toptaak-inner-active} else {toptaak-inner}">
-									<div class="tab-element report-icon" style="background-image:url(@routes.Assets.versioned("images/report.png"))">
-										<span class="toptaak-titel">
-											@Messages.get("main.tab.report")
-										</span>
+					@if(!roleId.equals(2)) {
+						<a href="@routes.Report.renderReport()">
+							<div class="toptaak-element" id="js-element-report">
+								<div class="toptaak-outer">
+									<div class="@if(title == Messages.get("report.header")) {toptaak-inner-active} else {toptaak-inner}">
+										<div class="tab-element report-icon" style="background-image:url(@routes.Assets.versioned("images/report.png"))">
+											<span class="toptaak-titel">
+												@Messages.get("main.tab.report")
+											</span>
+										</div>
 									</div>
 								</div>
 							</div>
-						</div>
-					</a>
+						</a>
+					}
 					<a href="@routes.Help.renderHelp()" target="_blank">
 						<div class="toptaak-element" id="js-element-help">
 							<div class="toptaak-outer">
