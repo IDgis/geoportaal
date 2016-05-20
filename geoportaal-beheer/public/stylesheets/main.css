@@ -12,7 +12,7 @@ h1.header {padding:.3em .5em;border-radius:0 12px 0 0;background-color:#831625;m
 	
 .grid {margin-top:20px;margin-bottom:20px;padding-top:5px;padding-bottom:5px;}
 .grid:after {content:'';display:block;clear:both;}
-.toptaak-element {float:left;width:32.95%;height:85px;display:block;}
+.toptaak-element {float:left;width:24.95%;height:85px;display:block;}
 .toptaak-outer {height:100%;padding:1px;}
 .toptaak-inner {height:100%;background-color:#255c9f;}
 .toptaak-inner-active {height:100%;background-color:#0096D2;}
@@ -31,7 +31,7 @@ p.alineastart {margin-top:20px;}
 .knop:focus {background-color:#DC0000;color:#ffffff;text-decoration:none;}
 .help-knop {padding-top:7px;padding-bottom:8px;line-height:20px;}
 
-div.tabs {margin-left:auto;margin-right:auto;width:60%;}
+div.tabs {margin-left:auto;margin-right:auto;width:80%;}
 div.tabs:after {content:'';display:block;clear:both;}
 div.tab-element {height:100%;width:100%;background-position:15px 15px;width:155px !important;height:80px !important;
 	background-repeat:no-repeat;}
@@ -78,6 +78,7 @@ input[type="file"].input-attachment {display:inline;}
 
 .add-icon {background-position:-15px 15px;background-size:25px;}
 .search-icon {background-position:25px 15px;background-size:25px;}
+.report-icon {background-position:25px 15px;background-size:25px;}
 .help-icon {background-position:25px 15px;background-size:15px;}
 
 .edit-btn-published {pointer-events:none;filter:alpha(opacity=65);-webkit-box-shadow:none;box-shadow:none;opacity:0.65;}

@@ -57,6 +57,19 @@
 							</div>
 						</div>
 					</a>
+					<a href="">
+						<div class="toptaak-element" id="js-element-report">
+							<div class="toptaak-outer">
+								<div class="@if(title == Messages.get("form.report.header")) {toptaak-inner-active} else {toptaak-inner}">
+									<div class="tab-element report-icon" style="background-image:url(@routes.Assets.versioned("images/report.png"))">
+										<span class="toptaak-titel">
+											@Messages.get("main.tab.report")
+										</span>
+									</div>
+								</div>
+							</div>
+						</div>
+					</a>
 					<a href="@routes.Help.renderHelp()" target="_blank">
 						<div class="toptaak-element" id="js-element-help">
 							<div class="toptaak-outer">
