@@ -28,7 +28,7 @@
 @import models.QUser.user
 
 @main(Messages.get("index.header"), textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch, 
-	routes.Assets.versioned("javascripts/index.js").url) {
+	roleId, routes.Assets.versioned("javascripts/index.js").url) {
 	
 	@if(flash.containsKey("attachmentSkipped")) {
 		<div>

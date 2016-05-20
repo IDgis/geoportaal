@@ -125,9 +125,15 @@ public class Metadata extends Controller {
 				.join(subjectLabel).on(subject.id.eq(subjectLabel.subjectId))
 				.fetch();
 			
+			// Fetches the role of the logged in user
+			Integer roleId = tx.select(user.roleId)
+					.from(user)
+					.where(user.username.eq(session("username")))
+					.fetchOne();
+			
 			// Return form page
 			return ok(views.html.form.render(create, today, null, null, null, typeInformationList, creatorsList, rightsList, 
-					useLimitationList, mdFormatList, null, subjectList, search, false, null, null));
+					useLimitationList, mdFormatList, null, subjectList, roleId, search, false, null, null));
 		});
 	}
 	
@@ -448,9 +454,15 @@ public class Metadata extends Controller {
 			// Create DecimalFormat with two decimals
 			DecimalFormat df = new DecimalFormat("0.##");
 			
+			// Fetches the role of the logged in user
+			Integer roleId = tx.select(user.roleId)
+					.from(user)
+					.where(user.username.eq(session("username")))
+					.fetchOne();
+			
 			// Return form page
 			return ok(views.html.form.render(create, "", datasetRow, subjectsDataset, attachmentsDataset, typeInformationList, creatorsList, 
-				rightsList, useLimitationList, mdFormatList, sdf, subjectList, search, false, null, df));
+				rightsList, useLimitationList, mdFormatList, sdf, subjectList, roleId, search, false, null, df));
 		});
 	}
 	
@@ -1029,12 +1041,18 @@ public class Metadata extends Controller {
 				.join(subjectLabel).on(subject.id.eq(subjectLabel.subjectId))
 				.fetch();
 			
+			// Fetches the role of the logged in user
+			Integer roleId = tx.select(user.roleId)
+					.from(user)
+					.where(user.username.eq(session("username")))
+					.fetchOne();
+			
 			// Create DecimalFormat with two decimals
 			DecimalFormat df = new DecimalFormat("0.##");
 			
 			// Return form page
 			return ok(views.html.form.render(create, today, datasetRow, null, attachmentsDataset, typeInformationList, creatorsList, rightsList, 
-					useLimitationList, mdFormatList, sdf, subjectList, search, validate, previousValues, df));
+					useLimitationList, mdFormatList, sdf, subjectList, roleId, search, validate, previousValues, df));
 		});
 	}
 	
