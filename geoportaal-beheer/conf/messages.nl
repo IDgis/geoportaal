@@ -159,6 +159,10 @@ password.forgot.email.message=Uw wachtwoord is op verzoek gereset. Uw nieuwe wac
 password.forgot.email.subject=Uw wachtwoord voor het geoportaal-beheer is gereset
 password.forgot.success=Er is een e-mail naar het door u opgegeven adres verstuurd
 
+# Rapportage pagina
+report.header=Rapportage
+report.intro=Op deze pagina kun je het overzicht van alle statische kaarten bekijken.
+
 # Help pagina
 help.header=Geoportaal: help metadata
 help.intro=Hier komt de tekst voor de help pagina.
