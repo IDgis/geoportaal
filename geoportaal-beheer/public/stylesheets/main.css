@@ -99,3 +99,6 @@ input[type="file"].input-attachment {display:inline;}
 #version-info {position:relative;left:20px;margin-top:20px;}
 
 #parent-hourglass-icon {font-size:40px;}
+
+.report-start {margin-bottom:20px;margin-left:15px;}
+#report-start-btn {margin-top:20px;}

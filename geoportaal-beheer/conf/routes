@@ -23,6 +23,7 @@ GET		/openAttachment/:attachmentName		controllers.Attachment.openAttachment(atta
 POST	/search							controllers.Index.search()
 POST	/sort							controllers.Index.sort()
 GET		/report							controllers.Report.renderReport()
+GET		/reportcsv						controllers.Report.writeCSV()
 GET		/help							controllers.Help.renderHelp()
 POST	/validate/:metadataUuid			controllers.Metadata.validateForm(metadataUuid: String)
 POST	/validate						controllers.Index.validateForm()

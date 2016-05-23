@@ -2,8 +2,16 @@
 
 @import play.i18n._
 
-@main(Messages.get("report.header"), "", "none", "none", "none", "", "", roleId, "") {
+@main(Messages.get("report.header"), "", "none", "none", "none", "", "", roleId, routes.Assets.versioned("javascripts/report.js").url) {
 	<div class="welkom">
 		<p class="welkom">@Messages.get("report.intro")</p>
 	</div>
+	
+	@helper.form(action = routes.Report.writeCSV(), 'class -> "form-horizontal beheer-formulier", 'id -> "js-form") {
+		<div class="report-start">
+			<div class="form-group" id="report-start-btn">
+				<button class="knop" type="submit">@Messages.get("start")</button>
+			</div>
+		</div>
+	}
 }

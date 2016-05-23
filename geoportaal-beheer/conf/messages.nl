@@ -5,6 +5,7 @@ save=Opslaan
 confirm=Bevestigen
 cancel=Annuleren
 execute=Uitvoeren
+start=Start
 unauthorized=Geen toegang.
 application.name=Geoportaal-Beheer
 
@@ -162,6 +163,9 @@ password.forgot.success=Er is een e-mail naar het door u opgegeven adres verstuu
 # Rapportage pagina
 report.header=Rapportage
 report.intro=Op deze pagina kun je het overzicht van alle statische kaarten bekijken.
+report.map.label=Map
+report.map.title=Vul de map in waar de csv moet komen te staan
+report.map.tooltip=Vul de map in waar de csv moet komen te staan
 
 # Help pagina
 help.header=Geoportaal: help metadata
