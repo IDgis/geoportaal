@@ -18,7 +18,6 @@ import static models.QUseLimitation.useLimitation;
 import static models.QUseLimitationLabel.useLimitationLabel;
 import static models.QUser.user;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -755,35 +754,6 @@ public class Metadata extends Controller {
 			
 			// Return the index page
 			return redirect(controllers.routes.Index.index(textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch, "dateDesc", ""));
-		});
-	}
-	
-	/**
-	 * Open an attachment
-	 * 
-	 * @param attachmentName the name of the attachment
-	 * @param uuid the UUID of the record the attachment belongs to
-	 * @return the {@link Result} of a new page where the attachment will be opened
-	 */
-	public Result openAttachment(String attachmentName, String uuid) {
-		return q.withTransaction(tx -> {
-			// Fetches the attachment content and mimetype
-			Tuple attachment = tx.select(mdAttachment.attachmentContent, mdAttachment.attachmentMimetype)
-				.from(mdAttachment)
-				.join(metadata).on(mdAttachment.metadataId.eq(metadata.id))
-				.where(metadata.uuid.eq(uuid))
-				.where(mdAttachment.attachmentName.eq(attachmentName))
-				.fetchOne();
-			
-			// Sets the mimetype of the response
-			response().setContentType(attachment.get(mdAttachment.attachmentMimetype));
-			
-			// Create a byte array and a byte array inputstream
-			byte[] content = attachment.get(mdAttachment.attachmentContent);
-			ByteArrayInputStream bais = new ByteArrayInputStream(content);
-			
-			// Return a new page where the attachment will be opened
-			return ok(bais);
 		});
 	}
 	
