@@ -162,10 +162,11 @@ password.forgot.success=Er is een e-mail naar het door u opgegeven adres verstuu
 
 # Rapportage pagina
 report.header=Rapportage
-report.intro=Op deze pagina kun je het overzicht van alle statische kaarten bekijken.
+report.intro=Op deze pagina kun je de rapportage van statische kaarten maken.
 report.map.label=Map
 report.map.title=Vul de map in waar de csv moet komen te staan
 report.map.tooltip=Vul de map in waar de csv moet komen te staan
+report.start.info=Het genereren van de rapportage is gestart
 
 # Help pagina
 help.header=Geoportaal: help metadata

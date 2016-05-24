@@ -9,9 +9,10 @@
 	
 	@helper.form(action = routes.Report.writeCSV(), 'class -> "form-horizontal beheer-formulier", 'id -> "js-form") {
 		<div class="report-start">
-			<div class="form-group" id="report-start-btn">
-				<button class="knop" type="submit">@Messages.get("start")</button>
+			<div class="form-group" id="report-start-div">
+				<button class="knop" id="js-report-start-btn" type="submit">@Messages.get("start")</button>
 			</div>
 		</div>
+		<input id="js-report-start-msg" type="hidden" value="@Messages.get("report.start.info")">
 	}
 }
