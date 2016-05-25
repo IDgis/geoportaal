@@ -1,5 +1,6 @@
 button.search=Zoek
 button.metadata=Metadata
+button.download=Download
 button.first=Eerste
 button.previous=Vorige
 button.next=Volgende

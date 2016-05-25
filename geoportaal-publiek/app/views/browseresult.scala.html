@@ -98,6 +98,9 @@
 						</p>
 						
 						@views.html.metadatalink(doc.getMetadataUrl(), doc.getUuid())
+						@if("dataset".equals(doc.getMetadataType)) {
+							@views.html.downloadlink(doc.getUuid)
+						}
 					</div>
 				</div>
 			</div>

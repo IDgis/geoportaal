@@ -1,0 +1,10 @@
+@(uuid: String)
+	
+@import play.i18n._
+@import java.lang.System
+
+@metadataUrl() = @{
+	play.Play.application().configuration().getString("download.url") + uuid
+}
+
+<a class="link" href="@metadataUrl()" target="_blank">@Messages.get("button.download")</a>
