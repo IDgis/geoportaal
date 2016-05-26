@@ -10,6 +10,7 @@ import static models.QMdSubject.mdSubject;
 import static models.QMetadata.metadata;
 import static models.QRights.rights;
 import static models.QRightsLabel.rightsLabel;
+import static models.QStatus.status;
 import static models.QSubject.subject;
 import static models.QTypeInformation.typeInformation;
 import static models.QTypeInformationLabel.typeInformationLabel;
@@ -74,6 +75,8 @@ public class DublinCoreMetadata extends SimpleWebDAV {
 					metadata.uuid, 
 					metadata.dateSourceRevision.coalesce(metadata.dateSourceCreation).as(metadata.dateSourceRevision))
 				.from(metadata)
+				.join(status).on(metadata.status.eq(status.id))
+				.where(status.name.eq("published"))
 				.orderBy(metadata.id.asc())
 				.fetch()
 				.stream()
