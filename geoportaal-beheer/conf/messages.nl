@@ -165,6 +165,7 @@ report.header=Rapportage
 report.intro=Op deze pagina kun je de rapportage van statische kaarten maken.
 report.type.dataset=Geodata
 report.type.dc=Statische kaarten
+report.type.download=Download
 report.start.info=Het genereren van de rapportage is gestart
 
 # Help pagina

@@ -72,8 +72,8 @@ public class Report extends Controller {
 		Form<models.Report> reportForm = Form.form(models.Report.class);
 		models.Report report = reportForm.bindFromRequest().get();
 		
-		if("dataset".equals(report.getTypeData())) {
-			return redirect(routes.Report.writeDatasetCSV());
+		if("dataset".equals(report.getTypeData()) || "download".equals(report.getTypeData())) {
+			return redirect(routes.Report.writeOtherCSV(report.getTypeData()));
 		} else if("dc".equals(report.getTypeData())) {
 			return redirect(routes.Report.writeDcCSV());
 		} else {
@@ -81,13 +81,19 @@ public class Report extends Controller {
 		}
 	}
 	
-	public Promise<Result> writeDatasetCSV() {
-		WSRequest request = ws.url("http://sql-csv:9000").setFollowRedirects(true);
+	public Promise<Result> writeOtherCSV(String type) {
+		WSRequest request = ws.url("http://sql-csv-" + type + ":9000").setFollowRedirects(true);
 		
 		LocalDate ld = LocalDate.now();
 		response().setContentType("text/csv");
-		response().setHeader("Content-Disposition", "attachment; filename=\"rapport_geodata_" + ld.getYear() + ld.getMonthOfYear() + 
-				ld.getDayOfMonth() + ".csv\"");
+		
+		if("dataset".equals(type)) {
+			response().setHeader("Content-Disposition", "attachment; filename=\"rapport_geodata_" + ld.getYear() + ld.getMonthOfYear() + 
+					ld.getDayOfMonth() + ".csv\"");
+		} else if("download".equals(type)) {
+			response().setHeader("Content-Disposition", "attachment; filename=\"rapport_download_" + ld.getYear() + ld.getMonthOfYear() + 
+					ld.getDayOfMonth() + ".csv\"");
+		}
 		
 		return request.get().map(response -> {
 			return ok(response.getBodyAsStream());
