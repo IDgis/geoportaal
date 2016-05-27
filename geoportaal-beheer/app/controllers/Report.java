@@ -28,7 +28,11 @@ import org.joda.time.LocalDate;
 import com.querydsl.core.Tuple;
 
 import actions.DefaultAuthenticator;
+import play.data.Form;
 import play.i18n.Messages;
+import play.libs.F.Promise;
+import play.libs.ws.WSClient;
+import play.libs.ws.WSRequest;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
@@ -37,6 +41,7 @@ import util.QueryDSL;
 @Security.Authenticated(DefaultAuthenticator.class)
 public class Report extends Controller {
 	@Inject QueryDSL q;
+	@Inject WSClient ws;
 	
 	/**
 	 * The rendering of the report page
@@ -59,7 +64,33 @@ public class Report extends Controller {
 		});
 	}
 	
-	public Result writeCSV() throws Exception {
+	public Result getCSV() {
+		Form<models.Report> reportForm = Form.form(models.Report.class);
+		models.Report report = reportForm.bindFromRequest().get();
+		
+		if("dataset".equals(report.getTypeData())) {
+			return redirect(routes.Report.writeDatasetCSV());
+		} else if("dc".equals(report.getTypeData())) {
+			return redirect(routes.Report.writeDcCSV());
+		} else {
+			return notFound();
+		}
+	}
+	
+	public Promise<Result> writeDatasetCSV() {
+		WSRequest request = ws.url("http://sql-csv:9000").setFollowRedirects(true);
+		
+		LocalDate ld = LocalDate.now();
+		response().setContentType("text/csv");
+		response().setHeader("Content-Disposition", "attachment; filename=\"rapport_geodata_" + ld.getYear() + ld.getMonthOfYear() + 
+				ld.getDayOfMonth() + ".csv\"");
+		
+		return request.get().map(response -> {
+			return ok(response.getBodyAsStream());
+		});
+	}
+	
+	public Result writeDcCSV() throws Exception {
 		LocalDate ld = LocalDate.now();
 		
 		response().setContentType("text/csv");
