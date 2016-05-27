@@ -7,7 +7,20 @@
 		<p class="welkom">@Messages.get("report.intro")</p>
 	</div>
 	
-	@helper.form(action = routes.Report.writeCSV(), 'class -> "form-horizontal beheer-formulier", 'id -> "js-form") {
+	@helper.form(action = routes.Report.getCSV(), 'class -> "form-horizontal beheer-formulier", 'id -> "js-form") {
+		<div class="radio">
+			<label>
+				<input type="radio" name="typeData" value="dataset">
+				@Messages.get("report.type.dataset")
+			</label>
+		</div>
+		<div class="radio">
+			<label>
+				<input type="radio" name="typeData" value="dc">
+				@Messages.get("report.type.dc")
+			</label>
+		</div>
+		
 		<div class="report-start">
 			<div class="form-group" id="report-start-div">
 				<button class="knop" id="js-report-start-btn" type="submit">@Messages.get("start")</button>
