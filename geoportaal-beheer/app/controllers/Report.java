@@ -1,5 +1,6 @@
 package controllers;
 
+import static models.QConstants.constants;
 import static models.QCreator.creator;
 import static models.QCreatorLabel.creatorLabel;
 import static models.QMdAttachment.mdAttachment;
@@ -9,6 +10,9 @@ import static models.QMdSubject.mdSubject;
 import static models.QMetadata.metadata;
 import static models.QRights.rights;
 import static models.QRightsLabel.rightsLabel;
+import static models.QRole.role1;
+import static models.QStatus.status;
+import static models.QStatusLabel.statusLabel;
 import static models.QSubject.subject;
 import static models.QTypeInformation.typeInformation;
 import static models.QTypeInformationLabel.typeInformationLabel;
@@ -97,9 +101,11 @@ public class Report extends Controller {
 		response().setHeader("Content-Disposition", "attachment; filename=\"rapport_dublincore_" + ld.getYear() + ld.getMonthOfYear() + 
 				ld.getDayOfMonth() + ".csv\"");
 		
-		String header = "\"title\";\"creator\";\"subject\";\"description\";\"date\";\"issued\";\"valid_start\";\"valid_end\";\"type\";"
-				+ "\"format\";\"identifier\";\"references\";\"relation_id\";\"source\";\"relation_attachment\";\"http_content_length_in_mb\";"
-				+ "\"http_content_length_in_mb_total\";\"rights_file\";\"rights_use\"";
+		String header = "\"title\";\"creator\";\"subject\";\"description\";\"date_creation\";\"date_revision\";\"date_publication\";"
+				+ "\"date_valid_start\";\"date_valid_end\";\"type\";\"format\";\"identifier\";\"location\";\"number\";\"source\";"
+				+ "\"attachment\";\"attachment_size_in_mb\";\"attachment_size_in_mb_total\";\"rights\";\"use_limitation\";"
+				+ "\"supplier\";\"role_supplier\";\"status\";\"last_revision_user\";\"last_revision_date\";\"publisher\";"
+				+ "\"contributor\";\"language\";\"west_bound\";\"east_bound\";\"south_bound\";\"north_bound\";";
 		
 		StringBuilder strb = new StringBuilder();
 		strb.append(header);
@@ -109,7 +115,8 @@ public class Report extends Controller {
 			List<Tuple> mds =  tx.select(metadata.id, metadata.uuid, metadata.title, metadata.location, metadata.fileId, metadata.description, 
 					metadata.creator, metadata.creatorOther, creatorLabel.label, metadata.dateSourceCreation, metadata.dateSourceRevision, 
 					metadata.dateSourcePublication, metadata.dateSourceValidFrom, metadata.dateSourceValidUntil, typeInformationLabel.label, 
-					mdFormatLabel.label, metadata.source, rightsLabel.label, useLimitationLabel.label)
+					mdFormatLabel.label, metadata.source, rightsLabel.label, useLimitationLabel.label, statusLabel.label, user.label,
+					metadata.lastRevisionUser, metadata.lastRevisionDate, role1.role)
 				.from(metadata)
 				.join(creator).on(metadata.creator.eq(creator.id))
 				.join(creatorLabel).on(creator.id.eq(creatorLabel.creatorId))
@@ -121,7 +128,15 @@ public class Report extends Controller {
 				.join(rightsLabel).on(rights.id.eq(rightsLabel.rightsId))
 				.join(useLimitation).on(metadata.useLimitation.eq(useLimitation.id))
 				.join(useLimitationLabel).on(useLimitation.id.eq(useLimitationLabel.useLimitationId))
+				.join(status).on(metadata.status.eq(status.id))
+				.join(statusLabel).on(status.id.eq(statusLabel.statusId))
+				.join(user).on(metadata.supplier.eq(user.id))
+				.join(role1).on(user.roleId.eq(role1.id))
 				.fetch();
+			
+			Tuple constantValues = tx.select(constants.all())
+				.from(constants)
+				.fetchOne();
 			
 			for(Tuple md : mds) {
 				strb.append("\"" + escapeQuotes(md.get(metadata.title)) + "\";");
@@ -154,27 +169,8 @@ public class Report extends Controller {
 				
 				strb.append("\"" + escapeQuotes(md.get(metadata.description).replaceAll("[\\t\\n\\r]", " ")) + "\";");
 				
-				if(md.get(metadata.dateSourceCreation) != null) {
-					LocalDate ldCreation = LocalDate.fromDateFields(new Date(md.get(metadata.dateSourceCreation).getTime()));
-					
-					LocalDate ldRevision= null;
-					if(md.get(metadata.dateSourceRevision) != null) {
-						ldRevision = LocalDate.fromDateFields(new Date(md.get(metadata.dateSourceRevision).getTime()));
-					}
-					
-					String date = ldCreation.toString();
-					if(ldRevision != null) {
-						if(ldRevision.isAfter(ldCreation)) {
-							date = ldRevision.toString();
-						}
-					}
-					
-					strb.append("\"" + date + "\";");
-				} else if(md.get(metadata.dateSourceRevision) != null) {
-					LocalDate ldRevision = LocalDate.fromDateFields(new Date(md.get(metadata.dateSourceRevision).getTime()));
-					strb.append("\"" + ldRevision.toString() + "\";");
-				}
-				
+				strb.append("\"" + getValueDate(md.get(metadata.dateSourceCreation)) + "\";");
+				strb.append("\"" + getValueDate(md.get(metadata.dateSourceRevision)) + "\";");
 				strb.append("\"" + getValueDate(md.get(metadata.dateSourcePublication)) + "\";");
 				strb.append("\"" + getValueDate(md.get(metadata.dateSourceValidFrom)) + "\";");
 				strb.append("\"" + getValueDate(md.get(metadata.dateSourceValidUntil)) + "\";");
@@ -220,6 +216,21 @@ public class Report extends Controller {
 				
 				strb.append("\"" + escapeQuotes(md.get(rightsLabel.label)) + "\";");
 				strb.append("\"" + escapeQuotes(md.get(useLimitationLabel.label)) + "\";");
+				strb.append("\"" + escapeQuotes(md.get(user.label)) + "\";");
+				strb.append("\"" + escapeQuotes(md.get(role1.role)) + "\";");
+				strb.append("\"" + escapeQuotes(md.get(statusLabel.label)) + "\";");
+				strb.append("\"" + escapeQuotes(md.get(metadata.lastRevisionUser)) + "\";");
+				strb.append("\"" + getValueDate(md.get(metadata.lastRevisionDate)) + "\";");
+				
+				strb.append("\"" + escapeQuotes(constantValues.get(constants.publisher)) + "\";");
+				strb.append("\"" + escapeQuotes(constantValues.get(constants.contributor)) + "\";");
+				strb.append("\"" + escapeQuotes(constantValues.get(constants.language)) + "\";");
+				
+				DecimalFormat dfBounds = new DecimalFormat("0.###");
+				strb.append("\"" + dfBounds.format(constantValues.get(constants.westBoundLongitude)) + "\";");
+				strb.append("\"" + dfBounds.format(constantValues.get(constants.eastBoundLongitude)) + "\";");
+				strb.append("\"" + dfBounds.format(constantValues.get(constants.southBoundLongitude)) + "\";");
+				strb.append("\"" + dfBounds.format(constantValues.get(constants.northBoundLongitude)) + "\";");
 				
 				strb.append(System.lineSeparator());
 			}
