@@ -10,13 +10,12 @@ require([
 	'dojo/dom-style',
 	'dojo/request/xhr',
 	
-	'dojo/NodeList-traverse',
 	'dojo/domReady!'
 	], function(dom, domConstruct, query, on, array, lang, win, domAttr, domStyle, xhr) {
 		
 		// Expand or collapse single metadata record
 		on(win.doc, '.md-title:click', function(e) {
-			var description = query('.description', e.target.closest('.row'))[0];
+			var description = query('.description[data-uuid=' + domAttr.get(e.target, 'data-uuid') + ']')[0];
 			
 			var descDisplay = domStyle.get(description, 'display');
 			if(descDisplay === 'none') {
@@ -116,21 +115,16 @@ require([
 		
 		// Determine what the expand all checkbox should be set as
 		function setExpandAllCheckBox() {
-			var descList = query('.search-metadata > .row > .description, .browse-metadata > .row > .description');
-			var descVisibleCount = 0;
-			array.forEach(descList, function(item) {
-				if(domStyle.get(item.closest('.search-metadata, .browse-metadata'), 'display') === 'block') {
-					if(domStyle.get(item, 'display') === 'block') {
-						descVisibleCount++;
-					}
-				}
-			});
-			
 			var mdList = query('.search-metadata, .browse-metadata');
+			var descVisibleCount = 0;
 			var elVisibleCount = 0;
 			array.forEach(mdList, function(item) {
 				if(domStyle.get(item, 'display') === 'block') {
 					elVisibleCount++;
+					
+					if(domStyle.get(query('.row > .description, .row > .description', item)[0], 'display') === 'block') {
+						descVisibleCount++;
+					}
 				}
 			});
 			
