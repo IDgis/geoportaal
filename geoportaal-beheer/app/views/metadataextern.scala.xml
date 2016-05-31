@@ -1,0 +1,46 @@
+@(dcx: models.DublinCoreXML, sdf: java.text.SimpleDateFormat, useLimitation: String)<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="@routes.Assets.versioned("lib/md-stylesheets/dc/extern/metadata.xsl")"?>
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" 
+	xmlns:dcmiBox="http://dublincore.org/documents/2000/07/11/dcmi-box/" xmlns:dcterms="http://purl.org/dc/terms/" 
+	xmlns:ows="http://www.opengis.net/ows">
+	<rdf:Description rdf:about="http://dublincore.org/">
+		<dc:identifier>@dcx.getIdentifier()</dc:identifier>
+		<dc:title>@dcx.getTitle()</dc:title>
+		<dc:description>@dcx.getDescription()</dc:description>
+		<dcterms:references>@dcx.getLocation()</dcterms:references>
+		<dcterms:relation>@dcx.getFileId()</dcterms:relation>
+		@for(attachment <- dcx.getAttachments()) {
+			<dc:relation>@attachment</dc:relation>
+		}
+		<dc:type>@dcx.getType()</dc:type>
+		<dc:creator>@dcx.getCreator()</dc:creator>
+		<dc:publisher>@dcx.getPublisher()</dc:publisher>
+		<dc:contributor>@dcx.getContributor()</dc:contributor>
+		<dc:rights>@dcx.getRights()</dc:rights>
+		<dc:rights rdf:datatype="@useLimitation">@dcx.getUseLimitation()</dc:rights>
+		<dc:format>@dcx.getFormat()</dc:format> 
+		<dc:source>@dcx.getSource()</dc:source>
+		@if(dcx.getDate() != null) {
+			<dc:date>@sdf.format(dcx.getDate().getTime())</dc:date>
+		}
+		@if(dcx.getDateIssued() != null) {
+			<dcterms:issued>@sdf.format(dcx.getDateIssued().getTime())</dcterms:issued>
+		}
+		<dcterms:valid>
+			@if(dcx.getDateValidStart() != null) {
+				<start>@sdf.format(dcx.getDateValidStart().getTime())</start>
+			}
+			@if(dcx.getDateValidEnd() != null) {
+				<end>@sdf.format(dcx.getDateValidEnd().getTime())</end>
+			}
+		</dcterms:valid>
+		@for(subject <- dcx.getSubjects()) {
+			<dc:subject>@subject</dc:subject>
+		}
+		<dc:language>@dcx.getLanguage()</dc:language>
+		<ows:WGS84BoundingBox>
+			<ows:LowerCorner>@dcx.getLowerCorner()</ows:LowerCorner>
+			<ows:UpperCorner>@dcx.getUpperCorner()</ows:UpperCorner>
+		</ows:WGS84BoundingBox>
+	</rdf:Description>
+</rdf:RDF>
