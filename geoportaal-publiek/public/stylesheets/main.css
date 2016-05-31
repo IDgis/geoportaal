@@ -47,6 +47,7 @@ a.md-title:hover {cursor:pointer;}
 .files-info {font-size:17px;font-weight:bold;}
 
 .home-metadata, .search-metadata, .browse-metadata {padding:10px 0px;border-bottom:1px solid #cbcbcb;margin-top:15px;margin-bottom:15px;}
+.expanded {display:block !important;}
 .search-metadata > .row > .description, .browse-metadata > .row > .description {display:none;}
 #browse-area {margin: 0px 0px 0px 0px;}
 .browse-metadata > .row > .browse-title > .titel {margin-top:0;}

@@ -23,8 +23,6 @@ require([
 			} else {
 				domStyle.set(description, 'display', 'none');
 			}
-			
-			setExpandAllCheckBox();
 		});
 		
 		// Expand or collapse all metadata records
@@ -35,10 +33,18 @@ require([
 			array.forEach(descList, function(item) {
 				if(checkStatus === true) {
 					domStyle.set(item, 'display', 'block');
+					domAttr.set(dom.byId('js-expand-value'), 'value', "true");
 				} else {
 					domStyle.set(item, 'display', 'none');
+					domAttr.set(dom.byId('js-expand-value'), 'value', "false");
 				}
 			});
+			
+			if(domAttr.get(dom.byId('js-page'), 'value') === 'search') {
+				filterExpandTypes();
+			} else if(domAttr.get(dom.byId('js-page'), 'value') === 'browse') {
+				filterExpandSubjects();
+			}
 		});
 		
 		// Check all subjects
@@ -48,7 +54,7 @@ require([
 				domAttr.set(item, 'checked', true);
 			});
 			
-			filterSubjects();
+			filterExpandSubjects();
 		});
 		
 		// Uncheck all subjects
@@ -58,20 +64,20 @@ require([
 				domAttr.set(item, 'checked', false);
 			});
 			
-			filterSubjects();
+			filterExpandSubjects();
 		});
 		
 		// Filter event for metadata type
 		on(win.doc, '.js-data-type:change', function(e) {
-			filterTypes();
+			filterExpandTypes();
 		});
 		
 		// Filter event for subjects
 		on(win.doc, '.js-data-subject:change', function(e) {
-			filterSubjects();
+			filterExpandSubjects();
 		});
 		
-		function filterTypes() {
+		function filterExpandTypes() {
 			var arrayElements = [];
 			var elements = query('.js-data-type:checked');
 			array.forEach(elements, function(item) {
@@ -79,20 +85,21 @@ require([
 				arrayElements.push(element);
 			});
 			
-			var elementString = arrayElements.join('+');
 			var start = domAttr.get(dom.byId('js-start-current'), 'value');
 			var textSearch = domAttr.get(dom.byId('js-text-search'), 'value');
-			xhr(jsRoutes.controllers.Application.search(start, textSearch, elementString, true).url, {
+			var elementString = arrayElements.join('+');
+			var expandValue = domAttr.get(dom.byId('js-expand-value'), 'value');
+			
+			xhr(jsRoutes.controllers.Application.search(start, textSearch, elementString, true, expandValue).url, {
 				handleAs: "html"	
 			}).then(function(data) {
 				domConstruct.empty(dom.byId('js-search-results-all'));
 				domConstruct.place(data, dom.byId('js-search-results-all'));
 				domAttr.set(dom.byId('js-element-string'), 'value', elementString);
-				setExpandAllCheckBox();
 			});
 		}
 		
-		function filterSubjects() {
+		function filterExpandSubjects() {
 			var arrayElements = [];
 			var elements = query('.js-data-subject:checked');
 			array.forEach(elements, function(item) {
@@ -100,38 +107,17 @@ require([
 				arrayElements.push(element);
 			});
 			
-			var elementString = arrayElements.join('+');
 			var start = domAttr.get(dom.byId('js-start-current'), 'value');
 			var textSearch = domAttr.get(dom.byId('js-text-search'), 'value');
-			xhr(jsRoutes.controllers.Application.browse(start, textSearch, elementString, true).url, {
+			var elementString = arrayElements.join('+');
+			var expandValue = domAttr.get(dom.byId('js-expand-value'), 'value');
+			
+			xhr(jsRoutes.controllers.Application.browse(start, textSearch, elementString, true, expandValue).url, {
 				handleAs: "html"	
 			}).then(function(data) {
 				domConstruct.empty(dom.byId('js-browse-results-all'));
 				domConstruct.place(data, dom.byId('js-browse-results-all'));
 				domAttr.set(dom.byId('js-element-string'), 'value', elementString);
-				setExpandAllCheckBox();
 			});
-		}
-		
-		// Determine what the expand all checkbox should be set as
-		function setExpandAllCheckBox() {
-			var mdList = query('.search-metadata, .browse-metadata');
-			var descVisibleCount = 0;
-			var elVisibleCount = 0;
-			array.forEach(mdList, function(item) {
-				if(domStyle.get(item, 'display') === 'block') {
-					elVisibleCount++;
-					
-					if(domStyle.get(query('.row > .description, .row > .description', item)[0], 'display') === 'block') {
-						descVisibleCount++;
-					}
-				}
-			});
-			
-			if(elVisibleCount === descVisibleCount) {
-				domAttr.set(dom.byId('js-expand-all'), 'checked', true);
-			} else {
-				domAttr.set(dom.byId('js-expand-all'), 'checked', false);
-			}
 		}
 });
