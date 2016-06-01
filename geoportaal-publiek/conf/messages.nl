@@ -1,4 +1,5 @@
 button.search=Zoek
+button.help=Help
 button.metadata=Metadata
 button.download=Download
 button.first=Eerste

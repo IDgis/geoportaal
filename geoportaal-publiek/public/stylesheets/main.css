@@ -72,3 +72,5 @@ a.md-title:hover {cursor:pointer;}
 #pager-adjusted {margin-top:0;margin-bottom:5px;}
 
 .paging-disabled {pointer-events:none;}
+
+.link-as-button {appearance:button;-moz-appearance:button;-webkit-appearance:button;position:relative;top:-1px;}
