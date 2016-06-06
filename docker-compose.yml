@@ -1,0 +1,96 @@
+db:
+  restart: always
+  container_name: geoportaal_db
+  build: db
+  environment:
+    - POSTGRES_USER=postgres
+    - POSTGRES_PASSWORD=postgres
+    - POSTGRES_DB=geoportaal-beheer
+db_backup:
+  restart: always
+  container_name: geoportaal_backup_db
+  build: db_backup
+  links:
+    - db
+admin:
+  restart: always
+  container_name: geoportaal_beheer
+  image: idgis/geoportaal-beheer:latest
+  environment:
+    - DB_URL=jdbc:postgresql://db:5432/geoportaal-beheer
+    - ZOOKEEPER_HOSTS=zookeeper:2181
+  external_links:
+    - base-zookeeper:zookeeper
+    - sql-csv-dataset
+    - sql-csv-download
+  links:
+    - db
+  expose:
+    - "9000"
+portal-intern:
+  restart: always
+  container_name: geoportaal_portaal_intern
+  image: idgis/geoportaal-publiek:latest
+  environment:
+    - DB_URL=jdbc:postgresql://db:5432/geoportaal-publiek
+    - ZOOKEEPER_HOSTS=zookeeper:2181
+    - PORTAL_ACCESS=intern
+    - PORTAL_HELP_URL=http://gisopenbaar.overijssel.nl/geoportalwaf/help/Gebruikershandleiding%20geoportaal%20Overijssel_evdb.htm
+  external_links:
+    - base-zookeeper:zookeeper
+  links:
+    - db
+  expose:
+    - "9000"
+portal-extern:
+  restart: always
+  container_name: geoportaal_portaal_extern
+  image: idgis/geoportaal-publiek:latest
+  environment:
+    - DB_URL=jdbc:postgresql://db:5432/geoportaal-publiek
+    - ZOOKEEPER_HOSTS=zookeeper:2181
+    - PORTAL_ACCESS=extern
+    - PORTAL_HELP_URL=http://gisopenbaar.overijssel.nl/geoportalwaf/help/Gebruikershandleiding%20geoportaal%20Overijssel_evdb.htm
+  external_links:
+    - base-zookeeper:zookeeper
+  links:
+    - db
+  expose:
+    - "9000"
+
+harvester-dataset:
+  restart: always
+  container_name: geoportaal_harvester_dataset
+  image: idgis/geoportaal-harvester:latest
+  environment:
+    - DB_DRIVER=org.postgresql.Driver
+    - DB_URL=jdbc:postgresql://db:5432/geoportaal-publiek
+    - DATA_NAME=dataset
+    - DATA_SECURED=false
+    - HARVEST_INTERVAL=30
+  links:
+    - db
+harvester-service:
+  restart: always
+  container_name: geoportaal_harvester_service
+  image: idgis/geoportaal-harvester:latest
+  environment:
+    - DB_DRIVER=org.postgresql.Driver
+    - DB_URL=jdbc:postgresql://db:5432/geoportaal-publiek
+    - DATA_NAME=service
+    - DATA_SECURED=false
+    - HARVEST_INTERVAL=30
+  links:
+    - db
+harvester-dc:
+  restart: always
+  container_name: geoportaal_harvester_dc
+  image: idgis/geoportaal-harvester:latest
+  environment:
+    - DB_DRIVER=org.postgresql.Driver
+    - DB_URL=jdbc:postgresql://db:5432/geoportaal-publiek
+    - DATA_NAME=dc
+    - DATA_SECURED=false
+    - HARVEST_INTERVAL=30
+  links:
+    - db
