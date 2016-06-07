@@ -76,15 +76,15 @@ public class Application extends Controller {
 		Search s = searchForm.bindFromRequest().get();
 		
 		if("search".equals(s.getPage())) {
-			return redirect(controllers.routes.Application.search(0, s.getText(), s.getElementsString(), false));
+			return redirect(controllers.routes.Application.search(0, s.getText(), s.getElementsString(), false, "false"));
 		} if("browse".equals(s.getPage())) {
-			return redirect(controllers.routes.Application.browse(0, s.getText(), s.getElementsString(), false));
+			return redirect(controllers.routes.Application.browse(0, s.getText(), s.getElementsString(), false, "false"));
 		} else {
 			return notFound("404 - not found");
 		}
 	}
 	
-	public Result search(Integer start, String textSearch, String typesString, Boolean filter) {
+	public Result search(Integer start, String textSearch, String typesString, Boolean filter, String expand) {
 		Lang curLang = Http.Context.current().lang();
 		String tsvLang = Messages.get("tsv.language");
 		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
@@ -190,14 +190,14 @@ public class Application extends Controller {
 					.fetch();
 			
 			if(filter) {
-				return ok(searchresult.render(documents, sdf, textSearch, typesString, count, page, finalStart, startPrevious, startNext, startLast, pageLast));
+				return ok(searchresult.render(documents, sdf, textSearch, typesString, count, page, finalStart, startPrevious, startNext, startLast, pageLast, expand));
 			}
 			
-			return ok(search.render(documents, sdf, textSearch, typesString, count, page, finalStart, startPrevious, startNext, startLast, pageLast));
+			return ok(search.render(documents, sdf, textSearch, typesString, count, page, finalStart, startPrevious, startNext, startLast, pageLast, expand));
 		});
 	}
 	
-	public Result browse(Integer start, String textSearch, String subjectsString, Boolean filter) {
+	public Result browse(Integer start, String textSearch, String subjectsString, Boolean filter, String expand) {
 		Lang curLang = Http.Context.current().lang();
 		String tsvLang = Messages.get("tsv.language");
 		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
@@ -329,10 +329,10 @@ public class Application extends Controller {
 			}
 			
 			if(filter) {
-				return ok(browseresult.render(subjects, finalDocuments, sdf, textSearch, subjectsString, count, page, finalStart, startPrevious, startNext, startLast, pageLast));
+				return ok(browseresult.render(subjects, finalDocuments, sdf, textSearch, subjectsString, count, page, finalStart, startPrevious, startNext, startLast, pageLast, expand));
 			}
 			
-			return ok(browse.render(subjects, finalDocuments, sdf, textSearch, subjectsString, count, page, finalStart, startPrevious, startNext, startLast, pageLast));
+			return ok(browse.render(subjects, finalDocuments, sdf, textSearch, subjectsString, count, page, finalStart, startPrevious, startNext, startLast, pageLast, expand));
 		});
 	}
 	

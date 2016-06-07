@@ -1,4 +1,5 @@
 button.search=Zoek
+button.help=Help
 button.metadata=Metadata
 button.download=Download
 button.first=Eerste
@@ -27,17 +28,17 @@ tab.contact=Contact
 
 index.header=Welkom bij het Geoportaal
 index.header.intern=Intern: Welkom bij het Geoportaal
-index.intro=Welkom bij het Geoportaal van de provincie Overijssel. Hier kunt u zoeken naar kaarten van de provincie. Er zijn beschrijvingen en voorbeeldkaartjes te vinden. Ook zijn veel bestanden vrij beschikbaar voor eigen gebruik. Heeft u vragen, aarzel dan niet om contact met ons op te nemen. De informatie in het portaal wordt voortdurend actueel gehouden.
+index.intro=Zoek en download actuele kaarten en de beschrijving van de kaarten van de provincie Overijssel.
 index.files.info.recent=Vijf meest recente bestanden:
 
 search.header=Uitgebreid zoeken
 search.header.intern=Intern: Uitgebreid zoeken
-search.intro=Hier kunt u op termen zoeken naar kaarten van de provincie.
+search.intro=Zoek naar kaarten. Maak eventueel eerst een selectie: GIS bestanden, services of statische kaarten.
 search.checkboxes.label=Zoeken naar
 
 browse.header=Bladeren
 browse.header.intern=Intern: Bladeren
-browse.intro=Hier kunt u bladeren naar kaarten van de provincie.
+browse.intro=Zoek naar kaarten en maak eventueel gebruik van één of meerdere trefwoorden.
 browse.subject.list.label=Trefwoorden (groepen) waar je uit kan kiezen:
 browse.button.select.all=Alles selecteren
 browse.button.select.nothing=Niets selecteren

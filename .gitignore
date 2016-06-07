@@ -3,3 +3,4 @@
 /.vagrant
 .gradle
 .cache-main
+docker-compose.override.yml

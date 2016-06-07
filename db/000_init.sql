@@ -1,0 +1,3 @@
+CREATE USER postgres WITH PASSWORD 'postgres' CREATEDB;
+SET SESSION AUTHORIZATION postgres;
+CREATE DATABASE geoportaal-beheer;

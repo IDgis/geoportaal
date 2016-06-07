@@ -18,7 +18,7 @@
 	<div class="page">
 		<div>
 			<a>
-				<img src="@routes.Assets.versioned("images/logo_overijssel.png")"></img>
+				<img src="@routes.Assets.versioned("images/logo_overijssel.png")">
 			</a>
 			@if("intern".equals(play.Play.application().configuration().getString("portal.access"))) {
 				<a class="btn btn-default pull-right" href="@play.Play.application().configuration().getString("admin.url")" target="_blank">

@@ -7,16 +7,16 @@ p {line-height:25px;font-size:16px;margin-top:0;margin-bottom:0;}
 
 div.logo {margin-top:20px;margin-bottom:20px;}
 div.titelbalk {margin-top:20px;margin-bottom:20px;}
-h1.header {padding:.3em .5em;border-radius:0 12px 0 0;background-color:#831625;margin-left:0;margin-right:0;color:#ffffff;font-size:1.625em;
+h1.header {padding:.3em .5em;border-radius:0 12px 0 0;background-color:#255c9f;margin-left:0;margin-right:0;color:#ffffff;font-size:1.625em;
 	font-weight:bold;font-style:normal;line-height:47px;}
 	
 .grid {margin-top:20px;margin-bottom:20px;padding-top:5px;padding-bottom:5px;}
 .grid:after {content:'';display:block;clear:both;}
 .toptaak-element {float:left;width:32.95%;height:85px;display:block;}
 .toptaak-outer {height:100%;padding:1px;}
-.toptaak-inner {height:100%;background-color:#255c9f;}
-.toptaak-inner-active {height:100%;background-color:#0096D2;}
-.toptaak-inner:hover {background-color:#0096D2;cursor:pointer;}
+.toptaak-inner {height:100%;background-color:#831625;}
+.toptaak-inner-active {height:100%;background-color:#dc0000;}
+.toptaak-inner:hover {background-color:#dc0000;cursor:pointer;}
 .toptaak-titel {color:#ffffff;display:inline-block;text-align:left;margin-top:13px;margin-left:50px;line-height:1.2em;font-size:18px;
 	padding-right:20px;width:100%;}
 
@@ -25,10 +25,10 @@ div.info {margin-top:20px;margin-bottom:20px;padding:10px 0;}
 p.titel {font-weight:bold;font-size:21px;line-height:25px;margin-top:25px;margin-bottom:25px;}
 p.alineastart {margin-top:20px;}
 #knoppen {margin-top:40px;margin-bottom:40px;}
-.knop {background-color:#831625;color:#ffffff;font-weight:bold;padding:6px 12px;border:1px solid transparent;border-radius: 4px;}
+.knop {background-color:#255c9f;color:#ffffff;font-weight:bold;padding:6px 12px;border:1px solid transparent;border-radius: 4px;}
 .knop-correctie {position:relative;left:-5px;}
-.knop:hover {text-decoration:none;background-color:#DC0000;color:#ffffff;}
-.knop:focus {background-color:#DC0000;color:#ffffff;text-decoration:none;}
+.knop:hover {background-color:#0096D2;color:#ffffff;text-decoration:none;}
+.knop:focus {background-color:#0096D2;color:#ffffff;text-decoration:none;}
 .help-knop {padding-top:7px;padding-bottom:8px;line-height:20px;}
 
 div.tabs {margin-left:auto;margin-right:auto;width:60%;}

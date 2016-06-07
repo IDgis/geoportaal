@@ -239,7 +239,8 @@ public class DublinCoreMetadata extends SimpleWebDAV {
 			String useLimitation = Messages.get("xml.uselimitation");
 			
 			// Returns the XML page
-			return Optional.<Resource>of(new DefaultResource("application/xml", views.xml.metadata.render(dcx, sdf, useLimitation).body().getBytes("UTF-8")));
+			return Optional.<Resource>of(new DefaultResource("application/xml", 
+					views.xml.metadataintern.render(dcx, sdf, useLimitation).body().getBytes("UTF-8")));
 		});
 	}
 }
