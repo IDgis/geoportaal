@@ -60,7 +60,7 @@ public class Main {
 	
 	public static void main(String[] args) throws Exception {
 		final Runnable harvest = () -> {
-			 try {
+			try {
 				doHarvest();
 			} catch(Exception e) {
 				e.printStackTrace();
@@ -71,7 +71,7 @@ public class Main {
 		System.out.println("Harvesting scheduled with an interval of " + interval + " minutes");
 		
 		final ScheduledFuture<?> harvestHandle =
-				scheduler.scheduleAtFixedRate(harvest, 0, interval, MINUTES);
+				scheduler.scheduleAtFixedRate(harvest, 1, interval, MINUTES);
 	}
 	
 	public static void doHarvest() {
