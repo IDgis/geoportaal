@@ -446,6 +446,19 @@ public class Index extends Controller {
 						if(!finalCount.equals(finalChangeRecords.size())) {
 							throw new Exception("Changing status: different amount of affected rows than expected");
 						}
+						
+						if("published".equals(statusName)) {
+							Long publishedCount = tx.update(metadata)
+								.where(metadata.uuid.in(finalChangeRecords))
+								.set(metadata.dateSourcePublication, new Timestamp(new Date().getTime()))
+								.execute();
+							
+							// Check if the count of the changed records is what is expected
+							Integer finalPublishedCount = publishedCount.intValue();
+							if(!finalPublishedCount.equals(finalChangeRecords.size())) {
+								throw new Exception("Updating date published: different amount of affected rows than expected");
+							}
+						}
 					}
 				}
 			}
