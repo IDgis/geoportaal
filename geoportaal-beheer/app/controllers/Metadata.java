@@ -157,9 +157,6 @@ public class Metadata extends Controller {
 		// Generate an UUID
 		String uuid = UUID.randomUUID().toString();
 		
-		// Create a timestamp of today
-		Timestamp dateToday = new Timestamp(new Date().getTime());
-		
 		return q.withTransaction(tx -> {
 			// Fetches the type information key according to form value
 			Integer typeInformationKey = tx.select(typeInformation.id)
@@ -268,7 +265,7 @@ public class Metadata extends Controller {
 				.set(metadata.supplier, supplierId)
 				.set(metadata.status, 2)
 				.set(metadata.lastRevisionUser, session("username"))
-				.set(metadata.lastRevisionDate, dateToday)
+				.set(metadata.lastRevisionDate, new Timestamp(new Date().getTime()))
 				.execute();
 			
 			// Fetches the metadata id of the new metadata record
@@ -484,9 +481,6 @@ public class Metadata extends Controller {
 		Form<DublinCore> dcForm = Form.form(DublinCore.class);
 		DublinCore dc = dcForm.bindFromRequest().get();
 		
-		// Create timestamp of today
-		Timestamp dateToday = new Timestamp(new Date().getTime());
-		
 		return q.withTransaction(tx -> {
 			// Fetches the status id of the metadata
 			Integer statusId = tx.from(metadata)
@@ -652,7 +646,7 @@ public class Metadata extends Controller {
 					.set(metadata.dateSourceValidFrom, dateSourceValidFromValue)
 					.set(metadata.dateSourceValidUntil, dateSourceValidUntilValue)
 					.set(metadata.lastRevisionUser, session("username"))
-					.set(metadata.lastRevisionDate, dateToday)
+					.set(metadata.lastRevisionDate, new Timestamp(new Date().getTime()))
 					.execute();
 				
 				// Check if the count of the updated record is what is expected
