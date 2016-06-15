@@ -429,7 +429,8 @@ public class Main {
 		
 		List<String> listUuid = metaDoc.getStrings(DcPath.UUID.path());
 		List<String> listTitle = metaDoc.getStrings(DcPath.TITLE.path());
-		List<String> listDate = metaDoc.getStrings(DcPath.DATE.path());
+		List<String> listDateCreate = metaDoc.getStrings(DcPath.DATE_CREATE.path());
+		List<String> listDateIssued = metaDoc.getStrings(DcPath.DATE_ISSUED.path());
 		List<String> listOrganisationCreator = metaDoc.getStrings(DcPath.ORGANISATION_CREATOR.path());
 		List<String> listDescription = metaDoc.getStrings(DcPath.ABSTRACT.path());
 		
@@ -450,7 +451,16 @@ public class Main {
 				.where(mdType.url.eq(System.getenv("DATA_URL")))
 				.fetchOne();
 		
-		LocalDate ld = LocalDate.parse(getValueFromList(listDate));
+		String dateCreate = getValueFromList(listDateCreate);
+		String dateIssued = getValueFromList(listDateIssued);
+		
+		LocalDate ld = null;
+		if(dateIssued != null) {
+			ld = LocalDate.parse(getValueFromList(listDateIssued));
+		} else if(dateCreate != null) {
+			ld = LocalDate.parse(getValueFromList(listDateCreate));
+		}
+		
 		Timestamp ts;
 		if(ld != null) {
 			ts = Timestamp.valueOf(ld.atStartOfDay());

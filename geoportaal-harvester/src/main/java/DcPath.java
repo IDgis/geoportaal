@@ -2,7 +2,8 @@
 public enum DcPath {
 	UUID ("/rdf:RDF/rdf:Description/dc:identifier/text()"),
 	TITLE ("/rdf:RDF/rdf:Description/dc:title/text()"),
-	DATE ("/rdf:RDF/rdf:Description/dc:date/text()"),
+	DATE_CREATE ("/rdf:RDF/rdf:Description/dc:date/text()"),
+	DATE_ISSUED ("/rdf:RDF/rdf:Description/dcterms:issued/text()"),
 	ORGANISATION_CREATOR ("/rdf:RDF/rdf:Description/dc:creator/text()"),
 	ABSTRACT ("/rdf:RDF/rdf:Description/dc:description/text()"),
 	
