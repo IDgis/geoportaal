@@ -439,6 +439,7 @@ public class Index extends Controller {
 						Long count = tx.update(metadata)
 							.where(metadata.uuid.in(finalChangeRecords))
 							.set(metadata.status, statusKey)
+							.set(metadata.lastRevisionDate, new Timestamp(new Date().getTime()))
 							.execute();
 						
 						// Check if the count of the changed records is what is expected
@@ -507,7 +508,7 @@ public class Index extends Controller {
 					.fetchOne();
 				
 				if(supplierKey != null) {
-					// Change the selected records to new status
+					// Change the selected records to new supplier
 					Long count = tx.update(metadata)
 						.where(metadata.uuid.in(changeRecords))
 						.set(metadata.supplier, supplierKey)
@@ -611,6 +612,7 @@ public class Index extends Controller {
 					Long count = tx.update(metadata)
 						.where(metadata.uuid.in(finalDeleteRecords))
 						.set(metadata.status, 5)
+						.set(metadata.lastRevisionDate, new Timestamp(new Date().getTime()))
 						.execute();
 					
 					// Check if the count of the changed records is what is expected
