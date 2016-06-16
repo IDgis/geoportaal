@@ -36,7 +36,6 @@ public class MetadataRow {
 	private String source;
 	private Timestamp dateSourceCreation;
 	private Timestamp dateSourcePublication;
-	private Timestamp dateSourceRevision;
 	private Timestamp dateSourceValidFrom;
 	private Timestamp dateSourceValidUntil;
 	private Label supplier;
@@ -88,7 +87,6 @@ public class MetadataRow {
 		row.setSource(retrieveFirstStringOrNull(Path.SOURCE, d));
 		row.setDateSourceCreation(toTime(retrieveFirstStringOrNull(Path.DATE_SOURCE_CREATION, d)));
 		row.setDateSourcePublication(toTime(retrieveFirstStringOrNull(Path.DATE_SOURCE_PUBLICATION, d)));
-		row.setDateSourceRevision(null);
 		row.setDateSourceValidFrom(toTime(retrieveFirstStringOrNull(Path.DATE_SOURCE_VALID_FROM, d)));
 		row.setDateSourceValidUntil(toTime(retrieveFirstStringOrNull(Path.DATE_SOURCE_VALID_UNTIL, d)));
 		row.setSupplier(new Label(USER, TABLE_USER));
@@ -253,14 +251,6 @@ public class MetadataRow {
 
 	public void setDateSourcePublication(Timestamp dateSourcePublication) {
 		this.dateSourcePublication = dateSourcePublication;
-	}
-
-	public Timestamp getDateSourceRevision() {
-		return dateSourceRevision;
-	}
-
-	public void setDateSourceRevision(Timestamp dateSourceRevision) {
-		this.dateSourceRevision = dateSourceRevision;
 	}
 
 	public Timestamp getDateSourceValidFrom() {

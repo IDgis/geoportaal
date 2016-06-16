@@ -207,7 +207,6 @@ public class Metadata extends Controller {
 			// Check if dates are null
 			Timestamp dateSourceCreationValue = nullCheckDate(dc.getDateSourceCreation());
 			Timestamp dateSourcePublicationValue = nullCheckDate(dc.getDateSourcePublication());
-			Timestamp dateSourceRevisionValue = nullCheckDate(dc.getDateSourceRevision());
 			Timestamp dateSourceValidFromValue = nullCheckDate(dc.getDateSourceValidFrom());
 			Timestamp dateSourceValidUntilValue = nullCheckDate(dc.getDateSourceValidUntil());
 			
@@ -234,8 +233,8 @@ public class Metadata extends Controller {
 					
 					DublinCore previousDC = new DublinCore(dc.getLocation(), dc.getFileId(), dc.getTitle(), dc.getDescription(), dc.getTypeInformation(),
 						dc.getCreator(), dc.getCreatorOther(), dc.getRights(), dc.getUseLimitation(), dc.getMdFormat(), dc.getSource(),
-						dc.getDateSourceCreation(), dc.getDateSourcePublication(), dc.getDateSourceRevision(), dc.getDateSourceValidFrom(),
-						dc.getDateSourceValidUntil(), dc.getSubject(), null);
+						dc.getDateSourceCreation(), dc.getDateSourcePublication(), dc.getDateSourceValidFrom(), dc.getDateSourceValidUntil(), 
+						dc.getSubject(), null);
 					
 					Map<String, DublinCore> previousValues = new HashMap<String, DublinCore>();
 					previousValues.put("metadata", previousDC);
@@ -259,7 +258,6 @@ public class Metadata extends Controller {
 				.set(metadata.source, dc.getSource())
 				.set(metadata.dateSourceCreation, dateSourceCreationValue)
 				.set(metadata.dateSourcePublication, dateSourcePublicationValue)
-				.set(metadata.dateSourceRevision, dateSourceRevisionValue)
 				.set(metadata.dateSourceValidFrom, dateSourceValidFromValue)
 				.set(metadata.dateSourceValidUntil, dateSourceValidUntilValue)
 				.set(metadata.supplier, supplierId)
@@ -382,8 +380,8 @@ public class Metadata extends Controller {
 			// Fetches the metadata record of the form
 			Tuple datasetRow = tx.select(metadata.id, metadata.uuid, metadata.location, metadata.fileId, metadata.title, 
 					metadata.description, metadata.typeInformation, metadata.creator, metadata.creatorOther, metadata.rights, metadata.useLimitation,
-					metadata.mdFormat, metadata.source, metadata.dateSourceCreation, metadata.dateSourcePublication, metadata.dateSourceRevision,
-					metadata.dateSourceValidFrom, metadata.dateSourceValidUntil, creator.name)
+					metadata.mdFormat, metadata.source, metadata.dateSourceCreation, metadata.dateSourcePublication, metadata.dateSourceValidFrom, 
+					metadata.dateSourceValidUntil, creator.name)
 				.from(metadata)
 				.join(creator).on(metadata.creator.eq(creator.id))
 				.where(metadata.id.eq(metadataId))
@@ -570,7 +568,6 @@ public class Metadata extends Controller {
 				// Check if dates are null
 				Timestamp dateSourceCreationValue = nullCheckDate(dc.getDateSourceCreation());
 				Timestamp dateSourcePublicationValue = nullCheckDate(dc.getDateSourcePublication());
-				Timestamp dateSourceRevisionValue = nullCheckDate(dc.getDateSourceRevision());
 				Timestamp dateSourceValidFromValue = nullCheckDate(dc.getDateSourceValidFrom());
 				Timestamp dateSourceValidUntilValue = nullCheckDate(dc.getDateSourceValidUntil());
 				
@@ -593,9 +590,9 @@ public class Metadata extends Controller {
 					dateSourceCreationValue == null || dc.getSubject() == null) {
 						
 						Tuple datasetRow = tx.select(metadata.id, metadata.uuid, metadata.location, metadata.fileId, metadata.title, 
-								metadata.description, metadata.typeInformation, metadata.creator, metadata.creatorOther, metadata.rights, metadata.useLimitation,
-								metadata.mdFormat, metadata.source, metadata.dateSourceCreation, metadata.dateSourcePublication, metadata.dateSourceRevision,
-								metadata.dateSourceValidFrom, metadata.dateSourceValidUntil, creator.name)
+								metadata.description, metadata.typeInformation, metadata.creator, metadata.creatorOther, metadata.rights, 
+								metadata.useLimitation, metadata.mdFormat, metadata.source, metadata.dateSourceCreation, 
+								metadata.dateSourcePublication, metadata.dateSourceValidFrom, metadata.dateSourceValidUntil, creator.name)
 							.from(metadata)
 							.join(creator).on(metadata.creator.eq(creator.id))
 							.where(metadata.id.eq(metadataId))
@@ -616,8 +613,8 @@ public class Metadata extends Controller {
 						
 						DublinCore previousDC = new DublinCore(dc.getLocation(), dc.getFileId(), dc.getTitle(), dc.getDescription(), dc.getTypeInformation(),
 							dc.getCreator(), dc.getCreatorOther(), dc.getRights(), dc.getUseLimitation(), dc.getMdFormat(), dc.getSource(),
-							dc.getDateSourceCreation(), dc.getDateSourcePublication(), dc.getDateSourceRevision(), dc.getDateSourceValidFrom(),
-							dc.getDateSourceValidUntil(), dc.getSubject(), dc.getDeletedAttachment());
+							dc.getDateSourceCreation(), dc.getDateSourcePublication(), dc.getDateSourceValidFrom(), dc.getDateSourceValidUntil(), 
+							dc.getSubject(), dc.getDeletedAttachment());
 						
 						Map<String, DublinCore> previousValues = new HashMap<String, DublinCore>();
 						previousValues.put("metadata", previousDC);
@@ -642,7 +639,6 @@ public class Metadata extends Controller {
 					.set(metadata.source, dc.getSource())
 					.set(metadata.dateSourceCreation, dateSourceCreationValue)
 					.set(metadata.dateSourcePublication, dateSourcePublicationValue)
-					.set(metadata.dateSourceRevision, dateSourceRevisionValue)
 					.set(metadata.dateSourceValidFrom, dateSourceValidFromValue)
 					.set(metadata.dateSourceValidUntil, dateSourceValidUntilValue)
 					.set(metadata.lastRevisionUser, session("username"))
@@ -775,22 +771,19 @@ public class Metadata extends Controller {
 			DynamicForm requestData = Form.form().bindFromRequest();
 			String dateCreate = requestData.get("dateSourceCreation");
 			String datePublication = requestData.get("dateSourcePublication");
-			String dateRevision = requestData.get("dateSourceRevision");
 			String dateValidFrom = requestData.get("dateSourceValidFrom");
 			String dateValidUntil = requestData.get("dateSourceValidUntil");
 			
 			// Validate the dates
 			Boolean dateCreateReturn = validateDate(dateCreate);
 			Boolean datePublicationReturn = validateDate(datePublication);
-			Boolean dateRevisionReturn = validateDate(dateRevision);
 			Boolean dateValidFromReturn = validateDate(dateValidFrom);
 			Boolean dateValidUntilReturn = validateDate(dateValidUntil);
 			
 			// Check if one or more dates couldn't be parsed, if so return an error message 
-			if(!dateCreateReturn || !datePublicationReturn || !dateRevisionReturn || !dateValidFromReturn || !dateValidUntilReturn) {
+			if(!dateCreateReturn || !datePublicationReturn || !dateValidFromReturn || !dateValidUntilReturn) {
 				String dateCreateMsg = null;
 				String datePublicationMsg = null;
-				String dateRevisionMsg = null;
 				String dateValidFromMsg = null;
 				String dateValidUntilMsg = null;
 				
@@ -806,12 +799,6 @@ public class Metadata extends Controller {
 					datePublicationMsg = null;
 				}
 				
-				if(!dateRevisionReturn) {
-					dateRevisionMsg = Messages.get("validate.form.parse.date.revision");
-				} else {
-					dateRevisionMsg = null;
-				}
-				
 				if(!dateValidFromReturn) {
 					dateValidFromMsg = Messages.get("validate.form.parse.date.valid.start");
 				} else {
@@ -824,7 +811,7 @@ public class Metadata extends Controller {
 					dateValidUntilMsg = null;
 				}
 				
-				return ok(bindingerror.render(null, dateCreateMsg, datePublicationMsg, dateRevisionMsg, dateValidFromMsg, dateValidUntilMsg, null, null));
+				return ok(bindingerror.render(null, dateCreateMsg, datePublicationMsg, dateValidFromMsg, dateValidUntilMsg, null, null));
 			}
 			
 			// Fetches the form
@@ -887,7 +874,7 @@ public class Metadata extends Controller {
 			return ok(validateform.render(title, description, location, fileId, creator, creatorOther, dc.getDateSourceCreation(), dc.getSubject()));
 		} catch(IllegalStateException ise) {
 			// Return generic error message view
-			return ok(bindingerror.render(Messages.get("validate.search.generic"), null, null, null, null, null, null, null));
+			return ok(bindingerror.render(Messages.get("validate.search.generic"), null, null, null, null, null, null));
 		}
 	}
 	

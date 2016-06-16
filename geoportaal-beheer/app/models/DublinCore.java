@@ -24,7 +24,6 @@ public class DublinCore {
 	private String source;
 	private Date dateSourceCreation;
 	private Date dateSourcePublication;
-	private Date dateSourceRevision;
 	private Date dateSourceValidFrom;
 	private Date dateSourceValidUntil;
 	private List<String> subject;
@@ -57,8 +56,8 @@ public class DublinCore {
 	 * @param deletedAttachment the UUID's of the attachments about to be deleted
 	 */
 	public DublinCore(String location, String fileId, String title, String description, String typeInformation, String creator, 
-			String creatorOther, String rights, String useLimitation, String mdFormat, String source, Date dateSourceCreation, Date dateSourcePublication, 
-			Date dateSourceRevision, Date dateSourceValidFrom, Date dateSourceValidUntil, List<String> subject, List<String> deletedAttachment) {
+			String creatorOther, String rights, String useLimitation, String mdFormat, String source, Date dateSourceCreation, 
+			Date dateSourcePublication, Date dateSourceValidFrom, Date dateSourceValidUntil, List<String> subject, List<String> deletedAttachment) {
 		super();
 		this.location = location;
 		this.fileId = fileId;
@@ -73,7 +72,6 @@ public class DublinCore {
 		this.source = source;
 		this.dateSourceCreation = dateSourceCreation;
 		this.dateSourcePublication = dateSourcePublication;
-		this.dateSourceRevision = dateSourceRevision;
 		this.dateSourceValidFrom = dateSourceValidFrom;
 		this.dateSourceValidUntil = dateSourceValidUntil;
 		this.subject = subject;
@@ -165,14 +163,6 @@ public class DublinCore {
 
 	public void setDateSourcePublication(Date dateSourcePublication) {
 		this.dateSourcePublication = dateSourcePublication;
-	}
-
-	public Date getDateSourceRevision() {
-		return dateSourceRevision;
-	}
-
-	public void setDateSourceRevision(Date dateSourceRevision) {
-		this.dateSourceRevision = dateSourceRevision;
 	}
 
 	public Date getDateSourceValidFrom() {

@@ -107,11 +107,11 @@ public class Report extends Controller {
 		response().setHeader("Content-Disposition", "attachment; filename=\"rapport_dublincore_" + ld.getYear() + ld.getMonthOfYear() + 
 				ld.getDayOfMonth() + ".csv\"");
 		
-		String header = "\"title\";\"creator\";\"subject\";\"description\";\"date_creation\";\"date_revision\";\"date_publication\";"
-				+ "\"date_valid_start\";\"date_valid_end\";\"type\";\"format\";\"identifier\";\"location\";\"number\";\"source\";"
-				+ "\"attachment\";\"attachment_size_in_mb\";\"attachment_size_in_mb_total\";\"rights\";\"use_limitation\";"
-				+ "\"supplier\";\"role_supplier\";\"status\";\"last_revision_user\";\"last_revision_date\";\"publisher\";"
-				+ "\"contributor\";\"language\";\"west_bound\";\"east_bound\";\"south_bound\";\"north_bound\";";
+		String header = "\"title\";\"creator\";\"subject\";\"description\";\"date_creation\";\"date_publication\";\"date_valid_start\";"
+				+ "\"date_valid_end\";\"type\";\"format\";\"identifier\";\"location\";\"number\";\"source\";\"attachment\";"
+				+ "\"attachment_size_in_mb\";\"attachment_size_in_mb_total\";\"rights\";\"use_limitation\";\"supplier\";\"role_supplier\";"
+				+ "\"status\";\"last_revision_user\";\"last_revision_date\";\"publisher\";\"contributor\";\"language\";\"west_bound\";"
+				+ "\"east_bound\";\"south_bound\";\"north_bound\";";
 		
 		StringBuilder strb = new StringBuilder();
 		strb.append(header);
@@ -119,10 +119,10 @@ public class Report extends Controller {
 		
 		return q.withTransaction(tx -> {
 			List<Tuple> mds =  tx.select(metadata.id, metadata.uuid, metadata.title, metadata.location, metadata.fileId, metadata.description, 
-					metadata.creator, metadata.creatorOther, creatorLabel.label, metadata.dateSourceCreation, metadata.dateSourceRevision, 
-					metadata.dateSourcePublication, metadata.dateSourceValidFrom, metadata.dateSourceValidUntil, typeInformationLabel.label, 
-					mdFormatLabel.label, metadata.source, rightsLabel.label, useLimitationLabel.label, statusLabel.label, user.label,
-					metadata.lastRevisionUser, metadata.lastRevisionDate, role1.role)
+					metadata.creator, metadata.creatorOther, creatorLabel.label, metadata.dateSourceCreation, metadata.dateSourcePublication, 
+					metadata.dateSourceValidFrom, metadata.dateSourceValidUntil, typeInformationLabel.label, mdFormatLabel.label, metadata.source, 
+					rightsLabel.label, useLimitationLabel.label, statusLabel.label, user.label, metadata.lastRevisionUser, 
+					metadata.lastRevisionDate, role1.role)
 				.from(metadata)
 				.join(creator).on(metadata.creator.eq(creator.id))
 				.join(creatorLabel).on(creator.id.eq(creatorLabel.creatorId))
@@ -176,7 +176,6 @@ public class Report extends Controller {
 				strb.append("\"" + escapeQuotes(md.get(metadata.description).replaceAll("[\\t\\n\\r]", " ")) + "\";");
 				
 				strb.append("\"" + getValueDate(md.get(metadata.dateSourceCreation)) + "\";");
-				strb.append("\"" + getValueDate(md.get(metadata.dateSourceRevision)) + "\";");
 				strb.append("\"" + getValueDate(md.get(metadata.dateSourcePublication)) + "\";");
 				strb.append("\"" + getValueDate(md.get(metadata.dateSourceValidFrom)) + "\";");
 				strb.append("\"" + getValueDate(md.get(metadata.dateSourceValidUntil)) + "\";");

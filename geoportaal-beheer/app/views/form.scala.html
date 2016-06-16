@@ -334,24 +334,6 @@
 			</div>
 		</div>
 		<div class="form-group">
-			<label class="col-sm-3 control-label">@Messages.get("form.date.revision.label")</label>
-			<div class="col-sm-4">
-				<input class="form-control js-date" type="date" data-toggle="tooltip" data-placement="top" 
-				title="@Messages.get("form.date.revision.title")" id="js-date-revision" name="dateSourceRevision"
-				data-language="@Http.Context.current().lang().code()"
-				@if(validate && previousValues.get("metadata").getDateSourceRevision != null) {
-					value="@sdf.format(previousValues.get("metadata").getDateSourceRevision.getTime())"}
-				@if(!validate && !create && datasetRow.get(metadata.dateSourceRevision) != null) {
-					value="@sdf.format(datasetRow.get(metadata.dateSourceRevision).getTime())"}>
-			</div>
-			<div class="col-sm-offset-3 col-sm-2">
-				<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" tabindex="-1"
-				data-content="@Messages.get("form.date.revision.tooltip")">
-					<span class="glyphicon glyphicon-info-sign"></span>
-				</button>
-			</div>
-		</div>
-		<div class="form-group">
 			<label class="col-sm-3 control-label">@Messages.get("form.date.valid.from.label")</label>
 			<div class="col-sm-4">
 				<input class="form-control js-date" type="date" data-toggle="tooltip" data-placement="top" 
