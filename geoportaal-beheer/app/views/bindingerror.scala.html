@@ -1,4 +1,4 @@
-@(genericMsg: String, createMsg: String, publicationMsg: String, revisionMsg: String, validFromMsg: String, validUntilMsg: String, searchStartMsg: String,
+@(genericMsg: String, createMsg: String, publicationMsg: String, validFromMsg: String, validUntilMsg: String, searchStartMsg: String,
 	searchEndMsg: String
 )
 
@@ -23,14 +23,6 @@
 		<div>
 			<div class="alert alert-danger" role="alert" data-error="true">
 				<b>@publicationMsg</b>
-			</div>
-		</div>
-	}
-	
-	@if(revisionMsg != null) {
-		<div>
-			<div class="alert alert-danger" role="alert" data-error="true">
-				<b>@revisionMsg</b>
 			</div>
 		</div>
 	}

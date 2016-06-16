@@ -73,7 +73,7 @@ public class DublinCoreMetadata extends SimpleWebDAV {
 		return q.withTransaction(tx -> {
 			return tx.select(
 					metadata.uuid, 
-					metadata.dateSourceRevision.coalesce(metadata.dateSourceCreation).as(metadata.dateSourceRevision))
+					metadata.dateSourceCreation)
 				.from(metadata)
 				.join(status).on(metadata.status.eq(status.id))
 				.where(status.name.eq("published"))
@@ -81,7 +81,7 @@ public class DublinCoreMetadata extends SimpleWebDAV {
 				.fetch()
 				.stream()
 				.map(dataset -> new DefaultResourceDescription(dataset.get(metadata.uuid) + ".xml", 
-					new DefaultResourceProperties(false, dataset.get(metadata.dateSourceRevision))));
+					new DefaultResourceProperties(false, dataset.get(metadata.dateSourceCreation))));
 		});
 	}
 	
@@ -95,7 +95,7 @@ public class DublinCoreMetadata extends SimpleWebDAV {
 	public Optional<ResourceProperties> properties(String name) {
 		return q.withTransaction(tx -> {
 			Optional<Date> optionalDate = Optional.ofNullable(
-				tx.select(metadata.dateSourceRevision.coalesce(metadata.dateSourceCreation))
+				tx.select(metadata.dateSourceCreation)
 					.from(metadata)
 					.where(metadata.uuid.eq(name))
 					.fetchOne());

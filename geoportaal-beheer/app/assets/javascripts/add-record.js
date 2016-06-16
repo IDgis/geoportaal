@@ -130,20 +130,17 @@ require([
 			if(!Modernizr.inputtypes.date) {
 				var dateCreation = domAttr.get(query('#js-date-creation ~ input')[0], 'value');
 				var datePublication = domAttr.get(query('#js-date-publication ~ input')[0], 'value');
-				var dateRevision = domAttr.get(query('#js-date-revision ~ input')[0], 'value');
 				var dateValidFrom = domAttr.get(query('#js-date-valid-from ~ input')[0], 'value');
 				var dateValidUntil = domAttr.get(query('#js-date-valid-until ~ input')[0], 'value');
 			} else {
 				var dateCreation = domAttr.get(dom.byId('js-date-creation'), 'value');
 				var datePublication = domAttr.get(dom.byId('js-date-publication'), 'value');
-				var dateRevision = domAttr.get(dom.byId('js-date-revision'), 'value');
 				var dateValidFrom = domAttr.get(dom.byId('js-date-valid-from'), 'value');
 				var dateValidUntil = domAttr.get(dom.byId('js-date-valid-until'), 'value');
 			}
 			
 			formData.append('dateSourceCreation', dateCreation);
 			formData.append('dateSourcePublication', datePublication);
-			formData.append('dateSourceRevision', dateRevision);
 			formData.append('dateSourceValidFrom', dateValidFrom);
 			formData.append('dateSourceValidUntil', dateValidUntil);
 			
