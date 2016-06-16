@@ -41,7 +41,7 @@ import nl.idgis.dav.model.ResourceProperties;
 import nl.idgis.dav.router.SimpleWebDAV;
 
 import play.i18n.Messages;
-
+import play.mvc.Http;
 import util.QueryDSL;
 
 public class DublinCoreMetadata extends SimpleWebDAV {
@@ -239,8 +239,13 @@ public class DublinCoreMetadata extends SimpleWebDAV {
 			String useLimitation = Messages.get("xml.uselimitation");
 			
 			// Returns the XML page
-			return Optional.<Resource>of(new DefaultResource("application/xml", 
-					views.xml.metadataintern.render(dcx, sdf, useLimitation).body().getBytes("UTF-8")));
+			if("1".equals(Http.Context.current().request().getHeader("GeoPublisher-trusted"))) {
+				return Optional.<Resource>of(new DefaultResource("application/xml", 
+						views.xml.metadataintern.render(dcx, sdf, useLimitation).body().getBytes("UTF-8")));
+			} else {
+				return Optional.<Resource>of(new DefaultResource("application/xml", 
+						views.xml.metadataextern.render(dcx, sdf, useLimitation).body().getBytes("UTF-8")));
+			}
 		});
 	}
 }
