@@ -22,6 +22,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.sql.Timestamp;
 import java.text.DecimalFormat;
 import java.text.ParseException;
@@ -43,6 +44,9 @@ import models.Search;
 import play.data.DynamicForm;
 import play.data.Form;
 import play.i18n.Messages;
+import play.libs.F.Promise;
+import play.libs.ws.WSClient;
+import play.libs.ws.WSRequest;
 import play.mvc.Controller;
 import play.mvc.Http.MultipartFormData.FilePart;
 import play.mvc.Result;
@@ -59,6 +63,7 @@ import views.html.*;
 @Security.Authenticated(DefaultAuthenticator.class)
 public class Metadata extends Controller {
 	@Inject QueryDSL q;
+	@Inject WSClient ws;
 	
 	/**
 	 * Render the form of a new metadata record
@@ -756,6 +761,15 @@ public class Metadata extends Controller {
 			
 			// Return the index page
 			return redirect(controllers.routes.Index.index(textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch, "dateDesc", ""));
+		});
+	}
+	
+	public Promise<Result> getMetadata(String uuid) throws MalformedURLException, IOException {
+		WSRequest request = ws.url(play.Play.application().configuration().getString("geoportaal.admin.host") + 
+				"/metadata/dc/" + uuid + ".xml").setHeader(play.Play.application().configuration().getString("trusted.header"), "1");
+		
+		return request.get().map(response -> {
+			return ok(response.getBodyAsStream()).as("UTF-8");
 		});
 	}
 	

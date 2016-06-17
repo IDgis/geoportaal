@@ -154,7 +154,7 @@ public class DublinCoreMetadata extends SimpleWebDAV {
 			List<String> attachments = new ArrayList<String>();
 			for(String att : attachmentsDB) {
 				String url = controllers.routes.Attachment.openAttachment(att, datasetRow.get(metadata.uuid)).toString();
-				attachments.add("http://" + play.Play.application().configuration().getString("geoportaal.host") + url);
+				attachments.add(play.Play.application().configuration().getString("geoportaal.admin.host") + url);
 			}
 			
 			// Fetch the id of the creator
@@ -239,7 +239,7 @@ public class DublinCoreMetadata extends SimpleWebDAV {
 			String useLimitation = Messages.get("xml.uselimitation");
 			
 			// Returns the XML page
-			if("1".equals(Http.Context.current().request().getHeader("GeoPublisher-trusted"))) {
+			if("1".equals(Http.Context.current().request().getHeader(play.Play.application().configuration().getString("trusted.header")))) {
 				return Optional.<Resource>of(new DefaultResource("application/xml", 
 						views.xml.metadataintern.render(dcx, sdf, useLimitation).body().getBytes("UTF-8")));
 			} else {

@@ -30,6 +30,7 @@ GET		/help							controllers.Help.renderHelp()
 POST	/validate/:metadataUuid			controllers.Metadata.validateForm(metadataUuid: String)
 POST	/validate						controllers.Index.validateForm()
 ->		/metadata/dc/					controllers.DublinCoreMetadata
+GET		/metadata/:metadataUuid			controllers.Metadata.getMetadata(metadataUuid: String)
 GET		/webjars/*file					controllers.WebJarAssets.at(file)
 GET		/routes.js						controllers.Index.jsRoutes()
 
