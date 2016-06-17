@@ -100,7 +100,7 @@
 							}
 						</p>
 						
-						@views.html.metadatalink(doc.getMetadataUrl(), doc.getUuid())
+						@views.html.metadatalink(doc.getMetadataType, doc.getUuid)
 						@if("dataset".equals(doc.getMetadataType)) {
 							@views.html.downloadlink(doc.getUuid)
 						}

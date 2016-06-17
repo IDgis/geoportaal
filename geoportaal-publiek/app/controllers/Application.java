@@ -8,6 +8,8 @@ import static models.QMdType.mdType;
 import static models.QSubject.subject;
 import static models.QSubjectLabel.subjectLabel;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -30,19 +32,29 @@ import play.Routes;
 import play.data.Form;
 import play.i18n.Lang;
 import play.i18n.Messages;
+import play.libs.F.Promise;
+import play.libs.ws.WSClient;
+import play.libs.ws.WSRequest;
 import play.mvc.*;
 import util.QueryDSL;
 import views.html.*;
 
 public class Application extends Controller {
 	@Inject QueryDSL q;
+	@Inject WSClient ws;
 	
 	public Result index() {
+		String portalAccess = play.Play.application().configuration().getString("portal.access");
+		
+		if("intern".equals(portalAccess) && !"1".equals(request().getHeader(play.Play.application().configuration().getString("trusted.header")))) {
+			return unauthorized(Messages.get("unauthorized"));
+		}
+		
 		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
 		
 		return q.withTransaction(tx -> {
 			Boolean intern = false;
-			if("intern".equals(play.Play.application().configuration().getString("portal.access"))) {
+			if("intern".equals(portalAccess)) {
 				intern = true;
 			}
 			
@@ -85,6 +97,12 @@ public class Application extends Controller {
 	}
 	
 	public Result search(Integer start, String textSearch, String typesString, Boolean filter, String expand) {
+		String portalAccess = play.Play.application().configuration().getString("portal.access");
+		
+		if("intern".equals(portalAccess) && !"1".equals(request().getHeader(play.Play.application().configuration().getString("trusted.header")))) {
+			return unauthorized(Messages.get("unauthorized"));
+		}
+		
 		Lang curLang = Http.Context.current().lang();
 		String tsvLang = Messages.get("tsv.language");
 		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
@@ -94,7 +112,7 @@ public class Application extends Controller {
 		
 		return q.withTransaction(tx -> {
 			Boolean intern = false;
-			if("intern".equals(play.Play.application().configuration().getString("portal.access"))) {
+			if("intern".equals(portalAccess)) {
 				intern = true;
 			}
 			
@@ -198,6 +216,12 @@ public class Application extends Controller {
 	}
 	
 	public Result browse(Integer start, String textSearch, String subjectsString, Boolean filter, String expand) {
+		String portalAccess = play.Play.application().configuration().getString("portal.access");
+		
+		if("intern".equals(portalAccess) && !"1".equals(request().getHeader(play.Play.application().configuration().getString("trusted.header")))) {
+			return unauthorized(Messages.get("unauthorized"));
+		}
+		
 		Lang curLang = Http.Context.current().lang();
 		String tsvLang = Messages.get("tsv.language");
 		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
@@ -207,7 +231,7 @@ public class Application extends Controller {
 		
 		return q.withTransaction(tx -> {
 			Boolean intern = false;
-			if("intern".equals(play.Play.application().configuration().getString("portal.access"))) {
+			if("intern".equals(portalAccess)) {
 				intern = true;
 			}
 			
@@ -337,11 +361,58 @@ public class Application extends Controller {
 	}
 	
 	public Result about() {
+		String access = play.Play.application().configuration().getString("portal.access");
+		
+		if("intern".equals(access) && !"1".equals(request().getHeader(play.Play.application().configuration().getString("trusted.header")))) {
+			return unauthorized(Messages.get("unauthorized"));
+		}
+		
 		return ok(about.render());
 	}
 	
 	public Result contact() {
+		String access = play.Play.application().configuration().getString("portal.access");
+		
+		if("intern".equals(access) && !"1".equals(request().getHeader(play.Play.application().configuration().getString("trusted.header")))) {
+			return unauthorized(Messages.get("unauthorized"));
+		}
+		
 		return ok(contact.render());
+	}
+	
+	public Promise<Result> getMetadata(String type, String uuid) throws MalformedURLException, IOException {
+		String access = play.Play.application().configuration().getString("portal.access");
+		
+		if("intern".equals(access) && !"1".equals(request().getHeader(play.Play.application().configuration().getString("trusted.header")))) {
+			return Promise.pure(unauthorized(Messages.get("unauthorized")));
+		}
+		
+		String url = getMetadataUrl(type);
+			
+		if(url == null) {
+			return Promise.pure(notFound("404 - not found"));
+		}
+		
+		WSRequest request = ws.url(url + uuid + ".xml");
+		
+		if("intern".equals(access)) {
+			request.setHeader(play.Play.application().configuration().getString("trusted.header"), "1");
+		} else {
+			request.setHeader(play.Play.application().configuration().getString("trusted.header"), "0");
+		}
+		
+		return request.get().map(response -> {
+			return ok(response.getBodyAsStream()).as("UTF-8");
+		});
+	}
+	
+	public String getMetadataUrl(String type) {
+		return q.withTransaction(tx -> {
+			return tx.select(mdType.url)
+				.from(mdType)
+				.where(mdType.name.eq(type))
+				.fetchOne();
+		});
 	}
 	
 	/**

@@ -6,7 +6,7 @@ confirm=Bevestigen
 cancel=Annuleren
 execute=Uitvoeren
 start=Start
-unauthorized=Geen toegang.
+unauthorized=Geen toegang
 application.name=Geoportaal-Beheer
 
 # Query
