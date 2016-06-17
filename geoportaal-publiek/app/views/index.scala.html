@@ -58,7 +58,7 @@
 							}
 						</p>
 						
-						@views.html.metadatalink(doc.get(mdType.url), doc.get(document.uuid))
+						@views.html.metadatalink(doc.get(mdType.name), doc.get(document.uuid))
 						@if("dataset".equals(doc.get(mdType.name))) {
 							@views.html.downloadlink(doc.get(document.uuid))
 						}

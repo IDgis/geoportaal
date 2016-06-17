@@ -1,3 +1,5 @@
+unauthorized=Geen toegang
+
 button.search=Zoek
 button.help=Help
 button.metadata=Metadata
