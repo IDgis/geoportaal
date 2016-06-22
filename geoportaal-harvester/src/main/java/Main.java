@@ -11,6 +11,7 @@ import static models.QSubject.subject;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLConnection;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.time.LocalDate;
@@ -41,6 +42,9 @@ import org.apache.jackrabbit.webdav.MultiStatus;
 import org.apache.jackrabbit.webdav.MultiStatusResponse;
 import org.apache.jackrabbit.webdav.client.methods.DavMethod;
 import org.apache.jackrabbit.webdav.client.methods.PropFindMethod;
+import org.apache.jackrabbit.webdav.property.DavProperty;
+import org.apache.jackrabbit.webdav.property.DavPropertySet;
+import org.apache.jackrabbit.webdav.xml.Namespace;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
@@ -108,6 +112,7 @@ public class Main {
 					.execute();
 				
 				DavMethod pFind = new PropFindMethod(System.getenv("DATA_URL"), DavConstants.PROPFIND_ALL_PROP, DavConstants.DEPTH_1);
+				pFind.addRequestHeader("GeoPublisher-trusted", "1");
 				
 				// Fill database
 				if(System.getenv("DATA_NAME").equals("dataset")) {
@@ -139,20 +144,32 @@ public class Main {
 		dbf.setNamespaceAware(true);
 		DocumentBuilder db = dbf.newDocumentBuilder();
 		
-		for (int i = 0; i < responses.length; i++) {
-			String href = responses[i].getHref();
+		for (MultiStatusResponse response : responses) {
+			String href = response.getHref();
 			
-			if(href.endsWith(".xml")) {
+			if(href != null && href.endsWith(".xml")) {
 				String filename = href.substring(href.lastIndexOf("/") + 1);
 				
-				try(InputStream input = new URL(url + filename).openStream();) {
+				HttpURLConnection connection = (HttpURLConnection)new URL(url + filename).openConnection();
+				connection.setRequestProperty("GeoPublisher-trusted", "1");
+				try(InputStream input = connection.getInputStream()) {
 					Document doc = db.parse(input);
 					switch(metadataType) {
 						case DATASET:
 							convertDatasetValues(qf, doc);
 							break;
 						case SERVICE:
-							convertServiceValues(qf, doc);
+							DavPropertySet properties = response.getProperties(200);
+							DavProperty<?> confidential = properties.get("confidential", Namespace.getNamespace("http://idgis.nl/geopublisher"));
+							
+							boolean secured;
+							if(confidential == null) {
+								secured = false;
+							} else {
+								secured = Boolean.parseBoolean(confidential.getValue().toString());
+							}
+							
+							convertServiceValues(qf, doc, secured);
 							break;
 						case DC:
 							convertDcValues(qf, doc);
@@ -306,7 +323,7 @@ public class Main {
 		
 	}
 	
-	public static void convertServiceValues(SQLQueryFactory qf, Document d) throws Exception {
+	public static void convertServiceValues(SQLQueryFactory qf, Document d, boolean secured) throws Exception {
 		// construct namespace context
 		Map<String, String> ns = new HashMap<>();
 		ns.put("gmd", "http://www.isotc211.org/2005/gmd");
@@ -361,8 +378,6 @@ public class Main {
 		}
 		
 		String thumbnail = null;
-		
-		Boolean secured = Boolean.parseBoolean(System.getenv("DATA_SECURED"));
 		
 		Integer internId = qf.select(access.id)
 				.from(access)
