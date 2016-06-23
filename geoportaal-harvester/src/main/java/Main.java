@@ -11,7 +11,6 @@ import static models.QSubject.subject;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLConnection;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.time.LocalDate;
@@ -112,7 +111,10 @@ public class Main {
 					.execute();
 				
 				DavMethod pFind = new PropFindMethod(System.getenv("DATA_URL"), DavConstants.PROPFIND_ALL_PROP, DavConstants.DEPTH_1);
-				pFind.addRequestHeader("GeoPublisher-trusted", "1");
+				String trustedHeader = System.getenv("TRUSTED_HEADER");
+				if(trustedHeader != null) {
+					pFind.addRequestHeader(trustedHeader, "1");
+				}
 				
 				// Fill database
 				if(System.getenv("DATA_NAME").equals("dataset")) {
@@ -151,7 +153,11 @@ public class Main {
 				String filename = href.substring(href.lastIndexOf("/") + 1);
 				
 				HttpURLConnection connection = (HttpURLConnection)new URL(url + filename).openConnection();
-				connection.setRequestProperty("GeoPublisher-trusted", "1");
+				String trustedHeader = System.getenv("TRUSTED_HEADER");
+				if(trustedHeader != null) {
+					connection.setRequestProperty(trustedHeader, "1");
+				}
+				
 				try(InputStream input = connection.getInputStream()) {
 					Document doc = db.parse(input);
 					switch(metadataType) {
