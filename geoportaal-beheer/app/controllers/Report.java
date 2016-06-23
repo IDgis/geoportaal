@@ -22,14 +22,18 @@ import static models.QUser.user;
 
 import java.sql.Timestamp;
 import java.text.DecimalFormat;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 
 import javax.inject.Inject;
 
 import org.joda.time.LocalDate;
 
 import com.querydsl.core.Tuple;
+import com.typesafe.config.ConfigValue;
 
 import actions.DefaultAuthenticator;
 import play.data.Form;
@@ -40,12 +44,46 @@ import play.libs.ws.WSRequest;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
+import play.Configuration;
 import util.QueryDSL;
 
 @Security.Authenticated(DefaultAuthenticator.class)
 public class Report extends Controller {
-	@Inject QueryDSL q;
-	@Inject WSClient ws;
+	
+	private QueryDSL q;
+	
+	private WSClient ws;
+	
+	private Map<String, String> csvUrls;
+	
+	private Map<String, String> csvNames;
+	
+	@Inject
+	public Report(QueryDSL q, WSClient ws, Configuration config) {
+		this.q = q;
+		this.ws = ws;
+		
+		Map<String, String> csvUrls = new HashMap<>();
+		Map<String, String> csvNames = new HashMap<>();
+		
+		Configuration externalCsv = config.getConfig("external-csv");
+		if(externalCsv != null) {
+			externalCsv.asMap().entrySet().forEach(entry -> {
+				String key = entry.getKey();
+				Object value = entry.getValue();
+				
+				if(value instanceof Map) {
+					Map<String, ?> mapValue = (Map<String, ?>)value;
+					
+					csvUrls.put(key, mapValue.get("url").toString());
+					csvNames.put(key, mapValue.get("name").toString());
+				}
+			});
+		}
+		
+		this.csvUrls = Collections.unmodifiableMap(csvUrls);
+		this.csvNames = Collections.unmodifiableMap(csvNames);
+	}
 	
 	/**
 	 * The rendering of the report page
@@ -72,9 +110,10 @@ public class Report extends Controller {
 		Form<models.Report> reportForm = Form.form(models.Report.class);
 		models.Report report = reportForm.bindFromRequest().get();
 		
-		if("dataset".equals(report.getTypeData()) || "download".equals(report.getTypeData())) {
-			return redirect(routes.Report.writeOtherCSV(report.getTypeData()));
-		} else if("dc".equals(report.getTypeData())) {
+		String type = report.getTypeData(); 
+		if(csvNames.containsKey(type)) {
+			return redirect(routes.Report.writeOtherCSV(type));
+		} else if("dc".equals(type)) {
 			return redirect(routes.Report.writeDcCSV());
 		} else {
 			return notFound();
@@ -82,22 +121,26 @@ public class Report extends Controller {
 	}
 	
 	public Promise<Result> writeOtherCSV(String type) {
-		WSRequest request = ws.url("http://sql-csv-" + type + ":9000").setFollowRedirects(true);
-		
-		LocalDate ld = LocalDate.now();
-		response().setContentType("text/csv");
-		
-		if("dataset".equals(type)) {
-			response().setHeader("Content-Disposition", "attachment; filename=\"rapport_geodata_" + ld.getYear() + ld.getMonthOfYear() + 
-					ld.getDayOfMonth() + ".csv\"");
-		} else if("download".equals(type)) {
-			response().setHeader("Content-Disposition", "attachment; filename=\"rapport_download_" + ld.getYear() + ld.getMonthOfYear() + 
-					ld.getDayOfMonth() + ".csv\"");
+		String url = csvUrls.get(type);
+		if(url == null) {
+			return Promise.pure(notFound());
+		} else {
+			WSRequest request = ws.url(url).setFollowRedirects(true);
+			
+			LocalDate ld = LocalDate.now();
+			response().setContentType("text/csv");
+			response().setHeader(
+				"Content-Disposition", 
+				"attachment; filename=\"rapport_"
+					+ csvNames.get(type)
+					+ "_"
+					+ ld.getYear() 
+					+ ld.getMonthOfYear() 
+					+ ld.getDayOfMonth() 
+					+ ".csv\"");
+			
+			return request.get().map(response -> ok(response.getBodyAsStream()));
 		}
-		
-		return request.get().map(response -> {
-			return ok(response.getBodyAsStream());
-		});
 	}
 	
 	public Result writeDcCSV() throws Exception {
