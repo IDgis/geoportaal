@@ -31,7 +31,6 @@ import javax.inject.Inject;
 import com.querydsl.core.Tuple;
 
 import models.DublinCoreXML;
-
 import nl.idgis.dav.model.DefaultResource;
 import nl.idgis.dav.model.DefaultResourceDescription;
 import nl.idgis.dav.model.DefaultResourceProperties;
@@ -39,9 +38,9 @@ import nl.idgis.dav.model.Resource;
 import nl.idgis.dav.model.ResourceDescription;
 import nl.idgis.dav.model.ResourceProperties;
 import nl.idgis.dav.router.SimpleWebDAV;
-
 import play.i18n.Messages;
 import play.mvc.Http;
+import play.twirl.api.Html;
 import util.QueryDSL;
 
 public class DublinCoreMetadata extends SimpleWebDAV {
@@ -104,22 +103,11 @@ public class DublinCoreMetadata extends SimpleWebDAV {
 		});
 	}
 	
-	/**
-	 * Generates an XML page according to the DublinCore standard
-	 * 
-	 * @param name the UUID of the metadata
-	 * @return the {@link Optional} with the {@link Resource} which contains 
-	 * the content and content type of the XML page
-	 */
-	@Override
-	public Optional<Resource> resource(String name) throws MalformedURLException, IOException {
+	private DublinCoreXML generateMetadata(String name) {
 		// Strips the extension from the string
 		String metadataUuid = name.substring(0, name.indexOf(".xml"));
 		
-		// Create an object to easily format dates
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		
-		return q.withTransaction(tx -> {
+		return (DublinCoreXML) q.withTransaction(tx -> {
 			// Fetch the metadata record with all relevant information
 			Tuple datasetRow = tx.select(metadata.id, metadata.uuid, metadata.title, metadata.description, metadata.location, metadata.fileId, 
 					typeInformationLabel.label, metadata.creator, creatorLabel.label, metadata.creatorOther, rightsLabel.label, useLimitationLabel.label, 
@@ -235,17 +223,47 @@ public class DublinCoreMetadata extends SimpleWebDAV {
 					upperCorner
 			);
 			
-			// Fetches the message of the use limitation attribute value
-			String useLimitation = Messages.get("xml.uselimitation");
-			
-			// Returns the XML page
-			if("1".equals(Http.Context.current().request().getHeader(play.Play.application().configuration().getString("trusted.header")))) {
-				return Optional.<Resource>of(new DefaultResource("application/xml", 
-						views.xml.metadataintern.render(dcx, sdf, useLimitation).body().getBytes("UTF-8")));
-			} else {
-				return Optional.<Resource>of(new DefaultResource("application/xml", 
-						views.xml.metadataextern.render(dcx, sdf, useLimitation).body().getBytes("UTF-8")));
-			}
+			return dcx;
 		});
+	}
+	
+	/**
+	 * Generates an XML page according to the DublinCore standard
+	 * 
+	 * @param name the UUID of the metadata
+	 * @return the {@link Optional} with the {@link Resource} which contains 
+	 * the content and content type of the XML page
+	 */
+	@Override
+	public Optional<Resource> resource(String name) throws MalformedURLException, IOException {
+		// Create an object to easily format dates
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		
+		// Generate metadata
+		DublinCoreXML dcx = generateMetadata(name);
+		
+		// Fetches the message of the use limitation attribute value
+		String useLimitation = Messages.get("xml.uselimitation");
+		
+		// Returns the XML page
+		if("1".equals(Http.Context.current().request().getHeader(play.Play.application().configuration().getString("trusted.header")))) {
+			return Optional.<Resource>of(new DefaultResource("application/xml", 
+					views.xml.metadataintern.render(dcx, sdf, useLimitation).body().getBytes("UTF-8")));
+		} else {
+			return Optional.<Resource>of(new DefaultResource("application/xml", 
+					views.xml.metadataextern.render(dcx, sdf, useLimitation).body().getBytes("UTF-8")));
+		}
+	}
+	
+	public Html getMetadataInternal(String name) throws MalformedURLException, IOException {
+		DublinCoreXML dcx = generateMetadata(name);
+		
+		// Create an object to easily format dates
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		
+		// Fetches the message of the use limitation attribute value
+		String useLimitation = Messages.get("xml.uselimitation");
+		
+		return views.xml.metadataintern.render(dcx, sdf, useLimitation);
 	}
 }
