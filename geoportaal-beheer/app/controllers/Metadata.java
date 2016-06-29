@@ -44,13 +44,12 @@ import models.Search;
 import play.data.DynamicForm;
 import play.data.Form;
 import play.i18n.Messages;
-import play.libs.F.Promise;
 import play.libs.ws.WSClient;
-import play.libs.ws.WSRequest;
 import play.mvc.Controller;
 import play.mvc.Http.MultipartFormData.FilePart;
 import play.mvc.Result;
 import play.mvc.Security;
+import play.twirl.api.Html;
 import util.QueryDSL;
 import views.html.*;
 
@@ -764,13 +763,10 @@ public class Metadata extends Controller {
 		});
 	}
 	
-	public Promise<Result> getMetadata(String uuid) throws MalformedURLException, IOException {
-		WSRequest request = ws.url(play.Play.application().configuration().getString("geoportaal.admin.host") + 
-				"/metadata/dc/" + uuid + ".xml").setHeader(play.Play.application().configuration().getString("trusted.header"), "1");
+	public Result getMetadata(String uuid) throws MalformedURLException, IOException {
+		Html h = new DublinCoreMetadata(q).getMetadataInternal(uuid + ".xml");
 		
-		return request.get().map(response -> {
-			return ok(response.getBodyAsStream()).as("UTF-8");
-		});
+		return ok(h).as("application/xml");
 	}
 	
 	/**
