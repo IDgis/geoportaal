@@ -159,7 +159,7 @@ password.forgot.success=Er is een e-mail naar het door u opgegeven adres verstuu
 
 # Rapportage pagina
 report.header=Rapportage
-report.intro=Op deze pagina kun je de rapportage van statische kaarten maken.
+report.intro=Op deze pagina kun je onderstaande rapportages opvragen.
 report.type.dataset=Geodata
 report.type.dc=Statische kaarten
 report.type.download=Download
