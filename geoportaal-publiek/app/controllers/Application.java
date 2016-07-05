@@ -46,10 +46,6 @@ public class Application extends Controller {
 	public Result index() {
 		String portalAccess = play.Play.application().configuration().getString("portal.access");
 		
-		if("intern".equals(portalAccess) && !"1".equals(request().getHeader(play.Play.application().configuration().getString("trusted.header")))) {
-			return unauthorized(Messages.get("unauthorized"));
-		}
-		
 		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
 		
 		return q.withTransaction(tx -> {
@@ -98,10 +94,6 @@ public class Application extends Controller {
 	
 	public Result search(Integer start, String textSearch, String typesString, Boolean filter, String expand) {
 		String portalAccess = play.Play.application().configuration().getString("portal.access");
-		
-		if("intern".equals(portalAccess) && !"1".equals(request().getHeader(play.Play.application().configuration().getString("trusted.header")))) {
-			return unauthorized(Messages.get("unauthorized"));
-		}
 		
 		Lang curLang = Http.Context.current().lang();
 		String tsvLang = Messages.get("tsv.language");
@@ -217,10 +209,6 @@ public class Application extends Controller {
 	
 	public Result browse(Integer start, String textSearch, String subjectsString, Boolean filter, String expand) {
 		String portalAccess = play.Play.application().configuration().getString("portal.access");
-		
-		if("intern".equals(portalAccess) && !"1".equals(request().getHeader(play.Play.application().configuration().getString("trusted.header")))) {
-			return unauthorized(Messages.get("unauthorized"));
-		}
 		
 		Lang curLang = Http.Context.current().lang();
 		String tsvLang = Messages.get("tsv.language");
@@ -363,19 +351,11 @@ public class Application extends Controller {
 	public Result about() {
 		String access = play.Play.application().configuration().getString("portal.access");
 		
-		if("intern".equals(access) && !"1".equals(request().getHeader(play.Play.application().configuration().getString("trusted.header")))) {
-			return unauthorized(Messages.get("unauthorized"));
-		}
-		
 		return ok(about.render());
 	}
 	
 	public Result contact() {
 		String access = play.Play.application().configuration().getString("portal.access");
-		
-		if("intern".equals(access) && !"1".equals(request().getHeader(play.Play.application().configuration().getString("trusted.header")))) {
-			return unauthorized(Messages.get("unauthorized"));
-		}
 		
 		return ok(contact.render());
 	}

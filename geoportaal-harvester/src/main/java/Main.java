@@ -14,6 +14,7 @@ import java.net.URL;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -98,6 +99,8 @@ public class Main {
 		Configuration configuration = new Configuration(templates);
 		SQLQueryFactory qf = new SQLQueryFactory(configuration, () -> DataSourceUtils.getConnection(dataSource));
 		
+		System.out.println(LocalDateTime.now() + " starting...");
+		
 		tt.execute((status) -> {
 			try {			
 				// Delete values from previous harvest
@@ -135,6 +138,8 @@ public class Main {
 				throw new RuntimeException(e);
 			}
 		});
+		
+		System.out.println("done...");
 	}
 	
 	public static void executeWebDav(SQLQueryFactory qf, HttpClient client, DavMethod pFind, String url, MetadataType metadataType) throws Exception {
@@ -151,6 +156,7 @@ public class Main {
 			
 			if(href != null && href.endsWith(".xml")) {
 				String filename = href.substring(href.lastIndexOf("/") + 1);
+				System.out.println(filename);
 				
 				HttpURLConnection connection = (HttpURLConnection)new URL(url + filename).openConnection();
 				String trustedHeader = System.getenv("TRUSTED_HEADER");
@@ -174,6 +180,9 @@ public class Main {
 							} else {
 								secured = Boolean.parseBoolean(confidential.getValue().toString());
 							}
+							
+							
+							System.out.println(secured);
 							
 							convertServiceValues(qf, doc, secured);
 							break;
