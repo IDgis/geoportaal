@@ -363,10 +363,6 @@ public class Application extends Controller {
 	public Promise<Result> getMetadata(String type, String uuid) throws MalformedURLException, IOException {
 		String access = play.Play.application().configuration().getString("portal.access");
 		
-		if("intern".equals(access) && !"1".equals(request().getHeader(play.Play.application().configuration().getString("trusted.header")))) {
-			return Promise.pure(unauthorized(Messages.get("unauthorized")));
-		}
-		
 		String url = getMetadataUrl(type);
 			
 		if(url == null) {
@@ -382,7 +378,7 @@ public class Application extends Controller {
 		}
 		
 		return request.get().map(response -> {
-			return ok(response.getBodyAsStream()).as("UTF-8");
+			return ok(response.getBodyAsStream()).as("UTF-8").as("application/xml");
 		});
 	}
 	
