@@ -101,7 +101,7 @@
 						</p>
 						
 						@views.html.metadatalink(doc.getMetadataType, doc.getUuid)
-						@if("dataset".equals(doc.getMetadataType)) {
+						@if("dataset".equals(doc.getMetadataType) && doc.getDownloadable.equals(true)) {
 							@views.html.downloadlink(doc.getUuid)
 						}
 					</div>

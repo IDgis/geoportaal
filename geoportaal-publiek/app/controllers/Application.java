@@ -55,7 +55,7 @@ public class Application extends Controller {
 			}
 			
 			SQLQuery<Tuple> queryDocuments = tx.select(document.title, document.uuid, document.date, document.creator, document.description, 
-					document.thumbnail, mdType.url, mdType.name)
+					document.thumbnail, document.downloadable, document.spatialSchema, mdType.url, mdType.name)
 					.from(document)
 					.join(mdType).on(document.mdTypeId.eq(mdType.id))
 					.where(document.date.isNotNull())
@@ -109,7 +109,7 @@ public class Application extends Controller {
 			}
 			
 			SQLQuery<Tuple> queryDocuments = tx.select(document.title, document.uuid, document.date, document.creator, document.description, 
-					document.thumbnail, mdType.url, mdType.name)
+					document.thumbnail, document.downloadable, document.spatialSchema, mdType.url, mdType.name)
 					.from(document)
 					.join(mdType).on(document.mdTypeId.eq(mdType.id))
 					.where(document.date.isNotNull())
@@ -231,7 +231,7 @@ public class Application extends Controller {
 					.fetch();
 			
 			SQLQuery<Tuple> queryDocuments = tx.select(document.uuid, document.title, document.date, document.creator, document.description, 
-					document.thumbnail, mdType.url, mdType.name)
+					document.thumbnail, document.downloadable, document.spatialSchema, mdType.url, mdType.name)
 					.from(document)
 					.join(mdType).on(document.mdTypeId.eq(mdType.id))
 					.where(document.date.isNotNull())
@@ -335,7 +335,8 @@ public class Application extends Controller {
 						.fetch();
 				
 				DocSubject ds = new DocSubject(doc.get(document.uuid), doc.get(document.title), doc.get(document.date), doc.get(document.creator), 
-						doc.get(document.description), doc.get(document.thumbnail), docSubjects, doc.get(mdType.url), doc.get(mdType.name));
+						doc.get(document.description), doc.get(document.thumbnail), docSubjects, doc.get(mdType.url), doc.get(mdType.name),
+						doc.get(document.downloadable), doc.get(document.spatialSchema));
 				
 				finalDocuments.add(ds);
 			}
