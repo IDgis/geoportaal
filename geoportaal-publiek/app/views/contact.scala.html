@@ -2,20 +2,9 @@
 
 @main(if("intern".equals(play.Play.application().configuration().getString("portal.access"))) { Messages.get("contact.header.intern") } else { 
 	Messages.get("contact.header") }, "") {
-	<div class="intro">
-		<p>@Messages.get("contact.intro")</p>
-	</div>
-	
-	<div>
-		<p>
-			<strong>@Messages.get("contact.address.label")</strong> @Messages.get("contact.address.value")
-		</p>
-		<p>
-			<strong>@Messages.get("contact.phone.label")</strong> @Messages.get("contact.phone.value")
-		</p>
-		<p>
-			<strong>@Messages.get("contact.email.label")</strong> 
-			<a class="link" href="mailto:@Messages.get("contact.email.value")">@Messages.get("contact.email.value")</a>
-		</p>
+	<div class="content">
+		<p>@Messages.get("contact.paragraph.1")</p>
+		<p>@Messages.get("contact.paragraph.2")</p>
+		<p>@Messages.get("contact.paragraph.3") <a class="link" href="mailto:@Messages.get("contact.email.value")">@Messages.get("contact.email.value")</a></p>
 	</div>
 }
