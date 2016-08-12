@@ -47,15 +47,19 @@ browse.button.select.nothing=Niets selecteren
 
 about.header=Over deze site
 about.header.intern=Intern: Over deze site 
-about.intro=Hier komt de tekst met informatie over de provincie Overijssel te staan.
+about.paragraph.1=Het Geoportaal van de provincie Overijssel bevat datasets en beschrijvingen van datasets. Deze worden gebruikt door de provincie om het beleid van de provincie te ondersteunen. Zo worden ze gebruikt om kaarten van te maken of om analyses mee uit te voeren.
+about.paragraph.2=Een groot aantal datasets wordt vrij beschikbaar gesteld, zodat ook anderen ervan gebruik kunnen maken.
+about.paragraph.3=Voor de geodatasets en de services heb je speciale software nodig. Hiervoor wordt de verzamelnaam "GIS" gebruikt (geografisch informatiesysteem). Een veel gebruikt GIS is het systeem ARCGIS van het bedrijf ESRI. Maar er zijn ook "open source" GIS systemen. Deze zijn veelal gratis. Een veelgebruikt gratis GIS is bijvoorbeeld QGIS.
+about.paragraph.4=De datasets zijn veelal te downloaden, zodat je ze met een GIS verder kan gebruiken.
+about.paragraph.5=Voor de andere kaarten (statische kaarten) heb je geen GIS nodig. Dit zijn plaatjes, meestal in de vorm van een PDF. Je kan dit soort bestanden bekijken met bijvoorbeeld Adobe reader.
+about.paragraph.6=Van een aantal datasets is de provincie Overijssel geen eigenaar. Meestal zijn hierbij dan beperkingen voordat ze gedeeld mogen worden met anderen. Deze beperkingen staan ook in de beschrijving bij de datasets.
+about.paragraph.7=De provincie Overijssel streeft ernaar om de data en ook de omschrijving bij de data juist en actueel te houden. Mocht je ondanks onze inspanningen toch onvolkomenheden tegenkomen, aarzel dan niet contact met ons op te nemen.
+about.paragraph.8=Heb je suggesties, tips of vragen, mail dan naar:
 
 contact.header=Contact
 contact.header.intern=Intern: Contact
-contact.intro=Hieronder staat de contact informatie van de provincie Overijssel.
-contact.address.label=Adres:
-contact.address.value=Luttenbergstraat 2, 8012 EE Zwolle
-contact.phone.label=Telefoonnummer:
-contact.phone.value=038 499 88 99
-contact.email.label=E-mailadres:
+contact.paragraph.1=De informatie in het Geoportaal wordt beschikbaar gesteld door het team Beleidsinformatie van de provincie Overijssel.
+contact.paragraph.2=Heb je vragen, suggesties of tips, aarzel dan niet contact op te nemen.
+contact.paragraph.3=Stuur je email naar:
 contact.email.value=beleidsinformatie@overijssel.nl
 
