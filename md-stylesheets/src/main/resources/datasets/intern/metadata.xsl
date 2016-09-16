@@ -1281,7 +1281,9 @@
   		</xsl:variable>
   		<xsl:for-each select="../../../../../gmd:identificationInfo/gmd:MD_DataIdentification/gmd:resourceConstraints/gmd:MD_Constraints/gmd:useLimitation/gco:CharacterString">
   			<xsl:if test = ". = 'Downloadable data'">
-	  			<xsl:copy-of select="$url"/>
+	  			<xsl:if test = "../../../../gmd:spatialRepresentationType[1]/gmd:MD_SpatialRepresentationTypeCode[1]/@codeListValue = 'vector'">
+	  				<xsl:copy-of select="$url"/>
+	  			</xsl:if>
 	  		</xsl:if>
   		</xsl:for-each>
   	</xsl:template>
