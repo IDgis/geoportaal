@@ -168,23 +168,38 @@ public class Main {
 					Document doc = db.parse(input);
 					switch(metadataType) {
 						case DATASET:
-							convertDatasetValues(qf, doc);
-							break;
-						case SERVICE:
-							DavPropertySet properties = response.getProperties(200);
-							DavProperty<?> confidential = properties.get("confidential", Namespace.getNamespace("http://idgis.nl/geopublisher"));
+							DavPropertySet propertiesDataset = response.getProperties(200);
+							DavProperty<?> confidentialDataset = propertiesDataset.get("confidential", Namespace.getNamespace("http://idgis.nl/geopublisher"));
+							DavProperty<?> publishedDataset = propertiesDataset.get("published", Namespace.getNamespace("http://idgis.nl/geopublisher"));
 							
-							boolean secured;
-							if(confidential == null) {
-								secured = false;
+							boolean securedDataset;
+							if(confidentialDataset == null) {
+								securedDataset = false;
 							} else {
-								secured = Boolean.parseBoolean(confidential.getValue().toString());
+								securedDataset = Boolean.parseBoolean(confidentialDataset.getValue().toString());
 							}
 							
+							boolean externDataset;
+							if(publishedDataset == null) {
+								externDataset = false;
+							} else {
+								externDataset = Boolean.parseBoolean(publishedDataset.getValue().toString());
+							}
 							
-							System.out.println(secured);
+							convertDatasetValues(qf, doc, securedDataset, externDataset);
+							break;
+						case SERVICE:
+							DavPropertySet propertiesService = response.getProperties(200);
+							DavProperty<?> confidentialService = propertiesService.get("confidential", Namespace.getNamespace("http://idgis.nl/geopublisher"));
 							
-							convertServiceValues(qf, doc, secured);
+							boolean securedService;
+							if(confidentialService == null) {
+								securedService = false;
+							} else {
+								securedService = Boolean.parseBoolean(confidentialService.getValue().toString());
+							}
+							
+							convertServiceValues(qf, doc, securedService);
 							break;
 						case DC:
 							convertDcValues(qf, doc);
@@ -196,7 +211,7 @@ public class Main {
 		}
 	}
 	
-	public static void convertDatasetValues(SQLQueryFactory qf, Document d) throws Exception {
+	public static void convertDatasetValues(SQLQueryFactory qf, Document d, boolean secured, boolean published) throws Exception {
 		// construct namespace context
 		Map<String, String> ns = new HashMap<>();
 		ns.put("gmd", "http://www.isotc211.org/2005/gmd");
@@ -281,10 +296,8 @@ public class Main {
 				.fetchOne();
 		
 		Integer accessId = internId;
-		for(String useLimitation : listUseLimitation) {
-			if(useLimitation.equals("Geoportaal extern")) {
-				accessId = externId;
-			}
+		if(secured == false) {
+			accessId = externId;
 		}
 		
 		Boolean downloadable = false;
@@ -306,6 +319,7 @@ public class Main {
 			.set(document.accessId, accessId)
 			.set(document.downloadable, downloadable)
 			.set(document.spatialSchema, getValueFromList(listSpatialSchema))
+			.set(document.published, published)
 			.execute();
 		} catch(Exception e) {
 			throw new Exception(e.getCause() + " " + getValueFromList(listUuid));
