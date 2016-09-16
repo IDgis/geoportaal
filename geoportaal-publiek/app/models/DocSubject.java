@@ -15,9 +15,11 @@ public class DocSubject {
 	private String metadataType;
 	private Boolean downloadable;
 	private String spatialSchema;
+	private Boolean published;
 	
 	public DocSubject(String uuid, String title, Timestamp date, String creator, String description, String thumbnail,
-			List<String> subjects, String metadataUrl, String metadataType, Boolean downloadable, String spatialSchema) {
+			List<String> subjects, String metadataUrl, String metadataType, Boolean downloadable, String spatialSchema,
+			Boolean published) {
 		super();
 		this.uuid = uuid;
 		this.title = title;
@@ -30,6 +32,7 @@ public class DocSubject {
 		this.metadataType = metadataType;
 		this.downloadable = downloadable;
 		this.spatialSchema = spatialSchema;
+		this.published = published;
 	}
 
 	public String getUuid() {
@@ -118,6 +121,14 @@ public class DocSubject {
 
 	public void setSpatialSchema(String spatialSchema) {
 		this.spatialSchema = spatialSchema;
+	}
+
+	public Boolean getPublished() {
+		return published;
+	}
+
+	public void setPublished(Boolean published) {
+		this.published = published;
 	}
 	
 }
