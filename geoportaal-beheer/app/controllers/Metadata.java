@@ -131,7 +131,7 @@ public class Metadata extends Controller {
 			// Fetches the role of the logged in user
 			Integer roleId = tx.select(user.roleId)
 					.from(user)
-					.where(user.username.eq(session("username")))
+					.where(user.username.equalsIgnoreCase(session("username")))
 					.fetchOne();
 			
 			// Return form page
@@ -217,7 +217,7 @@ public class Metadata extends Controller {
 			// Fetches the supplier id of logged in user
 			Integer supplierId = tx.select(user.id)
 				.from(user)
-				.where(user.username.eq(session("username")))
+				.where(user.username.equalsIgnoreCase(session("username")))
 				.fetchOne();
 			
 			// Check if creator other isn't empty if creator is other
@@ -455,7 +455,7 @@ public class Metadata extends Controller {
 			// Fetches the role of the logged in user
 			Integer roleId = tx.select(user.roleId)
 					.from(user)
-					.where(user.username.eq(session("username")))
+					.where(user.username.equalsIgnoreCase(session("username")))
 					.fetchOne();
 			
 			// Return form page
@@ -498,13 +498,13 @@ public class Metadata extends Controller {
 			// Fetches the role id of the logged in user
 			Integer roleId = tx.select(user.roleId)
 				.from(user)
-				.where(user.username.eq(session("username")))
+				.where(user.username.equalsIgnoreCase(session("username")))
 				.fetchOne();
 			
 			// Fetches the user id of the logged in user
 			Integer userId = tx.select(user.id)
 				.from(user)
-				.where(user.username.eq(session("username")))
+				.where(user.username.equalsIgnoreCase(session("username")))
 				.fetchOne();
 			
 			// Fetches the supplier id of the metadata
@@ -1005,7 +1005,7 @@ public class Metadata extends Controller {
 			// Fetches the role of the logged in user
 			Integer roleId = tx.select(user.roleId)
 					.from(user)
-					.where(user.username.eq(session("username")))
+					.where(user.username.equalsIgnoreCase(session("username")))
 					.fetchOne();
 			
 			// Create DecimalFormat with two decimals
