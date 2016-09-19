@@ -537,7 +537,7 @@
   	<xsl:template match="rdf:RDF/rdf:Description/dcterms:relation">
   		<xsl:if test=". != ''">
  			<p>
- 				<b><xsl:text>Kenmerk: </xsl:text></b>
+ 				<b><xsl:text>Nummer: </xsl:text></b>
   				<xsl:value-of select="."/>
   			</p>
   		</xsl:if>
