@@ -478,7 +478,11 @@
   		<xsl:if test=". != ''">
  			<p>
  				<b><xsl:text>Datum creatie: </xsl:text></b>
-  				<xsl:value-of select="."/>
+  				<xsl:value-of select="substring(.,9,2)"/>
+  				<xsl:text>-</xsl:text>
+  				<xsl:value-of select="substring(.,6,2)"/>
+  				<xsl:text>-</xsl:text>
+  				<xsl:value-of select="substring(.,1,4)"/>
   			</p>
   		</xsl:if>
   	</xsl:template>
@@ -486,7 +490,11 @@
   		<xsl:if test=". != ''">
  			<p>
  				<b><xsl:text>Datum publicatie: </xsl:text></b>
-  				<xsl:value-of select="."/>
+  				<xsl:value-of select="substring(.,9,2)"/>
+  				<xsl:text>-</xsl:text>
+  				<xsl:value-of select="substring(.,6,2)"/>
+  				<xsl:text>-</xsl:text>
+  				<xsl:value-of select="substring(.,1,4)"/>
   			</p>
   		</xsl:if>
   	</xsl:template>
@@ -494,13 +502,21 @@
   		<xsl:if test="start != ''">
  			<p>
  				<b><xsl:text>Datum geldig, van: </xsl:text></b>
-  				<xsl:value-of select="start"/>
+  				<xsl:value-of select="substring(start,9,2)"/>
+  				<xsl:text>-</xsl:text>
+  				<xsl:value-of select="substring(start,6,2)"/>
+  				<xsl:text>-</xsl:text>
+  				<xsl:value-of select="substring(start,1,4)"/>
   			</p>
   		</xsl:if>
   		<xsl:if test="end != ''">
  			<p>
  				<b><xsl:text>Datum geldig, tot: </xsl:text></b>
-  				<xsl:value-of select="end"/>
+  				<xsl:value-of select="substring(end,9,2)"/>
+  				<xsl:text>-</xsl:text>
+  				<xsl:value-of select="substring(end,6,2)"/>
+  				<xsl:text>-</xsl:text>
+  				<xsl:value-of select="substring(end,1,4)"/>
   			</p>
   		</xsl:if>
   	</xsl:template>
@@ -508,13 +524,21 @@
   		<xsl:if test="start != ''">
  			<p>
  				<b><xsl:text>Dekking in tijd, van: </xsl:text></b>
-  				<xsl:value-of select="start"/>
+  				<xsl:value-of select="substring(start,9,2)"/>
+  				<xsl:text>-</xsl:text>
+  				<xsl:value-of select="substring(start,6,2)"/>
+  				<xsl:text>-</xsl:text>
+  				<xsl:value-of select="substring(start,1,4)"/>
   			</p>
   		</xsl:if>
   		<xsl:if test="end != ''">
  			<p>
  				<b><xsl:text>Dekking in tijd, tot: </xsl:text></b>
-  				<xsl:value-of select="end"/>
+  				<xsl:value-of select="substring(end,9,2)"/>
+  				<xsl:text>-</xsl:text>
+  				<xsl:value-of select="substring(end,6,2)"/>
+  				<xsl:text>-</xsl:text>
+  				<xsl:value-of select="substring(end,1,4)"/>
   			</p>
   		</xsl:if>
   	</xsl:template>
