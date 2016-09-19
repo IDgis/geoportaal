@@ -342,8 +342,9 @@
 		<div id="details">
 			<div class="blok">
 				<xsl:apply-templates select="rdf:Description/dc:identifier"/>
+			</div>
+			<div class="blok">
 				<xsl:apply-templates select="rdf:Description/dcterms:references"/>
-				
 			</div>
 			<div class="blok">
 				<xsl:apply-templates select="rdf:Description/dc:subject"/>
