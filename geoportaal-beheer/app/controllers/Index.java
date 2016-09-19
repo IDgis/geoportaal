@@ -105,13 +105,13 @@ public class Index extends Controller {
 			// Fetches the role of the logged in user
 			Integer roleId = tx.select(user.roleId)
 				.from(user)
-				.where(user.username.eq(session("username")))
+				.where(user.username.equalsIgnoreCase(session("username")))
 				.fetchOne();
 			
 			// Fetches the supplier id of the logged in user
 			Integer supplierId = tx.select(user.id)
 				.from(user)
-				.where(user.username.eq(session("username")))
+				.where(user.username.equalsIgnoreCase(session("username")))
 				.fetchOne();
 			
 			// Start of query to fetch the applicable records
@@ -383,13 +383,13 @@ public class Index extends Controller {
 			// Fetch the role id of the logged in user
 			Integer roleId = tx.select(user.roleId)
 				.from(user)
-				.where(user.username.eq(session("username")))
+				.where(user.username.equalsIgnoreCase(session("username")))
 				.fetchOne();
 			
 			// Fetch the user id of the logged in user
 			Integer userId = tx.select(user.id)
 				.from(user)
-				.where(user.username.eq(session("username")))
+				.where(user.username.equalsIgnoreCase(session("username")))
 				.fetchOne();
 			
 			// Fill list of records according to type of user
@@ -496,7 +496,7 @@ public class Index extends Controller {
 			// Fetches the role id of the logged in user
 			Integer roleId = tx.select(user.roleId)
 				.from(user)
-				.where(user.username.eq(session("username")))
+				.where(user.username.equalsIgnoreCase(session("username")))
 				.fetchOne();
 			
 			
@@ -553,13 +553,13 @@ public class Index extends Controller {
 			// Fetches the role id of the logged in user
 			Integer roleId = tx.select(user.roleId)
 				.from(user)
-				.where(user.username.eq(session("username")))
+				.where(user.username.equalsIgnoreCase(session("username")))
 				.fetchOne();
 			
 			// Fetches the user id of the logged in user
 			Integer userId = tx.select(user.id)
 				.from(user)
-				.where(user.username.eq(session("username")))
+				.where(user.username.equalsIgnoreCase(session("username")))
 				.fetchOne();
 			
 			// Fill list according to type of user

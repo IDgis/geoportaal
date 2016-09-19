@@ -31,7 +31,7 @@ public class Help extends Controller{
 			// Fetches the role of the logged in user
 			Integer roleId = tx.select(user.roleId)
 				.from(user)
-				.where(user.username.eq(session("username")))
+				.where(user.username.equalsIgnoreCase(session("username")))
 				.fetchOne();
 			
 			return ok(views.html.help.render(roleId));

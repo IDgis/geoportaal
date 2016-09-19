@@ -93,7 +93,7 @@ public class User extends Controller {
 		} else {
 			// Clear the session and set the username key to the logged in username
 			session().clear();
-			session("username", loginForm.get().username);
+			session("username", loginForm.get().username.trim());
 			
 			// Check if getReturnUrl method is null, if so the URL results into the index method
 			if(loginForm.get().getReturnUrl() != null) {
@@ -111,11 +111,13 @@ public class User extends Controller {
 	 */
 	public void validate(Form<Login> loginForm) {
 		q.withTransaction(tx -> {
+			String username = loginForm.get().username.trim();
+			
 			// Fetches the password that belongs to the username
 			String dbPassword = tx
 				.select(user.password)
 				.from(user)
-				.where(user.username.eq(loginForm.get().username))
+				.where(user.username.equalsIgnoreCase(username))
 				.fetchOne();
 			
 			// Create a BCrypt encoder
@@ -178,7 +180,7 @@ public class User extends Controller {
 			String dbPassword = tx
 				.select(user.password)
 				.from(user)
-				.where(user.username.eq(cpForm.get().username))
+				.where(user.username.eq(cpForm.get().username.trim()))
 				.fetchOne();
 			
 			// Reject and return with a message if the username isn't known or if the username and old password don't match
@@ -207,7 +209,7 @@ public class User extends Controller {
 			String encodedNP = encoder.encode(cpForm.get().newPassword);
 			tx.update(user)
 				.set(user.password, encodedNP)
-				.where(user.username.eq(cpForm.get().username))
+				.where(user.username.eq(cpForm.get().username.trim()))
 				.execute();
 		});
 		
@@ -253,7 +255,7 @@ public class User extends Controller {
 			// Updates password in the database
 			Long count = tx.update(user)
 				.set(user.password, encodedPW)
-				.where(user.username.eq(fpForm.get().username))
+				.where(user.username.eq(fpForm.get().username.trim()))
 				.execute();
 			
 			Integer finalCount = count.intValue();
@@ -266,7 +268,7 @@ public class User extends Controller {
 				String msg = Mail.createMsg(placeholders, Messages.get("password.forgot.email.message", "${password}"));
 				try {
 					// Send the e-mail
-					Mail.send(emailUsername, emailPassword, "mail.your-server.de", 25, fpForm.get().username, emailUsername, 
+					Mail.send(emailUsername, emailPassword, "mail.your-server.de", 25, fpForm.get().username.trim(), emailUsername, 
 						Messages.get("password.forgot.email.subject"), msg);
 				} catch(Exception e) {
 					throw e;
