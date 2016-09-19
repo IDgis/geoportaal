@@ -311,10 +311,10 @@
 				<xsl:apply-templates select="rdf:Description/dc:creator"/>
 			</div>
 			<div class="blok">
-				<xsl:apply-templates select="rdf:Description/dc:contributor"/>
+				<xsl:apply-templates select="rdf:Description/dc:publisher"/>
 			</div>
 			<div class="blok">
-				<xsl:apply-templates select="rdf:Description/dc:publisher"/>
+				<xsl:apply-templates select="rdf:Description/dc:source"/>
 			</div>
 		</div>
 		<div id="waar">
@@ -342,8 +342,9 @@
 		<div id="details">
 			<div class="blok">
 				<xsl:apply-templates select="rdf:Description/dc:identifier"/>
+			</div>
+			<div class="blok">
 				<xsl:apply-templates select="rdf:Description/dcterms:references"/>
-				
 			</div>
 			<div class="blok">
 				<xsl:apply-templates select="rdf:Description/dc:subject"/>
@@ -357,7 +358,6 @@
 			<div class="blok">
 				<xsl:apply-templates select="rdf:Description/dc:format"/>
 				<xsl:apply-templates select="rdf:Description/dc:language"/>
-				<xsl:apply-templates select="rdf:Description/dc:source"/>
 				<xsl:apply-templates select="rdf:Description/dc:type"/>
 			</div>
 			
@@ -407,19 +407,37 @@
   			</p>
   		</xsl:if>
   	</xsl:template>
-  	<xsl:template match="rdf:RDF/rdf:Description/dc:contributor">
-  		<xsl:if test=". != ''">
- 			<p>
- 				<b><xsl:text>Bijdrager: </xsl:text></b>
-  				<xsl:value-of select="."/>
-  			</p>
-  		</xsl:if>
-  	</xsl:template>
   	<xsl:template match="rdf:RDF/rdf:Description/dc:publisher">
   		<xsl:if test=". != ''">
  			<p>
  				<b><xsl:text>Publicerende organisatie: </xsl:text></b>
   				<xsl:value-of select="."/>
+  			</p>
+  		</xsl:if>
+  	</xsl:template>
+  	<xsl:template match="rdf:RDF/rdf:Description/dc:source">
+  		<xsl:if test=". != ''">
+ 			<p>
+ 				<b><xsl:text>Bron: </xsl:text></b>
+  				<xsl:choose>
+					<xsl:when test="substring(substring-after(.,'http'),1,3) = '://'">
+						<xsl:value-of select="substring-before(.,'http://')"/>
+						<xsl:text> </xsl:text>
+						<a href="http://{substring-after(.,'http://')}">
+							http://<xsl:value-of select="substring-after(.,'http://')"/>
+						</a>
+					</xsl:when>
+					<xsl:when test="substring(substring-after(.,'https'),1,3) = '://'">
+						<xsl:value-of select="substring-before(.,'https://')"/>
+						<xsl:text> </xsl:text>
+						<a href="https://{substring-after(.,'https://')}">
+							https://<xsl:value-of select="substring-after(.,'https://')"/>
+						</a>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:value-of select="."/>
+					</xsl:otherwise>
+				</xsl:choose>
   			</p>
   		</xsl:if>
   	</xsl:template>
@@ -460,7 +478,11 @@
   		<xsl:if test=". != ''">
  			<p>
  				<b><xsl:text>Datum creatie: </xsl:text></b>
-  				<xsl:value-of select="."/>
+  				<xsl:value-of select="substring(.,9,2)"/>
+  				<xsl:text>-</xsl:text>
+  				<xsl:value-of select="substring(.,6,2)"/>
+  				<xsl:text>-</xsl:text>
+  				<xsl:value-of select="substring(.,1,4)"/>
   			</p>
   		</xsl:if>
   	</xsl:template>
@@ -468,7 +490,11 @@
   		<xsl:if test=". != ''">
  			<p>
  				<b><xsl:text>Datum publicatie: </xsl:text></b>
-  				<xsl:value-of select="."/>
+  				<xsl:value-of select="substring(.,9,2)"/>
+  				<xsl:text>-</xsl:text>
+  				<xsl:value-of select="substring(.,6,2)"/>
+  				<xsl:text>-</xsl:text>
+  				<xsl:value-of select="substring(.,1,4)"/>
   			</p>
   		</xsl:if>
   	</xsl:template>
@@ -476,13 +502,21 @@
   		<xsl:if test="start != ''">
  			<p>
  				<b><xsl:text>Datum geldig, van: </xsl:text></b>
-  				<xsl:value-of select="start"/>
+  				<xsl:value-of select="substring(start,9,2)"/>
+  				<xsl:text>-</xsl:text>
+  				<xsl:value-of select="substring(start,6,2)"/>
+  				<xsl:text>-</xsl:text>
+  				<xsl:value-of select="substring(start,1,4)"/>
   			</p>
   		</xsl:if>
   		<xsl:if test="end != ''">
  			<p>
  				<b><xsl:text>Datum geldig, tot: </xsl:text></b>
-  				<xsl:value-of select="end"/>
+  				<xsl:value-of select="substring(end,9,2)"/>
+  				<xsl:text>-</xsl:text>
+  				<xsl:value-of select="substring(end,6,2)"/>
+  				<xsl:text>-</xsl:text>
+  				<xsl:value-of select="substring(end,1,4)"/>
   			</p>
   		</xsl:if>
   	</xsl:template>
@@ -490,13 +524,21 @@
   		<xsl:if test="start != ''">
  			<p>
  				<b><xsl:text>Dekking in tijd, van: </xsl:text></b>
-  				<xsl:value-of select="start"/>
+  				<xsl:value-of select="substring(start,9,2)"/>
+  				<xsl:text>-</xsl:text>
+  				<xsl:value-of select="substring(start,6,2)"/>
+  				<xsl:text>-</xsl:text>
+  				<xsl:value-of select="substring(start,1,4)"/>
   			</p>
   		</xsl:if>
   		<xsl:if test="end != ''">
  			<p>
  				<b><xsl:text>Dekking in tijd, tot: </xsl:text></b>
-  				<xsl:value-of select="end"/>
+  				<xsl:value-of select="substring(end,9,2)"/>
+  				<xsl:text>-</xsl:text>
+  				<xsl:value-of select="substring(end,6,2)"/>
+  				<xsl:text>-</xsl:text>
+  				<xsl:value-of select="substring(end,1,4)"/>
   			</p>
   		</xsl:if>
   	</xsl:template>
@@ -537,8 +579,26 @@
   	<xsl:template match="rdf:RDF/rdf:Description/dcterms:relation">
   		<xsl:if test=". != ''">
  			<p>
- 				<b><xsl:text>Kenmerk: </xsl:text></b>
-  				<xsl:value-of select="."/>
+ 				<b><xsl:text>Nummer: </xsl:text></b>
+  				<xsl:choose>
+					<xsl:when test="substring(substring-after(.,'http'),1,3) = '://'">
+						<xsl:value-of select="substring-before(.,'http://')"/>
+						<xsl:text> </xsl:text>
+						<a href="http://{substring-after(.,'http://')}">
+							http://<xsl:value-of select="substring-after(.,'http://')"/>
+						</a>
+					</xsl:when>
+					<xsl:when test="substring(substring-after(.,'https'),1,3) = '://'">
+						<xsl:value-of select="substring-before(.,'https://')"/>
+						<xsl:text> </xsl:text>
+						<a href="https://{substring-after(.,'https://')}">
+							https://<xsl:value-of select="substring-after(.,'https://')"/>
+						</a>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:value-of select="."/>
+					</xsl:otherwise>
+				</xsl:choose>
   			</p>
   		</xsl:if>
   	</xsl:template>
@@ -700,14 +760,6 @@
 					</p>
 				</xsl:otherwise>
 			</xsl:choose>
-  		</xsl:if>
-  	</xsl:template>
-  	<xsl:template match="rdf:RDF/rdf:Description/dc:source">
-  		<xsl:if test=". != ''">
- 			<p>
- 				<b><xsl:text>Bron: </xsl:text></b>
-  				<xsl:value-of select="."/>
-  			</p>
   		</xsl:if>
   	</xsl:template>
   	<xsl:template match="rdf:RDF/rdf:Description/dc:type">
