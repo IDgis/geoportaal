@@ -316,6 +316,9 @@
 			<div class="blok">
 				<xsl:apply-templates select="rdf:Description/dc:publisher"/>
 			</div>
+			<div class="blok">
+				<xsl:apply-templates select="rdf:Description/dc:source"/>
+			</div>
 		</div>
 		<div id="waar">
 			<div class="blok">
@@ -356,7 +359,6 @@
 			<div class="blok">
 				<xsl:apply-templates select="rdf:Description/dc:format"/>
 				<xsl:apply-templates select="rdf:Description/dc:language"/>
-				<xsl:apply-templates select="rdf:Description/dc:source"/>
 				<xsl:apply-templates select="rdf:Description/dc:type"/>
 			</div>
 			
@@ -418,6 +420,14 @@
   		<xsl:if test=". != ''">
  			<p>
  				<b><xsl:text>Publicerende organisatie: </xsl:text></b>
+  				<xsl:value-of select="."/>
+  			</p>
+  		</xsl:if>
+  	</xsl:template>
+  	<xsl:template match="rdf:RDF/rdf:Description/dc:source">
+  		<xsl:if test=". != ''">
+ 			<p>
+ 				<b><xsl:text>Bron: </xsl:text></b>
   				<xsl:value-of select="."/>
   			</p>
   		</xsl:if>
@@ -699,14 +709,6 @@
 					</p>
 				</xsl:otherwise>
 			</xsl:choose>
-  		</xsl:if>
-  	</xsl:template>
-  	<xsl:template match="rdf:RDF/rdf:Description/dc:source">
-  		<xsl:if test=". != ''">
- 			<p>
- 				<b><xsl:text>Bron: </xsl:text></b>
-  				<xsl:value-of select="."/>
-  			</p>
   		</xsl:if>
   	</xsl:template>
   	<xsl:template match="rdf:RDF/rdf:Description/dc:type">
