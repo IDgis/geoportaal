@@ -311,9 +311,6 @@
 				<xsl:apply-templates select="rdf:Description/dc:creator"/>
 			</div>
 			<div class="blok">
-				<xsl:apply-templates select="rdf:Description/dc:contributor"/>
-			</div>
-			<div class="blok">
 				<xsl:apply-templates select="rdf:Description/dc:publisher"/>
 			</div>
 			<div class="blok">
@@ -404,14 +401,6 @@
   		<xsl:if test=". != ''">
  			<p>
  				<b><xsl:text>Eindverantwoordelijke: </xsl:text></b>
-  				<xsl:value-of select="."/>
-  			</p>
-  		</xsl:if>
-  	</xsl:template>
-  	<xsl:template match="rdf:RDF/rdf:Description/dc:contributor">
-  		<xsl:if test=". != ''">
- 			<p>
- 				<b><xsl:text>Bijdrager: </xsl:text></b>
   				<xsl:value-of select="."/>
   			</p>
   		</xsl:if>
