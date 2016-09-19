@@ -544,7 +544,11 @@
 	 			<xsl:when test=". = 'revision'">
 	 				<p>
 						<b><xsl:text>Laatste wijziging bestand: </xsl:text></b>
-		  				<xsl:value-of select="../../../gmd:date/gco:Date"/>
+		  				<xsl:value-of select="substring(../../../gmd:date/gco:Date,9,2)"/>
+		  				<xsl:text>-</xsl:text>
+		  				<xsl:value-of select="substring(../../../gmd:date/gco:Date,6,2)"/>
+		  				<xsl:text>-</xsl:text>
+		  				<xsl:value-of select="substring(../../../gmd:date/gco:Date,1,4)"/>
 		 			</p>
 	 			</xsl:when>
 	 		</xsl:choose>
@@ -987,7 +991,11 @@
 			<div class="blok">
 				<p>
 					<b><xsl:text>Laatste wijziging bestandsbeschrijving: </xsl:text></b>
-	  				<xsl:value-of select="."/>
+		  				<xsl:value-of select="substring(.,9,2)"/>
+		  				<xsl:text>-</xsl:text>
+		  				<xsl:value-of select="substring(.,6,2)"/>
+		  				<xsl:text>-</xsl:text>
+		  				<xsl:value-of select="substring(.,1,4)"/>
   				</p>
  			</div>
 		</xsl:if>
@@ -998,25 +1006,41 @@
 	 			<xsl:when test="gmd:dateType/gmd:CI_DateTypeCode/@codeListValue = 'creation'">
 	 				<p>
 						<b><xsl:text>Voltooiing bestand: </xsl:text></b>
-		  				<xsl:value-of select="gmd:date/gco:Date"/>
+		  				<xsl:value-of select="substring(gmd:date/gco:Date,9,2)"/>
+		  				<xsl:text>-</xsl:text>
+		  				<xsl:value-of select="substring(gmd:date/gco:Date,6,2)"/>
+		  				<xsl:text>-</xsl:text>
+		  				<xsl:value-of select="substring(gmd:date/gco:Date,1,4)"/>
 		 			</p>
 	 			</xsl:when>
 	 			<xsl:when test="gmd:dateType/gmd:CI_DateTypeCode/@codeListValue = 'publication'">
 	 				<p>
 						<b><xsl:text>Publicatie bestand: </xsl:text></b>
-		  				<xsl:value-of select="gmd:date/gco:Date"/>
+		  				<xsl:value-of select="substring(gmd:date/gco:Date,9,2)"/>
+		  				<xsl:text>-</xsl:text>
+		  				<xsl:value-of select="substring(gmd:date/gco:Date,6,2)"/>
+		  				<xsl:text>-</xsl:text>
+		  				<xsl:value-of select="substring(gmd:date/gco:Date,1,4)"/>
 		 			</p>
 	 			</xsl:when>
 	 			<xsl:when test="gmd:dateType/gmd:CI_DateTypeCode/@codeListValue = 'revision'">
 	 				<p>
 						<b><xsl:text>Laatste wijziging bestand: </xsl:text></b>
-		  				<xsl:value-of select="gmd:date/gco:Date"/>
+		  				<xsl:value-of select="substring(gmd:date/gco:Date,9,2)"/>
+		  				<xsl:text>-</xsl:text>
+		  				<xsl:value-of select="substring(gmd:date/gco:Date,6,2)"/>
+		  				<xsl:text>-</xsl:text>
+		  				<xsl:value-of select="substring(gmd:date/gco:Date,1,4)"/>
 		 			</p>
 	 			</xsl:when>
 	 			<xsl:otherwise>
 	 				<p>
 	 					<b><xsl:text>Datum: </xsl:text></b>
-	 					<xsl:value-of select="gmd:date/gco:Date"/>
+	 					<xsl:value-of select="substring(gmd:date/gco:Date,9,2)"/>
+		  				<xsl:text>-</xsl:text>
+		  				<xsl:value-of select="substring(gmd:date/gco:Date,6,2)"/>
+		  				<xsl:text>-</xsl:text>
+		  				<xsl:value-of select="substring(gmd:date/gco:Date,1,4)"/>
 	 				</p>
 	 			</xsl:otherwise>
 	 		</xsl:choose>
@@ -1027,7 +1051,11 @@
 			<div class="blok">
 				<p>
 					<b><xsl:text>Volgende herziening bestand: </xsl:text></b>
-	  				<xsl:value-of select="."/>
+	  				<xsl:value-of select="substring(.,9,2)"/>
+	  				<xsl:text>-</xsl:text>
+	  				<xsl:value-of select="substring(.,6,2)"/>
+	  				<xsl:text>-</xsl:text>
+	  				<xsl:value-of select="substring(.,1,4)"/>
   				</p>
  			</div>
 		</xsl:if>
@@ -1039,13 +1067,21 @@
 	  			<xsl:if test="gml:begin/gml:TimeInstant/gml:timePosition != ''">
 	 				<p>
 	  					<b><xsl:text>Van datum: </xsl:text></b>
-	  					<xsl:value-of select="gml:begin/gml:TimeInstant/gml:timePosition"/>
+	  					<xsl:value-of select="substring(gml:begin/gml:TimeInstant/gml:timePosition,9,2)"/>
+		  				<xsl:text>-</xsl:text>
+		  				<xsl:value-of select="substring(gml:begin/gml:TimeInstant/gml:timePosition,6,2)"/>
+		  				<xsl:text>-</xsl:text>
+		  				<xsl:value-of select="substring(gml:begin/gml:TimeInstant/gml:timePosition,1,4)"/>
 	 				</p>
 	 			</xsl:if>
 	  			<xsl:if test="gml:end/gml:TimeInstant/gml:timePosition != ''">
 	  				<p>
 	  					<b><xsl:text>Tot datum: </xsl:text></b>
-	  					<xsl:value-of select="gml:end/gml:TimeInstant/gml:timePosition"/>
+	  					<xsl:value-of select="substring(gml:end/gml:TimeInstant/gml:timePosition,9,2)"/>
+		  				<xsl:text>-</xsl:text>
+		  				<xsl:value-of select="substring(gml:end/gml:TimeInstant/gml:timePosition,6,2)"/>
+		  				<xsl:text>-</xsl:text>
+		  				<xsl:value-of select="substring(gml:end/gml:TimeInstant/gml:timePosition,1,4)"/>
 	  				</p>
 	  			</xsl:if>
 	  		</div>
@@ -1308,7 +1344,11 @@
 	  		<p>
 		  		<b><xsl:text>Gerelateerde dataset: </xsl:text></b>
 		  		<xsl:value-of select="gmd:title/gco:CharacterString/."/>,
-		  		<xsl:value-of select="gmd:date/gmd:CI_Date/gmd:date/gco:Date/."/>
+		  		<xsl:value-of select="substring(gmd:date/gmd:CI_Date/gmd:date/gco:Date/.,9,2)"/>
+  				<xsl:text>-</xsl:text>
+  				<xsl:value-of select="substring(gmd:date/gmd:CI_Date/gmd:date/gco:Date/.,6,2)"/>
+  				<xsl:text>-</xsl:text>
+  				<xsl:value-of select="substring(gmd:date/gmd:CI_Date/gmd:date/gco:Date/.,1,4)"/>
 		  	</p>
 	  	</xsl:if>
   	</xsl:template>
@@ -1458,15 +1498,27 @@
 		  		<xsl:choose>
 		  			<xsl:when test="gmd:date/gmd:CI_Date/gmd:dateType/gmd:CI_DateTypeCode/@codeListValue = 'creation'">
 		  				<b><xsl:text>Creatie datum thesaurus: </xsl:text></b>
-		  				<xsl:value-of select="gmd:date/gmd:CI_Date/gmd:date/gco:Date"/>
+		  				<xsl:value-of select="substring(gmd:date/gmd:CI_Date/gmd:date/gco:Date,9,2)"/>
+		  				<xsl:text>-</xsl:text>
+		  				<xsl:value-of select="substring(gmd:date/gmd:CI_Date/gmd:date/gco:Date,6,2)"/>
+		  				<xsl:text>-</xsl:text>
+		  				<xsl:value-of select="substring(gmd:date/gmd:CI_Date/gmd:date/gco:Date,1,4)"/>
 		  			</xsl:when>
 		  			<xsl:when test="gmd:date/gmd:CI_Date/gmd:dateType/gmd:CI_DateTypeCode/@codeListValue = 'publication'">
 		  				<b><xsl:text>Publicatie datum thesaurus: </xsl:text></b>
-		  				<xsl:value-of select="gmd:date/gmd:CI_Date/gmd:date/gco:Date"/>
+		  				<xsl:value-of select="substring(gmd:date/gmd:CI_Date/gmd:date/gco:Date,9,2)"/>
+		  				<xsl:text>-</xsl:text>
+		  				<xsl:value-of select="substring(gmd:date/gmd:CI_Date/gmd:date/gco:Date,6,2)"/>
+		  				<xsl:text>-</xsl:text>
+		  				<xsl:value-of select="substring(gmd:date/gmd:CI_Date/gmd:date/gco:Date,1,4)"/>
 		  			</xsl:when>
 		  			<xsl:when test="gmd:date/gmd:CI_Date/gmd:dateType/gmd:CI_DateTypeCode/@codeListValue = 'revision'">
 		  				<b><xsl:text>Revisie datum thesaurus: </xsl:text></b>
-		  				<xsl:value-of select="gmd:date/gmd:CI_Date/gmd:date/gco:Date"/>
+		  				<xsl:value-of select="substring(gmd:date/gmd:CI_Date/gmd:date/gco:Date,9,2)"/>
+		  				<xsl:text>-</xsl:text>
+		  				<xsl:value-of select="substring(gmd:date/gmd:CI_Date/gmd:date/gco:Date,6,2)"/>
+		  				<xsl:text>-</xsl:text>
+		  				<xsl:value-of select="substring(gmd:date/gmd:CI_Date/gmd:date/gco:Date,1,4)"/>
 		  			</xsl:when>
 		  		</xsl:choose>
 		  	</p>
