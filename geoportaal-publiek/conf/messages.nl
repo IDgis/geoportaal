@@ -2,7 +2,7 @@ unauthorized=Geen toegang
 
 button.search=Zoek
 button.help=Help
-button.metadata=Metadata
+button.metadata=Meer informatie
 button.download=Download
 button.first=Eerste
 button.previous=Vorige
