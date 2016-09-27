@@ -61,7 +61,7 @@ a.md-title:hover {cursor:pointer;}
 
 #header-subjects {margin-top: 20px;margin-bottom: 0px;padding: 0px 0px 0px 15px;}
 #browse-info{font-size: 17px;font-weight: bold;}
-#subjects-list {border-right: 4px solid #A9A9A9;margin: 20px 10px 20px 20px;}
+#subjects-list {border-right: 4px solid #A9A9A9;margin: 20px 10px 20px 20px;padding-left:0;}
 #subject-selection-buttons {margin: 0px 0px 10px 0px;}
 
 #home-icon {background-position:15px 15px;background-size:25px;}

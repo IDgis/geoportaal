@@ -13,7 +13,7 @@
 	</div>
 	
 	
-	@helper.form(action = routes.Application.searchText(), 'class -> "search-bar col-md-offset-1") {
+	@helper.form(action = routes.Application.searchText(), 'class -> "search-bar") {
 		<div class="form-group">
 			<span class="search-label">@Messages.get("search.label")</span>
 		</div>
@@ -36,7 +36,7 @@
 		</div>
 	</div>
 		
-	<div class="col-md-11 col-md-offset-1">
+	<div>
 		@for(doc <- documents) {
 			<div class="home-metadata">
 				<div class="row">
