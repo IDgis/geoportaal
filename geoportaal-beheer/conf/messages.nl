@@ -175,6 +175,7 @@ help.intro=Hier komt de tekst voor de help pagina.
 
 # Lijst
 list.action.header=Actie
+list.number.header=Nummer
 list.title.header=Titel
 list.supplier.header=Leverancier
 list.status.header=Status

@@ -62,6 +62,14 @@ input[type="file"].input-attachment {display:inline;}
 .action-button {font-size:18px;}
 #list-pager ul {margin:0;position:relative;left:20px;}
 
+#check-column {width:3%;}
+#actions-column {width:6%;}
+#number-column {width:13%;}
+#title-column {width:37%;}
+#supplier-column {width:15%;}
+#status-column {width:14%;}
+#date-column {width:12%;}
+
 .js-index-page-2 {display:none;}
 .js-index-page-3 {display:none;}
 .js-index-page-4 {display:none;}
