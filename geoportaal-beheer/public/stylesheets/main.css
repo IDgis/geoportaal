@@ -40,7 +40,7 @@ div.tab-element {height:100%;width:100%;background-position:15px 15px;width:155p
 .admin-buttons {margin-top:10px;margin-bottom:10px;margin-left:20px;position:relative;left:-13px;}
 div.overzicht-records {margin-top:20px;margin-bottom:20px;margin-left:20px;}
 div.alle-records {margin-top:20px;margin-bottom:20px;margin-left:20px;}
-div.label-actions-selected-records {margin-top:20px;margin-bottom:10px;margin-left:20px;position:relative;left:-13px;}
+div.label-count-records, div.label-actions-selected-records {margin-top:10px;margin-bottom:10px;margin-left:20px;position:relative;left:-13px;}
 div.editor-knoppen {margin-bottom:20px;margin-left:15px;}
 
 #js-form-warning-fields, #js-form-warning-subjects {display:none;}

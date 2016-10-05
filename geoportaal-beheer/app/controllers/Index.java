@@ -285,10 +285,16 @@ public class Index extends Controller {
 				}
 			}
 			
+			Long datasetCount = datasetQuery.fetchCount();
+			
+			if(datasetCount > 200) {
+				datasetCount = 200L;
+			}
+			
 			// Return index page
 			return ok(views.html.index.render(datasetRows, supplierList, statusList, mdFormatList, sdf, sdfLocal, roleId, textSearch, 
 				supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch, timestampStartSearch, resetTimestampEndSearch, sort,
-				checkedList));
+				checkedList, datasetCount));
 		});
 	}
 	
