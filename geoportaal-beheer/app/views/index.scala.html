@@ -14,7 +14,8 @@
 	tsStartSearch: java.sql.Timestamp,
 	tsEndSearch: java.sql.Timestamp,
 	sort: String,
-	checkedList: java.util.List[String]
+	checkedList: java.util.List[String],
+	datasetCount: Long
 	)
 
 @import play.i18n._
@@ -164,6 +165,9 @@
 				</div>
 			</div>
 		}
+	</div>
+	<div class="label-count-records col-sm-12">
+		<span>@Messages.get("index.records.count.label") @datasetCount</span><span> | </span><span>@Messages.get("index.records.selected.label") </span><span id="js-selected-records">0</span>
 	</div>
 	<div class="label-actions-selected-records col-sm-12">
 		<span>@Messages.get("index.button.action.label")</span>

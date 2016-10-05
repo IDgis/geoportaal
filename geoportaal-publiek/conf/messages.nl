@@ -2,12 +2,12 @@ unauthorized=Geen toegang
 
 button.search=Zoek
 button.help=Help
-button.metadata=Metadata
+button.metadata=Meer informatie
 button.download=Download
-button.first=Eerste
-button.previous=Vorige
-button.next=Volgende
-button.last=Laatste
+button.first=Eerste pagina
+button.previous=Vorige pagina
+button.next=Volgende pagina
+button.last=Laatste pagina
 button.admin=Beheer
 search.label=Zoek
 search.placeholder=Zoek op term

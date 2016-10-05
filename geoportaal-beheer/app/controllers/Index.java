@@ -115,7 +115,7 @@ public class Index extends Controller {
 				.fetchOne();
 			
 			// Start of query to fetch the applicable records
-			SQLQuery<Tuple> datasetQuery = tx.select(metadata.id, metadata.uuid, metadata.title, metadata.status, metadata.lastRevisionDate, 
+			SQLQuery<Tuple> datasetQuery = tx.select(metadata.id, metadata.uuid, metadata.fileId, metadata.title, metadata.status, metadata.lastRevisionDate, 
 					statusLabel.label, user.label, status.name, mdFormat.name)
 				.from(metadata)
 				.join(status).on(metadata.status.eq(status.id))
@@ -235,6 +235,14 @@ public class Index extends Controller {
 			datasetQuery.limit(200);
 			
 			// Sort the records according to sort value
+			if("numberDesc".equals(sort)) {
+				datasetQuery.orderBy(metadata.fileId.desc());
+			}
+			
+			if("numberAsc".equals(sort)) {
+				datasetQuery.orderBy(metadata.fileId.asc());
+			}
+			
 			if("titleDesc".equals(sort)) {
 				datasetQuery.orderBy(metadata.title.desc());
 			}
@@ -285,10 +293,16 @@ public class Index extends Controller {
 				}
 			}
 			
+			Long datasetCount = datasetQuery.fetchCount();
+			
+			if(datasetCount > 200) {
+				datasetCount = 200L;
+			}
+			
 			// Return index page
 			return ok(views.html.index.render(datasetRows, supplierList, statusList, mdFormatList, sdf, sdfLocal, roleId, textSearch, 
 				supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch, timestampStartSearch, resetTimestampEndSearch, sort,
-				checkedList));
+				checkedList, datasetCount));
 		});
 	}
 	

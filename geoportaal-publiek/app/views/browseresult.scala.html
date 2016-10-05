@@ -17,36 +17,26 @@
 @import models.QSubject.subject
 @import models.QSubjectLabel.subjectLabel
 
-<div class="col-md-12">
+<div>
 	<div class="data-navigation">
 		<div class="row">
-			<span class="col-md-3">@if(count == 0) {@Messages.get("result.count.label.zero")}
+			<span class="col-md-3 count-page-line">@if(count == 0) {@Messages.get("result.count.label.zero")}
 				@if(count == 1) {@count @Messages.get("result.count.label.one")} @if(count > 1) {
 					@count @Messages.get("result.count.label.multiple")}@if(count > 0) {, pagina @page}</span>
 			<div class="pull-right">
-				<div class="row btn-group btn-group-sm">
-					<nav>
-						<ul id="pager-adjusted" class="pager">
-							<li @if(start.equals(0)) {class="disabled paging-disabled"}>
-								<a href="@routes.Application.browse(0, textSearch, subjectsString, false, expand)">@Messages.get("button.first")</a>
-							</li>
-							<li @if(start.equals(0)) {class="disabled paging-disabled"}>
-								<a href="@routes.Application.browse(startPrevious, textSearch, subjectsString, false, expand)">@Messages.get("button.previous")</a>
-							</li>
-							<li @if(startNext >= count) {class="disabled paging-disabled"}>
-								<a href="@routes.Application.browse(startNext, textSearch, subjectsString, false, expand)">@Messages.get("button.next")</a>
-							</li>
-							<li @if(startNext >= count) {class="disabled paging-disabled"}>
-								<a href="@routes.Application.browse(startLast, textSearch, subjectsString, false, expand)">@Messages.get("button.last") (@pageLast)</a>
-							</li>
-						</ul>
-					</nav>
-				</div>
-				<div class="row" id="expand-area">
-					<label class="checkbox-inline">
-						<input id="js-expand-all" class="js-expand-all-evt" type="checkbox" @if("true".equals(expand)) {checked}>
-						<span id="js-label-expand-all">@Messages.get("results.expand")</span>
-					</label>
+				<div class="form-group">
+					<a href="@routes.Application.browse(0, textSearch, subjectsString, false, expand)" class="link-as-button @if(start.equals(0)) {button-ovs-disabled}else{button-ovs}">
+						@Messages.get("button.first")
+					</a>
+					<a href="@routes.Application.browse(startPrevious, textSearch, subjectsString, false, expand)" class="link-as-button @if(start.equals(0)) {button-ovs-disabled}else{button-ovs}">
+						@Messages.get("button.previous")
+					</a>
+					<a href="@routes.Application.browse(startNext, textSearch, subjectsString, false, expand)" class="link-as-button @if(startNext >= count) {button-ovs-disabled}else{button-ovs}">
+						@Messages.get("button.next")
+					</a>
+					<a href="@routes.Application.browse(startLast, textSearch, subjectsString, false, expand)" class="link-as-button @if(startNext >= count) {button-ovs-disabled}else{button-ovs}">
+						@Messages.get("button.last") (@pageLast)
+					</a>
 				</div>
 			</div>
 		</div>
@@ -54,7 +44,7 @@
 </div>
 
 <div class="row" id="header-subjects">
-	<div class="col-md-12">
+	<div>
 		<span id="browse-info">@Messages.get("browse.subject.list.label")</span>
 	</div>
 </div>

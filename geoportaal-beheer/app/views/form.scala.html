@@ -77,7 +77,7 @@
 			<div class="col-sm-7">
 				<input class="form-control js-mandatory" id="js-location" type="text" data-toggle="tooltip" data-placement="top" data-field="locatie"
 				maxlength="2000" title="@Messages.get("form.location.title")" name="location" 
-				value="@if(validate) {@previousValues.get("metadata").getLocation()}@if(!validate && !create) {@datasetRow.get(metadata.location)}">
+				value="@if(validate) {@previousValues.get("metadata").getLocation()}@if(!validate && !create) {@datasetRow.get(metadata.location)}@if(!validate && create) {@play.Play.application().configuration().getString("geoportaal.form.location")}">
 			</div>
 			<div class="col-sm-2">
 				<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" tabindex="-1"

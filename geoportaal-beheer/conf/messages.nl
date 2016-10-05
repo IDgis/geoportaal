@@ -35,6 +35,8 @@ index.date.end.label=en
 index.date.end.title=Zoek op einddatum
 index.button.search=Zoek
 index.button.filter.clear=Filter opheffen
+index.records.count.label=Aantal records:
+index.records.selected.label=Aantal geselecteerde records:
 index.button.action.label=Acties voor geselecteerde records:
 index.button.action.concept=Concept
 index.button.action.approval=Ter goedkeuring
@@ -163,7 +165,9 @@ report.intro=Op deze pagina kun je onderstaande rapportages opvragen.
 report.type.dataset=Geodata
 report.type.dc=Statische kaarten
 report.type.download=Download
-report.start.info=Het genereren van de rapportage is gestart
+report.start.info.1=De rapportage-opdracht wordt gestart.
+report.start.info.2=Als deze is afgerond dan is het CSV-bestand meestal te vinden in je Download-map. Let op: afhankelijk van je browser-instellingen moet je soms nog bevestigen dat dit bestand moet worden opgeslagen. Je krijgt in dat geval de keuze tussen "Openen" of "Opslaan". Kies dan voor "Opslaan" en het bestand komt in je Download-map.
+report.start.info.3=Na opslaan van de CSV kan je verder gaan met een volgende rapportage, of naar een ander onderdeel van het Geoportaal.
 
 # Help pagina
 help.header=Geoportaal: help metadata
@@ -171,6 +175,7 @@ help.intro=Hier komt de tekst voor de help pagina.
 
 # Lijst
 list.action.header=Actie
+list.number.header=Nummer
 list.title.header=Titel
 list.supplier.header=Leverancier
 list.status.header=Status

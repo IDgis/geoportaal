@@ -29,13 +29,22 @@
 		<table class="col-sm-offset-0 table table-bordered" id="list-table">
 			<tbody>
 				<tr>
-					<th class="col-sm-1">
+					<th id="check-column">
 						<input type="checkbox" id="js-check-all" class="js-check" data-page="1">
 					</th>
-					<th class="col-sm-1">
+					<th id="actions-column">
 						@Messages.get("list.action.header")
 					</th>
-					<th class="col-sm-4">
+					<th id="number-column">
+						<span class="col-sm-8 table-header">@Messages.get("list.number.header")</span>
+						<div class="col-sm-4 sort-group">
+							<button type="submit" class="pull-right glyphicon glyphicon-triangle-bottom sort-button 
+								@if("numberDesc".equals(sort)) {sort-active}" name="sort" value="numberDesc"></button>
+							<button type="submit" class="pull-right glyphicon glyphicon-triangle-top sort-button 
+								@if("numberAsc".equals(sort)) {sort-active}" name="sort" value="numberAsc"></button>
+						</div>
+					</th>
+					<th id="title-column">
 						<span class="col-sm-8 table-header">@Messages.get("list.title.header")</span>
 						<div class="col-sm-4 sort-group">
 							<button type="submit" class="pull-right glyphicon glyphicon-triangle-bottom sort-button 
@@ -44,7 +53,7 @@
 								@if("titleAsc".equals(sort)) {sort-active}" name="sort" value="titleAsc"></button>
 						</div>
 					</th>
-					<th class="col-sm-2">
+					<th id="supplier-column">
 						<span class="col-sm-8 table-header">@Messages.get("list.supplier.header")</span>
 						<div class="col-sm-4 sort-group">
 							<button type="submit" class="pull-right glyphicon glyphicon-triangle-bottom sort-button 
@@ -53,7 +62,7 @@
 								@if("supplierAsc".equals(sort)) {sort-active}" name="sort" value="supplierAsc"></button>
 						</div>
 					</th>
-					<th class="col-sm-2">
+					<th id="status-column">
 						<span class="col-sm-8 table-header">@Messages.get("list.status.header")</span>
 						<div class="col-sm-4 sort-group">
 							<button type="submit" class="pull-right glyphicon glyphicon-triangle-bottom sort-button 
@@ -62,7 +71,7 @@
 								@if("statusAsc".equals(sort)) {sort-active}" name="sort" value="statusAsc"></button>
 						</div>
 					</th>
-					<th class="col-sm-2">
+					<th id="date-column">
 						<span class="col-sm-8 table-header">@Messages.get("list.date.header")</span>
 						<div class="col-sm-4 sort-group">
 							<button type="submit" class="pull-right glyphicon glyphicon-triangle-bottom sort-button 

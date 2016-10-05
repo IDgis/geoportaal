@@ -40,7 +40,7 @@ div.tab-element {height:100%;width:100%;background-position:15px 15px;width:155p
 .admin-buttons {margin-top:10px;margin-bottom:10px;margin-left:20px;position:relative;left:-13px;}
 div.overzicht-records {margin-top:20px;margin-bottom:20px;margin-left:20px;}
 div.alle-records {margin-top:20px;margin-bottom:20px;margin-left:20px;}
-div.label-actions-selected-records {margin-top:20px;margin-bottom:10px;margin-left:20px;position:relative;left:-13px;}
+div.label-count-records, div.label-actions-selected-records {margin-top:10px;margin-bottom:10px;margin-left:20px;position:relative;left:-13px;}
 div.editor-knoppen {margin-bottom:20px;margin-left:15px;}
 
 #js-form-warning-fields, #js-form-warning-subjects {display:none;}
@@ -61,6 +61,14 @@ input[type="file"].input-attachment {display:inline;}
 
 .action-button {font-size:18px;}
 #list-pager ul {margin:0;position:relative;left:20px;}
+
+#check-column {width:3%;}
+#actions-column {width:6%;}
+#number-column {width:13%;}
+#title-column {width:37%;}
+#supplier-column {width:15%;}
+#status-column {width:14%;}
+#date-column {width:12%;}
 
 .js-index-page-2 {display:none;}
 .js-index-page-3 {display:none;}
