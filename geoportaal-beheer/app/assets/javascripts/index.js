@@ -293,6 +293,8 @@ require([
 			var recordsNoneSelectedMsg = query('.js-records-none-selected');
 			var executeBtns = query('.js-execute-btn');
 			
+			domAttr.set(dom.byId('js-selected-records'), 'innerHTML', recordsChecked.length);
+			
 			domAttr.set(dom.byId('js-status-records-count'), 'innerHTML', recordsChecked.length);
 			domAttr.set(dom.byId('js-delete-records-count'), 'innerHTML', recordsChecked.length);
 			domAttr.set(dom.byId('js-supplier-records-count'), 'innerHTML', recordsChecked.length);
