@@ -20,61 +20,25 @@
 <div>
 	<div class="data-navigation">
 		<div class="row">
-			<span class="col-md-3">@if(count == 0) {@Messages.get("result.count.label.zero")}
+			<span class="col-md-3 count-page-line">@if(count == 0) {@Messages.get("result.count.label.zero")}
 				@if(count == 1) {@count @Messages.get("result.count.label.one")} @if(count > 1) {
 					@count @Messages.get("result.count.label.multiple")}@if(count > 0) {, pagina @page}</span>
 			<div class="pull-right">
-				<div class="row btn-group btn-group-sm">
-					<nav>
-						<ul id="pager-adjusted" class="pager">
-							<li class="@if(start.equals(0)) {disabled paging-disabled}">
-								<a href="@routes.Application.search(0, textSearch, typesString, false, expand)" class="js-nav-button">@Messages.get("button.first")</a>
-							</li>
-							<li class="@if(start.equals(0)) {disabled paging-disabled}">
-								<a href="@routes.Application.search(startPrevious, textSearch, typesString, false, expand)" class="js-nav-button">@Messages.get("button.previous")</a>
-							</li>
-							<li class="@if(startNext >= count) {disabled paging-disabled}">
-								<a href="@routes.Application.search(startNext, textSearch, typesString, false, expand)" class="js-nav-button">@Messages.get("button.next")</a>
-							</li>
-							<li class="@if(startNext >= count) {disabled paging-disabled}">
-								<a href="@routes.Application.search(startLast, textSearch, typesString, false, expand)" class="js-nav-button">@Messages.get("button.last") (@pageLast)</a>
-							</li>
-						</ul>
-					</nav>
-				</div>
-				<div class="row" id="expand-area">
-					<label class="checkbox-inline">
-						<input id="js-expand-all" class="js-expand-all-evt" type="checkbox" @if("true".equals(expand)) {checked}>
-						<span id="js-label-expand-all">@Messages.get("results.expand")</span>
-					</label>
+				<div class="form-group">
+					<a href="@routes.Application.search(0, textSearch, typesString, false, expand)" class="link-as-button @if(start.equals(0)) {button-ovs-disabled}else{button-ovs}">
+						@Messages.get("button.first")
+					</a>
+					<a href="@routes.Application.search(startPrevious, textSearch, typesString, false, expand)" class="link-as-button @if(start.equals(0)) {button-ovs-disabled}else{button-ovs}">
+						@Messages.get("button.previous")
+					</a>
+					<a href="@routes.Application.search(startNext, textSearch, typesString, false, expand)" class="link-as-button @if(startNext >= count) {button-ovs-disabled}else{button-ovs}">
+						@Messages.get("button.next")
+					</a>
+					<a href="@routes.Application.search(startLast, textSearch, typesString, false, expand)" class="link-as-button @if(startNext >= count) {button-ovs-disabled}else{button-ovs}">
+						@Messages.get("button.last") (@pageLast)
+					</a>
 				</div>
 			</div>
-		</div>
-	</div>
-</div>
-	
-<div>
-	<div class="filter-options">
-		<div class="row">
-			<label class="checkbox-inline">
-				<input class="js-data-type" type="checkbox" data-md-type="dataset"
-				@if(typesString.contains("dataset")) {checked}>
-					@Messages.get("search.checkboxes.label") <strong>@Messages.get("metadata.type.dataset")</strong>
-			</label>
-		</div>
-		<div class="row">
-			<label class="checkbox-inline">
-				<input class="js-data-type" type="checkbox" data-md-type="service"
-				@if(typesString.contains("service")) {checked}>
-					@Messages.get("search.checkboxes.label") <strong>@Messages.get("metadata.type.service")</strong>
-			</label>
-		</div>
-		<div class="row">
-			<label class="checkbox-inline">
-				<input class="js-data-type" type="checkbox" data-md-type="dc"
-				@if(typesString.contains("dc")) {checked}>
-					@Messages.get("search.checkboxes.label") <strong>@Messages.get("metadata.type.dc")</strong>
-			</label>
 		</div>
 	</div>
 </div>

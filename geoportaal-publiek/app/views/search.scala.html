@@ -21,6 +21,28 @@
 		<p>@Messages.get("search.intro")</p>
 	</div>
 	
+	<div class="filter-options">
+		<label class="checkbox-inline">
+			<input class="js-data-type" type="checkbox" data-md-type="dataset"
+			@if(typesString.contains("dataset")) {checked}>
+				@Messages.get("search.checkboxes.label") <strong>@Messages.get("metadata.type.dataset")</strong>
+		</label>
+		<label class="checkbox-inline">
+			<input class="js-data-type" type="checkbox" data-md-type="service"
+			@if(typesString.contains("service")) {checked}>
+				@Messages.get("search.checkboxes.label") <strong>@Messages.get("metadata.type.service")</strong>
+		</label>
+		<label class="checkbox-inline">
+			<input class="js-data-type" type="checkbox" data-md-type="dc"
+			@if(typesString.contains("dc")) {checked}>
+				@Messages.get("search.checkboxes.label") <strong>@Messages.get("metadata.type.dc")</strong>
+		</label>
+		<label class="checkbox-inline">
+			<input id="js-expand-all" class="js-expand-all-evt" type="checkbox" @if("true".equals(expand)) {checked}>
+			<span id="js-label-expand-all">@Messages.get("results.expand")</span>
+		</label>
+	</div>
+	
 	@helper.form(action = routes.Application.searchText(), 'class -> "search-bar") {
 		<div class="form-group">
 			<span class="search-label">@Messages.get("search.label")</span>

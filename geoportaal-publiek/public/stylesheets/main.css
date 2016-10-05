@@ -6,7 +6,7 @@ p {line-height:25px;font-size:16px;margin-top:0;margin-bottom:0;}
 div.page {margin:20px auto 20px auto;width:1100px;padding:0px 20px;border-left:1px solid #AAAAAA;border-right:1px solid #AAAAAA;}
 div.logo {margin-top:20px;margin-bottom:20px;}
 div.header {margin-top:20px;margin-bottom:20px;}
-div.intro {margin-top:20px;margin-bottom:20px;padding:10px 0;}
+div.intro {margin-top:20px;margin-bottom:5px;padding:5px 0 5px 0;}
 div.content {margin-top:20px;}
 div.tabs {margin-left:auto;margin-right:auto;width:100%;}
 div.tabs:after {content:'';display:block;clear:both;}
@@ -37,6 +37,7 @@ a.md-title:hover {cursor:pointer;}
 .button-ovs {background-color:#831625;color:#ffffff;font-weight:bold;padding:6px 12px;border:1px solid transparent;border-radius: 4px;}
 .button-ovs:hover {text-decoration:none;background-color:#DC0000;color:#ffffff;}
 .button-ovs:focus {background-color:#DC0000;color:#ffffff;text-decoration:none;}
+.button-ovs-disabled {background-color:#C37D87;color:#ffffff;font-weight:bold;padding:6px 12px;border:1px solid transparent;border-radius: 4px;pointer-events:none;}
 
 #search-button {padding-left:12px;padding-right:12px;position:relative;top:-1px;}
 
@@ -55,9 +56,8 @@ a.md-title:hover {cursor:pointer;}
 .browse-metadata > .row > .browse-title > .titel {margin-top:0;}
 .link {background:none!important;border:none;padding:0!important;cursor:pointer;color:#255c9f;text-decoration:underline;}
 
-.filter-options {margin-top: 10px;margin-bottom: 20px;padding: 0px 0px 0px 15px;}
+.filter-options, .browse-expand-line {margin-top:10px;margin-bottom:20px;padding:0;}
 .data-navigation {margin-top: 10px;margin-bottom: 10px;padding: 0px 20px 0px 0px;}
-#expand-area {margin-top:5px;}
 
 #header-subjects {margin-top: 20px;margin-bottom: 0px;padding: 0px 0px 0px 15px;}
 #browse-info{font-size: 17px;font-weight: bold;}
@@ -71,6 +71,7 @@ a.md-title:hover {cursor:pointer;}
 #contact-icon {background-position:15px 15px;background-size:25px;}
 
 .md-thumbnail {float:right;width:120px;height:120px;padding-left:20px;padding-bottom:10px;}
+.count-page-line {font-size:16px;font-weight:bold;}
 #pager-adjusted {margin-top:0;margin-bottom:5px;}
 
 .paging-disabled {pointer-events:none;}
