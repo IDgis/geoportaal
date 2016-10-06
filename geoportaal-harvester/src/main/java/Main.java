@@ -358,7 +358,7 @@ public class Main {
 		setAnyText(qf, docId, listPotentialUse);
 		setAnyText(qf, docId, listOtherConstraint);
 		setAnyText(qf, docId, listRelatedDataset);
-		
+		setAnyText(qf, docId, listSpatialSchema);
 	}
 	
 	public static void convertServiceValues(SQLQueryFactory qf, Document d, boolean secured) throws Exception {
