@@ -42,7 +42,7 @@
 				<div class="row">
 					<div class="col-md-12">
 						<p class="title">
-							<a class="md-title-index">@doc.get(document.title) (@sdf.format(doc.get(document.date).getTime()), @doc.get(document.creator))</a>
+							<a class="md-title-index">@doc.get(document.title) (@sdf.format(doc.get(document.date).getTime()), @doc.get(document.creator))@if("service".equals(doc.get(mdType.name))){@if("view".equals(doc.get(document.typeService))){ - WMS}@if("download".equals(doc.get(document.typeService))){ - WFS}}</a>
 						</p>
 					</div>
 					<div class="col-md-12">
