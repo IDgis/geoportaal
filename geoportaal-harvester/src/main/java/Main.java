@@ -380,6 +380,7 @@ public class Main {
 		List<String> listDate = metaDoc.getStrings(ServicePath.DATE.path());
 		List<String> listOrganisationCreator = metaDoc.getStrings(ServicePath.ORGANISATION_CREATOR.path());
 		List<String> listDescription = metaDoc.getStrings(ServicePath.ABSTRACT.path());
+		List<String> listTypeService = metaDoc.getStrings(ServicePath.TYPE_SERVICE.path());
 		
 		List<String> listUseLimitation = metaDoc.getStrings(ServicePath.USE_LIMITATION.path());
 		List<String> listOtherConstraint = metaDoc.getStrings(ServicePath.OTHER_CONSTRAINT.path());
@@ -444,6 +445,7 @@ public class Main {
 				.set(document.description, getValueFromList(listDescription))
 				.set(document.thumbnail, thumbnail)
 				.set(document.accessId, accessId)
+				.set(document.typeService, getValueFromList(listTypeService))
 				.execute();
 		} catch(Exception e) {
 			e.printStackTrace();
