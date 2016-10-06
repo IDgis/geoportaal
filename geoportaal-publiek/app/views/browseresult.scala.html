@@ -73,7 +73,7 @@
 					<div class="col-md-12 browse-title">
 						<p class="title">
 							<a class="md-title" data-uuid="@doc.getUuid()">
-								@doc.getTitle() (@sdf.format(doc.getDate().getTime()), @doc.getCreator())
+								@doc.getTitle() (@sdf.format(doc.getDate().getTime()), @doc.getCreator())@if("service".equals(doc.getMetadataType)){@if("view".equals(doc.getTypeService)){ - WMS}@if("download".equals(doc.getTypeService)){ - WFS}}
 							</a>
 						</p>
 					</div>
