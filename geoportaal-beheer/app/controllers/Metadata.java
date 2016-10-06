@@ -230,10 +230,13 @@ public class Metadata extends Controller {
 				}
 			}
 			
+			Boolean dateCreatePublicationCheck = logicCheckDate(dc.getDateSourceCreation(), dc.getDateSourcePublication());
+			Boolean dateValidCheck = logicCheckDate(dc.getDateSourceValidFrom(), dc.getDateSourceValidUntil());
+			
 			// Checks if every mandatory field has been completed, if not return the form with previous state
 			if("".equals(dc.getTitle().trim()) || "".equals(dc.getDescription().trim()) || "".equals(dc.getLocation().trim()) || 
 				"".equals(dc.getFileId().trim()) || creatorKey == null || creatorOtherFailed || useLimitationKey == null || 
-				dateSourceCreationValue == null || dc.getSubject() == null) {
+				dateSourceCreationValue == null || dc.getSubject() == null || !dateCreatePublicationCheck || !dateValidCheck) {
 					
 					DublinCore previousDC = new DublinCore(dc.getLocation(), dc.getFileId(), dc.getTitle(), dc.getDescription(), dc.getTypeInformation(),
 						dc.getCreator(), dc.getCreatorOther(), dc.getRights(), dc.getUseLimitation(), dc.getMdFormat(), dc.getSource(),
@@ -588,10 +591,13 @@ public class Metadata extends Controller {
 					}
 				}
 				
+				Boolean dateCreatePublicationCheck = logicCheckDate(dc.getDateSourceCreation(), dc.getDateSourcePublication());
+				Boolean dateValidCheck = logicCheckDate(dc.getDateSourceValidFrom(), dc.getDateSourceValidUntil());
+				
 				// Checks if every mandatory field has been completed, if not return the form with previous state
 				if("".equals(dc.getTitle().trim()) || "".equals(dc.getDescription().trim()) || "".equals(dc.getLocation().trim()) || 
 					"".equals(dc.getFileId().trim()) || creatorKey == null || creatorOtherFailed || useLimitationKey == null || 
-					dateSourceCreationValue == null || dc.getSubject() == null) {
+					dateSourceCreationValue == null || dc.getSubject() == null || !dateCreatePublicationCheck || !dateValidCheck) {
 						
 						Tuple datasetRow = tx.select(metadata.id, metadata.uuid, metadata.location, metadata.fileId, metadata.title, 
 								metadata.description, metadata.typeInformation, metadata.creator, metadata.creatorOther, metadata.rights, 
@@ -880,8 +886,12 @@ public class Metadata extends Controller {
 				creatorOther = "";
 			}
 			
+			Boolean dateCreatePublicationCheck = logicCheckDate(dc.getDateSourceCreation(), dc.getDateSourcePublication());
+			Boolean dateValidCheck = logicCheckDate(dc.getDateSourceValidFrom(), dc.getDateSourceValidUntil());
+			
 			// Return specific error message view
-			return ok(validateform.render(title, description, location, fileId, creator, creatorOther, dc.getDateSourceCreation(), dc.getSubject()));
+			return ok(validateform.render(title, description, location, fileId, creator, creatorOther, dc.getDateSourceCreation(), dc.getSubject(),
+					dateCreatePublicationCheck, dateValidCheck));
 		} catch(IllegalStateException ise) {
 			// Return generic error message view
 			return ok(bindingerror.render(Messages.get("validate.search.generic"), null, null, null, null, null, null));
@@ -929,6 +939,17 @@ public class Metadata extends Controller {
 		}
 		
 		return timestamp;
+	}
+	
+	public Boolean logicCheckDate(Date dateFirst, Date dateSecond) {
+		Boolean b = true;
+		if(dateFirst != null && dateSecond != null) {
+			if(dateFirst.after(dateSecond)) {
+				b = false;
+			}
+		}
+		
+		return b;
 	}
 	
 	/**
