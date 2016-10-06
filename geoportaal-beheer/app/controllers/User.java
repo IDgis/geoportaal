@@ -139,8 +139,8 @@ public class User extends Controller {
 		// Clear all keys from the session
 		session().clear();
 		
-		// Returns the index page, which defaults to the login page in this case
-		return redirect(controllers.routes.Index.index("", "none", "none", "none", "", "", "dateDesc", ""));
+		// Returns the internal portal page
+		return redirect(Play.application().configuration().getString("geoportaal.internal.url"));
 	}
 	
 	/**
