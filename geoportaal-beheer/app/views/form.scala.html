@@ -482,6 +482,24 @@
 							</div>
 						</div>
 					}
+					@if(previousValues.get("metadata").getDateSourceCreation() != null && previousValues.get("metadata").getDateSourcePublication() != null) {
+						@if(previousValues.get("metadata").getDateSourceCreation().after(previousValues.get("metadata").getDateSourcePublication())) {
+							<div>
+								<div class="alert alert-danger" role="alert" data-error="true">
+									<b>@Messages.get("validate.form.date.create.publish.check")</b>
+								</div>
+							</div>
+						}
+					}
+					@if(previousValues.get("metadata").getDateSourceValidFrom() != null && previousValues.get("metadata").getDateSourceValidUntil() != null) {
+						@if(previousValues.get("metadata").getDateSourceValidFrom().after(previousValues.get("metadata").getDateSourceValidUntil())) {
+							<div>
+								<div class="alert alert-danger" role="alert" data-error="true">
+									<b>@Messages.get("validate.form.date.valid.check")</b>
+								</div>
+							</div>
+						}
+					}
 					@if(previousValues.get("metadata").getSubject() == null) {	
 						<div>
 							<div class="alert alert-danger" role="alert" data-error="true">
