@@ -361,7 +361,7 @@ public class Application extends Controller {
 		return ok(help.render());
 	}
 	
-	public Promise<Result> getMetadata(String type, String uuid) throws MalformedURLException, IOException {
+	public Promise<Result> getMetadata(String type, String uuid, Boolean noStyle) throws MalformedURLException, IOException {
 		String access = play.Play.application().configuration().getString("portal.access");
 		
 		String url = getMetadataUrl(type);
@@ -370,7 +370,14 @@ public class Application extends Controller {
 			return Promise.pure(notFound("404 - not found"));
 		}
 		
-		WSRequest request = ws.url(url + uuid + ".xml");
+		String finalUrl = "";
+		if(noStyle) {
+			finalUrl = url + uuid + ".xml" + "?noStyle=true";
+		} else {
+			finalUrl = url + uuid + ".xml";
+		}
+		
+		WSRequest request = ws.url(finalUrl);
 		
 		if("intern".equals(access)) {
 			request.setHeader(play.Play.application().configuration().getString("trusted.header"), "1");

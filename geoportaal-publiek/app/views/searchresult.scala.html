@@ -72,6 +72,7 @@
 						&& "vector".equals(doc.get(document.spatialSchema))) {
 						@views.html.downloadlink(doc.get(document.uuid))
 					}
+					@views.html.sourcexml(doc.get(mdType.name), doc.get(document.uuid))
 				</div>
 			</div>
 		</div>

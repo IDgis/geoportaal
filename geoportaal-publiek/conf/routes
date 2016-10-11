@@ -9,7 +9,7 @@ GET			/browse					controllers.Application.browse(start: Int ?= 0, text: String ?
 GET			/contact				controllers.Application.contact
 GET			/about					controllers.Application.about
 GET			/help					controllers.Application.help
-GET			/metadata/:type/:metadataUuid		controllers.Application.getMetadata(type: String, metadataUuid: String)
+GET			/metadata/:type/:metadataUuid		controllers.Application.getMetadata(type: String, metadataUuid: String, noStyle: Boolean ?= false)
 
 POST		/searchtext				controllers.Application.searchText()
 
