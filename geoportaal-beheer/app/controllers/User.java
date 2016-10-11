@@ -288,6 +288,10 @@ public class User extends Controller {
 		return redirect(controllers.routes.Index.index("", "none", "none", "none", "", "", "dateDesc", ""));
 	}
 	
+	public Result loginHelp() {
+		return ok(views.html.loginhelp.render());
+	}
+	
 	/**
 	 * The login form
 	 * 
