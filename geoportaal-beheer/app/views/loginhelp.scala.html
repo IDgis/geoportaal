@@ -1,0 +1,27 @@
+@import play.i18n._
+
+<html lang="en">
+	<head>
+		<title>@Messages.get("loginhelp")</title>
+		<link rel="stylesheet" media="screen" href="@routes.Assets.versioned("lib/bootstrap/css/bootstrap.min.css")">
+		<link rel="stylesheet" media="screen" href="@routes.Assets.versioned("stylesheets/main.css")">
+	</head>
+	<body>
+		<div class="page">	
+			<div class="logo">
+				<a>
+					<img src="@routes.Assets.versioned("images/logo_overijssel.png")"></img>
+				</a>
+			</div>
+			<div class="titelbalk">
+				<h1 class="header">@Messages.get("login.help.header")</h1>
+			</div>
+			<div class="welkom">
+				<p>@Messages.get("login.help.intro")</p>
+			</div>
+			<div>
+				@Messages.get("application.name"): @getClass().getPackage().getImplementationVersion()
+			</div>
+		</div>
+	</body>
+</html>

@@ -1,5 +1,6 @@
 # Algemeen
 login=Inloggen
+loginhelp=Help inloggen
 logout=Uitloggen
 save=Opslaan
 confirm=Bevestigen
@@ -135,7 +136,10 @@ login.email.label=E-mailadres
 login.password.label=Wachtwoord
 login.button.password.edit=Wachtwoord wijzigen
 login.button.password.forgot=Wachtwoord vergeten
+login.button.help=Help
 login.error.message=Ongeldige gebruikersnaam of wachtwoord
+login.help.header=Help inloggen beheermodule Geoportaal
+login.help.intro=Hier komt de help tekst voor het inloggen
 
 # Wachtwoord wijzigen
 password.edit.header=Wachtwoord wijzigen beheermodule Geoportaal
