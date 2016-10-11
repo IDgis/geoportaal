@@ -1568,7 +1568,7 @@
 	  			<xsl:when test=". = 'intellectualPropertyRights'">
 	  				<p>
 				  		<b><xsl:text>(Juridische) gebruiksrestricties: </xsl:text></b>
-				  		<xsl:text>Intellectueel</xsl:text>
+				  		<xsl:text>Intellectueel eigendom</xsl:text>
 			  		</p>
 	  			</xsl:when>
 	  			<xsl:when test=". = 'restricted'">
@@ -1628,7 +1628,7 @@
 	  			<xsl:when test=". = 'intellectualPropertyRights'">
 	  				<p>
 				  		<b><xsl:text>(Juridische) toegangsrestricties: </xsl:text></b>
-				  		<xsl:text>Intellectueel</xsl:text>
+				  		<xsl:text>Intellectueel eigendom</xsl:text>
 			  		</p>
 	  			</xsl:when>
 	  			<xsl:when test=". = 'restricted'">
