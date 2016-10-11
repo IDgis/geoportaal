@@ -350,15 +350,15 @@ public class Application extends Controller {
 	}
 	
 	public Result about() {
-		String access = play.Play.application().configuration().getString("portal.access");
-		
 		return ok(about.render());
 	}
 	
 	public Result contact() {
-		String access = play.Play.application().configuration().getString("portal.access");
-		
 		return ok(contact.render());
+	}
+	
+	public Result help() {
+		return ok(help.render());
 	}
 	
 	public Promise<Result> getMetadata(String type, String uuid) throws MalformedURLException, IOException {
