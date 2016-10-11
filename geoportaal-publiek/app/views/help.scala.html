@@ -1,0 +1,43 @@
+@import play.i18n._
+
+@main(if("intern".equals(play.Play.application().configuration().getString("portal.access"))) { Messages.get("help.header.intern") } else { 
+	Messages.get("help.header") }, "") {
+	<div class="content">
+		<p><b>@Messages.get("help.paragraph.header.1")</b></p>
+		<p>@Messages.get("help.paragraph.1.1")</p>
+		<p>@Messages.get("help.paragraph.1.2")</p>
+		<p><b>@Messages.get("help.paragraph.header.2")</b></p>
+		<p>@Html(Messages.get("help.paragraph.2.1"))</p>
+		<p><b>@Messages.get("help.paragraph.header.3")</b></p>
+		<p>@Html(Messages.get("help.paragraph.3.1"))</p>
+		<p><b>@Messages.get("help.paragraph.header.4")</b></p>
+		<p>@Messages.get("help.paragraph.4.1")</p>
+		<p>@Html(Messages.get("help.paragraph.4.2"))</p>
+		<p>@Messages.get("help.paragraph.4.3")</p>
+		<ul>
+			<li>@Html(Messages.get("help.paragraph.4.3.option.1"))</li>
+			<li>@Html(Messages.get("help.paragraph.4.3.option.2"))</li>
+			<li>@Html(Messages.get("help.paragraph.4.3.option.3"))</li>
+			<li>@Html(Messages.get("help.paragraph.4.3.option.4"))</li>
+		</ul>
+		<p>@Messages.get("help.paragraph.4.4")</p>
+		<p>@Messages.get("help.paragraph.4.5")</p>
+		<p><b>@Messages.get("help.paragraph.header.5")</b></p>
+		<p>@Messages.get("help.paragraph.5.1")</p>
+		<p><b>@Messages.get("help.paragraph.header.6")</b></p>
+		<p>@Messages.get("help.paragraph.6.1")</p>
+		<p>@Html(Messages.get("help.paragraph.6.2"))</p>
+		<p><b>@Messages.get("help.paragraph.header.7")</b></p>
+		<p>@Messages.get("help.paragraph.7.1")</p>
+		<p>@Messages.get("help.paragraph.7.2")</p>
+		<p><b>@Messages.get("help.paragraph.header.8")</b></p>
+		<p>@Html(Messages.get("help.paragraph.8.1"))</p>
+		<p><b>@Messages.get("help.paragraph.header.9")</b></p>
+		<p>@Html(Messages.get("help.paragraph.9.1"))</p>
+		<p>@Messages.get("help.paragraph.9.2")</p>
+		<p><b>@Messages.get("help.paragraph.header.10")</b></p>
+		<p>@Messages.get("help.paragraph.10.1")</p>
+		<p>@Messages.get("help.paragraph.10.2")</p>
+		<p>@Html(Messages.get("help.paragraph.10.3"))</p>
+	</div>
+}
