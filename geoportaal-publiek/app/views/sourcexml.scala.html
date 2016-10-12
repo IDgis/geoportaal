@@ -1,0 +1,7 @@
+@(typeName: String,
+	uuid: String
+)
+	
+@import play.i18n._
+
+<a class="link" href="@routes.Application.getMetadata(typeName, uuid, true)" target="_blank">@Messages.get("button.xml")</a>

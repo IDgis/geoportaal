@@ -3,6 +3,7 @@ unauthorized=Geen toegang
 button.search=Zoek
 button.help=Help
 button.metadata=Meer informatie
+button.xml=XML
 button.download=Download
 button.first=Eerste pagina
 button.previous=Vorige pagina

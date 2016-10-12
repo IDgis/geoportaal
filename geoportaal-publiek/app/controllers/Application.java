@@ -8,6 +8,7 @@ import static models.QMdType.mdType;
 import static models.QSubject.subject;
 import static models.QSubjectLabel.subjectLabel;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.sql.Timestamp;
@@ -18,7 +19,17 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
-import javax.swing.text.Document;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.ProcessingInstruction;
 
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.dsl.Wildcard;
@@ -361,7 +372,7 @@ public class Application extends Controller {
 		return ok(help.render());
 	}
 	
-	public Promise<Result> getMetadata(String type, String uuid) throws MalformedURLException, IOException {
+	public Promise<Result> getMetadata(String type, String uuid, Boolean noStyle) throws MalformedURLException, IOException {
 		String access = play.Play.application().configuration().getString("portal.access");
 		
 		String url = getMetadataUrl(type);
@@ -379,7 +390,36 @@ public class Application extends Controller {
 		}
 		
 		return request.get().map(response -> {
-			return ok(response.getBodyAsStream()).as("UTF-8").as("application/xml");
+			if(noStyle) {
+				DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+				dbf.setNamespaceAware(true);
+				
+				DocumentBuilder db = dbf.newDocumentBuilder();
+				Document d = db.parse(response.getBodyAsStream());
+				
+				// remove existing stylesheet
+				NodeList children = d.getChildNodes();
+				for(int i = 0; i < children.getLength(); i++) {
+					Node n = children.item(i);
+					if(n.getNodeType() == Node.PROCESSING_INSTRUCTION_NODE) {
+						ProcessingInstruction pi = (ProcessingInstruction)n;
+						if("xml-stylesheet".equals(pi.getTarget())) {
+							d.removeChild(pi);
+						}
+					}
+				}
+				
+				TransformerFactory tf = TransformerFactory.newInstance();
+				Transformer t = tf.newTransformer();
+				
+				ByteArrayOutputStream boas = new ByteArrayOutputStream();
+				t.transform(new DOMSource(d), new StreamResult(boas));
+				boas.close();
+				
+				return ok(boas.toByteArray()).as("UTF-8").as("application/xml");
+			} else {
+				return ok(response.getBodyAsStream()).as("UTF-8").as("application/xml");
+			}
 		});
 	}
 	
