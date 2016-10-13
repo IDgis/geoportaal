@@ -3,8 +3,8 @@
 <html lang="en">
 	<head>
 		<title>@Messages.get("loginhelp")</title>
-		<link rel="stylesheet" media="screen" href="@routes.Assets.versioned("lib/bootstrap/css/bootstrap.min.css")">
 		<link rel="stylesheet" media="screen" href="@routes.Assets.versioned("stylesheets/main.css")">
+		<link rel="stylesheet" media="screen" href="@routes.Assets.versioned("lib/bootstrap/css/bootstrap.min.css")">
 	</head>
 	<body>
 		<div class="page">	
@@ -16,9 +16,11 @@
 			<div class="titelbalk">
 				<h1 class="header">@Messages.get("login.help.header")</h1>
 			</div>
-			<div class="welkom">
-				<p>@Messages.get("login.help.intro")</p>
-			</div>
+			<p>@Messages.get("login.help.paragraph.1")</p>
+			<p>@Messages.get("login.help.paragraph.2")</p>
+			<p>@Html(Messages.get("login.help.paragraph.3"))</p>
+			<p>@Messages.get("login.help.paragraph.4")</p>
+			<p>@Messages.get("login.help.paragraph.5")</p>
 			<div>
 				@Messages.get("application.name"): @getClass().getPackage().getImplementationVersion()
 			</div>
