@@ -179,7 +179,15 @@ report.start.info.3=Na opslaan van de CSV kan je verder gaan met een volgende ra
 
 # Help pagina
 help.header=Geoportaal: help metadata
-help.intro=Hier komt de tekst voor de help pagina.
+help.paragraph.1=<b>Toelichting bij het beheer van metadata.</b>
+help.paragraph.2=Bij dit onderdeel van het Geoportaal kan je je eigen kaarten toevoegen. Het betreft hier statische kaarten (pdf's meestal).
+help.paragraph.3=Bij de statische kaarten zijn enkele velden verplicht. Een aantal velden is al voor je ingevuld, zoals formaat en datum creatie. Deze velden kan je ook, indien nodig, zelf weer aanpassen.
+help.paragraph.4=Er zijn enkele velden verplicht (aangegeven met *). Vul je hier niets in, dan kan je de betreffende kaart niet opslaan.
+help.paragraph.5=Je kan 1 of meerdere kaarten opslaan, bij 1 enkel nummer. Dat is handig omdat sommige kaarten als serie bij elkaar horen. Ze zijn dan onder 1 nummer terug te vinden.
+help.paragraph.6=Bij het onderdeel TOEVOEGEN kan je kaarten aanbieden.
+help.paragraph.7=Bij ZOEKEN en WIJZIGEN kan je eventueel je kaarten die je hebt aangeboden beheren. Verwijderen of opnieuw aanpassen is mogelijk. Bij dit onderdeel zie je alleen je eigen kaarten. Zolang jouw kaart een concept status heeft, kan je die zelf aanpassen. Een beheerder zal hier niets mee doen, totdat je zelf de status verandert.
+help.paragraph.8=Ben je klaar met de kaart, dan bied je de kaart aan "Ter goedkeuring". De beheerders van het Geoportaal zullen dan de kaart verder oppakken en publiceren.
+help.paragraph.9=Zijn er vragen over bepaalde velden, dan is er meestal extra informatie aanwezig. Achter alle invoervelden zie je een knopje met een "i". Hier is extra informatie te vinden over het betreffende invoerveld.
 
 # Lijst
 list.action.header=Actie
