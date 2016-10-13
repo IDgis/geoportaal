@@ -4,6 +4,7 @@ div.page {margin:0px auto 20px auto;width:1100px;padding:0px 20px;border-left:1p
 
 div {display:block;}
 p {line-height:25px;font-size:16px;margin-top:0;margin-bottom:0;}
+p.with-margin {margin: 0 0 10px;}
 
 div.logo {margin-top:20px;margin-bottom:20px;}
 div.titelbalk {margin-top:20px;margin-bottom:20px;}
