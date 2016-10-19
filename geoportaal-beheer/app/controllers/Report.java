@@ -151,7 +151,7 @@ public class Report extends Controller {
 				ld.getDayOfMonth() + ".csv\"");
 		
 		String header = "\"title\";\"creator\";\"subject\";\"description\";\"date_creation\";\"date_publication\";\"date_valid_start\";"
-				+ "\"date_valid_end\";\"type\";\"format\";\"identifier\";\"location\";\"number\";\"source\";\"attachment\";"
+				+ "\"date_valid_end\";\"type\";\"format\";\"identifier\";\"location\";\"number\";\"count\";\"source\";\"attachment\";"
 				+ "\"attachment_size_in_mb\";\"attachment_size_in_mb_total\";\"rights\";\"use_limitation\";\"supplier\";\"role_supplier\";"
 				+ "\"status\";\"last_revision_user\";\"last_revision_date\";\"publisher\";\"contributor\";\"language\";\"west_bound\";"
 				+ "\"east_bound\";\"south_bound\";\"north_bound\";";
@@ -187,7 +187,17 @@ public class Report extends Controller {
 				.from(constants)
 				.fetchOne();
 			
+			
 			for(Tuple md : mds) {
+				
+				// count nr of times a certain fileId is found in the whole dataset
+				// maybe not so efficient to do this for every md Tuple.
+				Long reportCount = tx.select(metadata.fileId.count())
+					.from(metadata)
+					.where(metadata.fileId.eq(md.get(metadata.fileId)))
+					.groupBy(metadata.fileId)
+					.fetchOne();
+				
 				strb.append("\"" + escapeQuotes(md.get(metadata.title)) + "\";");
 				if(md.get(metadata.creator).equals(9)) {
 					strb.append("\"" + escapeQuotes(md.get(metadata.creatorOther)) + "\";");
@@ -228,6 +238,7 @@ public class Report extends Controller {
 				strb.append("\"" + escapeQuotes(md.get(metadata.uuid)) + "\";");
 				strb.append("\"" + escapeQuotes(md.get(metadata.location)) + "\";");
 				strb.append("\"" + escapeQuotes(md.get(metadata.fileId)) + "\";");
+				strb.append("\"" + escapeQuotes(reportCount.toString()) + "\";");				
 				strb.append("\"" + escapeQuotes(md.get(metadata.source)) + "\";");
 				
 				strb.append("\"");
