@@ -782,6 +782,7 @@ public class Metadata extends Controller {
 	 * @return the {@link Result} of the error messages
 	 */
 	public Result validateForm(String metadataUuid) {
+		System.out.println("VALIDATE client");
 		try {
 			// Fetches the form fields
 			DynamicForm requestData = Form.form().bindFromRequest();
@@ -795,6 +796,8 @@ public class Metadata extends Controller {
 			Boolean datePublicationReturn = validateDate(datePublication);
 			Boolean dateValidFromReturn = validateDate(dateValidFrom);
 			Boolean dateValidUntilReturn = validateDate(dateValidUntil);
+			
+			String fileIdError = null;
 			
 			// Check if one or more dates couldn't be parsed, if so return an error message 
 			if(!dateCreateReturn || !datePublicationReturn || !dateValidFromReturn || !dateValidUntilReturn) {
@@ -866,6 +869,34 @@ public class Metadata extends Controller {
 				fileId = dc.getFileId();
 			}
 			
+			if (fileId != null){
+				/*
+				 * Check fileId
+				 * https://github.com/IDgis/geoportaal-test/issues/183
+				 * These checks will result in a warning, but should not block the validation
+				 */
+				System.out.println("File Id: " + fileId);
+
+				// check for multiple occurences numbers
+				Long fileIdCount = nrOfOccurencesFileId(fileId);
+				System.out.println(fileId + " found " + fileIdCount + " times");
+				if (fileIdCount > 0){
+					fileIdError = "EXISTS";
+				}
+				
+				// check for other character than 0123456789
+				if (!fileId.matches("\\d+")){
+					System.out.println(fileId + " does not contain only 0123456789");
+					fileIdError = "NONUMBER";
+				}
+				
+				// check for length < 6
+				if (fileId.length() < 6){
+					System.out.println(fileId + " length() < 6");
+					fileIdError = "TOOLONG";
+				}
+			}
+			
 			// If creator is empty set to null (which will generate an error message)
 			String creator = null;
 			String creatorOther = null;
@@ -890,12 +921,32 @@ public class Metadata extends Controller {
 			Boolean dateValidCheck = logicCheckDate(dc.getDateSourceValidFrom(), dc.getDateSourceValidUntil());
 			
 			// Return specific error message view
-			return ok(validateform.render(title, description, location, fileId, creator, creatorOther, dc.getDateSourceCreation(), dc.getSubject(),
+			return ok(validateform.render(title, description, location, fileId, fileIdError, creator, creatorOther, dc.getDateSourceCreation(), dc.getSubject(),
 					dateCreatePublicationCheck, dateValidCheck));
 		} catch(IllegalStateException ise) {
 			// Return generic error message view
 			return ok(bindingerror.render(Messages.get("validate.search.generic"), null, null, null, null, null, null));
 		}
+	}
+	
+	/**
+	 * Find the nr of occurences of fileId in the metadata table
+	 * @param currentFileId field to check
+	 * @return the nr of occurences of currentFileId 
+	 */
+	public Long nrOfOccurencesFileId(final String currentFileId){
+		return q.withTransaction(tx -> {
+			// count nr of times a certain fileId is found in the whole dataset
+			Long fileIdCount = tx.select(metadata.fileId.count())
+				.from(metadata)
+				.where(metadata.fileId.eq(currentFileId))
+				.groupBy(metadata.fileId)
+				.fetchOne();
+			if (fileIdCount == null){
+				fileIdCount = 0L;
+			}
+			return fileIdCount;
+		});
 	}
 	
 	/**

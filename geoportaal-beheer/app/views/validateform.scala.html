@@ -1,4 +1,4 @@
-@(title: String, description: String, location: String, fileId: String, creator: String, creatorOther: String, dateCreate: java.util.Date, 
+@(title: String, description: String, location: String, fileId: String, fileIdError: String, creator: String, creatorOther: String, dateCreate: java.util.Date, 
 	subjectList: java.util.List[String], dateCreatePublicationCheck: Boolean, dateValidCheck: Boolean)
 
 @import play.i18n._
@@ -32,6 +32,42 @@
 			</div>
 		</div>
 	}
+
+	@if(fileIdError != null) {
+		<!-- Modal -->
+		<div class="modal fade in" id="myModalValidate" tabindex="-1" role="dialog" aria-labelledby="myModalLabel1" style="display: block;">
+		  <div class="modal-dialog" role="document">
+		    <div class="modal-content">
+		      <div class="modal-header">
+		        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		        <h4 class="modal-title" id="myModalLabel1">@Messages.get("validate.form.fileid.warning.title")</h4>
+		      </div>
+		      <div class="modal-body">
+		      	<p>
+			      @if(fileIdError.equals("NONUMBER")) {
+			        @Messages.get("validate.form.fileid.warning.body.nonumber")
+			      }
+			      @if(fileIdError.equals("EXISTS")) {
+			        @Messages.get("validate.form.fileid.warning.body.occurrences")
+			      }
+			      @if(fileIdError.equals("TOOLONG")) {
+			        @Messages.get("validate.form.fileid.warning.body.length")
+			      }
+			  	</p>
+		      </div>
+		      <div class="modal-footer">
+		        <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#myModalValidate">OK</button>
+		      </div>
+		    </div>
+		  </div>
+		</div>
+		<div>
+			<div class="alert alert-danger" role="alert" data-error="true">
+		        <b>@Messages.get("validate.form.fileid.warning.title")</b>
+			</div>
+		</div>
+	}
+		
 	@if(creator == null) {
 		<div>
 			<div class="alert alert-danger" role="alert" data-error="true">
