@@ -797,8 +797,6 @@ public class Metadata extends Controller {
 			Boolean dateValidFromReturn = validateDate(dateValidFrom);
 			Boolean dateValidUntilReturn = validateDate(dateValidUntil);
 			
-			String fileIdError = null;
-			
 			// Check if one or more dates couldn't be parsed, if so return an error message 
 			if(!dateCreateReturn || !datePublicationReturn || !dateValidFromReturn || !dateValidUntilReturn) {
 				String dateCreateMsg = null;
@@ -861,6 +859,10 @@ public class Metadata extends Controller {
 				location = dc.getLocation();
 			}
 			
+			Boolean fileIdDuplicate = false;
+			Boolean fileIdCharacter = false;
+			Boolean fileIdLength = false;
+			
 			// If file id is empty set to null (which will generate an error message)
 			String fileId = null;
 			if("".equals(dc.getFileId().trim())) {
@@ -871,29 +873,27 @@ public class Metadata extends Controller {
 			
 			if (fileId != null){
 				/*
-				 * Check fileId
-				 * https://github.com/IDgis/geoportaal-test/issues/183
 				 * These checks will result in a warning, but should not block the validation
 				 */
-				System.out.println("File Id: " + fileId);
-
+				System.out.println("File id: " + fileId);
+				
 				// check for multiple occurences numbers
 				Long fileIdCount = nrOfOccurencesFileId(fileId);
 				System.out.println(fileId + " found " + fileIdCount + " times");
 				if (fileIdCount > 0){
-					fileIdError = "EXISTS";
+					fileIdDuplicate = true;
 				}
 				
 				// check for other character than 0123456789
 				if (!fileId.matches("\\d+")){
 					System.out.println(fileId + " does not contain only 0123456789");
-					fileIdError = "NONUMBER";
+					fileIdCharacter = true;
 				}
 				
 				// check for length < 6
 				if (fileId.length() < 6){
 					System.out.println(fileId + " length() < 6");
-					fileIdError = "TOOLONG";
+					fileIdLength = true;
 				}
 			}
 			
@@ -921,8 +921,8 @@ public class Metadata extends Controller {
 			Boolean dateValidCheck = logicCheckDate(dc.getDateSourceValidFrom(), dc.getDateSourceValidUntil());
 			
 			// Return specific error message view
-			return ok(validateform.render(title, description, location, fileId, fileIdError, creator, creatorOther, dc.getDateSourceCreation(), dc.getSubject(),
-					dateCreatePublicationCheck, dateValidCheck));
+			return ok(validateform.render(title, description, location, fileId, fileIdDuplicate, fileIdCharacter, fileIdLength, creator, creatorOther, 
+					dc.getDateSourceCreation(), dc.getSubject(), dateCreatePublicationCheck, dateValidCheck));
 		} catch(IllegalStateException ise) {
 			// Return generic error message view
 			return ok(bindingerror.render(Messages.get("validate.search.generic"), null, null, null, null, null, null));

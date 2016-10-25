@@ -517,5 +517,23 @@
 					search.getFormat(), search.getDateUpdateStart(), search.getDateUpdateEnd())">@Messages.get("cancel")</a>
 			</div>
 		</div>
+		
+		<div class="modal fade in" id="validateNumberModal"">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal">
+							<span aria-hidden="true">&times;</span>
+						</button>
+						<h4 class="modal-title">@Messages.get("validate.form.fileid.warning.title")</h4>
+					</div>
+					<div class="modal-body" id="fileid-modal-body"></div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-warning" id="js-save-confirm-form">@Messages.get("confirm.save")</button>
+						<button type="button" class="btn btn-default" data-dismiss="modal">@Messages.get("cancel")</button>
+					</div>
+				</div>
+			</div>
+		</div>
 	}
 }
