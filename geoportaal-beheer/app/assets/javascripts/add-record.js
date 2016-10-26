@@ -24,6 +24,11 @@ require([
 		var create = domAttr.get(dom.byId('js-date-creation'), 'data-create');
 		var validate = domAttr.get(dom.byId('js-date-creation'), 'data-validate');
 		
+		var warnMsgsServer = domAttr.get(dom.byId('js-warn-msgs-server'), 'value') === 'true';
+		if(warnMsgsServer) {
+			$('#validateNumberModal').modal({});
+		}
+		
 		var datesArray = query('input[type=date]');
 		if(!Modernizr.inputtypes.date) {
 			array.forEach(datesArray, function(item) {
@@ -155,7 +160,6 @@ require([
 			
 			if(creatorVal === 'other') {
 				var otherCreatorVal = domAttr.get(dom.byId('js-other-creator-input'), 'value');
-				
 				formData.append('creatorOther', otherCreatorVal);
 			}
 			
@@ -212,6 +216,7 @@ require([
 		
 		var saveConfirmRecord = on(dom.byId('js-save-confirm-form'), 'click', function(e) {
 			var form = dom.byId('js-form');
+			domAttr.set(dom.byId('js-fileid-confirmed'), 'value', 'true');
 			form.submit();
 		});
 });
