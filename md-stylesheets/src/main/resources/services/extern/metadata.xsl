@@ -385,10 +385,15 @@
 				<xsl:apply-templates select="gmd:identificationInfo/srv:SV_ServiceIdentification/gmd:resourceConstraints/gmd:MD_SecurityConstraints/gmd:classification/gmd:MD_ClassificationCode/@codeListValue"/>
 			</div>
 			<div class="proclaimer">
-				<p>Deze informatie wordt beschikbaar gesteld door het Geoportaal van de Provincie Overijssel.</p>
-				<p>De gegevens zijn gemaakt voor eigen (intern) gebruik door de provincie Overijssel.</p>
-				<p>Zijn er suggesties of vragen, neem dan contact op met
-					<a href="mailto:beleidsinformatie@overijssel.nl">beleidsinformatie@overijssel.nl</a>
+				<p>Deze gegevens worden beschikbaar gesteld door het Geoportaal van Overijssel: 
+					<a target="_blank" href="http://www.geoportaaloverijssel.nl">http://www.geoportaaloverijssel.nl</a>
+				</p>
+				<p>In het Geoportaal staan actuele kaarten en beschrijvingen van die kaarten.</p>
+				<p>Ter referentie zijn vaak ook nog oudere kaarten beschikbaar gesteld.</p>
+				<p>De provincie Overijssel stelt zoveel mogelijk kaarten als "open data" voor iedereen beschikbaar.</p>
+				<p>Heeft u suggesties of vragen? Stuur dan een email naar <a href="mailto:beleidsinformatie@overijssel.nl">beleidsinformatie@overijssel.nl</a></p>
+				<p>Zie proclaimer: 
+					<a target="_blank" href="http://www.overijssel.nl/algemene-onderdelen/proclaimer">http://www.overijssel.nl/algemene-onderdelen/proclaimer</a>
 				</p>
 			</div>
 		</div>		
