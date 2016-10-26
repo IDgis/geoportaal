@@ -24,6 +24,11 @@ require([
 		var create = domAttr.get(dom.byId('js-date-creation'), 'data-create');
 		var validate = domAttr.get(dom.byId('js-date-creation'), 'data-validate');
 		
+		var warnMsgsServer = domAttr.get(dom.byId('js-warn-msgs-server'), 'value') === 'true';
+		if(warnMsgsServer) {
+			$('#validateNumberModal').modal({});
+		}
+		
 		var datesArray = query('input[type=date]');
 		if(!Modernizr.inputtypes.date) {
 			array.forEach(datesArray, function(item) {
@@ -155,7 +160,6 @@ require([
 			
 			if(creatorVal === 'other') {
 				var otherCreatorVal = domAttr.get(dom.byId('js-other-creator-input'), 'value');
-				
 				formData.append('creatorOther', otherCreatorVal);
 			}
 			
@@ -170,16 +174,28 @@ require([
 					data: formData,
 					method: "POST"	
 			}).then(function(data) {
-				var nfBoolean = data.indexOf('data-error="true"') > -1;
+				var errorNfBoolean = data.indexOf('data-error="true"') > -1;
+				var warningNfBoolean = data.indexOf('data-warning="true"') > -1;
 				
-				if(nfBoolean) {
-					if(dom.byId('js-form-validation-result')) {
-						domConstruct.destroy(dom.byId('js-form-validation-result'));
-					}
+				if(errorNfBoolean || warningNfBoolean) {
+					domConstruct.empty(dom.byId('js-form-validation'));
+					domConstruct.place(data, dom.byId('js-form-validation'));
+				}
+				
+				if(warningNfBoolean) {
+					domConstruct.empty(dom.byId('fileid-modal-body'));
+					var fileidMessages = query('.fileid-message');
+					array.forEach(fileidMessages, function(item) {
+						var element = domConstruct.create('p');
+						domAttr.set(element, 'class', 'fileid-warning-msg');
+						domAttr.set(element, 'innerHTML', domAttr.get(item, 'data-message'));
+						domConstruct.place(element, dom.byId('fileid-modal-body'), 'last');
+					});
 					
-					var result = dom.byId('js-form-validation');
-					domConstruct.place(data, result);
-				} else {
+					$('#validateNumberModal').modal({});
+				}
+				
+				if(!errorNfBoolean && !warningNfBoolean) {
 					form.submit();
 					
 					domConstruct.destroy('js-save-form');
@@ -196,5 +212,11 @@ require([
 					domConstruct.place(innerSpan, outerSpan, 'last');
 				}
 			});
+		});
+		
+		var saveConfirmRecord = on(dom.byId('js-save-confirm-form'), 'click', function(e) {
+			var form = dom.byId('js-form');
+			domAttr.set(dom.byId('js-fileid-confirmed'), 'value', 'true');
+			form.submit();
 		});
 });

@@ -27,6 +27,7 @@ import java.sql.Timestamp;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -136,7 +137,7 @@ public class Metadata extends Controller {
 			
 			// Return form page
 			return ok(views.html.form.render(create, today, null, null, null, typeInformationList, creatorsList, rightsList, 
-					useLimitationList, mdFormatList, null, subjectList, roleId, search, false, null, null));
+					useLimitationList, mdFormatList, null, subjectList, roleId, search, false, null, null, null));
 		});
 	}
 	
@@ -157,6 +158,9 @@ public class Metadata extends Controller {
 		// Fetches the form
 		Form<DublinCore> dcForm = Form.form(DublinCore.class);
 		DublinCore dc = dcForm.bindFromRequest().get();
+		
+		DynamicForm requestData = Form.form().bindFromRequest();
+		Boolean fileIdConfirmed = Boolean.parseBoolean(requestData.get("fileIdConfirmed"));
 		
 		// Generate an UUID
 		String uuid = UUID.randomUUID().toString();
@@ -233,20 +237,39 @@ public class Metadata extends Controller {
 			Boolean dateCreatePublicationCheck = logicCheckDate(dc.getDateSourceCreation(), dc.getDateSourcePublication());
 			Boolean dateValidCheck = logicCheckDate(dc.getDateSourceValidFrom(), dc.getDateSourceValidUntil());
 			
+			Map<String, Boolean> numbersCheck = checkNumbers(dc.getFileId(), uuid);
+			
+			DublinCore previousDC = new DublinCore(dc.getLocation(), dc.getFileId(), dc.getTitle(), dc.getDescription(), dc.getTypeInformation(),
+					dc.getCreator(), dc.getCreatorOther(), dc.getRights(), dc.getUseLimitation(), dc.getMdFormat(), dc.getSource(),
+					dc.getDateSourceCreation(), dc.getDateSourcePublication(), dc.getDateSourceValidFrom(), dc.getDateSourceValidUntil(), 
+					dc.getSubject(), null);
+			
+			Map<String, DublinCore> previousValues = new HashMap<String, DublinCore>();
+			previousValues.put("metadata", previousDC);
+			
 			// Checks if every mandatory field has been completed, if not return the form with previous state
 			if("".equals(dc.getTitle().trim()) || "".equals(dc.getDescription().trim()) || "".equals(dc.getLocation().trim()) || 
 				"".equals(dc.getFileId().trim()) || creatorKey == null || creatorOtherFailed || useLimitationKey == null || 
 				dateSourceCreationValue == null || dc.getSubject() == null || !dateCreatePublicationCheck || !dateValidCheck) {
-					
-					DublinCore previousDC = new DublinCore(dc.getLocation(), dc.getFileId(), dc.getTitle(), dc.getDescription(), dc.getTypeInformation(),
-						dc.getCreator(), dc.getCreatorOther(), dc.getRights(), dc.getUseLimitation(), dc.getMdFormat(), dc.getSource(),
-						dc.getDateSourceCreation(), dc.getDateSourcePublication(), dc.getDateSourceValidFrom(), dc.getDateSourceValidUntil(), 
-						dc.getSubject(), null);
-					
-					Map<String, DublinCore> previousValues = new HashMap<String, DublinCore>();
-					previousValues.put("metadata", previousDC);
-					
-					return validateFormServer(true, null, null, textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch, previousValues);
+					return validateFormServer(true, null, null, textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch, previousValues,
+							null);
+			} else if((numbersCheck.get("duplicate") || numbersCheck.get("character") || numbersCheck.get("length")) && !fileIdConfirmed) {
+				List<String> warnMessages = new ArrayList<>();
+				
+				if(numbersCheck.get("duplicate")) {
+					warnMessages.add(Messages.get("validate.form.fileid.warning.body.occurrences"));
+				}
+				
+				if(numbersCheck.get("character")) {
+					warnMessages.add(Messages.get("validate.form.fileid.warning.body.nonumber"));
+				}
+				
+				if(numbersCheck.get("length")) {
+					warnMessages.add(Messages.get("validate.form.fileid.warning.body.length"));
+				}
+				
+				return validateFormServer(true, null, null, textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch, previousValues,
+						warnMessages);
 			}
 			
 			// Insert the form value in a new metadata record
@@ -463,7 +486,7 @@ public class Metadata extends Controller {
 			
 			// Return form page
 			return ok(views.html.form.render(create, "", datasetRow, subjectsDataset, attachmentsDataset, typeInformationList, creatorsList, 
-				rightsList, useLimitationList, mdFormatList, sdf, subjectList, roleId, search, false, null, df));
+				rightsList, useLimitationList, mdFormatList, sdf, subjectList, roleId, search, false, null, df, null));
 		});
 	}
 	
@@ -485,6 +508,9 @@ public class Metadata extends Controller {
 		// Fetches the form
 		Form<DublinCore> dcForm = Form.form(DublinCore.class);
 		DublinCore dc = dcForm.bindFromRequest().get();
+		
+		DynamicForm requestData = Form.form().bindFromRequest();
+		Boolean fileIdConfirmed = Boolean.parseBoolean(requestData.get("fileIdConfirmed"));
 		
 		return q.withTransaction(tx -> {
 			// Fetches the status id of the metadata
@@ -556,14 +582,6 @@ public class Metadata extends Controller {
 					.where(mdFormat.name.eq(dc.getMdFormat()))
 					.fetchOne();
 				
-				// Sets file id value to null if string is empty
-				String fileIdValue;
-				if("".equals(dc.getFileId().trim())) {
-					fileIdValue = null;
-				} else {
-					fileIdValue = dc.getFileId();
-				}
-				
 				// If creator value is other set creator other field
 				String creatorOtherValue;
 				if(!"other".equals(dc.getCreator())) {
@@ -591,53 +609,75 @@ public class Metadata extends Controller {
 					}
 				}
 				
+				// Calculations for returning previous state if validation fails
 				Boolean dateCreatePublicationCheck = logicCheckDate(dc.getDateSourceCreation(), dc.getDateSourcePublication());
 				Boolean dateValidCheck = logicCheckDate(dc.getDateSourceValidFrom(), dc.getDateSourceValidUntil());
+				
+				Map<String, Boolean> numbersCheck = checkNumbers(dc.getFileId(), metadataUuid);
+				
+				DublinCore previousDC = new DublinCore(dc.getLocation(), dc.getFileId(), dc.getTitle(), dc.getDescription(), dc.getTypeInformation(),
+						dc.getCreator(), dc.getCreatorOther(), dc.getRights(), dc.getUseLimitation(), dc.getMdFormat(), dc.getSource(),
+						dc.getDateSourceCreation(), dc.getDateSourcePublication(), dc.getDateSourceValidFrom(), dc.getDateSourceValidUntil(), 
+						dc.getSubject(), dc.getDeletedAttachment());
+					
+				Map<String, DublinCore> previousValues = new HashMap<String, DublinCore>();
+				previousValues.put("metadata", previousDC);
+				
+				Tuple datasetRow = tx.select(metadata.id, metadata.uuid, metadata.location, metadata.fileId, metadata.title, 
+						metadata.description, metadata.typeInformation, metadata.creator, metadata.creatorOther, metadata.rights, 
+						metadata.useLimitation, metadata.mdFormat, metadata.source, metadata.dateSourceCreation, 
+						metadata.dateSourcePublication, metadata.dateSourceValidFrom, metadata.dateSourceValidUntil, creator.name)
+					.from(metadata)
+					.join(creator).on(metadata.creator.eq(creator.id))
+					.where(metadata.id.eq(metadataId))
+					.fetchOne();
+				
+				SQLQuery<Tuple> attachmentQuery = tx.select(mdAttachment.all())
+					.from(mdAttachment)
+					.where(mdAttachment.metadataId.eq(metadataId));
+				
+				if(dc.getDeletedAttachment() != null) {
+					attachmentQuery
+						.where(mdAttachment.attachmentName.notIn(dc.getDeletedAttachment()));
+				}
+					
+				List<Tuple> attachmentsDataset = attachmentQuery
+					.orderBy(mdAttachment.attachmentName.asc())
+					.fetch();
 				
 				// Checks if every mandatory field has been completed, if not return the form with previous state
 				if("".equals(dc.getTitle().trim()) || "".equals(dc.getDescription().trim()) || "".equals(dc.getLocation().trim()) || 
 					"".equals(dc.getFileId().trim()) || creatorKey == null || creatorOtherFailed || useLimitationKey == null || 
 					dateSourceCreationValue == null || dc.getSubject() == null || !dateCreatePublicationCheck || !dateValidCheck) {
 						
-						Tuple datasetRow = tx.select(metadata.id, metadata.uuid, metadata.location, metadata.fileId, metadata.title, 
-								metadata.description, metadata.typeInformation, metadata.creator, metadata.creatorOther, metadata.rights, 
-								metadata.useLimitation, metadata.mdFormat, metadata.source, metadata.dateSourceCreation, 
-								metadata.dateSourcePublication, metadata.dateSourceValidFrom, metadata.dateSourceValidUntil, creator.name)
-							.from(metadata)
-							.join(creator).on(metadata.creator.eq(creator.id))
-							.where(metadata.id.eq(metadataId))
-							.fetchOne();
-						
-						SQLQuery<Tuple> attachmentQuery = tx.select(mdAttachment.all())
-							.from(mdAttachment)
-							.where(mdAttachment.metadataId.eq(metadataId));
-						
-						if(dc.getDeletedAttachment() != null) {
-							attachmentQuery
-								.where(mdAttachment.attachmentName.notIn(dc.getDeletedAttachment()));
-						}
-							
-						List<Tuple> attachmentsDataset = attachmentQuery
-							.orderBy(mdAttachment.attachmentName.asc())
-							.fetch();
-						
-						DublinCore previousDC = new DublinCore(dc.getLocation(), dc.getFileId(), dc.getTitle(), dc.getDescription(), dc.getTypeInformation(),
-							dc.getCreator(), dc.getCreatorOther(), dc.getRights(), dc.getUseLimitation(), dc.getMdFormat(), dc.getSource(),
-							dc.getDateSourceCreation(), dc.getDateSourcePublication(), dc.getDateSourceValidFrom(), dc.getDateSourceValidUntil(), 
-							dc.getSubject(), dc.getDeletedAttachment());
-						
-						Map<String, DublinCore> previousValues = new HashMap<String, DublinCore>();
-						previousValues.put("metadata", previousDC);
-						
-						return validateFormServer(false, datasetRow, attachmentsDataset, textSearch, supplierSearch, statusSearch, mdFormatSearch, 
-							dateStartSearch, dateEndSearch, previousValues);
+					
+					return validateFormServer(false, datasetRow, attachmentsDataset, textSearch, supplierSearch, statusSearch, mdFormatSearch, 
+							dateStartSearch, dateEndSearch, previousValues, null);
+				} else if((numbersCheck.get("duplicate") || numbersCheck.get("character") || numbersCheck.get("length")) && !fileIdConfirmed) {
+					// Returns previous state with warning if there is an undesirable number
+					List<String> warnMessages = new ArrayList<>();
+					
+					if(numbersCheck.get("duplicate")) {
+						warnMessages.add(Messages.get("validate.form.fileid.warning.body.occurrences"));
+					}
+					
+					if(numbersCheck.get("character")) {
+						warnMessages.add(Messages.get("validate.form.fileid.warning.body.nonumber"));
+					}
+					
+					if(numbersCheck.get("length")) {
+						warnMessages.add(Messages.get("validate.form.fileid.warning.body.length"));
+					}
+					
+					return validateFormServer(false, datasetRow, attachmentsDataset, textSearch, supplierSearch, statusSearch, mdFormatSearch, 
+							dateStartSearch, dateEndSearch, previousValues, warnMessages);
 				}
 				
 				// Update metadata record
 				Long metadataCount = tx.update(metadata)
 					.where(metadata.uuid.eq(metadataUuid))
 					.set(metadata.location, dc.getLocation())
-					.set(metadata.fileId, fileIdValue)
+					.set(metadata.fileId, dc.getFileId())
 					.set(metadata.title, dc.getTitle())
 					.set(metadata.description, dc.getDescription())
 					.set(metadata.typeInformation, typeInformationKey)
@@ -866,6 +906,8 @@ public class Metadata extends Controller {
 				fileId = dc.getFileId();
 			}
 			
+			Map<String, Boolean> numbersCheck = checkNumbers(dc.getFileId(), metadataUuid);
+			
 			// If creator is empty set to null (which will generate an error message)
 			String creator = null;
 			String creatorOther = null;
@@ -890,12 +932,79 @@ public class Metadata extends Controller {
 			Boolean dateValidCheck = logicCheckDate(dc.getDateSourceValidFrom(), dc.getDateSourceValidUntil());
 			
 			// Return specific error message view
-			return ok(validateform.render(title, description, location, fileId, creator, creatorOther, dc.getDateSourceCreation(), dc.getSubject(),
-					dateCreatePublicationCheck, dateValidCheck));
+			return ok(validateform.render(title, description, location, fileId, numbersCheck.get("duplicate"), numbersCheck.get("character"), 
+					numbersCheck.get("length"), creator, creatorOther, dc.getDateSourceCreation(), dc.getSubject(), dateCreatePublicationCheck, dateValidCheck));
 		} catch(IllegalStateException ise) {
 			// Return generic error message view
 			return ok(bindingerror.render(Messages.get("validate.search.generic"), null, null, null, null, null, null));
 		}
+	}
+	
+	/**
+	 * Find the nr of occurences of fileId in the metadata table
+	 * @param currentFileId field to check
+	 * @return the nr of occurences of currentFileId 
+	 */
+	public Long nrOfOccurencesFileId(final String currentFileId, String uuid){
+		return q.withTransaction(tx -> {
+			// count nr of times a certain fileId is found in the whole dataset
+			Long fileIdCount = tx.select(metadata.fileId.count())
+				.from(metadata)
+				.where(metadata.fileId.eq(currentFileId))
+				.where(metadata.uuid.ne(uuid))
+				.groupBy(metadata.fileId)
+				.fetchOne();
+			
+			if(fileIdCount == null) {
+				fileIdCount = 0L;
+			}
+			return fileIdCount;
+		});
+	}
+	
+	/**
+	 * Create a map where the value of the number checks are saved. The check if this number already exists. 
+	 * The check if the number includes non-digits. Finally, the check if the number has a length of less dan six digits. 
+	 * 
+	 * @param fileId field to check
+	 * @return a map of booleans with the value of the three checks
+	 */
+	public Map<String, Boolean> checkNumbers(String fileId, String uuid) {
+		Boolean fileIdDuplicate = false;
+		Boolean fileIdCharacter = false;
+		Boolean fileIdLength = false;
+		
+		String fileIdCheck = null;
+		if("".equals(fileId.trim())) {
+			fileIdCheck = null;
+		} else {
+			fileIdCheck = fileId;
+		}
+		
+		if(fileIdCheck != null){
+			// check for multiple occurences numbers
+			Long fileIdCount = nrOfOccurencesFileId(fileIdCheck, uuid);
+			if (fileIdCount > 0){
+				fileIdDuplicate = true;
+			}
+			
+			// check for other character than 0123456789
+			if (!fileIdCheck.matches("\\d+")){
+				fileIdCharacter = true;
+			}
+			
+			// check for length < 6
+			if (fileIdCheck.length() < 6){
+				fileIdLength = true;
+			}
+		}
+		
+		Map<String, Boolean> numberChecks = new HashMap<String, Boolean>();
+		numberChecks.put("duplicate", fileIdDuplicate);
+		numberChecks.put("character", fileIdCharacter);
+		numberChecks.put("length", fileIdLength);
+		
+		return numberChecks;
 	}
 	
 	/**
@@ -968,7 +1077,8 @@ public class Metadata extends Controller {
 	 * @return the {@link Result} of the form page
 	 */
 	public Result validateFormServer(Boolean create, Tuple datasetRow, List<Tuple> attachmentsDataset, String textSearch, String supplierSearch, 
-			String statusSearch, String mdFormatSearch, String dateStartSearch, String dateEndSearch, Map<String, DublinCore> previousValues) {
+			String statusSearch, String mdFormatSearch, String dateStartSearch, String dateEndSearch, Map<String, DublinCore> previousValues,
+			List<String> warnMessages) {
 		// Create strings according to yyyy-MM-dd and dd-MM-yyyy formats
 		String today = new SimpleDateFormat("yyyy-MM-dd").format(new Date().getTime());
 		
@@ -1034,7 +1144,7 @@ public class Metadata extends Controller {
 			
 			// Return form page
 			return ok(views.html.form.render(create, today, datasetRow, null, attachmentsDataset, typeInformationList, creatorsList, rightsList, 
-					useLimitationList, mdFormatList, sdf, subjectList, roleId, search, validate, previousValues, df));
+					useLimitationList, mdFormatList, sdf, subjectList, roleId, search, validate, previousValues, df, warnMessages));
 		});
 	}
 	

@@ -113,3 +113,5 @@ input[type="file"].input-attachment {display:inline;}
 #report-start-div {margin-top:20px;}
 
 .link {background:none!important;border:none;padding:0!important;cursor:pointer;color:#255c9f;text-decoration:underline;}
+
+.fileid-warning-msg {margin-bottom:10px;}

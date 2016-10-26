@@ -1,5 +1,5 @@
-@(title: String, description: String, location: String, fileId: String, creator: String, creatorOther: String, dateCreate: java.util.Date, 
-	subjectList: java.util.List[String], dateCreatePublicationCheck: Boolean, dateValidCheck: Boolean)
+@(title: String, description: String, location: String, fileId: String, fileIdDuplicate: Boolean, fileIdCharacter: Boolean, fileIdLength: Boolean, creator: String, 
+	creatorOther: String, dateCreate: java.util.Date, subjectList: java.util.List[String], dateCreatePublicationCheck: Boolean, dateValidCheck: Boolean)
 
 @import play.i18n._
 
@@ -32,6 +32,22 @@
 			</div>
 		</div>
 	}
+
+	@if(fileIdDuplicate || fileIdCharacter || fileIdLength) {
+		@if(fileIdDuplicate) {
+			<input type="hidden" data-warning="true" class="fileid-message" data-message="@Messages.get("validate.form.fileid.warning.body.occurrences")">
+		}
+		
+		@if(fileIdCharacter) {
+			<input type="hidden" data-warning="true" class="fileid-message" data-message="@Messages.get("validate.form.fileid.warning.body.nonumber")">
+			
+		}
+		
+		@if(fileIdLength) {
+			<input type="hidden" data-warning="true" class="fileid-message" data-message="@Messages.get("validate.form.fileid.warning.body.length")">
+		}
+	}
+		
 	@if(creator == null) {
 		<div>
 			<div class="alert alert-danger" role="alert" data-error="true">
