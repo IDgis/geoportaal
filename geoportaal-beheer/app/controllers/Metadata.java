@@ -237,7 +237,7 @@ public class Metadata extends Controller {
 			Boolean dateCreatePublicationCheck = logicCheckDate(dc.getDateSourceCreation(), dc.getDateSourcePublication());
 			Boolean dateValidCheck = logicCheckDate(dc.getDateSourceValidFrom(), dc.getDateSourceValidUntil());
 			
-			Map<String, Boolean> numbersCheck = checkNumbers(dc.getFileId());
+			Map<String, Boolean> numbersCheck = checkNumbers(dc.getFileId(), uuid);
 			
 			DublinCore previousDC = new DublinCore(dc.getLocation(), dc.getFileId(), dc.getTitle(), dc.getDescription(), dc.getTypeInformation(),
 					dc.getCreator(), dc.getCreatorOther(), dc.getRights(), dc.getUseLimitation(), dc.getMdFormat(), dc.getSource(),
@@ -613,7 +613,7 @@ public class Metadata extends Controller {
 				Boolean dateCreatePublicationCheck = logicCheckDate(dc.getDateSourceCreation(), dc.getDateSourcePublication());
 				Boolean dateValidCheck = logicCheckDate(dc.getDateSourceValidFrom(), dc.getDateSourceValidUntil());
 				
-				Map<String, Boolean> numbersCheck = checkNumbers(dc.getFileId());
+				Map<String, Boolean> numbersCheck = checkNumbers(dc.getFileId(), metadataUuid);
 				
 				DublinCore previousDC = new DublinCore(dc.getLocation(), dc.getFileId(), dc.getTitle(), dc.getDescription(), dc.getTypeInformation(),
 						dc.getCreator(), dc.getCreatorOther(), dc.getRights(), dc.getUseLimitation(), dc.getMdFormat(), dc.getSource(),
@@ -822,7 +822,6 @@ public class Metadata extends Controller {
 	 * @return the {@link Result} of the error messages
 	 */
 	public Result validateForm(String metadataUuid) {
-		System.out.println("VALIDATE client");
 		try {
 			// Fetches the form fields
 			DynamicForm requestData = Form.form().bindFromRequest();
@@ -907,7 +906,7 @@ public class Metadata extends Controller {
 				fileId = dc.getFileId();
 			}
 			
-			Map<String, Boolean> numbersCheck = checkNumbers(dc.getFileId());
+			Map<String, Boolean> numbersCheck = checkNumbers(dc.getFileId(), metadataUuid);
 			
 			// If creator is empty set to null (which will generate an error message)
 			String creator = null;
@@ -946,15 +945,17 @@ public class Metadata extends Controller {
 	 * @param currentFileId field to check
 	 * @return the nr of occurences of currentFileId 
 	 */
-	public Long nrOfOccurencesFileId(final String currentFileId){
+	public Long nrOfOccurencesFileId(final String currentFileId, String uuid){
 		return q.withTransaction(tx -> {
 			// count nr of times a certain fileId is found in the whole dataset
 			Long fileIdCount = tx.select(metadata.fileId.count())
 				.from(metadata)
 				.where(metadata.fileId.eq(currentFileId))
+				.where(metadata.uuid.ne(uuid))
 				.groupBy(metadata.fileId)
 				.fetchOne();
-			if (fileIdCount == null){
+			
+			if(fileIdCount == null) {
 				fileIdCount = 0L;
 			}
 			return fileIdCount;
@@ -968,7 +969,7 @@ public class Metadata extends Controller {
 	 * @param fileId field to check
 	 * @return a map of booleans with the value of the three checks
 	 */
-	public Map<String, Boolean> checkNumbers(String fileId) {
+	public Map<String, Boolean> checkNumbers(String fileId, String uuid) {
 		Boolean fileIdDuplicate = false;
 		Boolean fileIdCharacter = false;
 		Boolean fileIdLength = false;
@@ -982,7 +983,7 @@ public class Metadata extends Controller {
 		
 		if(fileIdCheck != null){
 			// check for multiple occurences numbers
-			Long fileIdCount = nrOfOccurencesFileId(fileIdCheck);
+			Long fileIdCount = nrOfOccurencesFileId(fileIdCheck, uuid);
 			if (fileIdCount > 0){
 				fileIdDuplicate = true;
 			}
