@@ -53,9 +53,13 @@ about.paragraph.2=Een groot aantal datasets wordt vrij beschikbaar gesteld, zoda
 about.paragraph.3=Voor de geodatasets en de services heb je speciale software nodig. Hiervoor wordt de verzamelnaam "GIS" gebruikt (geografisch informatiesysteem). Een veel gebruikt GIS is het systeem ARCGIS van het bedrijf ESRI. Maar er zijn ook "open source" GIS systemen. Deze zijn veelal gratis. Een veelgebruikt gratis GIS is bijvoorbeeld QGIS.
 about.paragraph.4=De datasets zijn veelal te downloaden, zodat je ze met een GIS verder kan gebruiken.
 about.paragraph.5=Voor de andere kaarten (statische kaarten) heb je geen GIS nodig. Dit zijn plaatjes, meestal in de vorm van een PDF. Je kan dit soort bestanden bekijken met bijvoorbeeld Adobe reader.
-about.paragraph.6=Van een aantal datasets is de provincie Overijssel geen eigenaar. Meestal zijn hierbij dan beperkingen voordat ze gedeeld mogen worden met anderen. Deze beperkingen staan ook in de beschrijving bij de datasets.
-about.paragraph.7=De provincie Overijssel streeft ernaar om de data en ook de omschrijving bij de data juist en actueel te houden. Mocht je ondanks onze inspanningen toch onvolkomenheden tegenkomen, aarzel dan niet contact met ons op te nemen.
-about.paragraph.8=Heb je suggesties, tips of vragen, mail dan naar: <a class="link" href="mailto:beleidsinformatie@overijssel.nl">beleidsinformatie@overijssel.nl</a>
+about.paragraph.6=Tips voor specialisten:
+about.paragraph.7=Er worden ook WMS en WFS services via het Geoportaal ontsloten. Deze kun je direct in je eigen GIS applicatie gebruiken. Maak je je eigen app en wil je Geojson gebruiken, dan kan dat ook. Gebruik hiervoor outputformat=json als je een Getfeature request doet op een WFS. Meer tips over Geojson zijn te vinden via onderstaande links:
+about.paragraph.8=<a class="link" href="http://pdok-ngr.readthedocs.io/handleidingen.html#wfs-json-als-output-format" target="_blank">http://pdok-ngr.readthedocs.io/handleidingen.html#wfs-json-als-output-format</a>
+about.paragraph.9=<a class="link" href="http://www.brentjensgeoict.nl/2014/01/29/haal-meer-data-en-geojson-uit-een-pdok-wfs" target="_blank">http://www.brentjensgeoict.nl/2014/01/29/haal-meer-data-en-geojson-uit-een-pdok-wfs</a>
+about.paragraph.10=Van een aantal datasets is de provincie Overijssel geen eigenaar. Meestal zijn hierbij dan beperkingen voordat ze gedeeld mogen worden met anderen. Deze beperkingen staan ook in de beschrijving bij de datasets.
+about.paragraph.11=De provincie Overijssel streeft ernaar om de data en ook de omschrijving bij de data juist en actueel te houden. Mocht je ondanks onze inspanningen toch onvolkomenheden tegenkomen, aarzel dan niet contact met ons op te nemen.
+about.paragraph.12=Heb je suggesties, tips of vragen, mail dan naar: <a class="link" href="mailto:beleidsinformatie@overijssel.nl">beleidsinformatie@overijssel.nl</a>
 
 contact.header=Contact
 contact.header.intern=Intern: Contact
@@ -84,6 +88,9 @@ help.paragraph.4.4=Door meerdere formaten beschikbaar te stellen, kan je zelf ki
 help.paragraph.4.5=Heb je niet de beschikking over dergelijke GIS-software, maar wil je toch kaarten zien die gemaakt zijn door de provincie Overijssel? Dat kan, omdat er ook veel pdf-bestanden beschikbaar gesteld worden. Zie hiervoor verder bij de toelichting over de “statische kaarten”.
 help.paragraph.header.5=Over services:
 help.paragraph.5.1=In dit Geoportaal worden niet alleen de datasets maar ook de bijbehorende services getoond. Dat zijn links naar websites, die op een moderne manier dit soort kaarten beschikbaar stellen. In het Geoportaal van Overijssel worden de datasets en ook de bijbehorende services ontsloten. Ook voor het gebruik van services het je een GIS nodig.
+help.paragraph.5.2=Er worden WMS en WFS services via het Geoportaal ontsloten. Deze kun je direct in je eigen GIS applicatie gebruiken. Maak je je eigen app en wil je Geojson gebruiken, dan kan dat ook. Gebruik hiervoor outputformat=json als je een Getfeature request doet op een WFS. Meer tips over Geojson zijn te vinden via onderstaande links:
+help.paragraph.5.3=<a class="link" href="http://pdok-ngr.readthedocs.io/handleidingen.html#wfs-json-als-output-format" target="_blank">http://pdok-ngr.readthedocs.io/handleidingen.html#wfs-json-als-output-format</a>
+help.paragraph.5.4=<a class="link" href="http://www.brentjensgeoict.nl/2014/01/29/haal-meer-data-en-geojson-uit-een-pdok-wfs" target="_blank">http://www.brentjensgeoict.nl/2014/01/29/haal-meer-data-en-geojson-uit-een-pdok-wfs</a>
 help.paragraph.header.6=Over statische kaarten:
 help.paragraph.6.1=Naast bestanden en services kan je ook “statische kaarten” vinden in het Geoportaal. Dat zijn kaarten (meestal pdf’s) die gemaakt zijn op basis van de bestanden en services. Deze kaarten worden speciaal gemaakt voor diverse communicatie-doeleinden.
 help.paragraph.6.2=Je kan dit soort kaarten eenvoudig bekijken. Je hebt daarvoor geen geavanceerd GIS systeem voor nodig. Een pdf kan je openen met een PDF reader. Deze readers worden gratis beschikbaar gesteld, bijvoorbeeld door het bedrijf Adobe (<a class="link" href="http://www.adobe.nl" target="_blank">http://www.adobe.nl</a>).  De metadata van deze statische kaarten wordt ontsloten via de Dublin-core standaard.
