@@ -1,7 +1,8 @@
 html {overflow-y:scroll;overflow-x:hidden;}
 body {background-color:#FFFFFF;font-family:Verdana;box-sizing:content-box;}
 div {display:block;}
-p {line-height:25px;font-size:16px;margin-top:0;margin-bottom:0;}
+p {line-height:25px;font-size:16px;}
+p.negate-margin {margin:0;}
 
 div.page {margin:20px auto 20px auto;width:1100px;padding:0px 20px;border-left:1px solid #AAAAAA;border-right:1px solid #AAAAAA;}
 div.logo {margin-top:20px;margin-bottom:20px;}
