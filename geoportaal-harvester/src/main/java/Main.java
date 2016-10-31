@@ -246,6 +246,8 @@ public class Main {
 		List<String> listGeoArea = metaDoc.getStrings(DatasetPath.GEO_AREA.path());
 		List<String> listPurpose = metaDoc.getStrings(DatasetPath.PURPOSE.path());
 		List<String> listUseLimitation = metaDoc.getStrings(DatasetPath.USE_LIMITATION.path());
+		List<String> listUseConstraint = metaDoc.getStrings(DatasetPath.USE_CONSTRAINT.path());
+		List<String> listAccessConstraint = metaDoc.getStrings(DatasetPath.ACCESS_CONSTRAINT.path());
 		List<String> listDescriptionSource = metaDoc.getStrings(DatasetPath.DESCRIPTION_SOURCE.path());
 		List<String> listPotentialUse = metaDoc.getStrings(DatasetPath.POTENTIAL_USE.path());
 		List<String> listOtherConstraint = metaDoc.getStrings(DatasetPath.OTHER_CONSTRAINT.path());
@@ -354,6 +356,8 @@ public class Main {
 		setAnyText(qf, docId, listGeoArea);
 		setAnyText(qf, docId, listPurpose);
 		setAnyText(qf, docId, listUseLimitation);
+		setAnyText(qf, docId, listUseConstraint);
+		setAnyText(qf, docId, listAccessConstraint);
 		setAnyText(qf, docId, listDescriptionSource);
 		setAnyText(qf, docId, listPotentialUse);
 		setAnyText(qf, docId, listOtherConstraint);
@@ -383,6 +387,7 @@ public class Main {
 		List<String> listTypeService = metaDoc.getStrings(ServicePath.TYPE_SERVICE.path());
 		
 		List<String> listUseLimitation = metaDoc.getStrings(ServicePath.USE_LIMITATION.path());
+		List<String> listAccessConstraint = metaDoc.getStrings(ServicePath.ACCESS_CONSTRAINT.path());
 		List<String> listOtherConstraint = metaDoc.getStrings(ServicePath.OTHER_CONSTRAINT.path());
 		List<String> listIndividualNameCreator = metaDoc.getStrings(ServicePath.INDIVIDUAL_NAME_CREATOR.path());
 		List<String> listOrganisationContact = metaDoc.getStrings(ServicePath.ORGANISATION_CONTACT.path());
@@ -458,6 +463,7 @@ public class Main {
 				.fetchOne();
 		
 		setAnyText(qf, docId, listUseLimitation);
+		setAnyText(qf, docId, listAccessConstraint);
 		setAnyText(qf, docId, listOtherConstraint);
 		setAnyText(qf, docId, listIndividualNameCreator);
 		setAnyText(qf, docId, listOrganisationContact);
