@@ -299,9 +299,7 @@ public class User extends Controller {
 	 *
 	 */
 	public static class Login {
-		@Constraints.Required
 		private String username;
-		
 		private String password;
 		
 		private String returnUrl;

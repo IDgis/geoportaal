@@ -40,13 +40,13 @@
 				</div>
 			}
 			
-			@helper.form(action = routes.User.authenticate(), 'class -> "form-horizontal") {
+			@helper.form(action = routes.User.authenticate(), 'class -> "form-horizontal", 'id -> "js-login-form") {
 				<input type="hidden" name="returnUrl" value="@form("returnUrl").value">
 				<fieldset>
 					<div class="form-group col-sm-12">
 						<label class="col-sm-2 control-label">@Messages.get("login.email.label")</label>
 						<div class="col-sm-4">
-							<input class="form-control" type="email" autofocus name="username" placeholder="@Messages.get("login.email.label")" 
+							<input id="js-login-email" class="form-control" type="email" autofocus name="username" placeholder="@Messages.get("login.email.label")" 
 								value="@form("username").value">
 						</div>
 					</div>
@@ -57,7 +57,7 @@
 						</div>
 					</div>
 					<div class="col-sm-offset-2 col-sm-10">
-						<button class="knop knop-correctie" type="submit">@Messages.get("login")</button>
+						<button id="js-login" class="knop knop-correctie" type="button">@Messages.get("login")</button>
 						<a class="knop knop-correctie" id="password-edit-button" href="@routes.User.renderChangePassword()">@Messages.get("login.button.password.edit")</a>
 						<a class="knop knop-correctie" id="password-forgot-button" href="@routes.User.renderForgotPassword()">@Messages.get("login.button.password.forgot")</a>
 						<a class="knop knop-correctie" id="login-help-button" href="@routes.User.loginHelp()" target="_blank">@Messages.get("login.button.help")</a>
@@ -69,4 +69,6 @@
 			</div>
 		</div>
 	</body>
+	<script src="@routes.Assets.versioned("lib/dojo/dojo/dojo.js")" type="text/javascript"></script>
+	<script src="@routes.Assets.versioned("javascripts/login.js").url" type="text/javascript"></script>
 </html>
