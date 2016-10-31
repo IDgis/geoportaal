@@ -142,7 +142,7 @@ login.error.message=Ongeldige gebruikersnaam of wachtwoord
 login.help.header=Help inloggen beheermodule Geoportaal
 login.help.paragraph.1=Toelichting bij inloggen in het Geoportaal.
 login.help.paragraph.2=Je kan, als je hiervoor de rechten hebt, inloggen in het Geoportaal. Je kan daarna je eigen (statische) kaarten aanbieden. Heb je een nieuwe kaart, neem deze dan op in het Geoportaal door hier in te loggen.
-login.help.paragraph.3=Gebruik bij het inloggen je emailadres, zoals gebruikt wordt in Overijssel. Gebruik hier geen spatie of hoofdlettters. Alleen kleine letters gebruiken. <a class="link" href="mailto:p.pietersen@overijssel.nl">p.pietersen@overijssel.nl</a> is goed <a class="link" href="mailto:P.Pietersen@Overijssel.nl">P.Pietersen@Overijssel.nl</a> is niet goed.
+login.help.paragraph.3=Gebruik bij het inloggen je emailadres, zoals gebruikt wordt in Overijssel. Je mag zowel hoofdletters als kleine letters gebruiken. <a class="link" href="mailto:p.pietersen@overijssel.nl">p.pietersen@overijssel.nl</a> is goed. En ook <a class="link" href="mailto:P.Pietersen@Overijssel.nl">P.Pietersen@Overijssel.nl</a> is goed.
 login.help.paragraph.4=Ben je je wachtwoord vergeten, dan kan je een nieuw wachtwoord aanvragen. Vul dan je emailadres in bij "WACHTWOORD VERGETEN" en je krijgt in je mailbox een nieuw wachtwoord.
 login.help.paragraph.5=Bij "WACHTWOORD AANPASSEN" kan je eventueel je huidige wachtwoord aanpassen. Aangeraden wordt om dat 1x per maand te doen. Gebruik hier eventueel wel hoofdletters en/of andere bijzondere tekens.
 
