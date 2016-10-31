@@ -178,8 +178,8 @@ project(':geoportaal-harvester') {
 		environment 'DB_USER', dbUser
 		environment 'DB_PASSWORD', dbPassword
 		
-		environment 'DATA_URL', 'https://acc-metadata.geodataoverijssel.nl/metadata/dataset/'
-		environment 'DATA_NAME', 'dataset'
+		environment 'DATA_URL', 'https://acc-metadata.geodataoverijssel.nl/metadata/service/'
+		environment 'DATA_NAME', 'service'
 		environment 'DATA_SECURED', 'false'
 		environment 'HARVEST_INTERVAL', '15'
 	}
