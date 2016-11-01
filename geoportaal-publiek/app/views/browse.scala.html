@@ -21,14 +21,7 @@
 		<p>@Messages.get("browse.intro")</p>
 	</div>
 	
-	<div class="browse-expand-line">
-		<label class="checkbox-inline">
-			<input id="js-expand-all" class="js-expand-all-evt" type="checkbox" @if("true".equals(expand)) {checked}>
-			<span id="js-label-expand-all">@Messages.get("results.expand")</span>
-		</label>
-	</div>
-	
-	@helper.form(action = routes.Application.searchText(), 'class -> "search-bar") {
+	@helper.form(action = routes.Application.searchText(), 'class -> "search-bar col-md-offset-1") {
 		<div class="form-group">
 			<span class="search-label">@Messages.get("search.label")</span>
 		</div>
