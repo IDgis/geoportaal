@@ -10,7 +10,7 @@
 		<div class="page">	
 			<div class="logo">
 				<a>
-					<img src="@routes.Assets.versioned("images/logo_overijssel.png")"></img>
+					<img src="@routes.Assets.versioned(play.Play.application().configuration().getString("geoportaal.client.logo"))"></img>
 				</a>
 			</div>
 			<div class="titelbalk">
