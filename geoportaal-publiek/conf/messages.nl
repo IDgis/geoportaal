@@ -57,7 +57,7 @@ about.paragraph.6=Tips voor specialisten:
 about.paragraph.7=Er worden ook WMS en WFS services via het Geoportaal ontsloten. Deze kun je direct in je eigen GIS applicatie gebruiken. Maak je je eigen app en wil je Geojson gebruiken, dan kan dat ook. Gebruik hiervoor outputformat=json als je een Getfeature request doet op een WFS. Meer tips over Geojson zijn te vinden via onderstaande links:
 about.paragraph.8=<a class="link" href="http://pdok-ngr.readthedocs.io/handleidingen.html#wfs-json-als-output-format" target="_blank">http://pdok-ngr.readthedocs.io/handleidingen.html#wfs-json-als-output-format</a>
 about.paragraph.9=<a class="link" href="http://www.brentjensgeoict.nl/2014/01/29/haal-meer-data-en-geojson-uit-een-pdok-wfs" target="_blank">http://www.brentjensgeoict.nl/2014/01/29/haal-meer-data-en-geojson-uit-een-pdok-wfs</a>
-about.paragraph.10=Van een aantal datasets is de provincie Overijssel geen eigenaar. Meestal zijn hierbij dan beperkingen voordat ze gedeeld mogen worden met anderen. Deze beperkingen staan ook in de beschrijving bij de datasets.
+about.paragraph.10=Van een aantal datasets zijn wij geen eigenaar. Meestal zijn hierbij dan beperkingen voordat ze gedeeld mogen worden met anderen. Deze beperkingen staan ook in de beschrijving bij de datasets.
 about.paragraph.11=De provincie Overijssel streeft ernaar om de data en ook de omschrijving bij de data juist en actueel te houden. Mocht je ondanks onze inspanningen toch onvolkomenheden tegenkomen, aarzel dan niet contact met ons op te nemen.
 about.paragraph.12=Heb je suggesties, tips of vragen, mail dan naar: <a class="link" href="mailto:beleidsinformatie@overijssel.nl">beleidsinformatie@overijssel.nl</a>
 
@@ -69,8 +69,8 @@ contact.paragraph.3=Stuur je email naar: <a class="link" href="mailto:beleidsinf
 
 help.header=Help
 help.header.intern=Intern: Help
-help.paragraph.header.1=Handleiding voor het gebruik van het Geoportaal van Overijssel.
-help.paragraph.1.1=Het Geoportaal is bedoeld voor het beheer en het beschikbaar stellen van kaarten die de provincie Overijssel gebruikt.
+help.paragraph.header.1=Handleiding voor het gebruik van het Geoportaal
+help.paragraph.1.1=Het Geoportaal is bedoeld voor het beheer en het beschikbaar stellen van kaarten.
 help.paragraph.1.2=Dat soort bestanden worden ook wel ruimtelijke bestanden of “geodata” genoemd. Niet alleen de bestanden zelf, maar ook de beschrijvingen bij de bestanden kan je bekijken.
 help.paragraph.header.2=Eenvoudig zoeken:
 help.paragraph.2.1=Zoeken in het Geoportaal is heel eenvoudig, Je typt een woord in, en je drukt op "<b>zoek</b>". Je krijgt dan de lijst met zoekresultaten. Als er meer dan 10 resultaten zijn, dan worden die op meerdere pagina’s getoond. Je kan dan met de knop “<b>volgende</b>” en “<b>vorige</b>” tussen de pagina’s heen en weer bladeren. “<b>Uitklappen</b>” van de zoekresultaten toont de eerste paar regels van de beschrijving bij de zoekresultaten.
@@ -85,9 +85,9 @@ help.paragraph.4.3.option.2=<b>GML</b> (Geography Markup Language, een open stan
 help.paragraph.4.3.option.3=<b>KML</b> (Keyhole Markup Language, te gebruiken in Google Earth)
 help.paragraph.4.3.option.4=<b>DXF</b> (Drawing exchange format, veel gebruikt formaat voor AutoCad)
 help.paragraph.4.4=Door meerdere formaten beschikbaar te stellen, kan je zelf kiezen welk bestandsformaat het beste past bij de software die jij zelf wilt gebruiken.
-help.paragraph.4.5=Heb je niet de beschikking over dergelijke GIS-software, maar wil je toch kaarten zien die gemaakt zijn door de provincie Overijssel? Dat kan, omdat er ook veel pdf-bestanden beschikbaar gesteld worden. Zie hiervoor verder bij de toelichting over de “statische kaarten”.
+help.paragraph.4.5=Heb je niet de beschikking over dergelijke GIS-software, maar wil je toch kaarten zien? Dat kan, omdat er ook veel pdf-bestanden beschikbaar gesteld worden. Zie hiervoor verder bij de toelichting over de “statische kaarten”.
 help.paragraph.header.5=Over services:
-help.paragraph.5.1=In dit Geoportaal worden niet alleen de datasets maar ook de bijbehorende services getoond. Dat zijn links naar websites, die op een moderne manier dit soort kaarten beschikbaar stellen. In het Geoportaal van Overijssel worden de datasets en ook de bijbehorende services ontsloten. Ook voor het gebruik van services het je een GIS nodig.
+help.paragraph.5.1=In dit Geoportaal worden niet alleen de datasets maar ook de bijbehorende services getoond. Dat zijn links naar websites, die op een moderne manier dit soort kaarten beschikbaar stellen. In het Geoportaal worden de datasets en ook de bijbehorende services ontsloten. Ook voor het gebruik van services heb je een GIS nodig.
 help.paragraph.5.2=Er worden WMS en WFS services via het Geoportaal ontsloten. Deze kun je direct in je eigen GIS applicatie gebruiken. Maak je je eigen app en wil je Geojson gebruiken, dan kan dat ook. Gebruik hiervoor outputformat=json als je een Getfeature request doet op een WFS. Meer tips over Geojson zijn te vinden via onderstaande links:
 help.paragraph.5.3=<a class="link" href="http://pdok-ngr.readthedocs.io/handleidingen.html#wfs-json-als-output-format" target="_blank">http://pdok-ngr.readthedocs.io/handleidingen.html#wfs-json-als-output-format</a>
 help.paragraph.5.4=<a class="link" href="http://www.brentjensgeoict.nl/2014/01/29/haal-meer-data-en-geojson-uit-een-pdok-wfs" target="_blank">http://www.brentjensgeoict.nl/2014/01/29/haal-meer-data-en-geojson-uit-een-pdok-wfs</a>
@@ -103,6 +103,6 @@ help.paragraph.header.9=Over “Bladeren”:
 help.paragraph.9.1=Bij het onderdeel “<b>Bladeren</b>” is de mogelijkheid om te zoeken op trefwoorden. Wil je alles vinden over “economie”, zet dan alleen een vinkje voor het trefwoord “economie”. Wil je alles vinden over “economie” en ook over “flora en fauna”, dan zet je 2 vinkjes bij de betreffende trefwoorden.
 help.paragraph.9.2=Zowel bij “Uitgebreid zoeken” als bij “Bladeren” kan je ook nog “gewoon” zoeken op woorden. Dat zorgt ervoor dat jij precies zo kan zoeken als je zelf het makkelijkst vind.
 help.paragraph.header.10=Meer hulp nodig?
-help.paragraph.10.1=De provincie Overijssel streeft ernaar om de informatie zo goed mogelijk beschikbaar te stellen. We streven naar actualiteit en juistheid bij al onze beschikbare bestanden. En we horen ook graag hoe het nog beter zou kunnen.
-help.paragraph.10.2=Heb je vragen over het Geoportaal van Overijssel? Of heb je tips of suggesties? Of wil je op de hoogte blijven van de laatste ontwikkelingen, bijvoorbeeld via de nieuwsbrief?
+help.paragraph.10.1=Wij streven ernaar om de informatie zo goed mogelijk beschikbaar te stellen. We streven naar actualiteit en juistheid bij al onze beschikbare bestanden. En we horen ook graag hoe het nog beter zou kunnen.
+help.paragraph.10.2=Heb je vragen over het Geoportaal? Of heb je tips of suggesties? Of wil je op de hoogte blijven van de laatste ontwikkelingen?
 help.paragraph.10.3=Neem dan contact op met ons. Mail naar <a class="link" href="mailto:beleidsinformatie@overijssel.nl">beleidsinformatie@overijssel.nl</a>
