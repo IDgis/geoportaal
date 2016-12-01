@@ -31,7 +31,6 @@ tab.contact=Contact
 
 index.header=Welkom bij het Geoportaal
 index.header.intern=Intern: Welkom bij het Geoportaal
-index.intro=Zoek en download actuele kaarten en de beschrijving van de kaarten van de provincie Overijssel.
 index.files.info.recent=Vijf meest recente bestanden:
 
 search.header=Uitgebreid zoeken
@@ -48,7 +47,6 @@ browse.button.select.nothing=Niets selecteren
 
 about.header=Over deze site
 about.header.intern=Intern: Over deze site 
-about.paragraph.1=Het Geoportaal van de provincie Overijssel bevat datasets en beschrijvingen van datasets. Deze worden gebruikt door de provincie om het beleid van de provincie te ondersteunen. Zo worden ze gebruikt om kaarten van te maken of om analyses mee uit te voeren.
 about.paragraph.2=Een groot aantal datasets wordt vrij beschikbaar gesteld, zodat ook anderen ervan gebruik kunnen maken.
 about.paragraph.3=Voor de geodatasets en de services heb je speciale software nodig. Hiervoor wordt de verzamelnaam "GIS" gebruikt (geografisch informatiesysteem). Een veel gebruikt GIS is het systeem ARCGIS van het bedrijf ESRI. Maar er zijn ook "open source" GIS systemen. Deze zijn veelal gratis. Een veelgebruikt gratis GIS is bijvoorbeeld QGIS.
 about.paragraph.4=De datasets zijn veelal te downloaden, zodat je ze met een GIS verder kan gebruiken.
@@ -58,14 +56,10 @@ about.paragraph.7=Er worden ook WMS en WFS services via het Geoportaal ontsloten
 about.paragraph.8=<a class="link" href="http://pdok-ngr.readthedocs.io/handleidingen.html#wfs-json-als-output-format" target="_blank">http://pdok-ngr.readthedocs.io/handleidingen.html#wfs-json-als-output-format</a>
 about.paragraph.9=<a class="link" href="http://www.brentjensgeoict.nl/2014/01/29/haal-meer-data-en-geojson-uit-een-pdok-wfs" target="_blank">http://www.brentjensgeoict.nl/2014/01/29/haal-meer-data-en-geojson-uit-een-pdok-wfs</a>
 about.paragraph.10=Van een aantal datasets zijn wij geen eigenaar. Meestal zijn hierbij dan beperkingen voordat ze gedeeld mogen worden met anderen. Deze beperkingen staan ook in de beschrijving bij de datasets.
-about.paragraph.11=De provincie Overijssel streeft ernaar om de data en ook de omschrijving bij de data juist en actueel te houden. Mocht je ondanks onze inspanningen toch onvolkomenheden tegenkomen, aarzel dan niet contact met ons op te nemen.
-about.paragraph.12=Heb je suggesties, tips of vragen, mail dan naar: <a class="link" href="mailto:beleidsinformatie@overijssel.nl">beleidsinformatie@overijssel.nl</a>
 
 contact.header=Contact
 contact.header.intern=Intern: Contact
-contact.paragraph.1=De informatie in het Geoportaal wordt beschikbaar gesteld door het team Beleidsinformatie van de provincie Overijssel.
 contact.paragraph.2=Heb je vragen, suggesties of tips, aarzel dan niet contact op te nemen.
-contact.paragraph.3=Stuur je email naar: <a class="link" href="mailto:beleidsinformatie@overijssel.nl">beleidsinformatie@overijssel.nl</a>
 
 help.header=Help
 help.header.intern=Intern: Help
@@ -105,4 +99,3 @@ help.paragraph.9.2=Zowel bij “Uitgebreid zoeken” als bij “Bladeren” kan 
 help.paragraph.header.10=Meer hulp nodig?
 help.paragraph.10.1=Wij streven ernaar om de informatie zo goed mogelijk beschikbaar te stellen. We streven naar actualiteit en juistheid bij al onze beschikbare bestanden. En we horen ook graag hoe het nog beter zou kunnen.
 help.paragraph.10.2=Heb je vragen over het Geoportaal? Of heb je tips of suggesties? Of wil je op de hoogte blijven van de laatste ontwikkelingen?
-help.paragraph.10.3=Neem dan contact op met ons. Mail naar <a class="link" href="mailto:beleidsinformatie@overijssel.nl">beleidsinformatie@overijssel.nl</a>

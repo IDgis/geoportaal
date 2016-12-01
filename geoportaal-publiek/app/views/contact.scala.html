@@ -3,8 +3,8 @@
 @main(if("intern".equals(play.Play.application().configuration().getString("portal.access"))) { Messages.get("contact.header.intern") } else { 
 	Messages.get("contact.header") }, "") {
 	<div class="content">
-		<p>@Messages.get("contact.paragraph.1")</p>
+		<p>@play.Play.application().configuration().getString("portal.contact.intro")</p>
 		<p>@Messages.get("contact.paragraph.2")</p>
-		<p>@Html(Messages.get("contact.paragraph.3"))</p>
+		<p>@Html(play.Play.application().configuration().getString("portal.contact.email")) <a class="link" href="mailto:@play.Play.application().configuration().getString("portal.email")">@play.Play.application().configuration().getString("portal.email")</a></p>
 	</div>
 }

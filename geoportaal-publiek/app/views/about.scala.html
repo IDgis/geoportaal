@@ -3,7 +3,7 @@
 @main(if("intern".equals(play.Play.application().configuration().getString("portal.access"))) { Messages.get("about.header.intern") } else { 
 	Messages.get("about.header") }, "") {
 	<div class="content">
-		<p>@Messages.get("about.paragraph.1")</p>
+		<p>@play.Play.application().configuration().getString("portal.about.intro")</p>
 		<p>@Messages.get("about.paragraph.2")</p>
 		<p>@Messages.get("about.paragraph.3")</p>
 		<p>@Messages.get("about.paragraph.4")</p>
@@ -13,7 +13,7 @@
 		<p class="negate-margin">@Html(Messages.get("about.paragraph.8"))</p>
 		<p>@Html(Messages.get("about.paragraph.9"))</p>
 		<p>@Messages.get("about.paragraph.10")</p>
-		<p>@Messages.get("about.paragraph.11")</p>
-		<p>@Html(Messages.get("about.paragraph.12"))</p>
+		<p>@play.Play.application().configuration().getString("portal.about.aim")</p>
+		<p>@Html(play.Play.application().configuration().getString("portal.about.email")) <a class="link" href="mailto:@play.Play.application().configuration().getString("portal.email")">@play.Play.application().configuration().getString("portal.email")</a></p>
 	</div>
 }
