@@ -41,6 +41,6 @@
 		<p><b>@Messages.get("help.paragraph.header.10")</b></p>
 		<p>@Messages.get("help.paragraph.10.1")</p>
 		<p>@Messages.get("help.paragraph.10.2")</p>
-		<p>@Html(Messages.get("help.paragraph.10.3"))</p>
+		<p>@Html(play.Play.application().configuration().getString("portal.help.email")) <a class="link" href="mailto:@play.Play.application().configuration().getString("portal.email")">@play.Play.application().configuration().getString("portal.email")</a></p>
 	</div>
 }
