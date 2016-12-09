@@ -632,7 +632,7 @@ public class Metadata extends Controller {
 					.where(metadata.id.eq(metadataId))
 					.fetchOne();
 				
-				SQLQuery<Tuple> attachmentQuery = tx.select(mdAttachment.all())
+				SQLQuery<Tuple> attachmentQuery = tx.select(mdAttachment.attachmentName, mdAttachment.attachmentLength)
 					.from(mdAttachment)
 					.where(mdAttachment.metadataId.eq(metadataId));
 				
