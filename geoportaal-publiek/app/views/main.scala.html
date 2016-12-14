@@ -34,7 +34,7 @@
 				<a href="@routes.Application.index()">
 					<div class="task-element" id="js-element-index">
 						<div class="task-outer">
-							<div class="@if(title == Messages.get("index.header") || title == Messages.get("index.header.intern")) {task-inner-active} else {
+							<div class="@if(title == play.Play.application().configuration().getString("portal.index.header")) {task-inner-active} else {
 								task-inner}">
 								<div class="tab-element" id="home-icon" style="background-image:url(@routes.Assets.versioned("images/home.png"))">
 									<span class="task-title">

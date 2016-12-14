@@ -29,8 +29,6 @@ tab.browse=Bladeren
 tab.about=Over deze site
 tab.contact=Contact
 
-index.header=Welkom bij het Geoportaal
-index.header.intern=Intern: Welkom bij het Geoportaal
 index.files.info.recent=Vijf meest recente bestanden:
 
 search.header=Uitgebreid zoeken
