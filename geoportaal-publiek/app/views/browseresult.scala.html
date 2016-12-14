@@ -10,7 +10,7 @@
 	startNext: Integer,
 	startLast: Integer,
 	pageLast: Integer,
-	expand: String
+	expand: Boolean
 )
 
 @import play.i18n._
@@ -44,7 +44,7 @@
 				</div>
 				<div class="row" id="expand-area">
 					<label class="checkbox-inline">
-						<input id="js-expand-all" class="js-expand-all-evt" type="checkbox" @if("true".equals(expand)) {checked}>
+						<input id="js-expand-all" class="js-expand-all-evt" type="checkbox" @if(expand) {checked}>
 						<span id="js-label-expand-all">@Messages.get("results.expand")</span>
 					</label>
 				</div>
@@ -87,7 +87,7 @@
 							</a>
 						</p>
 					</div>
-					<div class="col-md-12 description @if("true".equals(expand)) {expanded}"data-uuid="@doc.getUuid()">
+					<div class="col-md-12 description @if(!expand) {metadata-collapsed}"data-uuid="@doc.getUuid()">
 						<p>
 							@if(doc.getThumbnail() != null) {
 								<img src="@doc.getThumbnail()" class="md-thumbnail">

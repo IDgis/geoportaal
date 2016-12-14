@@ -1,6 +1,7 @@
 require([
 	'dojo/dom',
 	'dojo/dom-construct',
+	'dojo/dom-class',
 	'dojo/query',
 	'dojo/on',
 	'dojo/_base/array',
@@ -11,7 +12,7 @@ require([
 	'dojo/request/xhr',
 	
 	'dojo/domReady!'
-	], function(dom, domConstruct, query, on, array, lang, win, domAttr, domStyle, xhr) {
+	], function(dom, domConstruct, domClass, query, on, array, lang, win, domAttr, domStyle, xhr) {
 		
 		// Expand or collapse single metadata record
 		on(win.doc, '.md-title:click', function(e) {
@@ -19,9 +20,9 @@ require([
 			
 			var descDisplay = domStyle.get(description, 'display');
 			if(descDisplay === 'none') {
-				domStyle.set(description, 'display', 'block');
+				domClass.remove(description, 'metadata-collapsed');
 			} else {
-				domStyle.set(description, 'display', 'none');
+				domClass.add(description, 'metadata-collapsed');
 			}
 		});
 		
@@ -30,13 +31,17 @@ require([
 			var descList = query('.search-metadata > .row > .description, .browse-metadata > .row > .description');
 			var checkStatus = domAttr.get(dom.byId('js-expand-all'), 'checked');
 			
+			if(checkStatus === true) {
+				domAttr.set(dom.byId('js-expand-value'), 'value', true);
+			} else {
+				domAttr.set(dom.byId('js-expand-value'), 'value', false);
+			}
+			
 			array.forEach(descList, function(item) {
 				if(checkStatus === true) {
-					domStyle.set(item, 'display', 'block');
-					domAttr.set(dom.byId('js-expand-value'), 'value', "true");
+					domClass.remove(item, 'metadata-collapsed');
 				} else {
-					domStyle.set(item, 'display', 'none');
-					domAttr.set(dom.byId('js-expand-value'), 'value', "false");
+					domClass.add(item, 'metadata-collapsed');
 				}
 			});
 			
@@ -89,8 +94,9 @@ require([
 			var textSearch = domAttr.get(dom.byId('js-text-search'), 'value');
 			var elementString = arrayElements.join('+');
 			var expandValue = domAttr.get(dom.byId('js-expand-value'), 'value');
+			var expandValueBoolean = (expandValue === 'true');
 			
-			xhr(jsRoutes.controllers.Application.search(start, textSearch, elementString, true, expandValue).url, {
+			xhr(jsRoutes.controllers.Application.search(start, textSearch, elementString, true, expandValueBoolean).url, {
 				handleAs: "html"	
 			}).then(function(data) {
 				domConstruct.empty(dom.byId('js-search-results-all'));
@@ -111,8 +117,9 @@ require([
 			var textSearch = domAttr.get(dom.byId('js-text-search'), 'value');
 			var elementString = arrayElements.join('+');
 			var expandValue = domAttr.get(dom.byId('js-expand-value'), 'value');
+			var expandValueBoolean = (expandValue === 'true');
 			
-			xhr(jsRoutes.controllers.Application.browse(start, textSearch, elementString, true, expandValue).url, {
+			xhr(jsRoutes.controllers.Application.browse(start, textSearch, elementString, true, expandValueBoolean).url, {
 				handleAs: "html"	
 			}).then(function(data) {
 				domConstruct.empty(dom.byId('js-browse-results-all'));
