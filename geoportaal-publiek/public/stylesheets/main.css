@@ -69,7 +69,8 @@ a.md-title:hover {cursor:pointer;}
 #about-icon {background-position:15px 15px;background-size:25px;}
 #contact-icon {background-position:15px 15px;background-size:25px;}
 
-.md-thumbnail {float:right;width:120px;height:120px;padding-left:20px;padding-bottom:10px;}
+.md-thumbnail {float:right;width:120px;height:120px;margin-left:20px;margin-bottom:5px;}
+.md-thumbnail:hover {cursor:pointer;}
 #pager-adjusted {margin-top:0;margin-bottom:5px;}
 
 .paging-disabled {pointer-events:none;}

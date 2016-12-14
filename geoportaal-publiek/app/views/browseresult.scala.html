@@ -90,7 +90,9 @@
 					<div class="col-md-12 description @if(!expand) {metadata-collapsed}"data-uuid="@doc.getUuid()">
 						<p>
 							@if(doc.getThumbnail() != null) {
-								<img src="@doc.getThumbnail()" class="md-thumbnail">
+								<a href="@doc.getThumbnail()" target="_blank">
+									<img src="@doc.getThumbnail()" class="md-thumbnail">
+								</a>
 							}
 							
 							@if(doc.getDescription().length > 460) {
