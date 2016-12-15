@@ -12,7 +12,6 @@ public class Sort {
 	private String text;
 	private String supplier;
 	private String status;
-	private String format;
 	private String dateUpdateStart;
 	private String dateUpdateEnd;
 	private String sort;
@@ -33,13 +32,12 @@ public class Sort {
 	 * @param sort the sort type value
 	 * @param recordsChecked the UUID's of the records selected
 	 */
-	public Sort(String text, String supplier, String status, String format, String dateUpdateStart, String dateUpdateEnd, String sort, 
+	public Sort(String text, String supplier, String status, String dateUpdateStart, String dateUpdateEnd, String sort, 
 		List<String> recordsChecked) {
 		
 		this.text = text;
 		this.supplier = supplier;
 		this.status = status;
-		this.format = format;
 		this.dateUpdateStart = dateUpdateStart;
 		this.dateUpdateEnd = dateUpdateEnd;
 		this.sort = sort;
@@ -68,14 +66,6 @@ public class Sort {
 
 	public void setStatus(String status) {
 		this.status = status;
-	}
-
-	public String getFormat() {
-		return format;
-	}
-
-	public void setFormat(String format) {
-		this.format = format;
 	}
 
 	public String getDateUpdateStart() {

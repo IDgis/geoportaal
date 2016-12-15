@@ -77,7 +77,7 @@ public class Metadata extends Controller {
 	 * @return the {@link Result} of the form page
 	 */
 	public Result renderCreateForm(String textSearch, String supplierSearch, String statusSearch, 
-			String mdFormatSearch, String dateStartSearch, String dateEndSearch) {
+			String dateStartSearch, String dateEndSearch) {
 		// Create boolean that determines if the form is for a new record
 		Boolean create = true;
 		
@@ -85,7 +85,7 @@ public class Metadata extends Controller {
 		String today = new SimpleDateFormat("yyyy-MM-dd").format(new Date().getTime());
 		
 		// Create search object
-		Search search = new Search(textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch);
+		Search search = new Search(textSearch, supplierSearch, statusSearch, dateStartSearch, dateEndSearch);
 		
 		return q.withTransaction(tx -> {
 			// Fetch type information list
@@ -153,7 +153,7 @@ public class Metadata extends Controller {
 	 * @return the {@link Result} of the index page
 	 * @throws IOException
 	 */
-	public Result createSubmit(String textSearch, String supplierSearch, String statusSearch, String mdFormatSearch, 
+	public Result createSubmit(String textSearch, String supplierSearch, String statusSearch, 
 			String dateStartSearch, String dateEndSearch) throws IOException {
 		// Fetches the form
 		Form<DublinCore> dcForm = Form.form(DublinCore.class);
@@ -251,7 +251,7 @@ public class Metadata extends Controller {
 			if("".equals(dc.getTitle().trim()) || "".equals(dc.getDescription().trim()) || "".equals(dc.getLocation().trim()) || 
 				"".equals(dc.getFileId().trim()) || creatorKey == null || creatorOtherFailed || useLimitationKey == null || 
 				dateSourceCreationValue == null || dc.getSubject() == null || !dateCreatePublicationCheck || !dateValidCheck) {
-					return validateFormServer(true, null, null, textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch, previousValues,
+					return validateFormServer(true, null, null, textSearch, supplierSearch, statusSearch, dateStartSearch, dateEndSearch, previousValues,
 							null);
 			} else if((numbersCheck.get("duplicate") || numbersCheck.get("character") || numbersCheck.get("length")) && !fileIdConfirmed) {
 				List<String> warnMessages = new ArrayList<>();
@@ -268,7 +268,7 @@ public class Metadata extends Controller {
 					warnMessages.add(Messages.get("validate.form.fileid.warning.body.length"));
 				}
 				
-				return validateFormServer(true, null, null, textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch, previousValues,
+				return validateFormServer(true, null, null, textSearch, supplierSearch, statusSearch, dateStartSearch, dateEndSearch, previousValues,
 						warnMessages);
 			}
 			
@@ -365,7 +365,7 @@ public class Metadata extends Controller {
 			tx.refreshMaterializedViewConcurrently(metadataSearch);
 			
 			// Return index page
-			return redirect(controllers.routes.Index.index(textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch, "dateDesc", ""));
+			return redirect(controllers.routes.Index.index(textSearch, supplierSearch, statusSearch, dateStartSearch, dateEndSearch, "dateDesc", ""));
 		});
 	}
 	
@@ -382,12 +382,12 @@ public class Metadata extends Controller {
 	 * @return the {@link Result} of the index page
 	 */
 	public Result renderEditForm(String metadataUuid, String textSearch, String supplierSearch, String statusSearch, 
-			String mdFormatSearch, String dateStartSearch, String dateEndSearch) {
+			String dateStartSearch, String dateEndSearch) {
 		// Create boolean that determines if the form is for an existing record
 		Boolean create = false;
 		
 		// Create search object
-		Search search = new Search(textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch);
+		Search search = new Search(textSearch, supplierSearch, statusSearch, dateStartSearch, dateEndSearch);
 		
 		return q.withTransaction(tx -> {
 			// Fetches status id of metadata
@@ -503,7 +503,7 @@ public class Metadata extends Controller {
 	 * @return the {@link Result} of the index page
 	 * @throws IOException
 	 */
-	public Result editSubmit(String metadataUuid, String textSearch, String supplierSearch, String statusSearch, String mdFormatSearch, 
+	public Result editSubmit(String metadataUuid, String textSearch, String supplierSearch, String statusSearch, 
 			String dateStartSearch, String dateEndSearch) throws IOException {
 		// Fetches the form
 		Form<DublinCore> dcForm = Form.form(DublinCore.class);
@@ -651,7 +651,7 @@ public class Metadata extends Controller {
 					dateSourceCreationValue == null || dc.getSubject() == null || !dateCreatePublicationCheck || !dateValidCheck) {
 						
 					
-					return validateFormServer(false, datasetRow, attachmentsDataset, textSearch, supplierSearch, statusSearch, mdFormatSearch, 
+					return validateFormServer(false, datasetRow, attachmentsDataset, textSearch, supplierSearch, statusSearch, 
 							dateStartSearch, dateEndSearch, previousValues, null);
 				} else if((numbersCheck.get("duplicate") || numbersCheck.get("character") || numbersCheck.get("length")) && !fileIdConfirmed) {
 					// Returns previous state with warning if there is an undesirable number
@@ -669,7 +669,7 @@ public class Metadata extends Controller {
 						warnMessages.add(Messages.get("validate.form.fileid.warning.body.length"));
 					}
 					
-					return validateFormServer(false, datasetRow, attachmentsDataset, textSearch, supplierSearch, statusSearch, mdFormatSearch, 
+					return validateFormServer(false, datasetRow, attachmentsDataset, textSearch, supplierSearch, statusSearch, 
 							dateStartSearch, dateEndSearch, previousValues, warnMessages);
 				}
 				
@@ -805,7 +805,7 @@ public class Metadata extends Controller {
 			tx.refreshMaterializedViewConcurrently(metadataSearch);
 			
 			// Return the index page
-			return redirect(controllers.routes.Index.index(textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch, "dateDesc", ""));
+			return redirect(controllers.routes.Index.index(textSearch, supplierSearch, statusSearch, dateStartSearch, dateEndSearch, "dateDesc", ""));
 		});
 	}
 	
@@ -1077,7 +1077,7 @@ public class Metadata extends Controller {
 	 * @return the {@link Result} of the form page
 	 */
 	public Result validateFormServer(Boolean create, Tuple datasetRow, List<Tuple> attachmentsDataset, String textSearch, String supplierSearch, 
-			String statusSearch, String mdFormatSearch, String dateStartSearch, String dateEndSearch, Map<String, DublinCore> previousValues,
+			String statusSearch, String dateStartSearch, String dateEndSearch, Map<String, DublinCore> previousValues,
 			List<String> warnMessages) {
 		// Create strings according to yyyy-MM-dd and dd-MM-yyyy formats
 		String today = new SimpleDateFormat("yyyy-MM-dd").format(new Date().getTime());
@@ -1089,7 +1089,7 @@ public class Metadata extends Controller {
 		Boolean validate = true;
 		
 		// Create a search object
-		Search search = new Search(textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch);
+		Search search = new Search(textSearch, supplierSearch, statusSearch, dateStartSearch, dateEndSearch);
 		
 		return q.withTransaction(tx -> {
 			// Fetches the type information list
@@ -1159,8 +1159,8 @@ public class Metadata extends Controller {
 	 * @param dateEndSearch the search value of the date end field
 	 * @return the {@link Result} of the index page
 	 */
-	public Result cancel(String textSearch, String supplierSearch, String statusSearch, String mdFormatSearch, String dateStartSearch, 
+	public Result cancel(String textSearch, String supplierSearch, String statusSearch, String dateStartSearch, 
 			String dateEndSearch) {
-		return redirect(controllers.routes.Index.index(textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch, "dateDesc", ""));
+		return redirect(controllers.routes.Index.index(textSearch, supplierSearch, statusSearch, dateStartSearch, dateEndSearch, "dateDesc", ""));
 	}
 }

@@ -14,7 +14,6 @@ public class Supplier {
 	private String textSearch;
 	private String supplierSearch;
 	private String statusSearch;
-	private String mdFormatSearch;
 	private String dateStartSearch;
 	private String dateEndSearch;
 	
@@ -34,13 +33,12 @@ public class Supplier {
 	 * @param dateEndSearch the search value of the date end field
 	 */
 	public Supplier(List<String> recordsChange, String supplier, String textSearch, String supplierSearch, String statusSearch, 
-			String mdFormatSearch, String dateStartSearch, String dateEndSearch) {
+			String dateStartSearch, String dateEndSearch) {
 		this.recordsChange = recordsChange;
 		this.supplier = supplier;
 		this.textSearch = textSearch;
 		this.supplierSearch = supplierSearch;
 		this.statusSearch = statusSearch;
-		this.mdFormatSearch = mdFormatSearch;
 		this.dateStartSearch = dateStartSearch;
 		this.dateEndSearch = dateEndSearch;
 	}
@@ -83,14 +81,6 @@ public class Supplier {
 
 	public void setStatusSearch(String statusSearch) {
 		this.statusSearch = statusSearch;
-	}
-
-	public String getMdFormatSearch() {
-		return mdFormatSearch;
-	}
-
-	public void setMdFormatSearch(String mdFormatSearch) {
-		this.mdFormatSearch = mdFormatSearch;
 	}
 
 	public String getDateStartSearch() {

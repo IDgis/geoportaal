@@ -15,7 +15,6 @@ public class Delete {
 	private String textSearch;
 	private String supplierSearch;
 	private String statusSearch;
-	private String mdFormatSearch;
 	private String dateStartSearch;
 	private String dateEndSearch;
 	
@@ -35,13 +34,12 @@ public class Delete {
 	 * @param dateEndSearch the search value of the date end field
 	 */
 	public Delete(List<String> recordsToDel, String permDel, String textSearch, String supplierSearch, String statusSearch, 
-			String mdFormatSearch, String dateStartSearch, String dateEndSearch) {
+			String dateStartSearch, String dateEndSearch) {
 		this.recordsToDel = recordsToDel;
 		this.permDel = permDel;
 		this.textSearch = textSearch;
 		this.supplierSearch = supplierSearch;
 		this.statusSearch = statusSearch;
-		this.mdFormatSearch = mdFormatSearch;
 		this.dateStartSearch = dateStartSearch;
 		this.dateEndSearch = dateEndSearch;
 	}
@@ -84,14 +82,6 @@ public class Delete {
 
 	public void setStatusSearch(String statusSearch) {
 		this.statusSearch = statusSearch;
-	}
-
-	public String getMdFormatSearch() {
-		return mdFormatSearch;
-	}
-
-	public void setMdFormatSearch(String mdFormatSearch) {
-		this.mdFormatSearch = mdFormatSearch;
 	}
 
 	public String getDateStartSearch() {

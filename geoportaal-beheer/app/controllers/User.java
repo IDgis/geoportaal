@@ -99,7 +99,7 @@ public class User extends Controller {
 			if(loginForm.get().getReturnUrl() != null) {
 				return redirect(loginForm.get().getReturnUrl());
 			} else {
-				return redirect(controllers.routes.Index.index("", "none", "none", "none", "", "", "dateDesc", ""));
+				return redirect(controllers.routes.Index.index("", "none", "none", "", "", "dateDesc", ""));
 			}
 		}
 	}
@@ -217,7 +217,7 @@ public class User extends Controller {
 		session("changePassword", Messages.get("password.edit.success"));
 		
 		// Return the index page, which defaults to login page because the user is not logged in
-		return redirect(controllers.routes.Index.index("", "none", "none", "none", "", "", "dateDesc", ""));
+		return redirect(controllers.routes.Index.index("", "none", "none", "", "", "dateDesc", ""));
 	}
 	
 	/**
@@ -285,7 +285,7 @@ public class User extends Controller {
 		session("forgotPassword", Messages.get("password.forgot.success"));
 		
 		// Return the index page, which defaults to login page because the user is not logged in
-		return redirect(controllers.routes.Index.index("", "none", "none", "none", "", "", "dateDesc", ""));
+		return redirect(controllers.routes.Index.index("", "none", "none", "", "", "dateDesc", ""));
 	}
 	
 	public Result loginHelp() {

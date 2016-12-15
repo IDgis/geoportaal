@@ -1,14 +1,12 @@
 @(datasetRows: java.util.List[com.querydsl.core.Tuple], 
 	supplierList: java.util.List[com.querydsl.core.Tuple],
 	statusList: java.util.List[com.querydsl.core.Tuple],
-	mdFormatList: java.util.List[com.querydsl.core.Tuple],
 	sdf: java.text.SimpleDateFormat,
 	sdfLocal: java.text.SimpleDateFormat,
 	roleId: Integer,
 	textSearch: String,
 	supplierSearch: String,
 	statusSearch: String,
-	mdFormatSearch: String,
 	dateStartSearch: String,
 	dateEndSearch: String,
 	tsStartSearch: java.sql.Timestamp,
@@ -28,7 +26,7 @@
 @import models.QMdFormatLabel.mdFormatLabel
 @import models.QUser.user
 
-@main(Messages.get("index.header"), textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch, 
+@main(Messages.get("index.header"), textSearch, supplierSearch, statusSearch, dateStartSearch, dateEndSearch, 
 	roleId, routes.Assets.versioned("javascripts/index.js").url) {
 	
 	@if(flash.containsKey("attachmentSkipped")) {
@@ -107,25 +105,6 @@
 				</div>
 			</div>
 			<div class="form-group">
-				<label class="col-sm-3 control-label">@Messages.get("index.format.label")</label>
-				<div class="col-sm-7">
-					<select class="form-control" data-toggle="tooltip" data-placement="top" title="@Messages.get("index.format.title")" name="format">
-						@for(mdFormatOption <- mdFormatList) {
-							<option value="@mdFormatOption.get(mdFormat.name)"
-								@if(mdFormatOption.get(mdFormat.name).equals(mdFormatSearch)) {selected}>
-									@mdFormatOption.get(mdFormatLabel.label)
-							</option>
-						}
-					</select>
-				</div>
-				<div class="col-sm-2">
-					<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" tabindex="-1"
-					data-content="@Messages.get("index.format.tooltip")">
-						<span class="glyphicon glyphicon-info-sign"></span>
-					</button>
-				</div>
-			</div>
-			<div class="form-group">
 				<label class="col-sm-3 control-label">@Messages.get("index.date.start.label")</label>
 				<div class="col-sm-4">
 					<input class="form-control js-date" id="js-date-update-start" type="date" data-toggle="tooltip" data-placement="top" 
@@ -157,10 +136,10 @@
 			<div class="form-group">
 	 			<div class="col-sm-offset-3 col-sm-7">
 	 				<button class="knop" id="search-button" type="button">@Messages.get("index.button.search")</button>
-	 				@if(!textSearch.equals("") || !supplierSearch.equals("none") || !statusSearch.equals("none") || !mdFormatSearch.equals("none") ||
+	 				@if(!textSearch.equals("") || !supplierSearch.equals("none") || !statusSearch.equals("none") ||
 	 					tsStartSearch != null || tsEndSearch != null) {
 	 					<a class="knop" id="filter-button" 
-	 						href="@routes.Index.index("", "none", "none", "none", "", "")">@Messages.get("index.button.filter.clear")</a>
+	 						href="@routes.Index.index("", "none", "none", "", "")">@Messages.get("index.button.filter.clear")</a>
 	 				}
 				</div>
 			</div>
@@ -196,7 +175,7 @@
 		<strong>@Messages.get("index.warning.published.record")</strong>
 	</div>
 	
-	@views.html.list(datasetRows, sdfLocal, roleId, textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch, sort, checkedList)
+	@views.html.list(datasetRows, sdfLocal, roleId, textSearch, supplierSearch, statusSearch, dateStartSearch, dateEndSearch, sort, checkedList)
 	<div id="version-info">
 		@Messages.get("application.name"): @getClass().getPackage().getImplementationVersion()
 	</div>
@@ -207,7 +186,6 @@
 		<input type="hidden" name="textSearch" value="@textSearch">
 		<input type="hidden" name="supplierSearch" value="@supplierSearch">
 		<input type="hidden" name="statusSearch" value="@statusSearch">
-		<input type="hidden" name="mdFormatSearch" value="@mdFormatSearch">
 		<input type="hidden" name="dateStartSearch" value="">
 		<input type="hidden" name="dateEndSearch" value="">
 		<div class="modal fade" id="status-modal">
@@ -245,7 +223,6 @@
 		<input type="hidden" name="textSearch" value="@textSearch">
 		<input type="hidden" name="supplierSearch" value="@supplierSearch">
 		<input type="hidden" name="statusSearch" value="@statusSearch">
-		<input type="hidden" name="mdFormatSearch" value="@mdFormatSearch">
 		<input type="hidden" name="dateStartSearch" value="">
 		<input type="hidden" name="dateEndSearch" value="">
 		<div class="modal fade" id="delete-modal">
@@ -288,7 +265,6 @@
 		<input type="hidden" name="textSearch" value="@textSearch">
 		<input type="hidden" name="supplierSearch" value="@supplierSearch">
 		<input type="hidden" name="statusSearch" value="@statusSearch">
-		<input type="hidden" name="mdFormatSearch" value="@mdFormatSearch">
 		<input type="hidden" name="dateStartSearch" value="">
 		<input type="hidden" name="dateEndSearch" value="">
 		<div class="modal fade" id="supplier-modal">

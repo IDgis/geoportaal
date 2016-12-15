@@ -67,7 +67,6 @@ public class Index extends Controller {
 	 * @param textSearch the search value of the text field
 	 * @param supplierSearch the search value of the supplier field
 	 * @param statusSearch the search value of the status field
-	 * @param mdFormatSearch the search value of the format field
 	 * @param dateStartSearch the search value of the date start field
 	 * @param dateEndSearch the search value of the date end field
 	 * @param sort the sort type value
@@ -75,7 +74,7 @@ public class Index extends Controller {
 	 * @return the {@link Result} of the index page
 	 * @throws SQLException
 	 */
-	public Result index(String textSearch, String supplierSearch, String statusSearch, String mdFormatSearch, String dateStartSearch, 
+	public Result index(String textSearch, String supplierSearch, String statusSearch, String dateStartSearch, 
 			String dateEndSearch, String sort, String checked) throws SQLException {
 		return q.withTransaction(tx -> {
 			// Fetches the supplier list
@@ -89,13 +88,6 @@ public class Index extends Controller {
 				.from(status)
 				.join(statusLabel).on(status.id.eq(statusLabel.statusId))
 				.orderBy(status.id.asc())
-				.fetch();
-			
-			// Fetches the format list
-			List<Tuple> mdFormatList = tx.select(mdFormat.name, mdFormatLabel.label)
-				.from(mdFormat)
-				.join(mdFormatLabel).on(mdFormat.id.eq(mdFormatLabel.mdFormatId))
-				.orderBy(mdFormatLabel.label.asc())
 				.fetch();
 			
 			// Create a SimpleDateFormat object for the yyyy-MM-dd format
@@ -182,12 +174,6 @@ public class Index extends Controller {
 			// If user is a supplier never display the records in the trash bin 
 			if(roleId.equals(2) && "deleted".equals(statusSearch)) {
 				datasetQuery.where(metadata.status.notIn(5));
-			}
-			
-			// Filter records on format selected
-			if(!"none".equals(mdFormatSearch)) {
-				datasetQuery
-					.where(mdFormat.name.eq(mdFormatSearch));
 			}
 			
 			// If search value of date start isn't null or empty convert it to a date
@@ -300,8 +286,8 @@ public class Index extends Controller {
 			}
 			
 			// Return index page
-			return ok(views.html.index.render(datasetRows, supplierList, statusList, mdFormatList, sdf, sdfLocal, roleId, textSearch, 
-				supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch, timestampStartSearch, resetTimestampEndSearch, sort,
+			return ok(views.html.index.render(datasetRows, supplierList, statusList, sdf, sdfLocal, roleId, textSearch, 
+				supplierSearch, statusSearch, dateStartSearch, dateEndSearch, timestampStartSearch, resetTimestampEndSearch, sort,
 				checkedList, datasetCount));
 		});
 	}
@@ -318,7 +304,6 @@ public class Index extends Controller {
 		String textSearch = s.getText();
 		String supplierSearch = s.getSupplier();
 		String statusSearch = s.getStatus();
-		String mdFormatSearch = s.getFormat();
 		String dateStartSearch = s.getDateUpdateStart();
 		String dateEndSearch = s.getDateUpdateEnd();
 		
@@ -329,7 +314,7 @@ public class Index extends Controller {
 		}
 		
 		// Return index page
-		return redirect(controllers.routes.Index.index(textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch, "dateDesc", ""));
+		return redirect(controllers.routes.Index.index(textSearch, supplierSearch, statusSearch, dateStartSearch, dateEndSearch, "dateDesc", ""));
 	}
 	
 	/**
@@ -344,7 +329,6 @@ public class Index extends Controller {
 		String textSearch = s.getText();
 		String supplierSearch = s.getSupplier();
 		String statusSearch = s.getStatus();
-		String mdFormatSearch = s.getFormat();
 		String dateStartSearch = s.getDateUpdateStart();
 		String dateEndSearch = s.getDateUpdateEnd();
 		
@@ -367,7 +351,7 @@ public class Index extends Controller {
 		}
 		
 		// Return the index page
-		return redirect(controllers.routes.Index.index(textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch, 
+		return redirect(controllers.routes.Index.index(textSearch, supplierSearch, statusSearch, dateStartSearch, dateEndSearch, 
 			sort, checked));
 	}
 	
@@ -383,7 +367,6 @@ public class Index extends Controller {
 		String textSearch = s.getTextSearch();
 		String supplierSearch = s.getSupplierSearch();
 		String statusSearch = s.getStatusSearch();
-		String mdFormatSearch = s.getMdFormatSearch();
 		String dateStartSearch = s.getDateStartSearch();
 		String dateEndSearch = s.getDateEndSearch();
 		
@@ -479,7 +462,7 @@ public class Index extends Controller {
 			}
 			
 			// Return the index page
-			return redirect(controllers.routes.Index.index(textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch, "dateDesc", ""));
+			return redirect(controllers.routes.Index.index(textSearch, supplierSearch, statusSearch, dateStartSearch, dateEndSearch, "dateDesc", ""));
 		});
 		
 	}
@@ -496,7 +479,6 @@ public class Index extends Controller {
 		String textSearch = s.getTextSearch();
 		String supplierSearch = s.getSupplierSearch();
 		String statusSearch = s.getStatusSearch();
-		String mdFormatSearch = s.getMdFormatSearch();
 		String dateStartSearch = s.getDateStartSearch();
 		String dateEndSearch = s.getDateEndSearch();
 		
@@ -537,7 +519,7 @@ public class Index extends Controller {
 			}
 			
 			// Return the index page
-			return redirect(controllers.routes.Index.index(textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch, "dateDesc", ""));
+			return redirect(controllers.routes.Index.index(textSearch, supplierSearch, statusSearch, dateStartSearch, dateEndSearch, "dateDesc", ""));
 		});
 	}
 	
@@ -553,7 +535,6 @@ public class Index extends Controller {
 		String textSearch = d.getTextSearch();
 		String supplierSearch = d.getSupplierSearch();
 		String statusSearch = d.getStatusSearch();
-		String mdFormatSearch = d.getMdFormatSearch();
 		String dateStartSearch = d.getDateStartSearch();
 		String dateEndSearch = d.getDateEndSearch();
 		
@@ -641,7 +622,7 @@ public class Index extends Controller {
 			tx.refreshMaterializedViewConcurrently(metadataSearch);
 			
 			// Return index page
-			return redirect(controllers.routes.Index.index(textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch, "dateDesc", ""));
+			return redirect(controllers.routes.Index.index(textSearch, supplierSearch, statusSearch, dateStartSearch, dateEndSearch, "dateDesc", ""));
 		});
 	}
 	

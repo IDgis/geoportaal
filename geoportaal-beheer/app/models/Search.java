@@ -11,7 +11,6 @@ public class Search {
 	private String text;
 	private String supplier;
 	private String status;
-	private String format;
 	private String dateUpdateStart;
 	private String dateUpdateEnd;
 	
@@ -28,11 +27,10 @@ public class Search {
 	 * @param dateUpdateStart the date start search value
 	 * @param dateUpdateEnd the date end search value
 	 */
-	public Search(String text, String supplier, String status, String format, String dateUpdateStart, String dateUpdateEnd) {
+	public Search(String text, String supplier, String status, String dateUpdateStart, String dateUpdateEnd) {
 		this.text = text;
 		this.supplier = supplier;
 		this.status = status;
-		this.format = format;
 		this.dateUpdateStart = dateUpdateStart;
 		this.dateUpdateEnd = dateUpdateEnd;
 	}
@@ -59,14 +57,6 @@ public class Search {
 
 	public void setStatus(String status) {
 		this.status = status;
-	}
-
-	public String getFormat() {
-		return format;
-	}
-
-	public void setFormat(String format) {
-		this.format = format;
 	}
 
 	public String getDateUpdateStart() {

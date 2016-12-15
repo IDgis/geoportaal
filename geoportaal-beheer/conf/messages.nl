@@ -29,8 +29,6 @@ index.supplier.label=Leverancier
 index.supplier.title=Filter op leverancier
 index.status.label=Status
 index.status.title=Filter op status
-index.format.label=Formaat
-index.format.title=Filter op formaat
 index.date.start.label=Update datum tussen
 index.date.start.title=Zoek op begindatum
 index.date.end.label=en
@@ -106,7 +104,6 @@ form.subject.title=Vink de onderwerpen aan die van toepassing zijn op de data
 index.text.tooltip=Tekst in die je wilt zoeken. Meerdere woorden zijn mogelijk. Vul je niets in, dan wordt alles gekozen als je gaat zoeken.
 index.supplier.tooltip=Leverancier van de data, waarmee de kaart is gemaakt. Vul je niets in, dan wordt alles gekozen als je gaat zoeken.
 index.status.tooltip=Status. Vul je niets in, dan wordt alles gekozen als je gaat zoeken.
-index.format.tooltip=Format van de originele brondata. Vul je niets in, dan wordt alles gekozen als je gaat zoeken.
 index.date.update.start.tooltip=Datum waarop het bestand is vernieuwd. Kies de begindatum. Vul je niets in, dan wordt alles gekozen als je gaat zoeken.
 index.date.update.end.tooltip=Datum waarop het bestand is vernieuwd. Kies de einddatum. Vul je niets in, dan wordt alles gekozen als je gaat zoeken.
 
