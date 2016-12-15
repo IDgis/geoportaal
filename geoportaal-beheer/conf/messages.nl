@@ -172,6 +172,7 @@ password.forgot.success=Er is een e-mail naar het door u opgegeven adres verstuu
 report.header=Rapportage
 report.intro=Op deze pagina kun je onderstaande rapportages opvragen.
 report.type.dataset=Geodata
+report.type.service=Services
 report.type.dc=Statische kaarten
 report.type.download=Download
 report.start.info.1=De rapportage-opdracht wordt gestart.
