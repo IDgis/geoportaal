@@ -22,7 +22,7 @@ p.title {margin-top: 12px;margin-bottom: 12px;}
 a.md-title-index {color: #255c9f;font-weight: bold;}
 a.md-title-index:hover {text-decoration: none;}
 
-a.md-title {color: #255c9f;text-decoration: underline;font-weight: bold;}
+a.md-title {color: #255c9f;text-decoration:none;font-weight: bold;}
 a.md-title:hover {cursor:pointer;}
 
 .grid {margin-top:20px;margin-bottom:20px;padding-top:5px;padding-bottom:5px;}
@@ -49,8 +49,7 @@ a.md-title:hover {cursor:pointer;}
 .files-info {font-size:17px;font-weight:bold;}
 
 .home-metadata, .search-metadata, .browse-metadata {padding:10px 0;border-bottom:1px solid #cbcbcb;margin-top:15px;margin-bottom:15px;}
-.expanded {display:block !important;}
-.search-metadata > .row > .description, .browse-metadata > .row > .description {display:none;}
+.metadata-collapsed {display:none;}
 #browse-area {margin: 0px 0px 0px 0px;}
 .browse-metadata > .row > .browse-title > .titel {margin-top:0;}
 .link {background:none!important;border:none;padding:0!important;cursor:pointer;color:#255c9f;text-decoration:underline;}
@@ -70,7 +69,8 @@ a.md-title:hover {cursor:pointer;}
 #about-icon {background-position:15px 15px;background-size:25px;}
 #contact-icon {background-position:15px 15px;background-size:25px;}
 
-.md-thumbnail {float:right;width:120px;height:120px;padding-left:20px;padding-bottom:10px;}
+.md-thumbnail {float:right;width:120px;height:120px;margin-left:20px;margin-bottom:5px;}
+.md-thumbnail:hover {cursor:pointer;}
 #pager-adjusted {margin-top:0;margin-bottom:5px;}
 
 .paging-disabled {pointer-events:none;}

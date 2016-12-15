@@ -95,15 +95,15 @@ public class Application extends Controller {
 		Search s = searchForm.bindFromRequest().get();
 		
 		if("search".equals(s.getPage())) {
-			return redirect(controllers.routes.Application.search(0, s.getText(), s.getElementsString(), false, "false"));
+			return redirect(controllers.routes.Application.search(0, s.getText(), s.getElementsString(), false, true));
 		} if("browse".equals(s.getPage())) {
-			return redirect(controllers.routes.Application.browse(0, s.getText(), s.getElementsString(), false, "false"));
+			return redirect(controllers.routes.Application.browse(0, s.getText(), s.getElementsString(), false, true));
 		} else {
 			return notFound("404 - not found");
 		}
 	}
 	
-	public Result search(Integer start, String textSearch, String typesString, Boolean filter, String expand) {
+	public Result search(Integer start, String textSearch, String typesString, Boolean filter, Boolean expand) {
 		String portalAccess = play.Play.application().configuration().getString("portal.access");
 		
 		Lang curLang = Http.Context.current().lang();
@@ -218,7 +218,7 @@ public class Application extends Controller {
 		});
 	}
 	
-	public Result browse(Integer start, String textSearch, String subjectsString, Boolean filter, String expand) {
+	public Result browse(Integer start, String textSearch, String subjectsString, Boolean filter, Boolean expand) {
 		String portalAccess = play.Play.application().configuration().getString("portal.access");
 		
 		Lang curLang = Http.Context.current().lang();
