@@ -5,8 +5,10 @@
 	textSearch: String,
 	supplierSearch: String,
 	statusSearch: String,
-	dateStartSearch: String,
-	dateEndSearch: String,
+	dateCreateStartSearch: String,
+	dateCreateEndSearch: String,
+	dateUpdateStartSearch: String,
+	dateUpdateEndSearch: String,
 	checkedList: java.util.List[String]
 	)
 
@@ -24,7 +26,7 @@
 		<a href="@routes.Metadata.getMetadata(datasetRow.get(metadata.uuid))" target="_blank">
 			<span class="action-button glyphicon glyphicon-eye-open" title="@Messages.get("list.action.view")"></span>
 		</a>
-		<a href="@routes.Metadata.renderEditForm(datasetRow.get(metadata.uuid), textSearch, supplierSearch, statusSearch, dateStartSearch, dateEndSearch)"
+		<a href="@routes.Metadata.renderEditForm(datasetRow.get(metadata.uuid), textSearch, supplierSearch, statusSearch, dateCreateStartSearch, dateCreateEndSearch, dateUpdateStartSearch, dateUpdateEndSearch)"
 			@if(datasetRow.get(metadata.status).equals(4)) {class="edit-btn-published"}>
 			<span class="action-button glyphicon glyphicon-edit" title="@Messages.get("list.action.edit")"></span>
 		</a>

@@ -4,8 +4,10 @@
 	textSearch: String,
 	supplierSearch: String,
 	statusSearch: String,
-	dateStartSearch: String,
-	dateEndSearch: String,
+	dateCreateStartSearch: String,
+	dateCreateEndSearch: String,
+	dateUpdateStartSearch: String,
+	dateUpdateEndSearch: String,
 	sort: String,
 	checkedList: java.util.List[String]
 	)
@@ -20,8 +22,10 @@
 		<input type="hidden" name="text" value="@textSearch">
 		<input type="hidden" name="supplier" value="@supplierSearch">
 		<input type="hidden" name="status" value="@statusSearch">
-		<input type="hidden" name="dateUpdateStart" value="@dateStartSearch">
-		<input type="hidden" name="dateUpdateEnd" value="@dateEndSearch">
+		<input type="hidden" name="dateCreateStart" value="@dateCreateStartSearch">
+		<input type="hidden" name="dateCreateEnd" value="@dateCreateEndSearch">
+		<input type="hidden" name="dateUpdateStart" value="@dateUpdateStartSearch">
+		<input type="hidden" name="dateUpdateEnd" value="@dateUpdateEndSearch">
 		<div id="js-sort-records"></div>
 		
 		<table class="col-sm-offset-0 table table-bordered" id="list-table">
@@ -82,34 +86,34 @@
 				@for(datasetRow <- datasetRows) {
 					@if(datasetRows.indexOf(datasetRow) > -1 && datasetRows.indexOf(datasetRow) < 20) {	
 						@views.html.listpage(1, datasetRow, sdfLocal, roleId, textSearch, supplierSearch, statusSearch, 
-							dateStartSearch, dateEndSearch, checkedList)
+							dateCreateStartSearch, dateCreateEndSearch, dateUpdateStartSearch, dateUpdateEndSearch, checkedList)
 					} @if(datasetRows.indexOf(datasetRow) > 19 && datasetRows.indexOf(datasetRow) < 40) {	
 						@views.html.listpage(2, datasetRow, sdfLocal, roleId, textSearch, supplierSearch, statusSearch, 
-							dateStartSearch, dateEndSearch, checkedList)
+							dateCreateStartSearch, dateCreateEndSearch, dateUpdateStartSearch, dateUpdateEndSearch, checkedList)
 					} @if(datasetRows.indexOf(datasetRow) > 39 && datasetRows.indexOf(datasetRow) < 60) {	
 						@views.html.listpage(3, datasetRow, sdfLocal, roleId, textSearch, supplierSearch, statusSearch, 
-							dateStartSearch, dateEndSearch, checkedList)
+							dateCreateStartSearch, dateCreateEndSearch, dateUpdateStartSearch, dateUpdateEndSearch, checkedList)
 					} @if(datasetRows.indexOf(datasetRow) > 59 && datasetRows.indexOf(datasetRow) < 80) {	
 						@views.html.listpage(4, datasetRow, sdfLocal, roleId, textSearch, supplierSearch, statusSearch, 
-							dateStartSearch, dateEndSearch, checkedList)
+							dateCreateStartSearch, dateCreateEndSearch, dateUpdateStartSearch, dateUpdateEndSearch, checkedList)
 					} @if(datasetRows.indexOf(datasetRow) > 79 && datasetRows.indexOf(datasetRow) < 100) {	
 						@views.html.listpage(5, datasetRow, sdfLocal, roleId, textSearch, supplierSearch, statusSearch, 
-							dateStartSearch, dateEndSearch, checkedList)
+							dateCreateStartSearch, dateCreateEndSearch, dateUpdateStartSearch, dateUpdateEndSearch, checkedList)
 					} @if(datasetRows.indexOf(datasetRow) > 99 && datasetRows.indexOf(datasetRow) < 120) {	
 						@views.html.listpage(6, datasetRow, sdfLocal, roleId, textSearch, supplierSearch, statusSearch, 
-							dateStartSearch, dateEndSearch, checkedList)
+							dateCreateStartSearch, dateCreateEndSearch, dateUpdateStartSearch, dateUpdateEndSearch, checkedList)
 					} @if(datasetRows.indexOf(datasetRow) > 119 && datasetRows.indexOf(datasetRow) < 140) {	
 						@views.html.listpage(7, datasetRow, sdfLocal, roleId, textSearch, supplierSearch, statusSearch, 
-							dateStartSearch, dateEndSearch, checkedList)
+							dateCreateStartSearch, dateCreateEndSearch, dateUpdateStartSearch, dateUpdateEndSearch, checkedList)
 					} @if(datasetRows.indexOf(datasetRow) > 139 && datasetRows.indexOf(datasetRow) < 160) {	
 						@views.html.listpage(8, datasetRow, sdfLocal, roleId, textSearch, supplierSearch, statusSearch, 
-							dateStartSearch, dateEndSearch, checkedList)
+							dateCreateStartSearch, dateCreateEndSearch, dateUpdateStartSearch, dateUpdateEndSearch, checkedList)
 					} @if(datasetRows.indexOf(datasetRow) > 159 && datasetRows.indexOf(datasetRow) < 180) {	
 						@views.html.listpage(9, datasetRow, sdfLocal, roleId, textSearch, supplierSearch, statusSearch, 
-							dateStartSearch, dateEndSearch, checkedList)
+							dateCreateStartSearch, dateCreateEndSearch, dateUpdateStartSearch, dateUpdateEndSearch, checkedList)
 					} @if(datasetRows.indexOf(datasetRow) > 179 && datasetRows.indexOf(datasetRow) < 200) {	
 						@views.html.listpage(10, datasetRow, sdfLocal, roleId, textSearch, supplierSearch, statusSearch, 
-							dateStartSearch, dateEndSearch, checkedList)
+							dateCreateStartSearch, dateCreateEndSearch, dateUpdateStartSearch, dateUpdateEndSearch, checkedList)
 					}
 				}
 			</tbody>

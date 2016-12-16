@@ -7,10 +7,14 @@
 	textSearch: String,
 	supplierSearch: String,
 	statusSearch: String,
-	dateStartSearch: String,
-	dateEndSearch: String,
-	tsStartSearch: java.sql.Timestamp,
-	tsEndSearch: java.sql.Timestamp,
+	dateCreateStartSearch: String,
+	dateCreateEndSearch: String,
+	tsCreateStartSearch: java.sql.Timestamp,
+	tsCreateEndSearch: java.sql.Timestamp,
+	dateUpdateStartSearch: String,
+	dateUpdateEndSearch: String,
+	tsUpdateStartSearch: java.sql.Timestamp,
+	tsUpdateEndSearch: java.sql.Timestamp,
 	sort: String,
 	checkedList: java.util.List[String],
 	datasetCount: Long
@@ -26,8 +30,9 @@
 @import models.QMdFormatLabel.mdFormatLabel
 @import models.QUser.user
 
-@main(Messages.get("index.header"), textSearch, supplierSearch, statusSearch, dateStartSearch, dateEndSearch, 
-	roleId, routes.Assets.versioned("javascripts/index.js").url) {
+@main(Messages.get("index.header"), textSearch, supplierSearch, statusSearch, dateCreateStartSearch, 
+	dateCreateEndSearch, dateUpdateStartSearch, dateUpdateEndSearch, roleId, 
+	routes.Assets.versioned("javascripts/index.js").url) {
 	
 	@if(flash.containsKey("attachmentSkipped")) {
 		<div>
@@ -105,11 +110,39 @@
 				</div>
 			</div>
 			<div class="form-group">
-				<label class="col-sm-3 control-label">@Messages.get("index.date.start.label")</label>
+				<label class="col-sm-3 control-label">@Messages.get("index.date.create.start.label")</label>
+				<div class="col-sm-4">
+					<input class="form-control js-date" id="js-date-create-start" type="date" data-toggle="tooltip" data-placement="top" 
+					title="@Messages.get("index.date.create.start.title")" name="dateCreateStart" data-language="@Http.Context.current().lang().code()"
+					@if(tsCreateStartSearch != null) {value="@sdf.format(tsCreateStartSearch.getTime())"}>
+				</div>
+				<div class="col-sm-2">
+					<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" tabindex="-1"
+					data-content="@Messages.get("index.date.create.start.tooltip")">
+						<span class="glyphicon glyphicon-info-sign"></span>
+					</button>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label" for="js-date-update-end">@Messages.get("index.date.create.end.label")</label>
+				<div class="col-sm-4">
+					<input class="form-control js-date" id="js-date-create-end" type="date" data-toggle="tooltip" data-placement="top" 
+					title="@Messages.get("index.date.create.end.title")" name="dateCreateEnd" data-language="@Http.Context.current().lang().code()"
+					@if(tsCreateEndSearch != null) {value="@sdf.format(tsCreateEndSearch.getTime())"}>
+				</div>
+				<div class="col-sm-2">
+					<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" tabindex="-1"
+					data-content="@Messages.get("index.date.create.end.tooltip")">
+						<span class="glyphicon glyphicon-info-sign"></span>
+					</button>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">@Messages.get("index.date.update.start.label")</label>
 				<div class="col-sm-4">
 					<input class="form-control js-date" id="js-date-update-start" type="date" data-toggle="tooltip" data-placement="top" 
-					title="@Messages.get("index.date.start.title")" name="dateUpdateStart" data-language="@Http.Context.current().lang().code()"
-					@if(tsStartSearch != null) {value="@sdf.format(tsStartSearch.getTime())"}>
+					title="@Messages.get("index.date.update.start.title")" name="dateUpdateStart" data-language="@Http.Context.current().lang().code()"
+					@if(tsUpdateStartSearch != null) {value="@sdf.format(tsUpdateStartSearch.getTime())"}>
 				</div>
 				<div class="col-sm-2">
 					<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" tabindex="-1"
@@ -119,11 +152,11 @@
 				</div>
 			</div>
 			<div class="form-group">
-				<label class="col-sm-3 control-label" for="js-date-update-end">@Messages.get("index.date.end.label")</label>
+				<label class="col-sm-3 control-label" for="js-date-update-end">@Messages.get("index.date.update.end.label")</label>
 				<div class="col-sm-4">
 					<input class="form-control js-date" id="js-date-update-end" type="date" data-toggle="tooltip" data-placement="top" 
-					title="@Messages.get("index.date.end.title")" name="dateUpdateEnd" data-language="@Http.Context.current().lang().code()"
-					@if(tsEndSearch != null) {value="@sdf.format(tsEndSearch.getTime())"}>
+					title="@Messages.get("index.date.update.end.title")" name="dateUpdateEnd" data-language="@Http.Context.current().lang().code()"
+					@if(tsUpdateEndSearch != null) {value="@sdf.format(tsUpdateEndSearch.getTime())"}>
 				</div>
 				<div class="col-sm-2">
 					<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" tabindex="-1"
@@ -137,9 +170,10 @@
 	 			<div class="col-sm-offset-3 col-sm-7">
 	 				<button class="knop" id="search-button" type="button">@Messages.get("index.button.search")</button>
 	 				@if(!textSearch.equals("") || !supplierSearch.equals("none") || !statusSearch.equals("none") ||
-	 					tsStartSearch != null || tsEndSearch != null) {
+	 					tsCreateStartSearch != null || tsCreateEndSearch != null ||
+	 					tsUpdateStartSearch != null || tsUpdateEndSearch != null) {
 	 					<a class="knop" id="filter-button" 
-	 						href="@routes.Index.index("", "none", "none", "", "")">@Messages.get("index.button.filter.clear")</a>
+	 						href="@routes.Index.index("", "none", "none", "", "", "", "")">@Messages.get("index.button.filter.clear")</a>
 	 				}
 				</div>
 			</div>
@@ -175,7 +209,7 @@
 		<strong>@Messages.get("index.warning.published.record")</strong>
 	</div>
 	
-	@views.html.list(datasetRows, sdfLocal, roleId, textSearch, supplierSearch, statusSearch, dateStartSearch, dateEndSearch, sort, checkedList)
+	@views.html.list(datasetRows, sdfLocal, roleId, textSearch, supplierSearch, statusSearch, dateCreateStartSearch, dateCreateEndSearch, dateUpdateStartSearch, dateUpdateEndSearch, sort, checkedList)
 	<div id="version-info">
 		@Messages.get("application.name"): @getClass().getPackage().getImplementationVersion()
 	</div>
@@ -186,8 +220,10 @@
 		<input type="hidden" name="textSearch" value="@textSearch">
 		<input type="hidden" name="supplierSearch" value="@supplierSearch">
 		<input type="hidden" name="statusSearch" value="@statusSearch">
-		<input type="hidden" name="dateStartSearch" value="">
-		<input type="hidden" name="dateEndSearch" value="">
+		<input type="hidden" name="dateCreateStartSearch" value="">
+		<input type="hidden" name="dateCreateEndSearch" value="">
+		<input type="hidden" name="dateUpdateStartSearch" value="">
+		<input type="hidden" name="dateUpdateEndSearch" value="">
 		<div class="modal fade" id="status-modal">
 			<div class="modal-dialog">
 				<div class="modal-content">
@@ -223,8 +259,10 @@
 		<input type="hidden" name="textSearch" value="@textSearch">
 		<input type="hidden" name="supplierSearch" value="@supplierSearch">
 		<input type="hidden" name="statusSearch" value="@statusSearch">
-		<input type="hidden" name="dateStartSearch" value="">
-		<input type="hidden" name="dateEndSearch" value="">
+		<input type="hidden" name="dateCreateStartSearch" value="">
+		<input type="hidden" name="dateCreateEndSearch" value="">
+		<input type="hidden" name="dateUpdateStartSearch" value="">
+		<input type="hidden" name="dateUpdateEndSearch" value="">
 		<div class="modal fade" id="delete-modal">
 			<div class="modal-dialog">
 				<div class="modal-content">
@@ -265,8 +303,10 @@
 		<input type="hidden" name="textSearch" value="@textSearch">
 		<input type="hidden" name="supplierSearch" value="@supplierSearch">
 		<input type="hidden" name="statusSearch" value="@statusSearch">
-		<input type="hidden" name="dateStartSearch" value="">
-		<input type="hidden" name="dateEndSearch" value="">
+		<input type="hidden" name="dateCreateStartSearch" value="">
+		<input type="hidden" name="dateCreateEndSearch" value="">
+		<input type="hidden" name="dateUpdateStartSearch" value="">
+		<input type="hidden" name="dateUpdateEndSearch" value="">
 		<div class="modal fade" id="supplier-modal">
 			<div class="modal-dialog">
 				<div class="modal-content">

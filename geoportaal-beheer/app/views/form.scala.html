@@ -37,13 +37,14 @@
 @import models.QSubjectLabel.subjectLabel
 
 @main(if(create) {Messages.get("form.create.header")} else {Messages.get("form.edit.header")}, search.getText(), search.getSupplier(), search.getStatus(), 
-	search.getDateUpdateStart(), search.getDateUpdateEnd(), roleId, routes.Assets.versioned("javascripts/add-record.js").url) {
+	search.getDateCreateStart(), search.getDateCreateEnd(), search.getDateUpdateStart(), search.getDateUpdateEnd(), 
+	roleId, routes.Assets.versioned("javascripts/add-record.js").url) {
 	<div class="welkom">
 		<p class="welkom">@Messages.get("form.intro")</p>
 	</div>
 	
-	@helper.form(action = if(create) {routes.Metadata.createSubmit(search.getText(), search.getSupplier(), search.getStatus(), search.getDateUpdateStart(), search.getDateUpdateEnd())} else {
-		routes.Metadata.editSubmit(datasetRow.get(metadata.uuid), search.getText(), search.getSupplier(), search.getStatus(), search.getDateUpdateStart(), search.getDateUpdateEnd())}, 'enctype -> "multipart/form-data", 
+	@helper.form(action = if(create) {routes.Metadata.createSubmit(search.getText(), search.getSupplier(), search.getStatus(), search.getDateCreateStart(), search.getDateCreateEnd(), search.getDateUpdateStart(), search.getDateUpdateEnd())} else {
+		routes.Metadata.editSubmit(datasetRow.get(metadata.uuid), search.getText(), search.getSupplier(), search.getStatus(), search.getDateCreateStart(), search.getDateCreateEnd(), search.getDateUpdateStart(), search.getDateUpdateEnd())}, 'enctype -> "multipart/form-data", 
 		'class -> "form-horizontal beheer-formulier", 'id -> "js-form") {
 		<div class="form-group">
 			<label class="col-sm-3 control-label">@Messages.get("form.title.label")</label>
@@ -517,7 +518,8 @@
 			<div class="form-group">
 				<button id="js-save-form" class="knop" type="button" @if(create) {data-id="create"} else {data-id=@datasetRow.get(metadata.uuid)}>@Messages.get("save")</button>
 				<a class="knop" id="js-cancel-form" href="@routes.Metadata.cancel(search.getText(), search.getSupplier(), search.getStatus(), 
-					search.getDateUpdateStart(), search.getDateUpdateEnd())">@Messages.get("cancel")</a>
+					search.getDateCreateStart(), search.getDateCreateEnd(), search.getDateUpdateStart(), 
+					search.getDateUpdateEnd())">@Messages.get("cancel")</a>
 			</div>
 		</div>
 		

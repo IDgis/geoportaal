@@ -74,8 +74,9 @@ public class Index extends Controller {
 	 * @return the {@link Result} of the index page
 	 * @throws SQLException
 	 */
-	public Result index(String textSearch, String supplierSearch, String statusSearch, String dateStartSearch, 
-			String dateEndSearch, String sort, String checked) throws SQLException {
+	public Result index(String textSearch, String supplierSearch, String statusSearch, String dateCreateStartSearch, 
+			String dateCreateEndSearch, String dateUpdateStartSearch, String dateUpdateEndSearch, 
+			String sort, String checked) throws SQLException {
 		return q.withTransaction(tx -> {
 			// Fetches the supplier list
 			List<Tuple> supplierList = tx.select(user.all())
@@ -177,39 +178,75 @@ public class Index extends Controller {
 			}
 			
 			// If search value of date start isn't null or empty convert it to a date
-			final Date finalDateStartSearch;
-			if(dateStartSearch != null && !dateStartSearch.trim().isEmpty()) {
+			final Date finalCreateDateStartSearch;
+			if(dateCreateStartSearch != null && !dateCreateStartSearch.trim().isEmpty()) {
 				try {
-					finalDateStartSearch = sdf.parse(dateStartSearch);
+					finalCreateDateStartSearch = sdf.parse(dateCreateStartSearch);
 				} catch(ParseException e) {
 					throw new IllegalArgumentException("wrong dateStartSearch", e);
 				}
 			} else {
-				finalDateStartSearch = null;
+				finalCreateDateStartSearch = null;
 			}
 			
 			// If search value of date end isn't null or empty convert it to a date
-			final Date finalDateEndSearch;
-			if(dateEndSearch != null && !dateEndSearch.trim().isEmpty()) {
+			final Date finalCreateDateEndSearch;
+			if(dateCreateEndSearch != null && !dateCreateEndSearch.trim().isEmpty()) {
 				try {
-					finalDateEndSearch = sdf.parse(dateEndSearch);
+					finalCreateDateEndSearch = sdf.parse(dateCreateEndSearch);
 				} catch(ParseException e) {
 					throw new IllegalArgumentException("wrong dateEndSearch", e);
 				}
 			} else {
-				finalDateEndSearch = null;
+				finalCreateDateEndSearch = null;
 			}
 			
 			// If date start and date end aren't null convert it to a timestamp and filter records on the dates. Add one day to the end date.
-			Timestamp timestampStartSearch = null;
-			Timestamp timestampEndSearch = null;
-			if(finalDateStartSearch != null && finalDateEndSearch != null) {
-				timestampStartSearch = new Timestamp(finalDateStartSearch.getTime());
-				timestampEndSearch = new Timestamp(finalDateEndSearch.getTime() + 86400000);
+			Timestamp timestampCreateStartSearch = null;
+			Timestamp timestampCreateEndSearch = null;
+			if(finalCreateDateStartSearch != null && finalCreateDateEndSearch != null) {
+				timestampCreateStartSearch = new Timestamp(finalCreateDateStartSearch.getTime());
+				timestampCreateEndSearch = new Timestamp(finalCreateDateEndSearch.getTime() + 86400000);
 				
 				datasetQuery
-					.where(metadata.lastRevisionDate.after(timestampStartSearch))
-					.where(metadata.lastRevisionDate.before(timestampEndSearch));
+					.where(metadata.dateSourceCreation.after(timestampCreateStartSearch))
+					.where(metadata.dateSourceCreation.before(timestampCreateEndSearch));
+			}
+			
+			// If search value of date start isn't null or empty convert it to a date
+			final Date finalUpdateDateStartSearch;
+			if(dateUpdateStartSearch != null && !dateUpdateStartSearch.trim().isEmpty()) {
+				try {
+					finalUpdateDateStartSearch = sdf.parse(dateUpdateStartSearch);
+				} catch(ParseException e) {
+					throw new IllegalArgumentException("wrong dateStartSearch", e);
+				}
+			} else {
+				finalUpdateDateStartSearch = null;
+			}
+			
+			// If search value of date end isn't null or empty convert it to a date
+			final Date finalUpdateDateEndSearch;
+			if(dateUpdateEndSearch != null && !dateUpdateEndSearch.trim().isEmpty()) {
+				try {
+					finalUpdateDateEndSearch = sdf.parse(dateUpdateEndSearch);
+				} catch(ParseException e) {
+					throw new IllegalArgumentException("wrong dateEndSearch", e);
+				}
+			} else {
+				finalUpdateDateEndSearch = null;
+			}
+			
+			// If date start and date end aren't null convert it to a timestamp and filter records on the dates. Add one day to the end date.
+			Timestamp timestampUpdateStartSearch = null;
+			Timestamp timestampUpdateEndSearch = null;
+			if(finalUpdateDateStartSearch != null && finalUpdateDateEndSearch != null) {
+				timestampUpdateStartSearch = new Timestamp(finalUpdateDateStartSearch.getTime());
+				timestampUpdateEndSearch = new Timestamp(finalUpdateDateEndSearch.getTime() + 86400000);
+				
+				datasetQuery
+					.where(metadata.lastRevisionDate.after(timestampUpdateStartSearch))
+					.where(metadata.lastRevisionDate.before(timestampUpdateEndSearch));
 			}
 			
 			// If user is a supplier only display their own records
@@ -265,9 +302,15 @@ public class Index extends Controller {
 			List<Tuple> datasetRows = datasetQuery.fetch();
 			
 			// Create a timestamp without the extra day
-			Timestamp resetTimestampEndSearch = null;
-			if(finalDateEndSearch != null) {
-				resetTimestampEndSearch = new Timestamp(finalDateEndSearch.getTime());
+			Timestamp resetTimestampCreateEndSearch = null;
+			if(finalCreateDateEndSearch != null) {
+				resetTimestampCreateEndSearch = new Timestamp(finalCreateDateEndSearch.getTime());
+			}
+			
+			// Create a timestamp without the extra day
+			Timestamp resetTimestampUpdateEndSearch = null;
+			if(finalUpdateDateEndSearch != null) {
+				resetTimestampUpdateEndSearch = new Timestamp(finalUpdateDateEndSearch.getTime());
 			}
 			
 			// Convert string of UUID's to list
@@ -287,8 +330,9 @@ public class Index extends Controller {
 			
 			// Return index page
 			return ok(views.html.index.render(datasetRows, supplierList, statusList, sdf, sdfLocal, roleId, textSearch, 
-				supplierSearch, statusSearch, dateStartSearch, dateEndSearch, timestampStartSearch, resetTimestampEndSearch, sort,
-				checkedList, datasetCount));
+				supplierSearch, statusSearch, dateCreateStartSearch, dateCreateEndSearch, timestampCreateStartSearch, 
+				resetTimestampCreateEndSearch, dateUpdateStartSearch, dateUpdateEndSearch, timestampUpdateStartSearch, 
+				resetTimestampUpdateEndSearch, sort, checkedList, datasetCount));
 		});
 	}
 	
@@ -304,17 +348,26 @@ public class Index extends Controller {
 		String textSearch = s.getText();
 		String supplierSearch = s.getSupplier();
 		String statusSearch = s.getStatus();
-		String dateStartSearch = s.getDateUpdateStart();
-		String dateEndSearch = s.getDateUpdateEnd();
+		String dateCreateStartSearch = s.getDateCreateStart();
+		String dateCreateEndSearch = s.getDateCreateEnd();
+		String dateUpdateStartSearch = s.getDateUpdateStart();
+		String dateUpdateEndSearch = s.getDateUpdateEnd();
 		
 		// Empties both date search fields if one of them is empty
-		if("".equals(dateStartSearch.trim()) || "".equals(dateEndSearch.trim())) {
-			dateStartSearch = "";
-			dateEndSearch = "";
+		if("".equals(dateCreateStartSearch.trim()) || "".equals(dateCreateEndSearch.trim())) {
+			dateCreateStartSearch = "";
+			dateCreateEndSearch = "";
+		}
+		
+		// Empties both date search fields if one of them is empty
+		if("".equals(dateUpdateStartSearch.trim()) || "".equals(dateUpdateEndSearch.trim())) {
+			dateUpdateStartSearch = "";
+			dateUpdateEndSearch = "";
 		}
 		
 		// Return index page
-		return redirect(controllers.routes.Index.index(textSearch, supplierSearch, statusSearch, dateStartSearch, dateEndSearch, "dateDesc", ""));
+		return redirect(controllers.routes.Index.index(textSearch, supplierSearch, statusSearch, 
+				dateCreateStartSearch, dateCreateEndSearch, dateUpdateStartSearch, dateUpdateEndSearch, "dateDesc", ""));
 	}
 	
 	/**
@@ -329,8 +382,10 @@ public class Index extends Controller {
 		String textSearch = s.getText();
 		String supplierSearch = s.getSupplier();
 		String statusSearch = s.getStatus();
-		String dateStartSearch = s.getDateUpdateStart();
-		String dateEndSearch = s.getDateUpdateEnd();
+		String dateCreateStartSearch = s.getDateCreateStart();
+		String dateCreateEndSearch = s.getDateCreateEnd();
+		String dateUpdateStartSearch = s.getDateUpdateStart();
+		String dateUpdateEndSearch = s.getDateUpdateEnd();
 		
 		// Fetch the sort value
 		String sort = s.getSort();
@@ -339,9 +394,15 @@ public class Index extends Controller {
 		List<String> recordsChecked = s.getRecordsChecked();
 		
 		// Empties both date search fields if one of them is empty
-		if("".equals(dateStartSearch.trim()) || "".equals(dateEndSearch.trim())) {
-			dateStartSearch = "";
-			dateEndSearch = "";
+		if("".equals(dateCreateStartSearch.trim()) || "".equals(dateCreateEndSearch.trim())) {
+			dateCreateStartSearch = "";
+			dateCreateEndSearch = "";
+		}
+		
+		// Empties both date search fields if one of them is empty
+		if("".equals(dateUpdateStartSearch.trim()) || "".equals(dateUpdateEndSearch.trim())) {
+			dateUpdateStartSearch = "";
+			dateUpdateEndSearch = "";
 		}
 		
 		// Make one long string of all UUID's of the records checked
@@ -351,7 +412,8 @@ public class Index extends Controller {
 		}
 		
 		// Return the index page
-		return redirect(controllers.routes.Index.index(textSearch, supplierSearch, statusSearch, dateStartSearch, dateEndSearch, 
+		return redirect(controllers.routes.Index.index(textSearch, supplierSearch, statusSearch, 
+				dateCreateStartSearch, dateCreateEndSearch, dateUpdateStartSearch, dateUpdateEndSearch, 
 			sort, checked));
 	}
 	
@@ -367,8 +429,10 @@ public class Index extends Controller {
 		String textSearch = s.getTextSearch();
 		String supplierSearch = s.getSupplierSearch();
 		String statusSearch = s.getStatusSearch();
-		String dateStartSearch = s.getDateStartSearch();
-		String dateEndSearch = s.getDateEndSearch();
+		String dateCreateStartSearch = s.getDateCreateStartSearch();
+		String dateCreateEndSearch = s.getDateCreateEndSearch();
+		String dateUpdateStartSearch = s.getDateUpdateStartSearch();
+		String dateUpdateEndSearch = s.getDateUpdateEndSearch();
 		
 		// Fetches the name of the destination status
 		String statusName = s.getStatus();
@@ -462,7 +526,9 @@ public class Index extends Controller {
 			}
 			
 			// Return the index page
-			return redirect(controllers.routes.Index.index(textSearch, supplierSearch, statusSearch, dateStartSearch, dateEndSearch, "dateDesc", ""));
+			return redirect(controllers.routes.Index.index(textSearch, supplierSearch, statusSearch, 
+					dateCreateStartSearch, dateCreateEndSearch, dateUpdateStartSearch, dateUpdateEndSearch, 
+					"dateDesc", ""));
 		});
 		
 	}
@@ -479,8 +545,10 @@ public class Index extends Controller {
 		String textSearch = s.getTextSearch();
 		String supplierSearch = s.getSupplierSearch();
 		String statusSearch = s.getStatusSearch();
-		String dateStartSearch = s.getDateStartSearch();
-		String dateEndSearch = s.getDateEndSearch();
+		String dateCreateStartSearch = s.getDateCreateStartSearch();
+		String dateCreateEndSearch = s.getDateCreateEndSearch();
+		String dateUpdateStartSearch = s.getDateUpdateStartSearch();
+		String dateUpdateEndSearch = s.getDateUpdateEndSearch();
 		
 		// Fetches the records about to be changed
 		List<String> changeRecords = s.getRecordsChange();
@@ -519,7 +587,9 @@ public class Index extends Controller {
 			}
 			
 			// Return the index page
-			return redirect(controllers.routes.Index.index(textSearch, supplierSearch, statusSearch, dateStartSearch, dateEndSearch, "dateDesc", ""));
+			return redirect(controllers.routes.Index.index(textSearch, supplierSearch, statusSearch, 
+					dateCreateStartSearch, dateCreateEndSearch, dateUpdateStartSearch, dateUpdateEndSearch, 
+					"dateDesc", ""));
 		});
 	}
 	
@@ -535,8 +605,10 @@ public class Index extends Controller {
 		String textSearch = d.getTextSearch();
 		String supplierSearch = d.getSupplierSearch();
 		String statusSearch = d.getStatusSearch();
-		String dateStartSearch = d.getDateStartSearch();
-		String dateEndSearch = d.getDateEndSearch();
+		String dateCreateStartSearch = d.getDateCreateStartSearch();
+		String dateCreateEndSearch = d.getDateCreateEndSearch();
+		String dateUpdateStartSearch = d.getDateUpdateStartSearch();
+		String dateUpdateEndSearch = d.getDateUpdateEndSearch();
 		
 		// Fetches the records about to be deleted
 		List<String> deleteRecords = d.getRecordsToDel();
@@ -622,7 +694,9 @@ public class Index extends Controller {
 			tx.refreshMaterializedViewConcurrently(metadataSearch);
 			
 			// Return index page
-			return redirect(controllers.routes.Index.index(textSearch, supplierSearch, statusSearch, dateStartSearch, dateEndSearch, "dateDesc", ""));
+			return redirect(controllers.routes.Index.index(textSearch, supplierSearch, statusSearch, 
+					dateCreateStartSearch, dateCreateEndSearch, dateUpdateStartSearch, dateUpdateEndSearch, 
+					"dateDesc", ""));
 		});
 	}
 	
@@ -635,37 +709,64 @@ public class Index extends Controller {
 		try {
 			// Fetches the form fields
 			DynamicForm requestData = Form.form().bindFromRequest();
-			String dateSearchStart = requestData.get("dateUpdateStart");
-			String dateSearchEnd = requestData.get("dateUpdateEnd");
+			String dateCreateStart = requestData.get("dateCreateStart");
+			String dateCreateEnd = requestData.get("dateCreateEnd");
+			String dateUpdateStart = requestData.get("dateUpdateStart");
+			String dateUpdateEnd = requestData.get("dateUpdateEnd");
 			
 			// Check if the date is valid
-			Boolean dateSearchStartReturn = validateDate(dateSearchStart);
-			Boolean dateSearchEndReturn = validateDate(dateSearchEnd);
+			Boolean dateCreateSearchStartReturn = validateDate(dateCreateStart);
+			Boolean dateCreateSearchEndReturn = validateDate(dateCreateEnd);
+			
+			// Check if the date is valid
+			Boolean dateUpdateSearchStartReturn = validateDate(dateUpdateStart);
+			Boolean dateUpdateSearchEndReturn = validateDate(dateUpdateEnd);
 			
 			// Create string for error message
-			String dateSearchStartMsg = null;
-			String dateSearchEndMsg = null;
+			String dateCreateSearchStartMsg = null;
+			String dateCreateSearchEndMsg = null;
+			
+			// Create string for error message
+			String dateUpdateSearchStartMsg = null;
+			String dateUpdateSearchEndMsg = null;
 			
 			// Assign error message if validation of a date returned false
-			if(!dateSearchStartReturn || !dateSearchEndReturn) {
-				if(!dateSearchStartReturn) {
-					dateSearchStartMsg = Messages.get("validate.search.date.start");
+			if(!dateCreateSearchStartReturn || !dateCreateSearchStartReturn) {
+				if(!dateCreateSearchStartReturn) {
+					dateUpdateSearchStartMsg = Messages.get("validate.create.date.start");
 				} else {
-					dateSearchStartMsg = null;
+					dateUpdateSearchStartMsg = null;
 				}
 				
-				if(!dateSearchEndReturn) {
-					dateSearchEndMsg = Messages.get("validate.search.date.end");
+				if(!dateCreateSearchEndReturn) {
+					dateUpdateSearchEndMsg = Messages.get("validate.create.date.end");
 				} else {
-					dateSearchEndMsg = null;
+					dateUpdateSearchEndMsg = null;
+				}
+			}
+			
+			// Assign error message if validation of a date returned false
+			if(!dateUpdateSearchStartReturn || !dateUpdateSearchEndReturn) {
+				if(!dateUpdateSearchStartReturn) {
+					dateUpdateSearchStartMsg = Messages.get("validate.update.date.start");
+				} else {
+					dateUpdateSearchStartMsg = null;
+				}
+				
+				if(!dateUpdateSearchEndReturn) {
+					dateUpdateSearchEndMsg = Messages.get("validate.update.date.end");
+				} else {
+					dateUpdateSearchEndMsg = null;
 				}
 			}
 			
 			// Return specific error message view
-			return ok(bindingerror.render(null, null, null, null, null, dateSearchStartMsg, dateSearchEndMsg));
+			return ok(bindingerror.render(null, null, null, null, null, dateCreateSearchStartMsg, 
+					dateCreateSearchStartMsg, dateUpdateSearchStartMsg, dateUpdateSearchStartMsg));
 		} catch(IllegalStateException ise) {
 			// Return generic error message view
-			return ok(bindingerror.render(Messages.get("validate.search.generic"), null, null, null, null, null, null));
+			return ok(bindingerror.render(Messages.get("validate.search.generic"), null, null, null, null, null, 
+					null, null, null));
 		}
 	}
 	

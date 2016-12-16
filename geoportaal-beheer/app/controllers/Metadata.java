@@ -77,7 +77,8 @@ public class Metadata extends Controller {
 	 * @return the {@link Result} of the form page
 	 */
 	public Result renderCreateForm(String textSearch, String supplierSearch, String statusSearch, 
-			String dateStartSearch, String dateEndSearch) {
+			String dateCreateStartSearch, String dateCreateEndSearch, String dateUpdateStartSearch, 
+			String dateUpdateEndSearch) {
 		// Create boolean that determines if the form is for a new record
 		Boolean create = true;
 		
@@ -85,7 +86,8 @@ public class Metadata extends Controller {
 		String today = new SimpleDateFormat("yyyy-MM-dd").format(new Date().getTime());
 		
 		// Create search object
-		Search search = new Search(textSearch, supplierSearch, statusSearch, dateStartSearch, dateEndSearch);
+		Search search = new Search(textSearch, supplierSearch, statusSearch, dateCreateStartSearch, 
+				dateCreateEndSearch, dateUpdateStartSearch, dateUpdateEndSearch);
 		
 		return q.withTransaction(tx -> {
 			// Fetch type information list
@@ -154,7 +156,8 @@ public class Metadata extends Controller {
 	 * @throws IOException
 	 */
 	public Result createSubmit(String textSearch, String supplierSearch, String statusSearch, 
-			String dateStartSearch, String dateEndSearch) throws IOException {
+			String dateCreateStartSearch, String dateCreateEndSearch, 
+			String dateUpdateStartSearch, String dateUpdateEndSearch) throws IOException {
 		// Fetches the form
 		Form<DublinCore> dcForm = Form.form(DublinCore.class);
 		DublinCore dc = dcForm.bindFromRequest().get();
@@ -251,8 +254,9 @@ public class Metadata extends Controller {
 			if("".equals(dc.getTitle().trim()) || "".equals(dc.getDescription().trim()) || "".equals(dc.getLocation().trim()) || 
 				"".equals(dc.getFileId().trim()) || creatorKey == null || creatorOtherFailed || useLimitationKey == null || 
 				dateSourceCreationValue == null || dc.getSubject() == null || !dateCreatePublicationCheck || !dateValidCheck) {
-					return validateFormServer(true, null, null, textSearch, supplierSearch, statusSearch, dateStartSearch, dateEndSearch, previousValues,
-							null);
+					return validateFormServer(true, null, null, textSearch, supplierSearch, statusSearch, 
+							dateCreateStartSearch, dateCreateEndSearch, dateUpdateStartSearch, 
+							dateUpdateEndSearch, previousValues, null);
 			} else if((numbersCheck.get("duplicate") || numbersCheck.get("character") || numbersCheck.get("length")) && !fileIdConfirmed) {
 				List<String> warnMessages = new ArrayList<>();
 				
@@ -268,8 +272,9 @@ public class Metadata extends Controller {
 					warnMessages.add(Messages.get("validate.form.fileid.warning.body.length"));
 				}
 				
-				return validateFormServer(true, null, null, textSearch, supplierSearch, statusSearch, dateStartSearch, dateEndSearch, previousValues,
-						warnMessages);
+				return validateFormServer(true, null, null, textSearch, supplierSearch, statusSearch, 
+						dateCreateStartSearch, dateCreateEndSearch, dateUpdateStartSearch, dateUpdateEndSearch, 
+						previousValues, warnMessages);
 			}
 			
 			// Insert the form value in a new metadata record
@@ -365,7 +370,9 @@ public class Metadata extends Controller {
 			tx.refreshMaterializedViewConcurrently(metadataSearch);
 			
 			// Return index page
-			return redirect(controllers.routes.Index.index(textSearch, supplierSearch, statusSearch, dateStartSearch, dateEndSearch, "dateDesc", ""));
+			return redirect(controllers.routes.Index.index(textSearch, supplierSearch, statusSearch, 
+					dateCreateStartSearch, dateCreateEndSearch, dateUpdateStartSearch, dateUpdateEndSearch, 
+					"dateDesc", ""));
 		});
 	}
 	
@@ -382,12 +389,13 @@ public class Metadata extends Controller {
 	 * @return the {@link Result} of the index page
 	 */
 	public Result renderEditForm(String metadataUuid, String textSearch, String supplierSearch, String statusSearch, 
-			String dateStartSearch, String dateEndSearch) {
+			String dateCreateStartSearch, String dateCreateEndSearch, String dateUpdateStartSearch, 
+			String dateUpdateEndSearch) {
 		// Create boolean that determines if the form is for an existing record
 		Boolean create = false;
 		
 		// Create search object
-		Search search = new Search(textSearch, supplierSearch, statusSearch, dateStartSearch, dateEndSearch);
+		Search search = new Search(textSearch, supplierSearch, statusSearch, dateCreateStartSearch, dateCreateEndSearch, dateUpdateStartSearch, dateUpdateEndSearch);
 		
 		return q.withTransaction(tx -> {
 			// Fetches status id of metadata
@@ -504,7 +512,8 @@ public class Metadata extends Controller {
 	 * @throws IOException
 	 */
 	public Result editSubmit(String metadataUuid, String textSearch, String supplierSearch, String statusSearch, 
-			String dateStartSearch, String dateEndSearch) throws IOException {
+			String dateCreateStartSearch, String dateCreateEndSearch, String dateUpdateStartSearch, 
+			String dateUpdateEndSearch) throws IOException {
 		// Fetches the form
 		Form<DublinCore> dcForm = Form.form(DublinCore.class);
 		DublinCore dc = dcForm.bindFromRequest().get();
@@ -652,7 +661,8 @@ public class Metadata extends Controller {
 						
 					
 					return validateFormServer(false, datasetRow, attachmentsDataset, textSearch, supplierSearch, statusSearch, 
-							dateStartSearch, dateEndSearch, previousValues, null);
+							dateCreateStartSearch, dateCreateEndSearch, dateUpdateStartSearch, 
+							dateUpdateEndSearch, previousValues, null);
 				} else if((numbersCheck.get("duplicate") || numbersCheck.get("character") || numbersCheck.get("length")) && !fileIdConfirmed) {
 					// Returns previous state with warning if there is an undesirable number
 					List<String> warnMessages = new ArrayList<>();
@@ -670,7 +680,8 @@ public class Metadata extends Controller {
 					}
 					
 					return validateFormServer(false, datasetRow, attachmentsDataset, textSearch, supplierSearch, statusSearch, 
-							dateStartSearch, dateEndSearch, previousValues, warnMessages);
+							dateCreateStartSearch, dateCreateEndSearch, dateUpdateStartSearch, 
+							dateUpdateEndSearch, previousValues, warnMessages);
 				}
 				
 				// Update metadata record
@@ -805,7 +816,9 @@ public class Metadata extends Controller {
 			tx.refreshMaterializedViewConcurrently(metadataSearch);
 			
 			// Return the index page
-			return redirect(controllers.routes.Index.index(textSearch, supplierSearch, statusSearch, dateStartSearch, dateEndSearch, "dateDesc", ""));
+			return redirect(controllers.routes.Index.index(textSearch, supplierSearch, statusSearch, 
+					dateCreateStartSearch, dateCreateEndSearch, dateUpdateStartSearch, 
+					dateUpdateEndSearch, "dateDesc", ""));
 		});
 	}
 	
@@ -867,7 +880,7 @@ public class Metadata extends Controller {
 					dateValidUntilMsg = null;
 				}
 				
-				return ok(bindingerror.render(null, dateCreateMsg, datePublicationMsg, dateValidFromMsg, dateValidUntilMsg, null, null));
+				return ok(bindingerror.render(null, dateCreateMsg, datePublicationMsg, dateValidFromMsg, dateValidUntilMsg, null, null, null, null));
 			}
 			
 			// Fetches the form
@@ -936,7 +949,7 @@ public class Metadata extends Controller {
 					numbersCheck.get("length"), creator, creatorOther, dc.getDateSourceCreation(), dc.getSubject(), dateCreatePublicationCheck, dateValidCheck));
 		} catch(IllegalStateException ise) {
 			// Return generic error message view
-			return ok(bindingerror.render(Messages.get("validate.search.generic"), null, null, null, null, null, null));
+			return ok(bindingerror.render(Messages.get("validate.search.generic"), null, null, null, null, null, null, null, null));
 		}
 	}
 	
@@ -1077,7 +1090,8 @@ public class Metadata extends Controller {
 	 * @return the {@link Result} of the form page
 	 */
 	public Result validateFormServer(Boolean create, Tuple datasetRow, List<Tuple> attachmentsDataset, String textSearch, String supplierSearch, 
-			String statusSearch, String dateStartSearch, String dateEndSearch, Map<String, DublinCore> previousValues,
+			String statusSearch, String dateCreateStartSearch, String dateCreateEndSearch, 
+			String dateUpdateStartSearch, String dateUpdateEndSearch, Map<String, DublinCore> previousValues,
 			List<String> warnMessages) {
 		// Create strings according to yyyy-MM-dd and dd-MM-yyyy formats
 		String today = new SimpleDateFormat("yyyy-MM-dd").format(new Date().getTime());
@@ -1089,7 +1103,8 @@ public class Metadata extends Controller {
 		Boolean validate = true;
 		
 		// Create a search object
-		Search search = new Search(textSearch, supplierSearch, statusSearch, dateStartSearch, dateEndSearch);
+		Search search = new Search(textSearch, supplierSearch, statusSearch, dateCreateStartSearch, 
+				dateCreateEndSearch, dateUpdateStartSearch, dateUpdateEndSearch);
 		
 		return q.withTransaction(tx -> {
 			// Fetches the type information list
@@ -1159,8 +1174,10 @@ public class Metadata extends Controller {
 	 * @param dateEndSearch the search value of the date end field
 	 * @return the {@link Result} of the index page
 	 */
-	public Result cancel(String textSearch, String supplierSearch, String statusSearch, String dateStartSearch, 
-			String dateEndSearch) {
-		return redirect(controllers.routes.Index.index(textSearch, supplierSearch, statusSearch, dateStartSearch, dateEndSearch, "dateDesc", ""));
+	public Result cancel(String textSearch, String supplierSearch, String statusSearch, String dateCreateStartSearch, 
+			String dateCreateEndSearch, String dateUpdateStartSearch, String dateUpdateEndSearch) {
+		return redirect(controllers.routes.Index.index(textSearch, supplierSearch, statusSearch, 
+				dateCreateStartSearch, dateCreateEndSearch, dateUpdateStartSearch, 
+				dateUpdateEndSearch, "dateDesc", ""));
 	}
 }
