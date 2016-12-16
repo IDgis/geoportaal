@@ -1,5 +1,5 @@
-@(genericMsg: String, createMsg: String, publicationMsg: String, validFromMsg: String, validUntilMsg: String, searchStartMsg: String,
-	searchEndMsg: String
+@(genericMsg: String, createMsg: String, publicationMsg: String, validFromMsg: String, validUntilMsg: String, 
+	createStartMsg: String, createEndMsg: String, updateStartMsg: String, updateEndMsg: String
 )
 
 <div id="js-form-validation-result">
@@ -43,18 +43,34 @@
 		</div>
 	}
 	
-	@if(searchStartMsg != null) {
+	@if(createStartMsg != null) {
 		<div>
 			<div class="alert alert-danger" role="alert" data-error="true">
-				<b>@searchStartMsg</b>
+				<b>@createStartMsg</b>
 			</div>
 		</div>
 	}
 	
-	@if(searchEndMsg != null) {
+	@if(createEndMsg != null) {
 		<div>
 			<div class="alert alert-danger" role="alert" data-error="true">
-				<b>@searchEndMsg</b>
+				<b>@createEndMsg</b>
+			</div>
+		</div>
+	}
+	
+	@if(updateStartMsg != null) {
+		<div>
+			<div class="alert alert-danger" role="alert" data-error="true">
+				<b>@updateStartMsg</b>
+			</div>
+		</div>
+	}
+	
+	@if(updateEndMsg != null) {
+		<div>
+			<div class="alert alert-danger" role="alert" data-error="true">
+				<b>@updateEndMsg</b>
 			</div>
 		</div>
 	}

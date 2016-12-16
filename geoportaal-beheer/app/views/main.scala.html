@@ -2,9 +2,10 @@
 	textSearch: String,
 	supplierSearch: String,
 	statusSearch: String,
-	mdFormatSearch: String,
-	dateStartSearch: String,
-	dateEndSearch: String,
+	dateCreateStartSearch: String,
+	dateCreateEndSearch: String,
+	dateUpdateStartSearch: String,
+	dateUpdateEndSearch: String,
 	roleId: Integer,
 	jsMain: String)(content: Html)
 
@@ -35,7 +36,7 @@
 			</div>
 			<div class="grid">
 				<div class="tabs">
-					<a href="@routes.Index.index("", "none", "none", "none", "", "")">
+					<a href="@routes.Index.index("", "none", "none", "", "", "", "")">
 						<div class="toptaak-element" id="js-element-index">
 							<div class="toptaak-outer">
 								<div class="@if(title == Messages.get("index.header") || title == Messages.get("form.edit.header")) {toptaak-inner-active} else {toptaak-inner}">
@@ -48,7 +49,7 @@
 							</div>
 						</div>
 					</a>
-					<a href="@routes.Metadata.renderCreateForm(textSearch, supplierSearch, statusSearch, mdFormatSearch, dateStartSearch, dateEndSearch)">
+					<a href="@routes.Metadata.renderCreateForm(textSearch, supplierSearch, statusSearch, dateCreateStartSearch, dateCreateEndSearch, dateUpdateStartSearch, dateUpdateEndSearch)">
 						<div class="toptaak-element" id="js-element-create">
 							<div class="toptaak-outer">
 								<div class="@if(title == Messages.get("form.create.header")) {toptaak-inner-active} else {toptaak-inner}">

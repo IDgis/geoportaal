@@ -14,9 +14,10 @@ public class Status {
 	private String textSearch;
 	private String supplierSearch;
 	private String statusSearch;
-	private String mdFormatSearch;
-	private String dateStartSearch;
-	private String dateEndSearch;
+	private String dateCreateStartSearch;
+	private String dateCreateEndSearch;
+	private String dateUpdateStartSearch;
+	private String dateUpdateEndSearch;
 	
 	public Status() {
 	}
@@ -34,15 +35,17 @@ public class Status {
 	 * @param dateEndSearch the search value of the date end field
 	 */
 	public Status(List<String> recordsChange, String status, String textSearch, String supplierSearch, String statusSearch, 
-			String mdFormatSearch, String dateStartSearch, String dateEndSearch) {
+			String dateCreateStartSearch, String dateCreateEndSearch, String dateUpdateStartSearch, 
+			String dateUpdateEndSearch) {
 		this.recordsChange = recordsChange;
 		this.status = status;
 		this.textSearch = textSearch;
 		this.supplierSearch = supplierSearch;
 		this.statusSearch = statusSearch;
-		this.mdFormatSearch = mdFormatSearch;
-		this.dateStartSearch = dateStartSearch;
-		this.dateEndSearch = dateEndSearch;
+		this.dateCreateStartSearch = dateCreateStartSearch;
+		this.dateCreateEndSearch = dateCreateEndSearch;
+		this.dateUpdateStartSearch = dateUpdateStartSearch;
+		this.dateUpdateEndSearch = dateUpdateEndSearch;
 	}
 
 	public List<String> getRecordsChange() {
@@ -85,27 +88,35 @@ public class Status {
 		this.statusSearch = statusSearch;
 	}
 
-	public String getMdFormatSearch() {
-		return mdFormatSearch;
+	public String getDateCreateStartSearch() {
+		return dateCreateStartSearch;
 	}
 
-	public void setMdFormatSearch(String mdFormatSearch) {
-		this.mdFormatSearch = mdFormatSearch;
+	public void setDateCreateStartSearch(String dateCreateStartSearch) {
+		this.dateCreateStartSearch = dateCreateStartSearch;
 	}
 
-	public String getDateStartSearch() {
-		return dateStartSearch;
+	public String getDateCreateEndSearch() {
+		return dateCreateEndSearch;
 	}
 
-	public void setDateStartSearch(String dateStartSearch) {
-		this.dateStartSearch = dateStartSearch;
+	public void setDateCreateEndSearch(String dateCreateEndSearch) {
+		this.dateCreateEndSearch = dateCreateEndSearch;
 	}
 
-	public String getDateEndSearch() {
-		return dateEndSearch;
+	public String getDateUpdateStartSearch() {
+		return dateUpdateStartSearch;
 	}
 
-	public void setDateEndSearch(String dateEndSearch) {
-		this.dateEndSearch = dateEndSearch;
+	public void setDateUpdateStartSearch(String dateUpdateStartSearch) {
+		this.dateUpdateStartSearch = dateUpdateStartSearch;
+	}
+
+	public String getDateUpdateEndSearch() {
+		return dateUpdateEndSearch;
+	}
+
+	public void setDateUpdateEndSearch(String dateUpdateEndSearch) {
+		this.dateUpdateEndSearch = dateUpdateEndSearch;
 	}
 }
