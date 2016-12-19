@@ -363,6 +363,9 @@
 			
 			
 			<div class="proclaimer">
+				<p class="blok">
+					XML: <a id="xmlLinkNoStyle" target="_blank"></a>
+				</p>
 				<p>Deze gegevens worden beschikbaar gesteld door het Geoportaal van Overijssel: 
 					<a target="_blank" href="http://www.geoportaaloverijssel.nl">http://www.geoportaaloverijssel.nl</a>
 				</p>
@@ -376,6 +379,10 @@
 			</div>
 		</div>
 		<!-- <xsl:apply-templates select="gmd:fileIdentifier"/> -->
+ 		<script>
+			document.getElementById("xmlLinkNoStyle").href = location.href + '?noStyle=true';
+			document.getElementById("xmlLinkNoStyle").innerHTML = location.href + '?noStyle=true';
+		</script>
  	</xsl:template>
  	<xsl:template match="rdf:RDF/rdf:Description/dc:title">
   		<xsl:if test=". != ''">
