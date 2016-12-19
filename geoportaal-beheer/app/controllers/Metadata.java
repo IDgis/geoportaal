@@ -822,8 +822,8 @@ public class Metadata extends Controller {
 		});
 	}
 	
-	public Result getMetadata(String uuid) throws MalformedURLException, IOException {
-		Html h = new DublinCoreMetadata(q).getMetadataInternal(uuid + ".xml");
+	public Result getMetadata(String uuid, Boolean noStyle) throws MalformedURLException, IOException {
+		Html h = new DublinCoreMetadata(q).getMetadataInternal(uuid + ".xml", noStyle);
 		
 		return ok(h).as("application/xml");
 	}
