@@ -385,6 +385,9 @@
 				<xsl:apply-templates select="gmd:identificationInfo/srv:SV_ServiceIdentification/gmd:resourceConstraints/gmd:MD_SecurityConstraints/gmd:classification/gmd:MD_ClassificationCode/@codeListValue"/>
 			</div>
 			<div class="proclaimer">
+				<p class="blok">
+					XML: <a id="xmlLinkNoStyle" target="_blank"></a>
+				</p>
 				<p>Deze gegevens worden beschikbaar gesteld door het Geoportaal van Overijssel: 
 					<a target="_blank" href="http://www.geoportaaloverijssel.nl">http://www.geoportaaloverijssel.nl</a>
 				</p>
@@ -396,7 +399,11 @@
 					<a target="_blank" href="http://www.overijssel.nl/algemene-onderdelen/proclaimer">http://www.overijssel.nl/algemene-onderdelen/proclaimer</a>
 				</p>
 			</div>
-		</div>		
+		</div>
+ 		<script>
+			document.getElementById("xmlLinkNoStyle").href = location.href + '?noStyle=true';
+			document.getElementById("xmlLinkNoStyle").innerHTML = location.href + '?noStyle=true';
+		</script>
  	</xsl:template>
  	
  	<xsl:template match="gmd:MD_Metadata/gmd:identificationInfo/srv:SV_ServiceIdentification/gmd:citation/gmd:CI_Citation/gmd:title/gco:CharacterString">

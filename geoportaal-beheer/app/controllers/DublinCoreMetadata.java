@@ -248,14 +248,14 @@ public class DublinCoreMetadata extends SimpleWebDAV {
 		// Returns the XML page
 		if("1".equals(Http.Context.current().request().getHeader(play.Play.application().configuration().getString("trusted.header")))) {
 			return Optional.<Resource>of(new DefaultResource("application/xml", 
-					views.xml.metadataintern.render(dcx, sdf, useLimitation).body().getBytes("UTF-8")));
+					views.xml.metadataintern.render(dcx, sdf, useLimitation, false).body().getBytes("UTF-8")));
 		} else {
 			return Optional.<Resource>of(new DefaultResource("application/xml", 
-					views.xml.metadataextern.render(dcx, sdf, useLimitation).body().getBytes("UTF-8")));
+					views.xml.metadataextern.render(dcx, sdf, useLimitation, false).body().getBytes("UTF-8")));
 		}
 	}
 	
-	public Html getMetadataInternal(String name) throws MalformedURLException, IOException {
+	public Html getMetadataInternal(String name, Boolean noStyle) throws MalformedURLException, IOException {
 		DublinCoreXML dcx = generateMetadata(name);
 		
 		// Create an object to easily format dates
@@ -264,6 +264,6 @@ public class DublinCoreMetadata extends SimpleWebDAV {
 		// Fetches the message of the use limitation attribute value
 		String useLimitation = Messages.get("xml.uselimitation");
 		
-		return views.xml.metadataintern.render(dcx, sdf, useLimitation);
+		return views.xml.metadataintern.render(dcx, sdf, useLimitation, noStyle);
 	}
 }

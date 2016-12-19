@@ -363,6 +363,9 @@
 			
 			
 			<div class="proclaimer">
+				<p class="blok">
+					XML: <a id="xmlLinkNoStyle" target="_blank"></a>
+				</p>
 				<p>Deze gegevens worden beschikbaar gesteld door het Geoportaal van Overijssel: 
 					<a target="_blank" href="http://www.geoportaaloverijssel.nl">http://www.geoportaaloverijssel.nl</a>
 				</p>
@@ -376,6 +379,10 @@
 			</div>
 		</div>
 		<!-- <xsl:apply-templates select="gmd:fileIdentifier"/> -->
+ 		<script>
+			document.getElementById("xmlLinkNoStyle").href = location.href + '?noStyle=true';
+			document.getElementById("xmlLinkNoStyle").innerHTML = location.href + '?noStyle=true';
+		</script>
  	</xsl:template>
  	<xsl:template match="rdf:RDF/rdf:Description/dc:title">
   		<xsl:if test=". != ''">
@@ -408,7 +415,25 @@
   		<xsl:if test=". != ''">
  			<p>
  				<b><xsl:text>Eindverantwoordelijke: </xsl:text></b>
-  				<xsl:value-of select="."/>
+  				<xsl:choose>
+					<xsl:when test="substring(substring-after(.,'http'),1,3) = '://'">
+						<xsl:value-of select="substring-before(.,'http://')"/>
+						<xsl:text> </xsl:text>
+						<a href="http://{substring-after(.,'http://')}" target="_blank">
+							http://<xsl:value-of select="substring-after(.,'http://')"/>
+						</a>
+					</xsl:when>
+					<xsl:when test="substring(substring-after(.,'https'),1,3) = '://'">
+						<xsl:value-of select="substring-before(.,'https://')"/>
+						<xsl:text> </xsl:text>
+						<a href="https://{substring-after(.,'https://')}" target="_blank">
+							https://<xsl:value-of select="substring-after(.,'https://')"/>
+						</a>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:value-of select="."/>
+					</xsl:otherwise>
+				</xsl:choose>
   			</p>
   		</xsl:if>
   	</xsl:template>
