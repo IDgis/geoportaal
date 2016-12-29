@@ -141,7 +141,7 @@ public class DublinCoreMetadata extends SimpleWebDAV {
 			// Convert attachments from database to requests
 			List<String> attachments = new ArrayList<String>();
 			for(String att : attachmentsDB) {
-				String url = controllers.routes.Attachment.openAttachment(att, datasetRow.get(metadata.uuid)).toString();
+				String url = controllers.routes.Attachment.openAttachment(datasetRow.get(metadata.uuid), att).toString();
 				attachments.add(play.Play.application().configuration().getString("geoportaal.admin.host") + url);
 			}
 			

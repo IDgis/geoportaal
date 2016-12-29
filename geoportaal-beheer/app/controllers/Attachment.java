@@ -23,7 +23,7 @@ public class Attachment extends Controller {
 	 * @param uuid the UUID of the record the attachment belongs to
 	 * @return the {@link Result} of a new page where the attachment will be opened
 	 */
-	public Result openAttachment(String attachmentName, String uuid) {
+	public Result openAttachment(String uuid, String attachmentName) {
 		return q.withTransaction(tx -> {
 			// Fetches the attachment content and mimetype
 			Tuple attachment = tx.select(mdAttachment.attachmentContent, mdAttachment.attachmentMimetype)
