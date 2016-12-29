@@ -310,6 +310,10 @@
 			</div>
 			
 			<div class="blok">
+				<xsl:apply-templates select="gmd:distributionInfo/gmd:MD_Distribution/gmd:transferOptions/gmd:MD_DigitalTransferOptions/gmd:onLine/gmd:CI_OnlineResource"/>
+			</div>
+			
+			<div class="blok">
 				<xsl:apply-templates select="gmd:identificationInfo/gmd:MD_DataIdentification/gmd:graphicOverview/gmd:MD_BrowseGraphic/gmd:fileName/gco:CharacterString"/>
 			</div>
 			
@@ -470,6 +474,19 @@
 		  		<b><xsl:text>Samenvatting: </xsl:text></b>
 		  		<xsl:value-of select="."/>
 		  	</p>
+	  	</xsl:if>
+  	</xsl:template>
+	<xsl:template match="gmd:MD_Metadata/gmd:distributionInfo/gmd:MD_Distribution/gmd:transferOptions/gmd:MD_DigitalTransferOptions/gmd:onLine/gmd:CI_OnlineResource">
+  		<xsl:if test=". != ''">
+	  		<xsl:choose>
+				<xsl:when test="gmd:protocol/gco:CharacterString = 'website'">
+					<xsl:if test="contains(gmd:linkage/gmd:URL, '/viewer/')">
+						<p>
+							<a href="{gmd:linkage/gmd:URL}" target="_blank"><xsl:text>Bekijk de kaart in een viewer</xsl:text></a>
+						</p>
+					</xsl:if>
+				</xsl:when>
+			</xsl:choose>
 	  	</xsl:if>
   	</xsl:template>
   	<xsl:template match="gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:graphicOverview/gmd:MD_BrowseGraphic/gmd:fileName/gco:CharacterString">
