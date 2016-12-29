@@ -1316,7 +1316,14 @@
 			  			</a>
 			  		</p>
 		  		</xsl:when>
-		  		<xsl:when test=". = ''"></xsl:when>
+	  			<xsl:when test="gmd:CI_OnlineResource/gmd:protocol/gco:CharacterString = 'website'">
+		  			<p>
+			  			<b><xsl:text>Website: </xsl:text></b>
+			  			<a href="{gmd:CI_OnlineResource/gmd:linkage/gmd:URL}">
+			  				<xsl:value-of select="gmd:CI_OnlineResource/gmd:linkage/gmd:URL"/>
+			  			</a>
+			  		</p>
+		  		</xsl:when>
 		  		<xsl:otherwise>
 			  		<p>
 			  			<b><xsl:value-of select="gmd:CI_OnlineResource/gmd:protocol/gco:CharacterString"/>: </b>
