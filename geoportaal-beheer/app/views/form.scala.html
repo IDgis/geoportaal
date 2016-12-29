@@ -143,7 +143,7 @@
 					@for(attachmentFile <- attachmentsDataset) {
 						<p class="attachment-file">
 							<span class="glyphicon glyphicon-remove delete-attachment-button"></span>
-							<a href="@routes.Attachment.openAttachment(attachmentFile.get(mdAttachment.attachmentName), datasetRow.get(metadata.uuid))
+							<a href="@routes.Attachment.openAttachment(datasetRow.get(metadata.uuid), attachmentFile.get(mdAttachment.attachmentName))
 								"target="_blank">
 								<span class="glyphicon glyphicon-eye-open open-attachment-button"></span>
 							</a>
