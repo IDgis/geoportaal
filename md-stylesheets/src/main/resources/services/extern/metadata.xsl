@@ -308,8 +308,11 @@
 				-->
 			</div>
 			<div class="blok">
+				<xsl:apply-templates select="gmd:distributionInfo/gmd:MD_Distribution/gmd:transferOptions/gmd:MD_DigitalTransferOptions/gmd:onLine[2]"/>
+			</div>
+			<div class="blok">
 				<xsl:apply-templates select="gmd:distributionInfo/gmd:MD_Distribution/gmd:transferOptions/gmd:MD_DigitalTransferOptions/gmd:onLine[1]"/>
-			</div>			
+			</div>
 			<div class="blok">
 				<p>
 					<b><xsl:text>Lagen: </xsl:text></b>
@@ -712,7 +715,7 @@
 			</xsl:choose>
 		</xsl:if>
   	</xsl:template>
-  	<xsl:template match="gmd:MD_Metadata/gmd:distributionInfo/gmd:MD_Distribution/gmd:transferOptions/gmd:MD_DigitalTransferOptions/gmd:onLine[1]">
+  	<xsl:template match="gmd:MD_Metadata/gmd:distributionInfo/gmd:MD_Distribution/gmd:transferOptions/gmd:MD_DigitalTransferOptions/gmd:onLine[2]">
   		<xsl:if test="gmd:CI_OnlineResource/gmd:protocol/gco:CharacterString != ''">
   			<p>
 				<b><xsl:value-of select="gmd:CI_OnlineResource/gmd:protocol/gco:CharacterString"/>: </b>
@@ -720,6 +723,17 @@
   					<xsl:value-of select="gmd:CI_OnlineResource/gmd:linkage/gmd:URL"/>
   				</xsl:if>
  			</p>
+  		</xsl:if>
+  	</xsl:template>
+  	<xsl:template match="gmd:MD_Metadata/gmd:distributionInfo/gmd:MD_Distribution/gmd:transferOptions/gmd:MD_DigitalTransferOptions/gmd:onLine[1]">
+  		<xsl:if test="gmd:CI_OnlineResource/gmd:protocol/gco:CharacterString = 'website'">
+  			<xsl:if test="contains(gmd:CI_OnlineResource/gmd:linkage/gmd:URL, '/viewer')">
+				<p>
+					<a href="{gmd:CI_OnlineResource/gmd:linkage/gmd:URL}" target="_blank">
+						<xsl:text>Bekijk de service in een viewer</xsl:text>
+					</a>
+				</p>
+			</xsl:if>
   		</xsl:if>
   	</xsl:template>
   	<xsl:template match="gmd:MD_Metadata/gmd:identificationInfo/srv:SV_ServiceIdentification/srv:operatesOn">
