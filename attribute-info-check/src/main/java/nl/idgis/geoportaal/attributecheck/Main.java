@@ -143,9 +143,9 @@ public class Main {
 									+ "text()",
 									d, XPathConstants.NODESET);
 							
-							String fileIdentifier = nullCheckNode(fileIdentifierNodes);
-							String metadataIdentifier = nullCheckNode(metadataIdentifierNodes);
-							String table = nullCheckNode(tableNodes);
+							String fileIdentifier = getIdentifier(nullCheckNode(fileIdentifierNodes));
+							String metadataIdentifier = getIdentifier(nullCheckNode(metadataIdentifierNodes));
+							String table = getTableName(nullCheckNode(tableNodes));
 							
 							smd.add(new MetadataDescription(
 									fileIdentifier, 
@@ -172,5 +172,29 @@ public class Main {
 		} else {
 			return null;
 		}
+	}
+	
+	public static String getIdentifier(String identifier) {
+		if(identifier != null && !identifier.trim().isEmpty()) {
+			return identifier.trim().toLowerCase();
+		}
+		
+		return null;
+	}
+	
+	public static String getTableName(String table) {
+		if(table != null && !table.trim().isEmpty()) {
+			
+			final String tableName;
+			if(table.contains(" ")) {
+				tableName = table.substring(0, table.indexOf(" ")).trim();
+			} else {
+				tableName = table.trim();
+			}
+			
+			return tableName.replace(":", ".").toLowerCase();
+		}
+		
+		return null;
 	}
 }
