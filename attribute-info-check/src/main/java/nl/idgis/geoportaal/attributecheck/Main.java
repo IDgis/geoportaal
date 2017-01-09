@@ -33,29 +33,29 @@ import org.xml.sax.SAXException;
 public class Main {
 	public static void main(String[] args) throws Exception {
 		try {
-			String pathOfGeoWeb = args[1];
-			String pathOfPortal = args[3];
-			String csvOutput = args[5];
+			String pathOfBase = args[1];
+			String pathOfCheck = args[3];
+			String csvFile = args[5];
 			
-			Set<MetadataDescription> setGeoWeb = build(pathOfGeoWeb);
-			Set<MetadataDescription> setPortal = build(pathOfPortal);
+			Set<MetadataDescription> setBase = build(pathOfBase);
+			Set<MetadataDescription> setCheck = build(pathOfCheck);
 			
 			List<MetadataDescription> missingMds = new ArrayList<>();
 			
-			for(MetadataDescription md : setPortal) {
-				if(!setGeoWeb.contains(md)) {
+			for(MetadataDescription md : setBase) {
+				if(!setCheck.contains(md)) {
 					missingMds.add(md);
 				}
 			}
-			File f = new File(csvOutput + "/md_missing_attribute_info.csv");
+			File f = new File(csvFile);
 			BufferedWriter writer = new BufferedWriter(new FileWriter(f), 2048);
 			
-			writer.write("fileIdentifier,metadataIdentifier,table");
+			writer.write("\"fileIdentifier\";\"metadataIdentifier\";\"table\"");
 			writer.newLine();
 			
 			for(MetadataDescription md : missingMds) {
-				writer.write("'" + md.getFileIdentifier() + "','" + md.getMetadataIdentifier() + "','"
-						+ md.getTable() + "'");
+				writer.write("\"" + md.getFileIdentifier() + "\";\"" + md.getMetadataIdentifier() + "\";\""
+						+ md.getTable() + "\"");
 				writer.newLine();
 			}
 			
