@@ -181,6 +181,8 @@ project(':geoportaal-harvester') {
 		environment 'DATA_NAME', 'service'
 		environment 'DATA_SECURED', 'false'
 		environment 'HARVEST_INTERVAL', '15'
+		environment 'VIEWER_URL_DATASET_PREFIX', 'http://acc-services.geodataoverijssel.nl:80/viewer/layer/'
+		environment 'VIEWER_URL_SERVICE_PREFIX', 'http://acc-services.geodataoverijssel.nl:80/viewer?service='
 	}
 	
 	repositories {

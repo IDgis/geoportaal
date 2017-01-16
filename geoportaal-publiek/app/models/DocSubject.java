@@ -17,10 +17,11 @@ public class DocSubject {
 	private String spatialSchema;
 	private Boolean published;
 	private String typeService;
+	private String viewerUrl;
 	
 	public DocSubject(String uuid, String title, Timestamp date, String creator, String description, String thumbnail,
 			List<String> subjects, String metadataUrl, String metadataType, Boolean downloadable, String spatialSchema,
-			Boolean published, String typeService) {
+			Boolean published, String typeService, String viewerUrl) {
 		super();
 		this.uuid = uuid;
 		this.title = title;
@@ -35,6 +36,7 @@ public class DocSubject {
 		this.spatialSchema = spatialSchema;
 		this.published = published;
 		this.typeService = typeService;
+		this.viewerUrl = viewerUrl;
 	}
 
 	public String getUuid() {
@@ -139,6 +141,14 @@ public class DocSubject {
 
 	public void setTypeService(String typeService) {
 		this.typeService = typeService;
+	}
+
+	public String getViewerUrl() {
+		return viewerUrl;
+	}
+
+	public void setViewerUrl(String viewerUrl) {
+		this.viewerUrl = viewerUrl;
 	}
 	
 }

@@ -253,6 +253,8 @@ public class Main {
 		List<String> listOtherConstraint = metaDoc.getStrings(DatasetPath.OTHER_CONSTRAINT.path());
 		List<String> listRelatedDataset = metaDoc.getStrings(DatasetPath.RELATED_DATASET.path());
 		
+		List<String> listViewerUrls = metaDoc.getStrings(DatasetPath.VIEWER_URL.path());
+		
 		Integer mdTypeId = qf.select(mdType.id)
 				.from(mdType)
 				.where(mdType.url.eq(System.getenv("DATA_URL")))
@@ -309,6 +311,14 @@ public class Main {
 			}
 		}
 		
+		String viewerUrl = null;
+		for(String url : listViewerUrls) {
+			if(url.startsWith(System.getenv("VIEWER_URL_DATASET_PREFIX"))) {
+				viewerUrl = url;
+				break;
+			}
+		}
+		
 		try {
 			qf.insert(document)
 			.set(document.uuid, getValueFromList(listUuid))
@@ -322,6 +332,7 @@ public class Main {
 			.set(document.downloadable, downloadable)
 			.set(document.spatialSchema, getValueFromList(listSpatialSchema))
 			.set(document.published, published)
+			.set(document.viewerUrl, viewerUrl)
 			.execute();
 		} catch(Exception e) {
 			throw new Exception(e.getCause() + " " + getValueFromList(listUuid));
@@ -397,6 +408,8 @@ public class Main {
 		List<String> listAttachedFile = metaDoc.getStrings(ServicePath.ATTACHED_FILE.path());
 		List<String> listKeyword = metaDoc.getStrings(ServicePath.KEYWORD.path());
 		
+		List<String> listViewerUrls = metaDoc.getStrings(ServicePath.VIEWER_URL.path());
+		
 		Integer mdTypeId = qf.select(mdType.id)
 				.from(mdType)
 				.where(mdType.url.eq(System.getenv("DATA_URL")))
@@ -440,6 +453,14 @@ public class Main {
 			accessId = externId;
 		}
 		
+		String viewerUrl = null;
+		for(String url : listViewerUrls) {
+			if(url.startsWith(System.getenv("VIEWER_URL_SERVICE_PREFIX"))) {
+				viewerUrl = url;
+				break;
+			}
+		}
+		
 		try {
 			qf.insert(document)
 				.set(document.uuid, getValueFromList(listUuid))
@@ -451,6 +472,7 @@ public class Main {
 				.set(document.thumbnail, thumbnail)
 				.set(document.accessId, accessId)
 				.set(document.typeService, getValueFromList(listTypeService))
+				.set(document.viewerUrl, viewerUrl)
 				.execute();
 		} catch(Exception e) {
 			e.printStackTrace();

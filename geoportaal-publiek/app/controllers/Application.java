@@ -65,8 +65,10 @@ public class Application extends Controller {
 				intern = true;
 			}
 			
-			SQLQuery<Tuple> queryDocuments = tx.select(document.title, document.uuid, document.date, document.creator, document.description, 
-					document.thumbnail, document.downloadable, document.spatialSchema, document.published, document.typeService, mdType.url, mdType.name)
+			SQLQuery<Tuple> queryDocuments = tx.select(document.title, document.uuid, document.date, 
+					document.creator, document.description, document.thumbnail, document.downloadable, 
+					document.spatialSchema, document.published, document.typeService, document.viewerUrl, 
+					mdType.url, mdType.name)
 					.from(document)
 					.join(mdType).on(document.mdTypeId.eq(mdType.id))
 					.where(document.date.isNotNull())
@@ -119,8 +121,10 @@ public class Application extends Controller {
 				intern = true;
 			}
 			
-			SQLQuery<Tuple> queryDocuments = tx.select(document.title, document.uuid, document.date, document.creator, document.description, 
-					document.thumbnail, document.downloadable, document.spatialSchema, document.published, document.typeService, mdType.url, mdType.name)
+			SQLQuery<Tuple> queryDocuments = tx.select(document.title, document.uuid, document.date, 
+					document.creator, document.description, document.thumbnail, document.downloadable, 
+					document.spatialSchema, document.published, document.typeService, document.viewerUrl,
+					mdType.url, mdType.name)
 					.from(document)
 					.join(mdType).on(document.mdTypeId.eq(mdType.id))
 					.where(document.date.isNotNull())
@@ -241,8 +245,10 @@ public class Application extends Controller {
 					.orderBy(subjectLabel.title.asc())
 					.fetch();
 			
-			SQLQuery<Tuple> queryDocuments = tx.select(document.uuid, document.title, document.date, document.creator, document.description, 
-					document.thumbnail, document.downloadable, document.spatialSchema, document.published, document.typeService, mdType.url, mdType.name)
+			SQLQuery<Tuple> queryDocuments = tx.select(document.uuid, document.title, document.date, 
+					document.creator, document.description, document.thumbnail, document.downloadable, 
+					document.spatialSchema, document.published, document.typeService, document.viewerUrl,
+					mdType.url, mdType.name)
 					.from(document)
 					.join(mdType).on(document.mdTypeId.eq(mdType.id))
 					.where(document.date.isNotNull())
@@ -345,9 +351,11 @@ public class Application extends Controller {
 						.orderBy(subject.id.asc())
 						.fetch();
 				
-				DocSubject ds = new DocSubject(doc.get(document.uuid), doc.get(document.title), doc.get(document.date), doc.get(document.creator), 
-						doc.get(document.description), doc.get(document.thumbnail), docSubjects, doc.get(mdType.url), doc.get(mdType.name),
-						doc.get(document.downloadable), doc.get(document.spatialSchema), doc.get(document.published), doc.get(document.typeService));
+				DocSubject ds = new DocSubject(doc.get(document.uuid), doc.get(document.title), 
+						doc.get(document.date), doc.get(document.creator), doc.get(document.description), 
+						doc.get(document.thumbnail), docSubjects, doc.get(mdType.url), doc.get(mdType.name),
+						doc.get(document.downloadable), doc.get(document.spatialSchema), doc.get(document.published), 
+						doc.get(document.typeService), doc.get(document.viewerUrl));
 				
 				finalDocuments.add(ds);
 			}
