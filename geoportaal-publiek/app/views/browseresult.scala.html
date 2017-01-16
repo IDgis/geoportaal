@@ -103,6 +103,9 @@
 						</p>
 						
 						@views.html.metadatalink(doc.getMetadataType, doc.getUuid)
+						@if(doc.getViewerUrl != null) {
+							<a class="link" href="@doc.getViewerUrl" target="_blank">@Messages.get("button.viewer")</a>
+						}
 						@if("dataset".equals(doc.getMetadataType) && doc.getDownloadable.equals(true) && doc.getPublished.equals(true) && 
 							"vector".equals(doc.getSpatialSchema)) {
 							@views.html.downloadlink(doc.getUuid)

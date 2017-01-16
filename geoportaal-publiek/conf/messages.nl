@@ -5,6 +5,7 @@ button.help=Help
 button.metadata=Meer informatie
 button.xml=XML
 button.download=Download
+button.viewer=Bekijk in viewer
 button.first=Eerste pagina
 button.previous=Vorige pagina
 button.next=Volgende pagina
