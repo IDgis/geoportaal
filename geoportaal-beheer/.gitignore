@@ -13,3 +13,4 @@ bin/
 .gradle
 build/
 velocity.log
+.sonar
