@@ -15,16 +15,22 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
+import javax.xml.namespace.NamespaceContext;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import javax.xml.XMLConstants;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathFactory;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -398,17 +404,79 @@ public class Application extends Controller {
 		}
 		
 		return request.get().map(response -> {
+			boolean xmlChanged = false;
+			
+			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+			dbf.setNamespaceAware(true);
+			
+			DocumentBuilder db = dbf.newDocumentBuilder();
+			Document d = db.parse(response.getBodyAsStream());
+			
+			TransformerFactory tf = TransformerFactory.newInstance();
+			Transformer t = tf.newTransformer();
+			ByteArrayOutputStream boas = new ByteArrayOutputStream();
+			
+			if("service".equals(type)) {
+				XPathFactory factory = XPathFactory.newInstance();
+				XPath xpath = factory.newXPath();
+				
+				xpath.setNamespaceContext(new NamespaceContext() {
+					public String getNamespaceURI(String prefix) {
+						if(prefix == null) {
+							throw new NullPointerException("Null prefix");
+						} else if("gmd".equals(prefix)) {
+							return "http://www.isotc211.org/2005/gmd";
+						} else if("gco".equals(prefix)) {
+							return "http://www.isotc211.org/2005/gco";
+						} else if("xlink".equals(prefix)) {
+							return "http://www.w3.org/1999/xlink";
+						} else if("gml".equals(prefix)) {
+							return "http://www.opengis.net/gml";
+						} else if("srv".equals(prefix)) {
+							return "http://www.isotc211.org/2005/srv";
+						}
+						
+						return XMLConstants.NULL_NS_URI;
+					}
+					
+					public String getPrefix(String uri) {
+						throw new UnsupportedOperationException();
+					}
+					
+					public Iterator getPrefixes(String uri) {
+						throw new UnsupportedOperationException();
+					}
+				});
+				
+				String metadataPrefix = play.Play.application().configuration().getString("metadata.prefix");
+				String datasetUrls = "/gmd:MD_Metadata/gmd:identificationInfo/srv:SV_ServiceIdentification/"
+						+ "srv:operatesOn/@xlink:href";
+				NodeList nodelist = (NodeList) xpath.evaluate(datasetUrls, d, XPathConstants.NODESET);
+				
+				if(nodelist != null) {
+					if(nodelist.getLength() > 0) {
+						xmlChanged = true;
+					}
+					
+					for(int node = 0;node < nodelist.getLength();node++) {
+						String content = nodelist.item(node).getTextContent();
+						
+						StringBuilder sb = new StringBuilder(content);
+						int indexBegin = sb.indexOf("/metadata/dataset");
+						int indexEnd = sb.indexOf(".xml");
+						
+						String finalContent = sb.substring(indexBegin, indexEnd);
+						nodelist.item(node).setNodeValue(metadataPrefix + finalContent);
+					}
+				}
+			}
+			
 			if(noStyle) {
-				DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-				dbf.setNamespaceAware(true);
-				
-				DocumentBuilder db = dbf.newDocumentBuilder();
-				Document d = db.parse(response.getBodyAsStream());
-				
 				// remove existing stylesheet
 				NodeList children = d.getChildNodes();
 				for(int i = 0; i < children.getLength(); i++) {
 					Node n = children.item(i);
+					
 					if(n.getNodeType() == Node.PROCESSING_INSTRUCTION_NODE) {
 						ProcessingInstruction pi = (ProcessingInstruction)n;
 						if("xml-stylesheet".equals(pi.getTarget())) {
@@ -417,10 +485,9 @@ public class Application extends Controller {
 					}
 				}
 				
-				TransformerFactory tf = TransformerFactory.newInstance();
-				Transformer t = tf.newTransformer();
-				
-				ByteArrayOutputStream boas = new ByteArrayOutputStream();
+				xmlChanged = true;
+			} 
+			if(xmlChanged) {
 				t.transform(new DOMSource(d), new StreamResult(boas));
 				boas.close();
 				
