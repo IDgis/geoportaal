@@ -1,0 +1,9 @@
+@(url: String)
+	
+@import play.i18n._
+
+@if(url != null && 
+	("intern".equals(play.Play.application().configuration().getString("portal.access")) || 
+		url.startsWith(play.Play.application().configuration().getString("portal.viewer.urlPublicPrefix")))) {
+	<a class="link" href="@url" target="_blank">@Messages.get("button.viewer")</a>
+}
