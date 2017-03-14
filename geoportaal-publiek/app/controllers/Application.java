@@ -404,8 +404,6 @@ public class Application extends Controller {
 		}
 		
 		return request.get().map(response -> {
-			boolean xmlChanged = false;
-			
 			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 			dbf.setNamespaceAware(true);
 			
@@ -414,7 +412,6 @@ public class Application extends Controller {
 			
 			TransformerFactory tf = TransformerFactory.newInstance();
 			Transformer t = tf.newTransformer();
-			ByteArrayOutputStream boas = new ByteArrayOutputStream();
 			
 			if("service".equals(type)) {
 				XPathFactory factory = XPathFactory.newInstance();
@@ -454,10 +451,6 @@ public class Application extends Controller {
 				NodeList nodelist = (NodeList) xpath.evaluate(datasetUrls, d, XPathConstants.NODESET);
 				
 				if(nodelist != null) {
-					if(nodelist.getLength() > 0) {
-						xmlChanged = true;
-					}
-					
 					for(int node = 0;node < nodelist.getLength();node++) {
 						String content = nodelist.item(node).getTextContent();
 						
@@ -484,17 +477,13 @@ public class Application extends Controller {
 						}
 					}
 				}
-				
-				xmlChanged = true;
-			} 
-			if(xmlChanged) {
-				t.transform(new DOMSource(d), new StreamResult(boas));
-				boas.close();
-				
-				return ok(boas.toByteArray()).as("UTF-8").as("application/xml");
-			} else {
-				return ok(response.getBodyAsStream()).as("UTF-8").as("application/xml");
 			}
+			
+			ByteArrayOutputStream boas = new ByteArrayOutputStream();
+			t.transform(new DOMSource(d), new StreamResult(boas));
+			boas.close();
+			
+			return ok(boas.toByteArray()).as("UTF-8").as("application/xml");
 		});
 	}
 	
