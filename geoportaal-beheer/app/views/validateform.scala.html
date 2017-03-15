@@ -34,18 +34,9 @@
 	}
 
 	@if(fileIdDuplicate || fileIdCharacter || fileIdLength) {
-		@if(fileIdDuplicate) {
-			<input type="hidden" data-warning="true" class="fileid-message" data-message="@Messages.get("validate.form.fileid.warning.body.occurrences")">
-		}
-		
-		@if(fileIdCharacter) {
-			<input type="hidden" data-warning="true" class="fileid-message" data-message="@Messages.get("validate.form.fileid.warning.body.nonumber")">
-			
-		}
-		
-		@if(fileIdLength) {
-			<input type="hidden" data-warning="true" class="fileid-message" data-message="@Messages.get("validate.form.fileid.warning.body.length")">
-		}
+		<input type="hidden" data-warning="true" class="fileid-message" data-message="<strong>Nummer is:</strong> @fileId">
+		<input type="hidden" data-warning="true" class="fileid-message" data-message="@Messages.get("validate.form.fileid.warning.body.1")">
+		<input type="hidden" data-warning="true" class="fileid-message" data-message="@Messages.get("validate.form.fileid.warning.body.2")">
 	}
 		
 	@if(creator == null) {

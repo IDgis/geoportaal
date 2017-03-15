@@ -258,19 +258,11 @@ public class Metadata extends Controller {
 							dateCreateStartSearch, dateCreateEndSearch, dateUpdateStartSearch, 
 							dateUpdateEndSearch, previousValues, null);
 			} else if((numbersCheck.get("duplicate") || numbersCheck.get("character") || numbersCheck.get("length")) && !fileIdConfirmed) {
-				List<String> warnMessages = new ArrayList<>();
+				Map<String, String> warnMessages = new HashMap<String, String>();
 				
-				if(numbersCheck.get("duplicate")) {
-					warnMessages.add(Messages.get("validate.form.fileid.warning.body.occurrences"));
-				}
-				
-				if(numbersCheck.get("character")) {
-					warnMessages.add(Messages.get("validate.form.fileid.warning.body.nonumber"));
-				}
-				
-				if(numbersCheck.get("length")) {
-					warnMessages.add(Messages.get("validate.form.fileid.warning.body.length"));
-				}
+				warnMessages.put("fileid", dc.getFileId().trim());
+				warnMessages.put("message-1", Messages.get("validate.form.fileid.warning.body.1"));
+				warnMessages.put("message-2", Messages.get("validate.form.fileid.warning.body.2"));
 				
 				return validateFormServer(true, null, null, textSearch, supplierSearch, statusSearch, 
 						dateCreateStartSearch, dateCreateEndSearch, dateUpdateStartSearch, dateUpdateEndSearch, 
@@ -665,19 +657,11 @@ public class Metadata extends Controller {
 							dateUpdateEndSearch, previousValues, null);
 				} else if((numbersCheck.get("duplicate") || numbersCheck.get("character") || numbersCheck.get("length")) && !fileIdConfirmed) {
 					// Returns previous state with warning if there is an undesirable number
-					List<String> warnMessages = new ArrayList<>();
+					Map<String, String> warnMessages = new HashMap<String, String>();
 					
-					if(numbersCheck.get("duplicate")) {
-						warnMessages.add(Messages.get("validate.form.fileid.warning.body.occurrences"));
-					}
-					
-					if(numbersCheck.get("character")) {
-						warnMessages.add(Messages.get("validate.form.fileid.warning.body.nonumber"));
-					}
-					
-					if(numbersCheck.get("length")) {
-						warnMessages.add(Messages.get("validate.form.fileid.warning.body.length"));
-					}
+					warnMessages.put("fileid", dc.getFileId().trim());
+					warnMessages.put("message-1", Messages.get("validate.form.fileid.warning.body.1"));
+					warnMessages.put("message-2", Messages.get("validate.form.fileid.warning.body.2"));
 					
 					return validateFormServer(false, datasetRow, attachmentsDataset, textSearch, supplierSearch, statusSearch, 
 							dateCreateStartSearch, dateCreateEndSearch, dateUpdateStartSearch, 
@@ -1092,7 +1076,7 @@ public class Metadata extends Controller {
 	public Result validateFormServer(Boolean create, Tuple datasetRow, List<Tuple> attachmentsDataset, String textSearch, String supplierSearch, 
 			String statusSearch, String dateCreateStartSearch, String dateCreateEndSearch, 
 			String dateUpdateStartSearch, String dateUpdateEndSearch, Map<String, DublinCore> previousValues,
-			List<String> warnMessages) {
+			Map<String, String> warnMessages) {
 		// Create strings according to yyyy-MM-dd and dd-MM-yyyy formats
 		String today = new SimpleDateFormat("yyyy-MM-dd").format(new Date().getTime());
 		
