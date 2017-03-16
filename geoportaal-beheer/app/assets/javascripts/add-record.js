@@ -60,7 +60,7 @@ require([
 				}
 			});
 		}
-	
+		
 		var addAttachment = on(win.doc, '.js-add-attachment:click', function(e) {
 			var attachment = query('.js-add-attachment').parents('.js-attachment')[0];
 			var attachmentClone = lang.clone(attachment);

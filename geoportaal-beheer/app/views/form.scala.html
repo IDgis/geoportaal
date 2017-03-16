@@ -15,7 +15,7 @@
 	validate: Boolean,
 	previousValues: java.util.Map[String, DublinCore],
 	df: java.text.DecimalFormat,
-	warnMessages: java.util.List[String]
+	warningFileId: java.util.Map[String, String]
 )
 
 @import play.i18n._
@@ -433,7 +433,7 @@
 			</div>
 		</div>
 		<input type="hidden" id="js-fileid-confirmed" name="fileIdConfirmed" value="false">
-		<input type="hidden" id="js-warn-msgs-server" value="@if(warnMessages != null){true}else{false}">
+		<input type="hidden" id="js-warn-msgs-server" value="@if(warningFileId != null){true}else{false}">
 		<div id="js-form-validation">
 			@if(validate) {
 				<div id="js-form-validation-result">
@@ -533,10 +533,10 @@
 						<h4 class="modal-title">@Messages.get("validate.form.fileid.warning.title")</h4>
 					</div>
 					<div class="modal-body" id="fileid-modal-body">
-						@if(warnMessages != null) {
-							@for(warnMsg <- warnMessages) {
-								<p class="fileid-warning-msg">@warnMsg</p>
-							}
+						@if(warningFileId != null) {
+							<p class="fileid-warning-msg">@Messages.get("validate.form.fileid.warning.body.number.label") @warningFileId.get("fileid")</p>
+							<p class="fileid-warning-msg">@warningFileId.get("message-1")</p>
+							<p class="fileid-warning-msg">@warningFileId.get("message-2")</p>
 						}
 					</div>
 					<div class="modal-footer">
