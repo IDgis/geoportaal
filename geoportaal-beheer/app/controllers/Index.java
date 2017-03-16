@@ -322,17 +322,20 @@ public class Index extends Controller {
 				}
 			}
 			
-			Long datasetCount = datasetQuery.fetchCount();
+			Long datasetTotalCount = datasetQuery.fetchCount();
+			Long datasetDisplayedCount;
 			
-			if(datasetCount > 200) {
-				datasetCount = 200L;
+			if(datasetTotalCount > 200) {
+				datasetDisplayedCount = 200L;
+			} else {
+				datasetDisplayedCount = datasetTotalCount;
 			}
 			
 			// Return index page
 			return ok(views.html.index.render(datasetRows, supplierList, statusList, sdf, sdfLocal, roleId, textSearch, 
 				supplierSearch, statusSearch, dateCreateStartSearch, dateCreateEndSearch, timestampCreateStartSearch, 
 				resetTimestampCreateEndSearch, dateUpdateStartSearch, dateUpdateEndSearch, timestampUpdateStartSearch, 
-				resetTimestampUpdateEndSearch, sort, checkedList, datasetCount));
+				resetTimestampUpdateEndSearch, sort, checkedList, datasetTotalCount, datasetDisplayedCount));
 		});
 	}
 	
@@ -777,21 +780,25 @@ public class Index extends Controller {
 	 * @return a {@link Boolean} that signals if validation was successful
 	 */
 	public Boolean validateDate(String date) {
-		// If string of date is empty return true
-		if("".equals(date.trim())) {
+		if(date != null) {
+			// If string of date is empty return true
+			if("".equals(date.trim())) {
+				return true;
+			}
+			
+			// Create SimpleDateFormat and use strict parsing
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+			sdf.setLenient(false);
+			try {
+				// Try to parse date, if successful return true
+				sdf.parse(date);
+				return true;
+			} catch(ParseException pe) {
+				// If parsing was unsuccessful return false
+				return false;
+			}
+		} else {
 			return true;
-		}
-		
-		// Create SimpleDateFormat and use strict parsing
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		sdf.setLenient(false);
-		try {
-			// Try to parse date, if successful return true
-			sdf.parse(date);
-			return true;
-		} catch(ParseException pe) {
-			// If parsing was unsuccessful return false
-			return false;
 		}
 	}
 	
