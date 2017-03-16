@@ -215,6 +215,7 @@ validate.form.fileid=Het nummer moet ingevuld zijn.
 validate.form.fileid.warning.title=Waarschuwing: het nummer is niet goed ingevuld
 validate.form.fileid.warning.body.1=Het nummer wat je hebt ingevoerd, wijkt af van de gewone nummers. Controleer of je het juiste nummer hebt ingevoerd, voordat je verder gaat. 
 validate.form.fileid.warning.body.2=Het nu ingevoerde nummer bevat meer dan 8 cijfers. Of het bevat letters of andere vreemde tekens. Het is meestal de bedoeling dat een nummer alleen uit cijfers bestaat. Gewone nummers zijn bijvoorbeeld: 160023 (in 2016), 150101 (in 2015) enz. Combinaties van maximaal 8 cijfers komen ook voor. Dat zijn meestal oudere nummers, zoals 00226467 (uit 2002).
+validate.form.fileid.warning.body.number.label=Nummer is:
 validate.form.creator=Er moet een eindverantwoordelijke geselecteerd zijn.
 validate.form.creator.other=Bij het selecteren van ''andere'' bij eindverantwoordelijke moet het invoerveld ingevuld worden.
 validate.form.date.create=De datum creatie moet ingevuld zijn.

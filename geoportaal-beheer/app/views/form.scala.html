@@ -534,7 +534,7 @@
 					</div>
 					<div class="modal-body" id="fileid-modal-body">
 						@if(warningFileId != null) {
-							<p class="fileid-warning-msg"><strong>Nummer is:</strong> @warningFileId.get("fileid")</p>
+							<p class="fileid-warning-msg">@Messages.get("validate.form.fileid.warning.body.number.label") @warningFileId.get("fileid")</p>
 							<p class="fileid-warning-msg">@warningFileId.get("message-1")</p>
 							<p class="fileid-warning-msg">@warningFileId.get("message-2")</p>
 						}
