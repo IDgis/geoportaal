@@ -565,10 +565,8 @@ public class Main {
 				.where(access.name.eq("extern"))
 				.fetchOne();
 		
-		Integer accessId;
-		if(getValueFromList(listUseLimitations).equals("Alleen voor intern gebruik")) {
-			accessId = internId;
-		} else {
+		Integer accessId = internId;
+		if("De bron mag ook voor externe partijen vindbaar zijn".equals(getValueFromList(listUseLimitations))) {
 			accessId = externId;
 		}
 		
