@@ -82,10 +82,12 @@ require([
 		});
 		
 		function setCheckAll(start, end) {
+			var realEnd;
+			
 			if(allRecords.length < end) {
-				var realEnd = allRecords.length;
+				realEnd = allRecords.length;
 			} else {
-				var realEnd = end;
+				realEnd = end;
 			}
 			
 			for(var i = start; i < realEnd; i++) {
@@ -181,10 +183,12 @@ require([
 		});
 		
 		function setCheckGeneral(start, end) {
+			var realEnd;
+			
 			if(allRecords.length < end) {
-				var realEnd = allRecords.length;
+				realEnd = allRecords.length;
 			} else {
-				var realEnd = end;
+				realEnd = end;
 			}
 			
 			var count = start;
@@ -422,12 +426,15 @@ require([
 				
 				var formData = new FormData();
 				
+				var dateStart;
+				var dateEnd;
+				
 				if(!Modernizr.inputtypes.date) {
-					var dateStart = domAttr.get(query('#js-date-update-start ~ input')[0], 'value');
-					var dateEnd = domAttr.get(query('#js-date-update-end ~ input')[0], 'value');
+					dateStart = domAttr.get(query('#js-date-update-start ~ input')[0], 'value');
+					dateEnd = domAttr.get(query('#js-date-update-end ~ input')[0], 'value');
 				} else {
-					var dateStart = domAttr.get(dom.byId('js-date-update-start'), 'value');
-					var dateEnd = domAttr.get(dom.byId('js-date-update-end'), 'value');
+					dateStart = domAttr.get(dom.byId('js-date-update-start'), 'value');
+					dateEnd = domAttr.get(dom.byId('js-date-update-end'), 'value');
 				}
 				
 				formData.append('dateUpdateStart', dateStart);
@@ -459,16 +466,21 @@ require([
 			
 			var formData = new FormData();
 			
+			var dateCreateStart;
+			var dateCreateEnd;
+			var dateUpdateStart;
+			var dateUpdateEnd;
+			
 			if(!Modernizr.inputtypes.date) {
-				var dateCreateStart = domAttr.get(query('#js-date-create-start ~ input')[0], 'value');
-				var dateCreateEnd = domAttr.get(query('#js-date-create-end ~ input')[0], 'value');
-				var dateUpdateStart = domAttr.get(query('#js-date-update-start ~ input')[0], 'value');
-				var dateUpdateEnd = domAttr.get(query('#js-date-update-end ~ input')[0], 'value');
+				dateCreateStart = domAttr.get(query('#js-date-create-start ~ input')[0], 'value');
+				dateCreateEnd = domAttr.get(query('#js-date-create-end ~ input')[0], 'value');
+				dateUpdateStart = domAttr.get(query('#js-date-update-start ~ input')[0], 'value');
+				dateUpdateEnd = domAttr.get(query('#js-date-update-end ~ input')[0], 'value');
 			} else {
-				var dateCreateStart = domAttr.get(dom.byId('js-date-create-start'), 'value');
-				var dateCreateEnd = domAttr.get(dom.byId('js-date-create-end'), 'value');
-				var dateUpdateStart = domAttr.get(dom.byId('js-date-update-start'), 'value');
-				var dateUpdateEnd = domAttr.get(dom.byId('js-date-update-end'), 'value');
+				dateCreateStart = domAttr.get(dom.byId('js-date-create-start'), 'value');
+				dateCreateEnd = domAttr.get(dom.byId('js-date-create-end'), 'value');
+				dateUpdateStart = domAttr.get(dom.byId('js-date-update-start'), 'value');
+				dateUpdateEnd = domAttr.get(dom.byId('js-date-update-end'), 'value');
 			}
 			
 			formData.append('dateCreateStart', dateCreateStart);
