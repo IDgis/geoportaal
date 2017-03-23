@@ -301,7 +301,7 @@ public class Report extends Controller {
 				.fetchOne();
 			
 			if(!roleId.equals(2)) {
-				return ok(strb.toString().getBytes());
+				return ok(strb.toString().getBytes("UTF-8"));
 			} else {
 				return status(UNAUTHORIZED, Messages.get("unauthorized"));
 			}
