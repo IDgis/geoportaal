@@ -21,9 +21,6 @@ require([
 	'dojo/domReady!'
 	], function(dom, query, on, lang, win, array, domAttr, domConstruct, domStyle, xhr, parser, registry, DateTextBox) {
 		
-		var create = domAttr.get(dom.byId('js-date-creation'), 'data-create');
-		var validate = domAttr.get(dom.byId('js-date-creation'), 'data-validate');
-		
 		var warnMsgsServer = domAttr.get(dom.byId('js-warn-msgs-server'), 'value') === 'true';
 		if(warnMsgsServer) {
 			$('#validateNumberModal').modal({});
@@ -61,7 +58,7 @@ require([
 			});
 		}
 		
-		var addAttachment = on(win.doc, '.js-add-attachment:click', function(e) {
+		on(win.doc, '.js-add-attachment:click', function(e) {
 			var attachment = query('.js-add-attachment').parents('.js-attachment')[0];
 			var attachmentClone = lang.clone(attachment);
 			var attachmentCloneDiv = query('.js-attachment-input', attachmentClone)[0];
@@ -82,17 +79,17 @@ require([
 			domConstruct.place(attachmentClone, dom.byId('js-group-attachment'), 'last');
 		});
 		
-		var removeAttachment = on(win.doc, '.js-remove-attachment:click', function(e) {
+		on(win.doc, '.js-remove-attachment:click', function(e) {
 			var attachment = query(this).parents('.js-attachment')[0];
 			domConstruct.destroy(attachment);
 		});
 		
-		var emptyAttachment = on(win.doc, '.js-empty-attachment:click', function(e) {
+		on(win.doc, '.js-empty-attachment:click', function(e) {
 			var inputAttachment = query(this).siblings('.input-attachment')[0];
 			domAttr.set(inputAttachment, 'value', '');
 		});
 		
-		var removeSavedAttachment = on(win.doc, '.delete-attachment-button:click', function(e) {
+		on(win.doc, '.delete-attachment-button:click', function(e) {
 			var attToDel = query(this).parents('.attachment-file')[0];
 			var attachmentName = domAttr.get(query('~ span', this)[0], 'innerHTML');
 			var idDelEl = domConstruct.create('input');
@@ -112,7 +109,7 @@ require([
 			domStyle.set(dom.byId('js-other-creator'), 'display', 'none');
 		}
 		
-		var handleOtherCreator = on(creatorSelect, 'change', function(e) {
+		on(creatorSelect, 'change', function(e) {
 			if(domAttr.get(this, 'value') === 'other') {
 				domStyle.set(dom.byId('js-other-creator'), 'display', 'block');
 			} else {
@@ -120,7 +117,7 @@ require([
 			}
 		});
 		
-		var saveRecord = on(dom.byId('js-save-form'), 'click', function(e) {
+		on(dom.byId('js-save-form'), 'click', function(e) {
 			domAttr.set(this, 'type', 'button');
 			var form = dom.byId('js-form');
 			
@@ -132,16 +129,21 @@ require([
 			var locationVal = domAttr.get(dom.byId('js-location'), 'value');
 			var fileIdVal = domAttr.get(dom.byId('js-file-id'), 'value');
 			
+			var dateCreation;
+			var datePublication;
+			var dateValidFrom;
+			var dateValidUntil;
+			
 			if(!Modernizr.inputtypes.date) {
-				var dateCreation = domAttr.get(query('#js-date-creation ~ input')[0], 'value');
-				var datePublication = domAttr.get(query('#js-date-publication ~ input')[0], 'value');
-				var dateValidFrom = domAttr.get(query('#js-date-valid-from ~ input')[0], 'value');
-				var dateValidUntil = domAttr.get(query('#js-date-valid-until ~ input')[0], 'value');
+				dateCreation = domAttr.get(query('#js-date-creation ~ input')[0], 'value');
+				datePublication = domAttr.get(query('#js-date-publication ~ input')[0], 'value');
+				dateValidFrom = domAttr.get(query('#js-date-valid-from ~ input')[0], 'value');
+				dateValidUntil = domAttr.get(query('#js-date-valid-until ~ input')[0], 'value');
 			} else {
-				var dateCreation = domAttr.get(dom.byId('js-date-creation'), 'value');
-				var datePublication = domAttr.get(dom.byId('js-date-publication'), 'value');
-				var dateValidFrom = domAttr.get(dom.byId('js-date-valid-from'), 'value');
-				var dateValidUntil = domAttr.get(dom.byId('js-date-valid-until'), 'value');
+				dateCreation = domAttr.get(dom.byId('js-date-creation'), 'value');
+				datePublication = domAttr.get(dom.byId('js-date-publication'), 'value');
+				dateValidFrom = domAttr.get(dom.byId('js-date-valid-from'), 'value');
+				dateValidUntil = domAttr.get(dom.byId('js-date-valid-until'), 'value');
 			}
 			
 			formData.append('dateSourceCreation', dateCreation);
@@ -214,7 +216,7 @@ require([
 			});
 		});
 		
-		var saveConfirmRecord = on(dom.byId('js-save-confirm-form'), 'click', function(e) {
+		on(dom.byId('js-save-confirm-form'), 'click', function(e) {
 			var form = dom.byId('js-form');
 			domAttr.set(dom.byId('js-fileid-confirmed'), 'value', 'true');
 			form.submit();

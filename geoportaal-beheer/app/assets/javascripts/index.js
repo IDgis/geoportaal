@@ -55,7 +55,7 @@ require([
 		}
 		
 		var allRecords = query('.js-record-checkbox');
-		var checkAll = on(dom.byId('js-check-all'), 'click', function(e) {
+		on(dom.byId('js-check-all'), 'click', function(e) {
 			var pageCheck = domAttr.get(this, 'data-page');
 			
 			if(pageCheck === '1') {
@@ -82,10 +82,12 @@ require([
 		});
 		
 		function setCheckAll(start, end) {
+			var realEnd;
+			
 			if(allRecords.length < end) {
-				var realEnd = allRecords.length;
+				realEnd = allRecords.length;
 			} else {
-				var realEnd = end;
+				realEnd = end;
 			}
 			
 			for(var i = start; i < realEnd; i++) {
@@ -126,7 +128,7 @@ require([
 			});
 		}
 		
-		var checkGeneral = on(win.doc, '.js-record-checkbox:change', function(e) {
+		on(win.doc, '.js-record-checkbox:change', function(e) {
 			var pageCheck = domAttr.get(dom.byId('js-check-all'), 'data-page');
 			var recordsChecked = query('.js-record-checkbox:checked');
 			var buttons = query('.js-restriction');
@@ -181,10 +183,12 @@ require([
 		});
 		
 		function setCheckGeneral(start, end) {
+			var realEnd;
+			
 			if(allRecords.length < end) {
-				var realEnd = allRecords.length;
+				realEnd = allRecords.length;
 			} else {
-				var realEnd = end;
+				realEnd = end;
 			}
 			
 			var count = start;
@@ -201,7 +205,7 @@ require([
 			}
 		}
 		
-		var indexPager = on(win.doc, '.js-index-page-btn:click', function(e) {
+		on(win.doc, '.js-index-page-btn:click', function(e) {
 			var dataPage = domAttr.get(this, 'data-page');
 			domAttr.set(dom.byId('js-check-all'), 'data-page', dataPage);
 			
@@ -287,7 +291,7 @@ require([
 			}	
 		}
 		
-		var changeRecords = on(win.doc, '.js-check:click', function(e) {
+		on(win.doc, '.js-check:click', function(e) {
 			var recordsChecked = query('.js-record-checkbox:checked');
 			var recordsSelectedMsg = query('.js-records-selected');
 			var recordsNoneSelectedMsg = query('.js-records-none-selected');
@@ -341,7 +345,7 @@ require([
 			});
 		});
 		
-		var deleteRecords = on(dom.byId('js-delete'), 'click', function(e) {
+		on(dom.byId('js-delete'), 'click', function(e) {
 			var recordsChecked = query('.js-record-checkbox:checked');
 			domConstruct.empty(dom.byId('js-delete-records'));
 			
@@ -355,7 +359,7 @@ require([
 			});
 		});
 		
-		var changeStatus = on(win.doc, '.js-status:click', function(e) {
+		on(win.doc, '.js-status:click', function(e) {
 			var recordsChecked = query('.js-record-checkbox:checked');
 			domConstruct.empty(dom.byId('js-status-records'));
 			var statusValue = domAttr.get(this, 'data-status');
@@ -379,7 +383,7 @@ require([
 		});
 		
 		if(dom.byId('js-edit-supplier')) {
-			var displaySupplierSelect = on(dom.byId('js-edit-supplier'), 'click', function(e) {
+			on(dom.byId('js-edit-supplier'), 'click', function(e) {
 				var recordsChecked = query('.js-record-checkbox:checked');
 				if(recordsChecked.length === 0) {
 					$('#supplier-modal').modal({})
@@ -390,7 +394,7 @@ require([
 		}
 		
 		if(dom.byId('edit-supplier-select')) {
-			var changeSupplier = on(dom.byId('edit-supplier-select'), 'change', function(e) {
+			on(dom.byId('edit-supplier-select'), 'change', function(e) {
 				var recordsChecked = query('.js-record-checkbox:checked');
 				domConstruct.empty(dom.byId('js-supplier-records'));
 				var supplierValue = domAttr.get(dom.byId('edit-supplier-select'), 'value');
@@ -414,21 +418,23 @@ require([
 			});
 		}
 		
-		var searchRecordsEnter = on(win.doc, '.js-search-input:keypress', function(e) {
+		on(win.doc, '.js-search-input:keypress', function(e) {
 			var code = e.keyCode
 			
 			if(code === 13) {
-				var searchButton = dom.byId('search-button');
 				var form = dom.byId('js-form');
 				
 				var formData = new FormData();
 				
+				var dateStart;
+				var dateEnd;
+				
 				if(!Modernizr.inputtypes.date) {
-					var dateStart = domAttr.get(query('#js-date-update-start ~ input')[0], 'value');
-					var dateEnd = domAttr.get(query('#js-date-update-end ~ input')[0], 'value');
+					dateStart = domAttr.get(query('#js-date-update-start ~ input')[0], 'value');
+					dateEnd = domAttr.get(query('#js-date-update-end ~ input')[0], 'value');
 				} else {
-					var dateStart = domAttr.get(dom.byId('js-date-update-start'), 'value');
-					var dateEnd = domAttr.get(dom.byId('js-date-update-end'), 'value');
+					dateStart = domAttr.get(dom.byId('js-date-update-start'), 'value');
+					dateEnd = domAttr.get(dom.byId('js-date-update-end'), 'value');
 				}
 				
 				formData.append('dateUpdateStart', dateStart);
@@ -455,22 +461,26 @@ require([
 			}
 		});
 		
-		var searchRecords = on(dom.byId('search-button'), 'click', function(e) {
-			var searchButton = dom.byId('search-button');
+		on(dom.byId('search-button'), 'click', function(e) {
 			var form = dom.byId('js-form');
 			
 			var formData = new FormData();
 			
+			var dateCreateStart;
+			var dateCreateEnd;
+			var dateUpdateStart;
+			var dateUpdateEnd;
+			
 			if(!Modernizr.inputtypes.date) {
-				var dateCreateStart = domAttr.get(query('#js-date-create-start ~ input')[0], 'value');
-				var dateCreateEnd = domAttr.get(query('#js-date-create-end ~ input')[0], 'value');
-				var dateUpdateStart = domAttr.get(query('#js-date-update-start ~ input')[0], 'value');
-				var dateUpdateEnd = domAttr.get(query('#js-date-update-end ~ input')[0], 'value');
+				dateCreateStart = domAttr.get(query('#js-date-create-start ~ input')[0], 'value');
+				dateCreateEnd = domAttr.get(query('#js-date-create-end ~ input')[0], 'value');
+				dateUpdateStart = domAttr.get(query('#js-date-update-start ~ input')[0], 'value');
+				dateUpdateEnd = domAttr.get(query('#js-date-update-end ~ input')[0], 'value');
 			} else {
-				var dateCreateStart = domAttr.get(dom.byId('js-date-create-start'), 'value');
-				var dateCreateEnd = domAttr.get(dom.byId('js-date-create-end'), 'value');
-				var dateUpdateStart = domAttr.get(dom.byId('js-date-update-start'), 'value');
-				var dateUpdateEnd = domAttr.get(dom.byId('js-date-update-end'), 'value');
+				dateCreateStart = domAttr.get(dom.byId('js-date-create-start'), 'value');
+				dateCreateEnd = domAttr.get(dom.byId('js-date-create-end'), 'value');
+				dateUpdateStart = domAttr.get(dom.byId('js-date-update-start'), 'value');
+				dateUpdateEnd = domAttr.get(dom.byId('js-date-update-end'), 'value');
 			}
 			
 			formData.append('dateCreateStart', dateCreateStart);

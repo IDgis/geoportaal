@@ -40,8 +40,10 @@ import com.querydsl.core.Tuple;
 import com.querydsl.sql.SQLQuery;
 
 import actions.DefaultAuthenticator;
+import exceptions.GeoportaalBeheerException;
 import models.DublinCore;
 import models.Search;
+import play.Logger;
 import play.data.DynamicForm;
 import play.data.Form;
 import play.i18n.Messages;
@@ -693,7 +695,7 @@ public class Metadata extends Controller {
 				// Check if the count of the updated record is what is expected
 				Integer metadataFinalCount = metadataCount.intValue();
 				if(!metadataFinalCount.equals(1)) {
-					throw new Exception("Updating metadata: different amount of affected rows than expected");
+					throw new GeoportaalBeheerException("Updating metadata: different amount of affected rows than expected");
 				}
 				
 				List<String> attToDelete = dc.getDeletedAttachment();
@@ -712,7 +714,7 @@ public class Metadata extends Controller {
 					
 					// Check if the count of the deleted attachments is what is expected
 					if(!attachmentsCount.equals(attToDelete.size())) {
-						throw new Exception("Deleting attachments: different amount of affected rows than expected");
+						throw new GeoportaalBeheerException("Deleting attachments: different amount of affected rows than expected");
 					}
 				}
 				
@@ -778,7 +780,7 @@ public class Metadata extends Controller {
 					// Check if the count of deleted subjects is what is expected
 					Integer subjectsFinalCount = subjectsCount.intValue();
 					if(!subjectsFinalCount.equals(existingSubjects.size())) {
-						throw new Exception("Updating subjects: different amount of affected rows than expected");
+						throw new GeoportaalBeheerException("Updating subjects: different amount of affected rows than expected");
 					}
 					
 					// Insert the new subjects
@@ -835,10 +837,10 @@ public class Metadata extends Controller {
 			
 			// Check if one or more dates couldn't be parsed, if so return an error message 
 			if(!dateCreateReturn || !datePublicationReturn || !dateValidFromReturn || !dateValidUntilReturn) {
-				String dateCreateMsg = null;
-				String datePublicationMsg = null;
-				String dateValidFromMsg = null;
-				String dateValidUntilMsg = null;
+				String dateCreateMsg;
+				String datePublicationMsg;
+				String dateValidFromMsg;
+				String dateValidUntilMsg;
 				
 				if(!dateCreateReturn) {
 					dateCreateMsg = Messages.get("validate.form.parse.date.create");
@@ -872,7 +874,7 @@ public class Metadata extends Controller {
 			DublinCore dc = dcForm.bindFromRequest().get();
 			
 			// If title is empty set to null (which will generate an error message)
-			String title = null;
+			String title;
 			if("".equals(dc.getTitle().trim())) {
 				title = null;
 			} else {
@@ -880,7 +882,7 @@ public class Metadata extends Controller {
 			}
 			
 			// If description is empty set to null (which will generate an error message)
-			String description = null;
+			String description;
 			if("".equals(dc.getDescription().trim())) {
 				description = null;
 			} else {
@@ -888,7 +890,7 @@ public class Metadata extends Controller {
 			}
 			
 			// If location is empty set to null (which will generate an error message)
-			String location = null;
+			String location;
 			if("".equals(dc.getLocation().trim())) {
 				location = null;
 			} else {
@@ -896,7 +898,7 @@ public class Metadata extends Controller {
 			}
 			
 			// If file id is empty set to null (which will generate an error message)
-			String fileId = null;
+			String fileId;
 			if("".equals(dc.getFileId().trim())) {
 				fileId = null;
 			} else {
@@ -906,8 +908,7 @@ public class Metadata extends Controller {
 			Map<String, Boolean> numbersCheck = checkNumbers(dc.getFileId(), metadataUuid);
 			
 			// If creator is empty set to null (which will generate an error message)
-			String creator = null;
-			String creatorOther = null;
+			String creator;
 			if("".equals(dc.getCreator().trim())) {
 				creator = null;
 			} else {
@@ -915,6 +916,7 @@ public class Metadata extends Controller {
 			}
 			
 			// If creator value is other and creator other value is empty set creator other to null (which will generate an error message)
+			String creatorOther;
 			if("other".equals(dc.getCreator().trim())) {
 				if("".equals(dc.getCreatorOther().trim())) {
 					creatorOther = null;
@@ -932,6 +934,8 @@ public class Metadata extends Controller {
 			return ok(validateform.render(title, description, location, fileId, numbersCheck.get("duplicate"), numbersCheck.get("character"), 
 					numbersCheck.get("length"), creator, creatorOther, dc.getDateSourceCreation(), dc.getSubject(), dateCreatePublicationCheck, dateValidCheck));
 		} catch(IllegalStateException ise) {
+			Logger.error(ise.getMessage(), ise);
+			
 			// Return generic error message view
 			return ok(bindingerror.render(Messages.get("validate.search.generic"), null, null, null, null, null, null, null, null));
 		}
@@ -971,7 +975,7 @@ public class Metadata extends Controller {
 		Boolean fileIdCharacter = false;
 		Boolean fileIdLength = false;
 		
-		String fileIdCheck = null;
+		String fileIdCheck;
 		if("".equals(fileId.trim())) {
 			fileIdCheck = null;
 		} else {
@@ -1024,6 +1028,8 @@ public class Metadata extends Controller {
 			sdf.parse(date);
 			return true;
 		} catch(ParseException pe) {
+			Logger.error(pe.getMessage(), pe);
+			
 			// If parsing was unsuccessful return false
 			return false;
 		}
