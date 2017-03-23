@@ -37,7 +37,7 @@ div.tabs:after {content:'';display:block;clear:both;}
 div.tab-element {height:100%;width:100%;background-position:15px 15px;width:155px !important;height:80px !important;
 	background-repeat:no-repeat;}
 
-#edit-supplier-select {display:none;width:unset;}
+#edit-supplier-select {display:none;width:unset;margin-top:15px;}
 .admin-buttons {margin-top:10px;margin-bottom:10px;margin-left:20px;position:relative;left:-13px;}
 div.overzicht-records {margin-top:20px;margin-bottom:20px;margin-left:20px;}
 div.alle-records {margin-top:20px;margin-bottom:20px;margin-left:20px;}

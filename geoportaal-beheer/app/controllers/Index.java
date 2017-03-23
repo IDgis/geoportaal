@@ -151,8 +151,6 @@ public class Index extends Controller {
 						.where(metadataSearch.metadataId.eq(metadata.id))
 						.where(metadataSearch.tsv.query(language, tsQuery))
 						.exists());
-				
-				// TODO: ranking?
 			}
 			
 			// Filter records on supplier selected
@@ -167,14 +165,19 @@ public class Index extends Controller {
 					.where(status.name.eq(statusSearch));
 			}
 			
-			// If no status is selected exclude the records in the trash bin
+			// If no status is selected exclude the records in the trash bin and archive
 			if("none".equals(statusSearch)) {
-				datasetQuery.where(metadata.status.notIn(5));
+				datasetQuery.where(metadata.status.notIn(5).and(metadata.status.notIn(6)));
 			}
 			
 			// If user is a supplier never display the records in the trash bin 
 			if(roleId.equals(2) && "deleted".equals(statusSearch)) {
 				datasetQuery.where(metadata.status.notIn(5));
+			}
+			
+			// If user is a supplier never display the records in the archive
+			if(roleId.equals(2) && "archived".equals(statusSearch)) {
+				datasetQuery.where(metadata.status.notIn(6));
 			}
 			
 			// If search value of date start isn't null or empty convert it to a date
@@ -473,8 +476,9 @@ public class Index extends Controller {
 							.where(metadata.uuid.eq(record))
 							.fetchOne();
 						
-						// Only add to list if status isn't published or deleted and logged in user matches the supplier id
-						if(!statusId.equals(4) && !statusId.equals(5) && userId.equals(supplierId)) {
+						// Only add to list if status isn't published, deleted or archived and logged in user matches the supplier id
+						if(!statusId.equals(4) && !statusId.equals(5) 
+								&& !statusId.equals(6) && userId.equals(supplierId)) {
 							finalChangeRecords.add(record);
 						}
 					}
@@ -495,8 +499,10 @@ public class Index extends Controller {
 					.fetchOne();
 				
 				if(statusKey != null) {
-					// Don't do anything if user is a supplier and the destination status is published
-					if(roleId.equals(2) && "published".equals(statusName)) {
+					// Don't do anything if user is a supplier and the destination status is published 
+					// or archived
+					if(roleId.equals(2) && 
+							("published".equals(statusName) || "archived".equals(statusName))) {
 						// do nothing
 					} else {
 						// Change the records

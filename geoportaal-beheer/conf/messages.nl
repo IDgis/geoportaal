@@ -47,6 +47,7 @@ index.button.action.concept=Concept
 index.button.action.approval=Ter goedkeuring
 index.button.action.publish=Publiceren
 index.button.action.delete=Verwijderen naar prullenbak
+index.button.action.archived=Archiveren
 index.button.action.supplier.edit=Leverancier wijzigen
 index.warning.published.record=U heeft 1 of meerdere records geselecteerd, die reeds zijn gepubliceerd. U kunt hiervan niet de status veranderen. Wilt u toch de status veranderen, neem dan contact op met de beheerders van het Geoportaal.
 index.warning.attachment.skipped=U heeft geprobeerd een metadata record op te slaan met bijlages die dezelfde naam hebben. Alleen de eerste is toegevoegd.

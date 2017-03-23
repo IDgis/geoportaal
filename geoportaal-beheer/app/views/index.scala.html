@@ -92,7 +92,9 @@
 				<div class="col-sm-7">
 					<select class="form-control" data-toggle="tooltip" data-placement="top" title="@Messages.get("index.status.title")" name="status">
 						@for(statusOption <- statusList) {
-							@if(roleId.equals(2) && statusOption.get(status.name).equals("deleted")) {
+							@if(roleId.equals(2) 
+								&& (statusOption.get(status.name).equals("deleted")
+									|| statusOption.get(status.name).equals("archived"))) {
 								
 							} else {
 								<option value="@statusOption.get(status.name)"
@@ -195,6 +197,9 @@
 			}
 			<button class="knop js-restriction" id="js-delete" type="button" data-toggle="modal" 
 				data-target="#delete-modal">@Messages.get("index.button.action.delete")</button>
+			@if(!roleId.equals(2)) {
+				<button class="knop js-status" type="button" data-status="archived">@Messages.get("index.button.action.archived")</button>
+			}
 			@if(!roleId.equals(2)) {
 				<button class="knop" type="button" id="js-edit-supplier">@Messages.get("index.button.action.supplier.edit")</button>
 				<select class="form-control" id="edit-supplier-select">
