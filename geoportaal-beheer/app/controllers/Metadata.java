@@ -42,6 +42,7 @@ import com.querydsl.sql.SQLQuery;
 import actions.DefaultAuthenticator;
 import models.DublinCore;
 import models.Search;
+import play.Logger;
 import play.data.DynamicForm;
 import play.data.Form;
 import play.i18n.Messages;
@@ -932,6 +933,8 @@ public class Metadata extends Controller {
 			return ok(validateform.render(title, description, location, fileId, numbersCheck.get("duplicate"), numbersCheck.get("character"), 
 					numbersCheck.get("length"), creator, creatorOther, dc.getDateSourceCreation(), dc.getSubject(), dateCreatePublicationCheck, dateValidCheck));
 		} catch(IllegalStateException ise) {
+			Logger.error(ise.getMessage(), ise);
+			
 			// Return generic error message view
 			return ok(bindingerror.render(Messages.get("validate.search.generic"), null, null, null, null, null, null, null, null));
 		}
@@ -1024,6 +1027,8 @@ public class Metadata extends Controller {
 			sdf.parse(date);
 			return true;
 		} catch(ParseException pe) {
+			Logger.error(pe.getMessage(), pe);
+			
 			// If parsing was unsuccessful return false
 			return false;
 		}

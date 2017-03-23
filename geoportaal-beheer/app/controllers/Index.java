@@ -41,6 +41,7 @@ import models.Delete;
 import models.Search;
 import models.Sort;
 import models.Supplier;
+import play.Logger;
 import play.Routes;
 import play.data.DynamicForm;
 import play.data.Form;
@@ -773,6 +774,8 @@ public class Index extends Controller {
 			return ok(bindingerror.render(null, null, null, null, null, dateCreateSearchStartMsg, 
 					dateCreateSearchEndMsg, dateUpdateSearchStartMsg, dateUpdateSearchEndMsg));
 		} catch(IllegalStateException ise) {
+			Logger.error(ise.getMessage(), ise);
+			
 			// Return generic error message view
 			return ok(bindingerror.render(Messages.get("validate.search.generic"), null, null, null, null, null, 
 					null, null, null));
@@ -800,6 +803,8 @@ public class Index extends Controller {
 				sdf.parse(date);
 				return true;
 			} catch(ParseException pe) {
+				Logger.error(pe.getMessage(), pe);
+				
 				// If parsing was unsuccessful return false
 				return false;
 			}
