@@ -835,10 +835,10 @@ public class Metadata extends Controller {
 			
 			// Check if one or more dates couldn't be parsed, if so return an error message 
 			if(!dateCreateReturn || !datePublicationReturn || !dateValidFromReturn || !dateValidUntilReturn) {
-				String dateCreateMsg = null;
-				String datePublicationMsg = null;
-				String dateValidFromMsg = null;
-				String dateValidUntilMsg = null;
+				String dateCreateMsg;
+				String datePublicationMsg;
+				String dateValidFromMsg;
+				String dateValidUntilMsg;
 				
 				if(!dateCreateReturn) {
 					dateCreateMsg = Messages.get("validate.form.parse.date.create");
@@ -872,7 +872,7 @@ public class Metadata extends Controller {
 			DublinCore dc = dcForm.bindFromRequest().get();
 			
 			// If title is empty set to null (which will generate an error message)
-			String title = null;
+			String title;
 			if("".equals(dc.getTitle().trim())) {
 				title = null;
 			} else {
@@ -880,7 +880,7 @@ public class Metadata extends Controller {
 			}
 			
 			// If description is empty set to null (which will generate an error message)
-			String description = null;
+			String description;
 			if("".equals(dc.getDescription().trim())) {
 				description = null;
 			} else {
@@ -888,7 +888,7 @@ public class Metadata extends Controller {
 			}
 			
 			// If location is empty set to null (which will generate an error message)
-			String location = null;
+			String location;
 			if("".equals(dc.getLocation().trim())) {
 				location = null;
 			} else {
@@ -896,7 +896,7 @@ public class Metadata extends Controller {
 			}
 			
 			// If file id is empty set to null (which will generate an error message)
-			String fileId = null;
+			String fileId;
 			if("".equals(dc.getFileId().trim())) {
 				fileId = null;
 			} else {
@@ -906,8 +906,7 @@ public class Metadata extends Controller {
 			Map<String, Boolean> numbersCheck = checkNumbers(dc.getFileId(), metadataUuid);
 			
 			// If creator is empty set to null (which will generate an error message)
-			String creator = null;
-			String creatorOther = null;
+			String creator;
 			if("".equals(dc.getCreator().trim())) {
 				creator = null;
 			} else {
@@ -915,6 +914,7 @@ public class Metadata extends Controller {
 			}
 			
 			// If creator value is other and creator other value is empty set creator other to null (which will generate an error message)
+			String creatorOther;
 			if("other".equals(dc.getCreator().trim())) {
 				if("".equals(dc.getCreatorOther().trim())) {
 					creatorOther = null;
@@ -971,7 +971,7 @@ public class Metadata extends Controller {
 		Boolean fileIdCharacter = false;
 		Boolean fileIdLength = false;
 		
-		String fileIdCheck = null;
+		String fileIdCheck;
 		if("".equals(fileId.trim())) {
 			fileIdCheck = null;
 		} else {

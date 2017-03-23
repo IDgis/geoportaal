@@ -740,17 +740,17 @@ public class Index extends Controller {
 			String dateUpdateSearchEndMsg = null;
 			
 			// Assign error message if validation of a date returned false
-			if(!dateCreateSearchStartReturn || !dateCreateSearchStartReturn) {
+			if(!dateCreateSearchStartReturn || !dateCreateSearchEndReturn) {
 				if(!dateCreateSearchStartReturn) {
-					dateUpdateSearchStartMsg = Messages.get("validate.create.date.start");
+					dateCreateSearchStartMsg = Messages.get("validate.create.date.start");
 				} else {
-					dateUpdateSearchStartMsg = null;
+					dateCreateSearchStartMsg = null;
 				}
 				
 				if(!dateCreateSearchEndReturn) {
-					dateUpdateSearchEndMsg = Messages.get("validate.create.date.end");
+					dateCreateSearchEndMsg = Messages.get("validate.create.date.end");
 				} else {
-					dateUpdateSearchEndMsg = null;
+					dateCreateSearchEndMsg = null;
 				}
 			}
 			
@@ -771,7 +771,7 @@ public class Index extends Controller {
 			
 			// Return specific error message view
 			return ok(bindingerror.render(null, null, null, null, null, dateCreateSearchStartMsg, 
-					dateCreateSearchStartMsg, dateUpdateSearchStartMsg, dateUpdateSearchStartMsg));
+					dateCreateSearchEndMsg, dateUpdateSearchStartMsg, dateUpdateSearchEndMsg));
 		} catch(IllegalStateException ise) {
 			// Return generic error message view
 			return ok(bindingerror.render(Messages.get("validate.search.generic"), null, null, null, null, null, 

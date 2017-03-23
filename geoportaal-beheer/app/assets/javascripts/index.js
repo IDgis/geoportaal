@@ -55,7 +55,7 @@ require([
 		}
 		
 		var allRecords = query('.js-record-checkbox');
-		var checkAll = on(dom.byId('js-check-all'), 'click', function(e) {
+		on(dom.byId('js-check-all'), 'click', function(e) {
 			var pageCheck = domAttr.get(this, 'data-page');
 			
 			if(pageCheck === '1') {
@@ -126,7 +126,7 @@ require([
 			});
 		}
 		
-		var checkGeneral = on(win.doc, '.js-record-checkbox:change', function(e) {
+		on(win.doc, '.js-record-checkbox:change', function(e) {
 			var pageCheck = domAttr.get(dom.byId('js-check-all'), 'data-page');
 			var recordsChecked = query('.js-record-checkbox:checked');
 			var buttons = query('.js-restriction');
@@ -201,7 +201,7 @@ require([
 			}
 		}
 		
-		var indexPager = on(win.doc, '.js-index-page-btn:click', function(e) {
+		on(win.doc, '.js-index-page-btn:click', function(e) {
 			var dataPage = domAttr.get(this, 'data-page');
 			domAttr.set(dom.byId('js-check-all'), 'data-page', dataPage);
 			
@@ -287,7 +287,7 @@ require([
 			}	
 		}
 		
-		var changeRecords = on(win.doc, '.js-check:click', function(e) {
+		on(win.doc, '.js-check:click', function(e) {
 			var recordsChecked = query('.js-record-checkbox:checked');
 			var recordsSelectedMsg = query('.js-records-selected');
 			var recordsNoneSelectedMsg = query('.js-records-none-selected');
@@ -341,7 +341,7 @@ require([
 			});
 		});
 		
-		var deleteRecords = on(dom.byId('js-delete'), 'click', function(e) {
+		on(dom.byId('js-delete'), 'click', function(e) {
 			var recordsChecked = query('.js-record-checkbox:checked');
 			domConstruct.empty(dom.byId('js-delete-records'));
 			
@@ -355,7 +355,7 @@ require([
 			});
 		});
 		
-		var changeStatus = on(win.doc, '.js-status:click', function(e) {
+		on(win.doc, '.js-status:click', function(e) {
 			var recordsChecked = query('.js-record-checkbox:checked');
 			domConstruct.empty(dom.byId('js-status-records'));
 			var statusValue = domAttr.get(this, 'data-status');
@@ -379,7 +379,7 @@ require([
 		});
 		
 		if(dom.byId('js-edit-supplier')) {
-			var displaySupplierSelect = on(dom.byId('js-edit-supplier'), 'click', function(e) {
+			on(dom.byId('js-edit-supplier'), 'click', function(e) {
 				var recordsChecked = query('.js-record-checkbox:checked');
 				if(recordsChecked.length === 0) {
 					$('#supplier-modal').modal({})
@@ -390,7 +390,7 @@ require([
 		}
 		
 		if(dom.byId('edit-supplier-select')) {
-			var changeSupplier = on(dom.byId('edit-supplier-select'), 'change', function(e) {
+			on(dom.byId('edit-supplier-select'), 'change', function(e) {
 				var recordsChecked = query('.js-record-checkbox:checked');
 				domConstruct.empty(dom.byId('js-supplier-records'));
 				var supplierValue = domAttr.get(dom.byId('edit-supplier-select'), 'value');
@@ -414,11 +414,10 @@ require([
 			});
 		}
 		
-		var searchRecordsEnter = on(win.doc, '.js-search-input:keypress', function(e) {
+		on(win.doc, '.js-search-input:keypress', function(e) {
 			var code = e.keyCode
 			
 			if(code === 13) {
-				var searchButton = dom.byId('search-button');
 				var form = dom.byId('js-form');
 				
 				var formData = new FormData();
@@ -455,8 +454,7 @@ require([
 			}
 		});
 		
-		var searchRecords = on(dom.byId('search-button'), 'click', function(e) {
-			var searchButton = dom.byId('search-button');
+		on(dom.byId('search-button'), 'click', function(e) {
 			var form = dom.byId('js-form');
 			
 			var formData = new FormData();
