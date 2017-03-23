@@ -26,6 +26,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import com.querydsl.core.Tuple;
 
+import exceptions.GeoportaalBeheerException;
 import nl.idgis.commons.utils.Mail;
 import play.i18n.*;
 import play.Play;
@@ -277,7 +278,7 @@ public class User extends Controller {
 			
 			// Throw exception if the count of the affected rows is more than 1
 			if(finalCount > 1) {
-				throw new Exception("Resetting password: too many rows affected");
+				throw new GeoportaalBeheerException("Resetting password: too many rows affected");
 			}
 		});
 		

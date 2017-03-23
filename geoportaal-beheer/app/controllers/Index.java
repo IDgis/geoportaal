@@ -37,6 +37,7 @@ import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.sql.SQLQuery;
 
 import actions.DefaultAuthenticator;
+import exceptions.GeoportaalBeheerException;
 import models.Delete;
 import models.Search;
 import models.Sort;
@@ -516,7 +517,7 @@ public class Index extends Controller {
 						// Check if the count of the changed records is what is expected
 						Integer finalCount = count.intValue();
 						if(!finalCount.equals(finalChangeRecords.size())) {
-							throw new Exception("Changing status: different amount of affected rows than expected");
+							throw new GeoportaalBeheerException("Changing status: different amount of affected rows than expected");
 						}
 						
 						if("published".equals(statusName)) {
@@ -528,7 +529,7 @@ public class Index extends Controller {
 							// Check if the count of the changed records is what is expected
 							Integer finalPublishedCount = publishedCount.intValue();
 							if(!finalPublishedCount.equals(finalChangeRecords.size())) {
-								throw new Exception("Updating date published: different amount of affected rows than expected");
+								throw new GeoportaalBeheerException("Updating date published: different amount of affected rows than expected");
 							}
 						}
 					}
@@ -591,7 +592,7 @@ public class Index extends Controller {
 					// Check if the count of the changed records is what is expected
 					Integer finalCount = count.intValue();
 					if(!finalCount.equals(changeRecords.size())) {
-						throw new Exception("Changing supplier: different amount of affected rows than expected");
+						throw new GeoportaalBeheerException("Changing supplier: different amount of affected rows than expected");
 					}
 				}
 			}
@@ -682,7 +683,7 @@ public class Index extends Controller {
 					// Check if the count of the deleted records is what is expected
 					Integer finalCount = count.intValue();
 					if(!finalCount.equals(finalDeleteRecords.size())) {
-						throw new Exception("Deleting records: different amount of affected rows than expected");
+						throw new GeoportaalBeheerException("Deleting records: different amount of affected rows than expected");
 					}
 				} else {
 					// Change status to deleted
@@ -695,7 +696,7 @@ public class Index extends Controller {
 					// Check if the count of the changed records is what is expected
 					Integer finalCount = count.intValue();
 					if(!finalCount.equals(finalDeleteRecords.size())) {
-						throw new Exception("Change status to deleted: different amount of affected rows than expected");
+						throw new GeoportaalBeheerException("Change status to deleted: different amount of affected rows than expected");
 					}
 				}
 			}

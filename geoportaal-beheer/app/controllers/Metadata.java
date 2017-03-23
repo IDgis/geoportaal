@@ -40,6 +40,7 @@ import com.querydsl.core.Tuple;
 import com.querydsl.sql.SQLQuery;
 
 import actions.DefaultAuthenticator;
+import exceptions.GeoportaalBeheerException;
 import models.DublinCore;
 import models.Search;
 import play.Logger;
@@ -694,7 +695,7 @@ public class Metadata extends Controller {
 				// Check if the count of the updated record is what is expected
 				Integer metadataFinalCount = metadataCount.intValue();
 				if(!metadataFinalCount.equals(1)) {
-					throw new Exception("Updating metadata: different amount of affected rows than expected");
+					throw new GeoportaalBeheerException("Updating metadata: different amount of affected rows than expected");
 				}
 				
 				List<String> attToDelete = dc.getDeletedAttachment();
@@ -713,7 +714,7 @@ public class Metadata extends Controller {
 					
 					// Check if the count of the deleted attachments is what is expected
 					if(!attachmentsCount.equals(attToDelete.size())) {
-						throw new Exception("Deleting attachments: different amount of affected rows than expected");
+						throw new GeoportaalBeheerException("Deleting attachments: different amount of affected rows than expected");
 					}
 				}
 				
@@ -779,7 +780,7 @@ public class Metadata extends Controller {
 					// Check if the count of deleted subjects is what is expected
 					Integer subjectsFinalCount = subjectsCount.intValue();
 					if(!subjectsFinalCount.equals(existingSubjects.size())) {
-						throw new Exception("Updating subjects: different amount of affected rows than expected");
+						throw new GeoportaalBeheerException("Updating subjects: different amount of affected rows than expected");
 					}
 					
 					// Insert the new subjects
