@@ -7,10 +7,15 @@
 @import models.QMdType.mdType;
 
 @main(play.Play.application().configuration().getString("portal.index.header"), routes.Assets.versioned("javascripts/result.js").url) {
+	@if(!"".equals(play.Play.application().configuration().getString("portal.index.extratext"))) {
+		<div id="index-extra-text">
+			@Html(play.Play.application().configuration().getString("portal.index.extratext"))
+		</div>
+	}
+	
 	<div class="intro">
 		<p>@play.Play.application().configuration().getString("portal.index.intro")</p>
 	</div>
-	
 	
 	@helper.form(action = routes.Application.searchText(), 'class -> "search-bar col-md-offset-1") {
 		<div class="form-group">
