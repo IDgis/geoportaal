@@ -74,7 +74,7 @@ public class Application extends Controller {
 			SQLQuery<Tuple> queryDocuments = tx.select(document.title, document.uuid, document.date, 
 					document.creator, document.description, document.thumbnail, document.downloadable, 
 					document.spatialSchema, document.published, document.typeService, document.viewerUrl, 
-					mdType.url, mdType.name)
+					document.wmsOnly, mdType.url, mdType.name)
 					.from(document)
 					.join(mdType).on(document.mdTypeId.eq(mdType.id))
 					.where(document.date.isNotNull())
@@ -130,7 +130,7 @@ public class Application extends Controller {
 			SQLQuery<Tuple> queryDocuments = tx.select(document.title, document.uuid, document.date, 
 					document.creator, document.description, document.thumbnail, document.downloadable, 
 					document.spatialSchema, document.published, document.typeService, document.viewerUrl,
-					mdType.url, mdType.name)
+					document.wmsOnly, mdType.url, mdType.name)
 					.from(document)
 					.join(mdType).on(document.mdTypeId.eq(mdType.id))
 					.where(document.date.isNotNull())
@@ -254,7 +254,7 @@ public class Application extends Controller {
 			SQLQuery<Tuple> queryDocuments = tx.select(document.uuid, document.title, document.date, 
 					document.creator, document.description, document.thumbnail, document.downloadable, 
 					document.spatialSchema, document.published, document.typeService, document.viewerUrl,
-					mdType.url, mdType.name)
+					document.wmsOnly, mdType.url, mdType.name)
 					.from(document)
 					.join(mdType).on(document.mdTypeId.eq(mdType.id))
 					.where(document.date.isNotNull())
@@ -361,7 +361,7 @@ public class Application extends Controller {
 						doc.get(document.date), doc.get(document.creator), doc.get(document.description), 
 						doc.get(document.thumbnail), docSubjects, doc.get(mdType.url), doc.get(mdType.name),
 						doc.get(document.downloadable), doc.get(document.spatialSchema), doc.get(document.published), 
-						doc.get(document.typeService), doc.get(document.viewerUrl));
+						doc.get(document.typeService), doc.get(document.viewerUrl), doc.get(document.wmsOnly));
 				
 				finalDocuments.add(ds);
 			}

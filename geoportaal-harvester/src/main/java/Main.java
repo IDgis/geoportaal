@@ -305,9 +305,14 @@ public class Main {
 		}
 		
 		Boolean downloadable = false;
+		Boolean wmsOnly = false;
 		for(String ul : listUseLimitation) {
 			if(ul.equals("Downloadable data")) {
 				downloadable = true;
+			}
+			
+			if(ul.equals("Alleen WMS extern")) {
+				wmsOnly = true;
 			}
 		}
 		
@@ -334,6 +339,7 @@ public class Main {
 			.set(document.spatialSchema, getValueFromList(listSpatialSchema))
 			.set(document.published, published)
 			.set(document.viewerUrl, viewerUrl)
+			.set(document.wmsOnly, wmsOnly)
 			.execute();
 		} catch(Exception e) {
 			throw new Exception(e.getCause() + " " + getValueFromList(listUuid));
