@@ -18,10 +18,11 @@ public class DocSubject {
 	private Boolean published;
 	private String typeService;
 	private String viewerUrl;
+	private Boolean wmsOnly;
 	
 	public DocSubject(String uuid, String title, Timestamp date, String creator, String description, String thumbnail,
 			List<String> subjects, String metadataUrl, String metadataType, Boolean downloadable, String spatialSchema,
-			Boolean published, String typeService, String viewerUrl) {
+			Boolean published, String typeService, String viewerUrl, Boolean wmsOnly) {
 		super();
 		this.uuid = uuid;
 		this.title = title;
@@ -37,6 +38,7 @@ public class DocSubject {
 		this.published = published;
 		this.typeService = typeService;
 		this.viewerUrl = viewerUrl;
+		this.wmsOnly = wmsOnly;
 	}
 
 	public String getUuid() {
@@ -149,6 +151,14 @@ public class DocSubject {
 
 	public void setViewerUrl(String viewerUrl) {
 		this.viewerUrl = viewerUrl;
+	}
+
+	public Boolean getWmsOnly() {
+		return wmsOnly;
+	}
+
+	public void setWmsOnly(Boolean wmsOnly) {
+		this.wmsOnly = wmsOnly;
 	}
 	
 }
