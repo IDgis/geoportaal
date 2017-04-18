@@ -4,6 +4,7 @@
 
 @if(url != null && 
 	("intern".equals(play.Play.application().configuration().getString("portal.access")) || 
-		url.startsWith(play.Play.application().configuration().getString("portal.viewer.urlPublicPrefix")))) {
+		url.startsWith(play.Play.application().configuration().getString("portal.viewer.urlPublicPrefix")) || 
+		url.startsWith(play.Play.application().configuration().getString("portal.viewer.urlWmsOnlyPrefix")))) {
 	<a class="link" href="@url" target="_blank">@Messages.get("button.viewer")</a>
 }
