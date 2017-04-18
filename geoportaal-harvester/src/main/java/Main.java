@@ -319,7 +319,8 @@ public class Main {
 		String viewerUrl = null;
 		for(String url : listViewerUrls) {
 			if(url.startsWith(System.getenv("VIEWER_URL_DATASET_PUBLIC_PREFIX")) ||
-					url.startsWith(System.getenv("VIEWER_URL_DATASET_SECURE_PREFIX"))) {
+					url.startsWith(System.getenv("VIEWER_URL_DATASET_SECURE_PREFIX")) ||
+					url.startsWith(System.getenv("VIEWER_URL_DATASET_WMSONLY_PREFIX"))) {
 				viewerUrl = url;
 				break;
 			}
@@ -463,7 +464,8 @@ public class Main {
 		String viewerUrl = null;
 		for(String url : listViewerUrls) {
 			if(url.startsWith(System.getenv("VIEWER_URL_SERVICE_PUBLIC_PREFIX")) ||
-					url.startsWith(System.getenv("VIEWER_URL_SERVICE_SECURE_PREFIX"))) {
+					url.startsWith(System.getenv("VIEWER_URL_SERVICE_SECURE_PREFIX")) ||
+					url.startsWith(System.getenv("VIEWER_URL_SERVICE_WMSONLY_PREFIX"))) {
 				viewerUrl = url;
 				break;
 			}
