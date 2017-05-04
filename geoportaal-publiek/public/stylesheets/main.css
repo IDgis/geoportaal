@@ -7,6 +7,7 @@ p.negate-margin {margin:0;}
 div.page {margin:20px auto 20px auto;width:1100px;padding:0px 20px;border-left:1px solid #AAAAAA;border-right:1px solid #AAAAAA;}
 div.logo {margin-top:20px;margin-bottom:20px;}
 div.header {margin-top:20px;margin-bottom:20px;}
+#index-extra-text {font-size:16px;margin-top:50px;margin-bottom:20px;padding:0;}
 div.intro {margin-top:20px;margin-bottom:20px;padding:10px 0;}
 div.content {margin-top:20px;}
 div.tabs {margin-left:auto;margin-right:auto;width:100%;}
@@ -18,7 +19,6 @@ h1.header {padding:.3em .5em;border-radius:0 12px 0 0;background-color:#831625;m
 	font-weight:bold;font-style:normal;line-height:47px;}
 
 p.title {margin-top: 12px;margin-bottom: 12px;}
-#index-extra-text {font-size:16px;margin-top:20px;margin-bottom:20px;}
 
 a.md-title-index {color: #255c9f;font-weight: bold;}
 a.md-title-index:hover {text-decoration: none;}
