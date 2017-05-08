@@ -107,7 +107,9 @@
 					
 					@views.html.metadatalink(doc.get(mdType.name), doc.get(document.uuid))
 					@views.html.viewerlink(doc.get(document.viewerUrl))
-					@if("dataset".equals(doc.get(mdType.name)) && doc.get(document.downloadable).equals(true) 
+					@if("dataset".equals(doc.get(mdType.name)) 
+						&& (doc.get(document.downloadable).equals(true) 
+								|| "intern".equals(play.Play.application().configuration().getString("portal.access")))
 						&& doc.get(document.wmsOnly).equals(false) 
 						&& doc.get(document.published).equals(true) 
 						&& "vector".equals(doc.get(document.spatialSchema))) {
