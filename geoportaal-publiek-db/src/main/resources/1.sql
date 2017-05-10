@@ -3,7 +3,7 @@
 CREATE SCHEMA gp;
 
 CREATE TABLE gp.document (
-		id serial,
+		id bigserial,
 		uuid text not null,
 		md_type_id integer not null,
 		title text not null,
@@ -16,8 +16,8 @@ CREATE TABLE gp.document (
 ;
 
 CREATE TABLE gp.doc_subject (
-		id serial,
-		document_id integer not null,
+		id bigserial,
+		document_id bigint not null,
 		subject_id integer not null
 )
 ;
@@ -44,8 +44,8 @@ CREATE TABLE gp.md_type (
 ;
 
 CREATE TABLE gp.any_text (
-		id serial,
-		document_id integer not null,
+		id bigserial,
+		document_id bigint not null,
 		content text not null
 )
 ;
