@@ -115,3 +115,6 @@ input[type="file"].input-attachment {display:inline;}
 .link {background:none!important;border:none;padding:0!important;cursor:pointer;color:#255c9f;text-decoration:underline;}
 
 .fileid-warning-msg {margin-bottom:10px;}
+
+#utf-8-info {margin-top: 20px;}
+#ordered-list-instruction {margin-top: 15px; font-size: 16px;}
