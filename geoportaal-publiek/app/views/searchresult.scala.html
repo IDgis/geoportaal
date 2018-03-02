@@ -24,7 +24,7 @@
 				@if(count == 1) {@count @Messages.get("result.count.label.one")} @if(count > 1) {
 					@count @Messages.get("result.count.label.multiple")}@if(count > 0) {, pagina @page}</span>
 			<div class="pull-right">
-				<div class="row btn-group btn-group-sm">
+				<div id="nav-top" class="row">
 					<nav>
 						<ul id="pager-adjusted" class="pager">
 							<li class="@if(start.equals(0)) {disabled paging-disabled}">
@@ -119,6 +119,25 @@
 			</div>
 		</div>
 	}
+	
+	<div id="nav-bottom">
+		<nav>
+			<ul id="pager-adjusted" class="pager">
+				<li class="@if(start.equals(0)) {disabled paging-disabled}">
+					<a href="@routes.Application.search(0, textSearch, typesString, false, expand)" class="js-nav-button">@Messages.get("button.first")</a>
+				</li>
+				<li class="@if(start.equals(0)) {disabled paging-disabled}">
+					<a href="@routes.Application.search(startPrevious, textSearch, typesString, false, expand)" class="js-nav-button">@Messages.get("button.previous")</a>
+				</li>
+				<li class="@if(startNext >= count) {disabled paging-disabled}">
+					<a href="@routes.Application.search(startNext, textSearch, typesString, false, expand)" class="js-nav-button">@Messages.get("button.next")</a>
+				</li>
+				<li class="@if(startNext >= count) {disabled paging-disabled}">
+					<a href="@routes.Application.search(startLast, textSearch, typesString, false, expand)" class="js-nav-button">@Messages.get("button.last") (@pageLast)</a>
+				</li>
+			</ul>
+		</nav>
+	</div>
 </div>
 
 <input type="hidden" id="js-page" value="search">
