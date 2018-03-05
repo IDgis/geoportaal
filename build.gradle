@@ -271,3 +271,5 @@ allprojects {
 		}
 	}
 }
+
+defaultTasks 'geoportaal-beheer:buildPlayBinaryDockerImage', 'geoportaal-publiek:buildPlayBinaryDockerImage', 'geoportaal-harvester:buildImage'

@@ -117,24 +117,26 @@
 			</div>
 		}
 		
-		<div id="nav-bottom">
-			<nav>
-				<ul id="pager-adjusted" class="pager">
-					<li @if(start.equals(0)) {class="disabled paging-disabled"}>
-						<a href="@routes.Application.browse(0, textSearch, subjectsString, false, expand)">@Messages.get("button.first")</a>
-					</li>
-					<li @if(start.equals(0)) {class="disabled paging-disabled"}>
-						<a href="@routes.Application.browse(startPrevious, textSearch, subjectsString, false, expand)">@Messages.get("button.previous")</a>
-					</li>
-					<li @if(startNext >= count) {class="disabled paging-disabled"}>
-						<a href="@routes.Application.browse(startNext, textSearch, subjectsString, false, expand)">@Messages.get("button.next")</a>
-					</li>
-					<li @if(startNext >= count) {class="disabled paging-disabled"}>
-						<a href="@routes.Application.browse(startLast, textSearch, subjectsString, false, expand)">@Messages.get("button.last") (@pageLast)</a>
-					</li>
-				</ul>
-			</nav>
-		</div>
+		@if(count != 0) {
+			<div id="nav-bottom">
+				<nav>
+					<ul id="pager-adjusted" class="pager">
+						<li @if(start.equals(0)) {class="disabled paging-disabled"}>
+							<a href="@routes.Application.browse(0, textSearch, subjectsString, false, expand)">@Messages.get("button.first")</a>
+						</li>
+						<li @if(start.equals(0)) {class="disabled paging-disabled"}>
+							<a href="@routes.Application.browse(startPrevious, textSearch, subjectsString, false, expand)">@Messages.get("button.previous")</a>
+						</li>
+						<li @if(startNext >= count) {class="disabled paging-disabled"}>
+							<a href="@routes.Application.browse(startNext, textSearch, subjectsString, false, expand)">@Messages.get("button.next")</a>
+						</li>
+						<li @if(startNext >= count) {class="disabled paging-disabled"}>
+							<a href="@routes.Application.browse(startLast, textSearch, subjectsString, false, expand)">@Messages.get("button.last") (@pageLast)</a>
+						</li>
+					</ul>
+				</nav>
+			</div>
+		}
 	</div>
 </div>
 
