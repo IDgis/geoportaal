@@ -20,10 +20,7 @@ h1.header {padding:.3em .5em;border-radius:0 12px 0 0;background-color:#831625;m
 
 p.title {margin-top: 12px;margin-bottom: 12px;}
 
-a.md-title-index {color: #255c9f;font-weight: bold;}
-a.md-title-index:hover {text-decoration: none;}
-
-a.md-title {color: #255c9f;text-decoration:none;font-weight: bold;}
+a.md-title {color: #255c9f;font-weight: bold;text-decoration:none;}
 a.md-title:hover {cursor:pointer;}
 
 .grid {margin-top:20px;margin-bottom:20px;padding-top:5px;padding-bottom:5px;}

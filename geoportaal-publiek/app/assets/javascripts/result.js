@@ -14,18 +14,6 @@ require([
 	'dojo/domReady!'
 	], function(dom, domConstruct, domClass, query, on, array, lang, win, domAttr, domStyle, xhr) {
 		
-		// Expand or collapse single metadata record
-		on(win.doc, '.md-title:click', function(e) {
-			var description = query('.description[data-uuid=' + domAttr.get(e.target, 'data-uuid') + ']')[0];
-			
-			var descDisplay = domStyle.get(description, 'display');
-			if(descDisplay === 'none') {
-				domClass.remove(description, 'metadata-collapsed');
-			} else {
-				domClass.add(description, 'metadata-collapsed');
-			}
-		});
-		
 		// Expand or collapse all metadata records
 		on(win.doc, '.js-expand-all-evt:change', function(e) {
 			var descList = query('.search-metadata > .row > .description, .browse-metadata > .row > .description');
