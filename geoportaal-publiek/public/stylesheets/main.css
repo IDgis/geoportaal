@@ -1,5 +1,6 @@
 html {overflow-y:scroll;overflow-x:hidden;}
 body {background-color:#FFFFFF;box-sizing:content-box;}
+body.background-acceptance {background-color:#f3f7d4;}
 div {display:block;}
 p {line-height:25px;font-size:16px;}
 p.negate-margin {margin:0;}
