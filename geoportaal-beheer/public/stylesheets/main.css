@@ -1,5 +1,6 @@
 html {overflow-y:scroll;overflow-x:hidden;}
 body {background-color:#FFFFFF;font-family:Verdana;box-sizing:content-box;}
+body.background-acceptance {background-color:#f3f7d4;}
 div.page {margin:0px auto 20px auto;width:1100px;padding:0px 20px;border-left:1px solid #AAAAAA;border-right:1px solid #AAAAAA;}
 
 div {display:block;}
@@ -96,7 +97,7 @@ input[type="file"].input-attachment {display:inline;}
 #perm-delete-checkbox {display:none;}
 .js-execute-btn {display:none;}
 
-.sort-button {color:black;border:none;background-color:#fff;padding-left:0;padding-right:0;}
+.sort-button {color:black;border:none;background-color:inherit;padding-left:0;padding-right:0;}
 .sort-button:hover {text-decoration:none;color:#337ab7;}
 .sort-active {color:#337ab7;}
 

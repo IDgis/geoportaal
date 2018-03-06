@@ -23,7 +23,7 @@
 			<link rel="stylesheet" media="screen" href="@routes.Assets.versioned("stylesheets/tabs-admin.css")">
 		}
 	</head>
-	<body class="claro">
+	<body class="claro@if(play.Play.application().configuration().getString("geoportaal.deployment.acceptance") == "true") { background-acceptance}">
 		<div class="page">
 			<div class="logo">
 				<a>
