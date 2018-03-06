@@ -12,125 +12,126 @@
 			<link rel="stylesheet" media="screen" href="@routes.Assets.versioned("stylesheets/intern.css")">
 		}
 	</head>
-	<body>
-	<div class="page">
-		<div>
-			<a>
-				<img src="@routes.Assets.versioned(play.Play.application().configuration().getString("portal.client.logo"))">
-			</a>
-			@if("intern".equals(play.Play.application().configuration().getString("portal.access"))) {
-				<a class="btn btn-default pull-right" href="@play.Play.application().configuration().getString("admin.url")" target="_blank">
-					@Messages.get("button.admin")
+	<body class="@if(play.Play.application().configuration().getString("portal.deployment.acceptance") == "true") {background-acceptance}">
+		<div class="page">
+			<div>
+				<a>
+					<img src="@routes.Assets.versioned(play.Play.application().configuration().getString("portal.client.logo"))">
 				</a>
+				@if("intern".equals(play.Play.application().configuration().getString("portal.access"))) {
+					<a class="btn btn-default pull-right" href="@play.Play.application().configuration().getString("admin.url")" target="_blank">
+						@Messages.get("button.admin")
+					</a>
+				}
+			</div>
+			
+			<div class="header">
+				<h1 class="header">@title</h1>
+			</div>
+			
+			<div class="grid">
+				<div class="tabs">
+					<a href="@routes.Application.index()">
+						<div class="task-element" id="js-element-index">
+							<div class="task-outer">
+								<div class="@if(title == play.Play.application().configuration().getString("portal.index.header")) {task-inner-active} else {
+									task-inner}">
+									<div class="tab-element" id="home-icon" style="background-image:url(@routes.Assets.versioned("images/home.png"))">
+										<span class="task-title">
+											@Messages.get("tab.index")
+										</span>
+									</div>
+								</div>
+							</div>
+						</div>
+					</a>
+					<a href="@routes.Application.search()">
+						<div class="task-element" id="js-element-index">
+							<div class="task-outer">
+								<div class="@if(title == Messages.get("search.header") || title == Messages.get("search.header.intern")) {task-inner-active} else {
+									task-inner}">
+									<div class="tab-element" id="search-icon" style="background-image:url(@routes.Assets.versioned("images/search.png"))">
+										<span class="task-title">
+											@Messages.get("tab.search")
+										</span>
+									</div>
+								</div>
+							</div>
+						</div>
+					</a>
+					<a href="@routes.Application.browse()">
+						<div class="task-element" id="js-element-index">
+							<div class="task-outer">
+								<div class="@if(title == Messages.get("browse.header") || title == Messages.get("browse.header.intern")) {task-inner-active} else {
+									task-inner}">
+									<div class="tab-element" id="browse-icon" style="background-image:url(@routes.Assets.versioned("images/browse.png"))">
+										<span class="task-title">
+											@Messages.get("tab.browse")
+										</span>
+									</div>
+								</div>
+							</div>
+						</div>
+					</a>
+					<a href="@routes.Application.about()">
+						<div class="task-element" id="js-element-index">
+							<div class="task-outer">
+								<div class="@if(title == Messages.get("about.header") || title == Messages.get("about.header.intern")) {task-inner-active} else {
+									task-inner}">
+									<div class="tab-element" id="about-icon" style="background-image:url(@routes.Assets.versioned("images/about.png"))">
+										<span class="task-title">
+											@Messages.get("tab.about")
+										</span>
+									</div>
+								</div>
+							</div>
+						</div>
+					</a>
+					<a href="@routes.Application.contact()">
+						<div class="task-element" id="js-element-index">
+							<div class="task-outer">
+								<div class="@if(title == Messages.get("contact.header") || title == Messages.get("contact.header.intern")) {task-inner-active} else {
+									task-inner}">
+									<div class="tab-element" id="contact-icon" style="background-image:url(@routes.Assets.versioned("images/contact.png"))">
+										<span class="task-title">
+											@Messages.get("tab.contact")
+										</span>
+									</div>
+								</div>
+							</div>
+						</div>
+					</a>
+				</div>
+				@content
+			</div>
+			
+			@if("extern".equals(play.Play.application().configuration().getString("portal.access"))) {
+				<!-- Begin Nedstat Pro code v2.005h -->
+				<script language="javascript" type="text/javascript">
+					var t='http://m1.nedstatpro.net/nl/nedstatpro.gif?name=provinci18_1';
+					t+='&v=2.005h&_t='+(new Date()).getTime();var d=document;var n=navigator;var r='';
+					var f=0;if(top!=self){if('\u0041'=='A'){var u=n.userAgent;if(u.indexOf('Safari')==-1){
+					var b=u.indexOf('Opera');if(b==-1||(u.charAt(b+6)+0)>5){b=u.indexOf('Mozilla');
+					var v=b!=-1?u.charAt(b+8)>4:1;if(u.indexOf('compatible')!=-1||v){
+					var c='try{r=top.document.referrer}catch(e){f=1}';eval(c)}}}}}else{r=d.referrer}
+					var z=screen;if(z.availWidth>0){t+='&screen='+z.width+'x'+z.height;t+='&colordepth='
+					+z.colorDepth}var l=n.plugins.length;if(l){t+='&java='+n.javaEnabled()+'&plugins=';
+					for(var i=0;i<l;i++){t+=escape(n.plugins[i].description+'|')}}
+					if (f)t+='&foreignframe=1';else if(r)t+='&referrer='+escape(r);
+					if(d.images){var m=new Image();m.src=t;}else
+					d.write('<img src='+t+' width="1" height="1" align="right">');
+				</script>
+				<noscript>
+					<img src="http://m1.nedstatpro.net/nl/nedstatpro.gif?name=provinci18_1" width="1" height="1" align="right" alt="" />
+				</noscript>
+				<!-- End Nedstat Pro code -->
+			}
+			
+			@if(!"".equals(jsMain)) {
+				<script src="@routes.Assets.versioned("lib/dojo/dojo/dojo.js")" type="text/javascript"></script>
+				<script src="@jsMain" type="text/javascript"></script>
+				<script src="@routes.Application.jsRoutes()" type="text/javascript"></script>
 			}
 		</div>
-		
-		<div class="header">
-			<h1 class="header">@title</h1>
-		</div>
-		
-		<div class="grid">
-			<div class="tabs">
-				<a href="@routes.Application.index()">
-					<div class="task-element" id="js-element-index">
-						<div class="task-outer">
-							<div class="@if(title == play.Play.application().configuration().getString("portal.index.header")) {task-inner-active} else {
-								task-inner}">
-								<div class="tab-element" id="home-icon" style="background-image:url(@routes.Assets.versioned("images/home.png"))">
-									<span class="task-title">
-										@Messages.get("tab.index")
-									</span>
-								</div>
-							</div>
-						</div>
-					</div>
-				</a>
-				<a href="@routes.Application.search()">
-					<div class="task-element" id="js-element-index">
-						<div class="task-outer">
-							<div class="@if(title == Messages.get("search.header") || title == Messages.get("search.header.intern")) {task-inner-active} else {
-								task-inner}">
-								<div class="tab-element" id="search-icon" style="background-image:url(@routes.Assets.versioned("images/search.png"))">
-									<span class="task-title">
-										@Messages.get("tab.search")
-									</span>
-								</div>
-							</div>
-						</div>
-					</div>
-				</a>
-				<a href="@routes.Application.browse()">
-					<div class="task-element" id="js-element-index">
-						<div class="task-outer">
-							<div class="@if(title == Messages.get("browse.header") || title == Messages.get("browse.header.intern")) {task-inner-active} else {
-								task-inner}">
-								<div class="tab-element" id="browse-icon" style="background-image:url(@routes.Assets.versioned("images/browse.png"))">
-									<span class="task-title">
-										@Messages.get("tab.browse")
-									</span>
-								</div>
-							</div>
-						</div>
-					</div>
-				</a>
-				<a href="@routes.Application.about()">
-					<div class="task-element" id="js-element-index">
-						<div class="task-outer">
-							<div class="@if(title == Messages.get("about.header") || title == Messages.get("about.header.intern")) {task-inner-active} else {
-								task-inner}">
-								<div class="tab-element" id="about-icon" style="background-image:url(@routes.Assets.versioned("images/about.png"))">
-									<span class="task-title">
-										@Messages.get("tab.about")
-									</span>
-								</div>
-							</div>
-						</div>
-					</div>
-				</a>
-				<a href="@routes.Application.contact()">
-					<div class="task-element" id="js-element-index">
-						<div class="task-outer">
-							<div class="@if(title == Messages.get("contact.header") || title == Messages.get("contact.header.intern")) {task-inner-active} else {
-								task-inner}">
-								<div class="tab-element" id="contact-icon" style="background-image:url(@routes.Assets.versioned("images/contact.png"))">
-									<span class="task-title">
-										@Messages.get("tab.contact")
-									</span>
-								</div>
-							</div>
-						</div>
-					</div>
-				</a>
-			</div>
-			@content
-		</div>
-		
-		@if("extern".equals(play.Play.application().configuration().getString("portal.access"))) {
-			<!-- Begin Nedstat Pro code v2.005h -->
-			<script language="javascript" type="text/javascript">
-				var t='http://m1.nedstatpro.net/nl/nedstatpro.gif?name=provinci18_1';
-				t+='&v=2.005h&_t='+(new Date()).getTime();var d=document;var n=navigator;var r='';
-				var f=0;if(top!=self){if('\u0041'=='A'){var u=n.userAgent;if(u.indexOf('Safari')==-1){
-				var b=u.indexOf('Opera');if(b==-1||(u.charAt(b+6)+0)>5){b=u.indexOf('Mozilla');
-				var v=b!=-1?u.charAt(b+8)>4:1;if(u.indexOf('compatible')!=-1||v){
-				var c='try{r=top.document.referrer}catch(e){f=1}';eval(c)}}}}}else{r=d.referrer}
-				var z=screen;if(z.availWidth>0){t+='&screen='+z.width+'x'+z.height;t+='&colordepth='
-				+z.colorDepth}var l=n.plugins.length;if(l){t+='&java='+n.javaEnabled()+'&plugins=';
-				for(var i=0;i<l;i++){t+=escape(n.plugins[i].description+'|')}}
-				if (f)t+='&foreignframe=1';else if(r)t+='&referrer='+escape(r);
-				if(d.images){var m=new Image();m.src=t;}else
-				d.write('<img src='+t+' width="1" height="1" align="right">');
-			</script>
-			<noscript>
-				<img src="http://m1.nedstatpro.net/nl/nedstatpro.gif?name=provinci18_1" width="1" height="1" align="right" alt="" />
-			</noscript>
-			<!-- End Nedstat Pro code -->
-		}
-		
-		@if(!"".equals(jsMain)) {
-			<script src="@routes.Assets.versioned("lib/dojo/dojo/dojo.js")" type="text/javascript"></script>
-			<script src="@jsMain" type="text/javascript"></script>
-			<script src="@routes.Application.jsRoutes()" type="text/javascript"></script>
-		}
 	</body>
 </html>
