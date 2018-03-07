@@ -72,12 +72,12 @@ class DockerPlugin implements Plugin<Project> {
 								}
 							}
 
-							// Generate a Dockerfile in the context directory:															
+							// Generate a Dockerfile in the context directory:
 							tasks.create (createDockerfileTask, Dockerfile) { task ->
 								task.destFile = project.file "${project.buildDir}/docker/${binary.name}/Dockerfile"
 								task.dependsOn distTask
 								
-								task.from "java:latest"
+								task.from "java:8"
 								task.copyFile ("${binary.name}.zip", "/opt/${binary.name}.zip")
 								task.copyFile ("start-application.sh", "/opt/start-application.sh")
 								task.runCommand "unzip /opt/${binary.name}.zip -d /opt/" +
