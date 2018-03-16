@@ -1,16 +1,27 @@
+.panel-heading {
+	height: 113px;
+}
+
 .announcement-glyphicon {
 	font-size:32px;
 }
 
 .announcement-heading {
-	font-size:18px;
-	margin-top:15px;
+	font-size:15px;
 }
 
 .portal-stats {
 	margin-top:10px;
 }
 
-.panel-heading {
-	height: 155px;
+.portal-stats-increase, .datasource-connected {
+	background-color: #dff0d8;
+}
+
+.portal-stats-no-change {
+	background-color: #fcf8e3;
+}
+
+.portal-stats-decrease, .datasource-not-connected {
+	background-color: #f2dede;
 }
