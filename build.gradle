@@ -79,10 +79,10 @@ configure([
 	
 	dependencies {
 		// Play default dependencies (Scala version 2.11):
-		play "com.typesafe.play:play-java-jdbc_2.11:2.4.3"			// javaJdbc
-		play "com.typesafe.play:play-cache_2.11:2.4.3"				// cache
-		play "com.typesafe.play:play-java-ws_2.11:2.4.3"			// javaWs
-		play "com.typesafe.play:play-jdbc-evolutions_2.11:2.4.3"	// evolutions
+		play "com.typesafe.play:play-java-jdbc_2.11:2.4.8"			// javaJdbc
+		play "com.typesafe.play:play-cache_2.11:2.4.8"				// cache
+		play "com.typesafe.play:play-java-ws_2.11:2.4.8"			// javaWs
+		play "com.typesafe.play:play-jdbc-evolutions_2.11:2.4.8"	// evolutions
 		play "nl.idgis.commons:commons-utils:0.0.14"
 		
 		// Geoportaal dependencies:
@@ -100,7 +100,7 @@ configure([
 	model {
 		components {
 			play {
-				platform play: '2.4.3', java: '1.8'
+				platform play: '2.4.8', java: '1.8'
 				
 				// The injected routes generator is required to be compatible with
 				// Play version 2.4 and up. 
