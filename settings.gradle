@@ -1,2 +1,2 @@
 rootProject.name = 'geoportaal'
-include 'geoportaal-beheer', 'geoportaal-publiek', 'geoportaal-publiek-db', 'geoportaal-harvester', 'querydsl-tsvector'
+include 'geoportaal-beheer', 'geoportaal-publiek', 'geoportaal-dashboard', 'geoportaal-publiek-db', 'geoportaal-harvester', 'querydsl-tsvector'
