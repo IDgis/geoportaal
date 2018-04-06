@@ -1,7 +1,56 @@
-@(logo: String)
+@(logo: String, dataSources: java.util.List[models.DataSource])
 
 @import play.i18n._
 
+@connectionCheck(dataSource: models.DataSource, returnOK: String, returnError: String) = @{
+	if("OK".equals(dataSource.getStatus().getType())) {
+		returnOK
+	} else {
+		returnError
+	}
+}
+
 @main(logo) {
-	<div id="content-dashboard"></div>
+	<div id="content-dashboard">
+		<div class="row">
+			<div class="col-xs-4">
+				<div class="panel panel-info">
+					<div class="panel-heading">
+						<div class="row">
+							<div class="col-xs-12">
+								<div class="col-xs-3 announcement-glyphicon">
+									<span class="glyphicon glyphicon-cloud"></span>
+								</div>
+								<div class="col-xs-7 announcement-heading">
+									<span>@Messages.get("index.provider.connection.header")</span>
+								</div>
+								<div class="col-xs-2">
+									<span class="glyphicon glyphicon-info-sign" 
+										data-toggle="popover" 
+										data-content="@Messages.get("index.provider.connection.popup")"></span>
+								</div>
+							</div>
+						</div>
+					</div>
+					<ul class="list-group">
+						@for(dataSource <- dataSources) {
+							<li class="list-group-item @connectionCheck(dataSource, "datasource-connected", "datasource-not-connected")">
+								<div>
+									<strong>@dataSource.getName()</strong>
+								</div>
+								<div>
+									<span class="@connectionCheck(dataSource, "text-success", "text-danger")">
+										<span class="glyphicon @connectionCheck(dataSource, "glyphicon-ok-sign", "glyphicon-remove-sign")"></span>
+										@connectionCheck(dataSource, 
+											Messages.get("index.provider.connection.connected"), 
+											Messages.get("index.provider.connection.not.connected"))
+									</span>
+								</div>
+							</li>
+						}
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
 }
