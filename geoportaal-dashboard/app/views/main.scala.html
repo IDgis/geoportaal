@@ -1,11 +1,28 @@
-@(title: String)(content: Html)
+@(logo: String)(content: Html)
 
 <!DOCTYPE html>
+
 <html lang="en">
 	<head>
-		<title>@title</title>
+		<title>Dashboard Geoportaal</title>
+		<link rel="stylesheet" media="screen" href="@routes.Assets.versioned("lib/bootstrap/css/bootstrap.min.css")">
+		<link rel="stylesheet" media="screen" href="@routes.Assets.versioned("stylesheets/main.css")">
+		<link rel="stylesheet" media="screen" href="@routes.Assets.versioned("stylesheets/dashboard.css")">
 	</head>
 	<body>
-		@content
-    </body>
+		<div class="page">
+			<div class="logo">
+				<a>
+					<img src="@routes.Assets.versioned(logo)"></img>
+				</a>
+			</div>
+			<div class="titleheader">
+				<h1>Dashboard Geoportaal</h1>
+			</div>
+			@content
+		</div>
+		<script src="@routes.Assets.versioned("lib/jquery/jquery.js")" type="text/javascript"></script>
+		<script src="@routes.Assets.versioned("lib/bootstrap/js/bootstrap.js")" type="text/javascript"></script>
+		<script src="@routes.Assets.versioned("javascripts/dashboard.js").url" type="text/javascript"></script>
+	</body>
 </html>
