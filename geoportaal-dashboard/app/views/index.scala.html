@@ -1,4 +1,6 @@
-@(logo: String, dataSources: java.util.List[models.DataSource])
+@(logo: String, 
+	dataSources: java.util.List[models.DataSource], 
+	publisherTasks: java.util.List[models.PublisherTask])
 
 @import play.i18n._
 
@@ -45,6 +47,39 @@
 											Messages.get("index.provider.connection.connected"), 
 											Messages.get("index.provider.connection.not.connected"))
 									</span>
+								</div>
+							</li>
+						}
+					</ul>
+				</div>
+			</div>
+			<div class="col-lg-4">
+				<div class="panel panel-info">
+					<div class="panel-heading">
+						<div class="row">
+							<div class="col-xs-12">
+								<div class="col-xs-3 announcement-glyphicon">
+									<span class="glyphicon glyphicon-tasks"></span>
+								</div>
+								<div class="col-xs-7 announcement-heading">
+									<span>@Messages.get("index.provider.publishertasks.header")</span>
+								</div>
+								<div class="col-xs-2">
+									<span class="glyphicon glyphicon-info-sign" 
+										data-toggle="popover" 
+										data-content="@Messages.get("index.provider.publishertasks.popup")"></span>
+								</div>
+							</div>
+						</div>
+					</div>
+					<ul class="list-group">
+						@for(publisherTask <- publisherTasks) {
+							<li class="list-group-item">
+								<strong>@publisherTask.getType()</strong>
+								@publisherTask.getName()
+								<div class="text-muted">
+									@publisherTask.getTimeFormatted() : 
+									@if(publisherTask.isSuccess()) {Ok} else {Fout}
 								</div>
 							</li>
 						}
