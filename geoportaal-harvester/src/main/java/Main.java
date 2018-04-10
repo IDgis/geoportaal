@@ -5,6 +5,7 @@ import static models.QAnyText.anyText;
 import static models.QDocSubject.docSubject;
 import static models.QDocument.document;
 import static models.QDocumentSearch.documentSearch;
+import static models.QHarvestSession.harvestSession;
 import static models.QMdType.mdType;
 import static models.QSubject.subject;
 
@@ -154,6 +155,30 @@ public class Main {
 				} else if("dc".equals(System.getenv("DATA_NAME"))) {
 					executeWebDav(qf, client, pFind, System.getenv("DATA_URL"), MetadataType.DC);
 				}
+				
+				// Insert harvest session information
+				Integer internCount = qf.select(document.uuid)
+					.from(document)
+					.join(mdType).on(mdType.id.eq(document.mdTypeId))
+					.where(mdType.name.eq(System.getenv("DATA_NAME")))
+					.fetch()
+					.size();
+				
+				Integer externCount = qf.select(document.uuid)
+					.from(document)
+					.join(mdType).on(mdType.id.eq(document.mdTypeId))
+					.join(access).on(access.id.eq(document.accessId))
+					.where(mdType.name.eq(System.getenv("DATA_NAME"))
+							.and(access.name.eq("extern")))
+					.fetch()
+					.size();
+				
+				qf.insert(harvestSession)
+					.set(harvestSession.type, System.getenv("DATA_NAME"))
+					.set(harvestSession.internCount, internCount)
+					.set(harvestSession.externCount, externCount)
+					.set(harvestSession.createTime, Timestamp.valueOf(LocalDateTime.now()))
+					.execute();
 				
 				// Refresh materialized view
 				executeStatement(dataSource, "refresh materialized view concurrently \"" 

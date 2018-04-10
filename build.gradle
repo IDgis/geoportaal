@@ -130,9 +130,7 @@ configure([
 }
 
 // play project dashboard
-configure([
-	project(':geoportaal-dashboard')]) {
-	
+project(':geoportaal-dashboard') {
 	dependencies {
 		// Geoportaal dependencies:
 		play "com.google.code.gson:gson:2.8.2"
@@ -157,7 +155,9 @@ project(':geoportaal-beheer') {
 	}
 }
 
-project(':geoportaal-publiek') {
+configure([
+	project(':geoportaal-publiek'),
+	project(':geoportaal-dashboard')]) {
 	
 	dependencies {
 		play project(':geoportaal-publiek-db')
