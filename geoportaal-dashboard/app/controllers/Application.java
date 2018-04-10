@@ -152,7 +152,7 @@ public class Application extends Controller {
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
 		
-		String publisherTaskName = null;
+		String publisherTaskName = "unknown";
 		
 		try {
 			if("HARVEST".equals(type)) {
