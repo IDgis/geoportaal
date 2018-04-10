@@ -35,20 +35,28 @@
 						</div>
 					</div>
 					<ul class="list-group">
-						@for(dataSource <- dataSources) {
-							<li class="list-group-item @connectionCheck(dataSource, "datasource-connected", "datasource-not-connected")">
+						@if(dataSources.size() == 0) {
+							<li class="list-group-item">
 								<div>
-									<strong>@dataSource.getName()</strong>
-								</div>
-								<div>
-									<span class="@connectionCheck(dataSource, "text-success", "text-danger")">
-										<span class="glyphicon @connectionCheck(dataSource, "glyphicon-ok-sign", "glyphicon-remove-sign")"></span>
-										@connectionCheck(dataSource, 
-											Messages.get("index.provider.connection.connected"), 
-											Messages.get("index.provider.connection.not.connected"))
-									</span>
+									<strong>@Messages.get("index.provider.connection.datasources.zero")</strong>
 								</div>
 							</li>
+						} else {
+							@for(dataSource <- dataSources) {
+								<li class="list-group-item @connectionCheck(dataSource, "datasource-connected", "datasource-not-connected")">
+									<div>
+										<strong>@dataSource.getName()</strong>
+									</div>
+									<div>
+										<span class="@connectionCheck(dataSource, "text-success", "text-danger")">
+											<span class="glyphicon @connectionCheck(dataSource, "glyphicon-ok-sign", "glyphicon-remove-sign")"></span>
+											@connectionCheck(dataSource, 
+												Messages.get("index.provider.connection.connected"), 
+												Messages.get("index.provider.connection.not.connected"))
+										</span>
+									</div>
+								</li>
+							}
 						}
 					</ul>
 				</div>
@@ -73,15 +81,23 @@
 						</div>
 					</div>
 					<ul class="list-group">
-						@for(publisherTask <- publisherTasks) {
+						@if(publisherTasks.size() == 0) {
 							<li class="list-group-item">
-								<strong>@publisherTask.getType()</strong>
-								@publisherTask.getName()
-								<div class="text-muted">
-									@publisherTask.getTimeFormatted() : 
-									@if(publisherTask.isSuccess()) {Ok} else {Fout}
+								<div>
+									<strong>@Messages.get("index.provider.publishertasks.zero")</strong>
 								</div>
 							</li>
+						} else {
+							@for(publisherTask <- publisherTasks) {
+								<li class="list-group-item">
+									<strong>@publisherTask.getType()</strong>
+									@publisherTask.getName()
+									<div class="text-muted">
+										@publisherTask.getTimeFormatted() : 
+										@if(publisherTask.isSuccess()) {Ok} else {Fout}
+									</div>
+								</li>
+							}
 						}
 					</ul>
 				</div>

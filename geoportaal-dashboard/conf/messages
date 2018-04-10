@@ -6,6 +6,8 @@ index.provider.connection.header=Connectie GeoPublisher met gegevensbronnen van 
 index.provider.connection.popup=Nog in te vullen tekst over connectie met provider
 index.provider.connection.connected=Ok
 index.provider.connection.not.connected=Niet verbonden
+index.provider.connection.datasources.zero=Geen gegevensbronnen gevonden
 
 index.provider.publishertasks.header=Laatste 10 systeemtaken GeoPublisher
 index.provider.publishertasks.popup=Nog in te vullen tekst over systeemtaken
+index.provider.publishertasks.zero=Geen systeemtaken gevonden
