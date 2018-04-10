@@ -8,6 +8,8 @@ index.provider.connection.connected=Ok
 index.provider.connection.not.connected=Niet verbonden
 index.provider.connection.datasources.zero=Geen gegevensbronnen gevonden
 
-index.provider.publishertasks.header=Laatste 10 systeemtaken GeoPublisher
-index.provider.publishertasks.popup=Nog in te vullen tekst over systeemtaken
-index.provider.publishertasks.zero=Geen systeemtaken gevonden
+index.publishertasks.header=Laatste 10 systeemtaken GeoPublisher
+index.publishertasks.popup=Nog in te vullen tekst over systeemtaken
+index.publishertasks.zero=Geen systeemtaken gevonden
+index.publishertasks.service.staging=staging
+index.publishertasks.service.published=publicatie

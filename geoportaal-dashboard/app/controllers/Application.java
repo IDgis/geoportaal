@@ -26,6 +26,7 @@ import com.google.gson.reflect.TypeToken;
 import models.DataSource;
 import models.PublisherTask;
 import play.Configuration;
+import play.i18n.Messages;
 import play.libs.F.Promise;
 import play.libs.ws.WSClient;
 import play.libs.ws.WSRequest;
@@ -196,9 +197,13 @@ public class Application extends Controller {
 				boolean published = rs.getBoolean("published");
 				
 				if(published) {
-					publisherTaskName = name + " (publicatie)";
+					publisherTaskName = name + " (" + 
+							Messages.get("index.publishertasks.service.published") + 
+							")";
 				} else {
-					publisherTaskName = name + " (staging)";
+					publisherTaskName = name + " (" + 
+							Messages.get("index.publishertasks.service.staging") + 
+							")";
 				}
 			}
 		} catch(SQLException se) {
