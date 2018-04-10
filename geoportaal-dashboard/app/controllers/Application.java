@@ -49,25 +49,28 @@ public class Application extends Controller {
 	
 	private Promise<List<DataSource>> getDataSources() {
 		final String url = config.getString("dashboard.provider.connection.url");
+		
 		WSRequest request = ws.url(url).setFollowRedirects(true);
-		return request.get().map(response -> {
-			Gson gson = new GsonBuilder().create();
-			String json = new String(response.asByteArray());
-			
-			try {
-				DataSource[] dataSources = gson.fromJson(json, DataSource[].class);
+			Promise<List<DataSource>> listDataSources = request.get().map(response -> {
+				Gson gson = new GsonBuilder().create();
+				String json = new String(response.asByteArray());
 				
-				if(dataSources != null) {
-					List<DataSource> listDataSources = Arrays.asList(dataSources);
+				try {
+					DataSource[] dataSources = gson.fromJson(json, DataSource[].class);
 					
-					return listDataSources;
+					if(dataSources != null) {
+						return Arrays.asList(dataSources);
+					}
+				} catch(JsonSyntaxException jse) {
+					jse.printStackTrace();
 				}
-			} catch(JsonSyntaxException jse) {
-				jse.printStackTrace();
-			}
+				
+				return Collections.emptyList();
+			});
 			
-			return Collections.emptyList();
-		});
+			return listDataSources.recover((Throwable throwable) -> {
+				return Collections.emptyList();
+			});
 	}
 	
 	private List<PublisherTask> getPublisherTasks() {
