@@ -14,7 +14,7 @@
 	margin-top:10px;
 }
 
-.portal-stats-increase, .datasource-connected {
+.portal-stats-addition, .datasource-connected {
 	background-color: #dff0d8;
 }
 
@@ -22,6 +22,6 @@
 	background-color: #fcf8e3;
 }
 
-.portal-stats-decrease, .datasource-not-connected {
+.portal-stats-subtraction, .datasource-not-connected {
 	background-color: #f2dede;
 }

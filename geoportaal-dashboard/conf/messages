@@ -13,3 +13,16 @@ index.publishertasks.popup=Nog in te vullen tekst over systeemtaken
 index.publishertasks.zero=Geen systeemtaken gevonden
 index.publishertasks.service.staging=staging
 index.publishertasks.service.published=publicatie
+
+index.portal.stats.header=Aantal datasets, services en statische kaarten in Geoportaal
+index.portal.stats.popup=Nog in te vullen tekst over aantal datasets, services en statische kaarten
+index.portal.stats.zero=Geen informatie gevonden
+index.portal.stats.datasets=Datasets
+index.portal.stats.services=Services
+index.portal.stats.dc=Statische kaarten
+index.portal.stats.extern=extern
+index.portal.stats.intern=intern
+index.portal.stats.week.label=Verschil met 7 dagen geleden
+index.portal.stats.day.label=Verschil met 1 dag geleden
+index.portal.stats.hour.label=Verschil met 1 uur geleden
+index.portal.stats.no.information=nvt

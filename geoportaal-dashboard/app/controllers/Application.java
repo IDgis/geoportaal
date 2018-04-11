@@ -1,5 +1,7 @@
 package controllers;
 
+import static models.QHarvestSession.harvestSession;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -11,6 +13,7 @@ import java.sql.Timestamp;
 import java.sql.Types;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -22,9 +25,20 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
+import com.querydsl.core.Tuple;
+import com.querydsl.sql.SQLQuery;
 
 import models.DataSource;
 import models.PublisherTask;
+import models.portal.DCInfo;
+import models.portal.DatasetInfo;
+import models.portal.MetadataInfo;
+import models.portal.CountDifference;
+import models.portal.CountDifferenceType;
+import models.portal.HarvestInfo;
+import models.portal.InfoFromTime;
+import models.portal.InfoLast;
+import models.portal.ServiceInfo;
 import play.Configuration;
 import play.i18n.Messages;
 import play.libs.F.Promise;
@@ -32,19 +46,25 @@ import play.libs.ws.WSClient;
 import play.libs.ws.WSRequest;
 import play.mvc.Controller;
 import play.mvc.Result;
+import util.QueryDSL;
 import views.html.index;
 
 public class Application extends Controller {
 	@Inject Configuration config;
 	@Inject WSClient ws;
+	@Inject QueryDSL q;
 	
 	public Promise<Result> index() {
 		final String logo = config.getString("dashboard.client.logo");
 		
 		return getDataSources().map(dataSources -> {
-			List<PublisherTask> publisherTasks = getPublisherTasks();
-			
-			return ok(index.render(logo, dataSources, publisherTasks));
+			return ok(index.render(logo, 
+					dataSources, 
+					getPublisherTasks(), 
+					new HarvestInfo(
+							(DatasetInfo) getMetadataInfo("dataset"), 
+							(ServiceInfo) getMetadataInfo("service"), 
+							(DCInfo) getMetadataInfo("dc"))));
 		});
 	}
 	
@@ -224,6 +244,83 @@ public class Application extends Controller {
 			}
 			
 			return publisherTaskName;
+		}
+	}
+	
+	private MetadataInfo getMetadataInfo(String metadataType) {
+		return q.withTransaction(tx -> {
+			Tuple lastTuple = tx.select(harvestSession.internCount, harvestSession.externCount)
+						.from(harvestSession)
+						.where(harvestSession.type.eq(metadataType))
+						.orderBy(harvestSession.createTime.desc())
+						.fetchFirst();
+			
+			if(lastTuple != null) {
+				int lastCountExtern = lastTuple.get(harvestSession.externCount);
+				int lastCountIntern = lastTuple.get(harvestSession.internCount);
+				
+				InfoLast infoLast = new InfoLast(lastCountExtern, lastCountIntern);
+				
+				LocalDateTime now = LocalDateTime.now();
+				InfoFromTime weekAgoInfo = getPortalInfoFromTime(
+						metadataType, infoLast, now, 1, ChronoUnit.WEEKS);
+				InfoFromTime dayAgoInfo = getPortalInfoFromTime(
+						metadataType, infoLast, now, 1, ChronoUnit.DAYS);
+				InfoFromTime hourAgoInfo = getPortalInfoFromTime(
+						metadataType, infoLast, now, 1, ChronoUnit.HOURS);
+				
+				if("dataset".equals(metadataType)) {
+					return new DatasetInfo(infoLast, weekAgoInfo, dayAgoInfo, hourAgoInfo);
+				} else if("service".equals(metadataType)) {
+					return new ServiceInfo(infoLast, weekAgoInfo, dayAgoInfo, hourAgoInfo);
+				} else if("dc".equals(metadataType)) {
+					return new DCInfo(infoLast, weekAgoInfo, dayAgoInfo, hourAgoInfo);
+				}
+			}
+			
+			return null;
+		});
+	}
+	
+	private InfoFromTime getPortalInfoFromTime(String metadataType,
+			InfoLast infoLast,
+			LocalDateTime now,
+			int amountToSubtract,
+			ChronoUnit unit) {
+				LocalDateTime timeAgo = now.minus(1, unit);
+				
+				return q.withTransaction(tx -> {
+					Tuple timeTuple = tx.select(harvestSession.internCount, harvestSession.externCount)
+								.from(harvestSession)
+								.where(harvestSession.type.eq(metadataType)
+										.and(harvestSession.createTime.loe(Timestamp.valueOf(timeAgo))))
+								.orderBy(harvestSession.createTime.desc())
+								.fetchFirst();
+					
+					if(timeTuple != null) {
+						int countExtern = timeTuple.get(harvestSession.externCount);
+						int countIntern = timeTuple.get(harvestSession.internCount);
+						
+						CountDifference countDifferenceExtern = 
+								getPortalCountDifference(infoLast.getCountExtern(), countExtern);
+						
+						CountDifference countDifferenceIntern = 
+								getPortalCountDifference(infoLast.getCountIntern(), countIntern);
+						
+						return new InfoFromTime(countDifferenceExtern, countDifferenceIntern);
+					} else {
+						return null;
+					}
+				});
+	}
+	
+	private CountDifference getPortalCountDifference(int lastCount, int timeCount) {
+		if(lastCount > timeCount) {
+			return new CountDifference(CountDifferenceType.ADDITION, lastCount - timeCount);
+		} else if(lastCount < timeCount) {
+			return new CountDifference(CountDifferenceType.SUBTRACTION, timeCount - lastCount);
+		} else {
+			return new CountDifference(CountDifferenceType.NOCHANGE, 0);
 		}
 	}
 }

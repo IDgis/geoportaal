@@ -1,0 +1,5 @@
+@(label: String, countDifference: models.portal.CountDifference)
+
+<div class="text-muted@(portalstat.differenceTypeClassName(countDifference))">
+	@label: <strong>@portalstat.differenceTypeValue(countDifference)</strong>
+</div>
