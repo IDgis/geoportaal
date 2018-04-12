@@ -1,7 +1,7 @@
 $(function () {
 	$('[data-toggle="popover"]').popover({
 		container: 'body',
-		placement: 'top',
+		placement: 'bottom',
 		trigger: 'hover'
 	})
 })
