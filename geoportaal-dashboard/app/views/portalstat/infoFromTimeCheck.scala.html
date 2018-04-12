@@ -1,0 +1,11 @@
+@(label: String, infoFromTime: models.portal.InfoFromTime, extern: Boolean)
+
+@if(infoFromTime != null) {
+	@if(extern) {
+		@portalstat.difference(label, infoFromTime.getCountDifferenceExtern())
+	} else {
+		@portalstat.difference(label, infoFromTime.getCountDifferenceIntern())
+	}
+} else {
+	@portalstat.noInformation(label)
+}

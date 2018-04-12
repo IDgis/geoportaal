@@ -59,7 +59,8 @@ configure([
 // play projects
 configure([
 	project(':geoportaal-beheer'),
-	project(':geoportaal-publiek')]) {
+	project(':geoportaal-publiek'),
+	project(':geoportaal-dashboard')]) {
 	
 	apply plugin: 'eclipse'
 	apply plugin: PlayJavaPlugin
@@ -89,12 +90,7 @@ configure([
 		play "org.webjars:webjars-play_${scalaAbiVersion}:2.4.0-2"
 		play "org.webjars:dojo:1.10.4"
 		play "org.webjars:bootstrap:3.3.5"
-		play "org.webjars:modernizr:2.8.3"
 		play "org.postgresql:postgresql:9.4-1202-jdbc42"
-		play ("nl.idgis.sys:provisioning-registration:1.1.3-SNAPSHOT") {
-			exclude module: "ch.qos.logback"
-			exclude module: "logback-classic"
-		}
 	}
 	
 	model {
@@ -115,19 +111,29 @@ configure([
 				}
 			}
 		}
-		
-		distributions {
-			 playBinary {
-				tasks.withType(org.gradle.jvm.tasks.Jar) {
-					manifest {
-						attributes("Implementation-Title": project.name)
-						if(project.version) {
-							attributes("Implementation-Version": project.version)
-						}
-					}
-				}
-			 }
+	}
+}
+
+// play projects beheer & publiek
+configure([
+	project(':geoportaal-beheer'),
+	project(':geoportaal-publiek')]) {
+	
+	dependencies {
+		// Geoportaal dependencies:
+		play "org.webjars:modernizr:2.8.3"
+		play ("nl.idgis.sys:provisioning-registration:1.1.3-SNAPSHOT") {
+			exclude module: "ch.qos.logback"
+			exclude module: "logback-classic"
 		}
+	}
+}
+
+// play project dashboard
+project(':geoportaal-dashboard') {
+	dependencies {
+		// Geoportaal dependencies:
+		play "com.google.code.gson:gson:2.8.2"
 	}
 }
 
@@ -149,7 +155,9 @@ project(':geoportaal-beheer') {
 	}
 }
 
-project(':geoportaal-publiek') {
+configure([
+	project(':geoportaal-publiek'),
+	project(':geoportaal-dashboard')]) {
 	
 	dependencies {
 		play project(':geoportaal-publiek-db')
@@ -272,4 +280,4 @@ allprojects {
 	}
 }
 
-defaultTasks 'geoportaal-beheer:buildPlayBinaryDockerImage', 'geoportaal-publiek:buildPlayBinaryDockerImage', 'geoportaal-harvester:buildImage'
+defaultTasks 'buildDockerImages', 'geoportaal-harvester:buildImage'

@@ -1,0 +1,25 @@
+@(header: String, info: models.portal.MetadataInfo)
+
+@import play.i18n._
+
+<li class="list-group-item">
+	<strong>@header</strong>
+	<div class="portal-stats">
+		<div>@Messages.get("index.portal.stats.extern"): @info.getInfoLast().getCountExtern()</div>
+		@portalstat.infoFromTimeCheck(Messages.get("index.portal.stats.week.label"),
+			info.getWeekAgoInfo(), true)
+		@portalstat.infoFromTimeCheck(Messages.get("index.portal.stats.day.label"),
+			info.getDayAgoInfo(), true)
+		@portalstat.infoFromTimeCheck(Messages.get("index.portal.stats.hour.label"),
+			info.getHourAgoInfo(), true)
+	</div>
+	<div class="portal-stats">
+		<div>@Messages.get("index.portal.stats.intern"): @info.getInfoLast().getCountIntern()</div>
+		@portalstat.infoFromTimeCheck(Messages.get("index.portal.stats.week.label"),
+			info.getWeekAgoInfo(), false)
+		@portalstat.infoFromTimeCheck(Messages.get("index.portal.stats.day.label"),
+			info.getDayAgoInfo(), false)
+		@portalstat.infoFromTimeCheck(Messages.get("index.portal.stats.hour.label"),
+			info.getHourAgoInfo(), false)
+	</div>
+</li>

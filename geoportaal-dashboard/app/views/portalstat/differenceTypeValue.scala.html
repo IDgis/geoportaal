@@ -1,0 +1,13 @@
+@(countDifference: models.portal.CountDifference)
+
+@import models.portal.CountDifferenceType
+
+@if(countDifference.getType() == CountDifferenceType.ADDITION) {
+	+@countDifference.getValue()
+} else {
+	@if(countDifference.getType() == CountDifferenceType.SUBTRACTION) {
+		-@countDifference.getValue()
+	} else {
+		@countDifference.getValue()
+	}
+}

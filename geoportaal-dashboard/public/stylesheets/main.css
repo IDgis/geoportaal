@@ -1,0 +1,56 @@
+html {
+	overflow-y:scroll;
+	overflow-x:hidden;
+}
+
+body {
+	background-color:#FFFFFF;
+	font-family:Verdana;
+	box-sizing:content-box;
+}
+
+div {
+	display:block;
+}
+
+h1 {
+	padding:.3em .5em;
+	border-radius:0 12px 0 0;
+	background-color:#255c9f;
+	margin-left:0;
+	margin-right:0;
+	color:#ffffff;
+	font-size:1.625em;
+	font-weight:bold;
+	font-style:normal;
+	line-height:47px;
+}
+
+p {
+	line-height:25px;
+	font-size:16px;
+	margin-top:0;
+	margin-bottom:0;
+}
+
+body.background-acceptance {
+	background-color:#f3f7d4;
+}
+
+.page {
+	margin:0px auto 20px auto;
+	width:1100px;
+	padding:0px 20px;
+	border-left:1px solid #AAAAAA;
+	border-right:1px solid #AAAAAA;
+}
+
+.logo {
+	margin-top:20px;
+	margin-bottom:20px;
+}
+
+.titleheader {
+	margin-top:20px;
+	margin-bottom:20px;
+}
