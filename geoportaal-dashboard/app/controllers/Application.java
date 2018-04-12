@@ -47,6 +47,7 @@ import play.libs.ws.WSRequest;
 import play.mvc.Controller;
 import play.mvc.Result;
 import util.QueryDSL;
+import util.DashboardConfig;
 import views.html.index;
 
 public class Application extends Controller {
@@ -55,10 +56,9 @@ public class Application extends Controller {
 	@Inject QueryDSL q;
 	
 	public Promise<Result> index() {
-		final String logo = config.getString("dashboard.client.logo");
-		
 		return getDataSources().map(dataSources -> {
-			return ok(index.render(logo, 
+			return ok(index.render(
+					new DashboardConfig(config),
 					dataSources, 
 					getPublisherTasks(), 
 					new HarvestInfo(

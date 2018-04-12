@@ -1,4 +1,4 @@
-@(logo: String)(content: Html)
+@(dashboardConfig: util.DashboardConfig)(content: Html)
 
 @import play.i18n._
 
@@ -15,11 +15,14 @@
 		<div class="page">
 			<div class="logo">
 				<a>
-					<img src="@routes.Assets.versioned(logo)"></img>
+					<img src="@routes.Assets.versioned(dashboardConfig.getLogo())"></img>
 				</a>
 			</div>
 			<div class="titleheader">
-				<h1>@Messages.get("application.title")</h1>
+				<h1>
+					@Messages.get("application.title")
+					<span class="pull-right">@dashboardConfig.getDateTimeNow()</span>
+				</h1>
 			</div>
 			@content
 		</div>

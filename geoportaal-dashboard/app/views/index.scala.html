@@ -1,4 +1,4 @@
-@(logo: String, 
+@(dashboardConfig: util.DashboardConfig,
 	dataSources: java.util.List[models.DataSource], 
 	publisherTasks: java.util.List[models.PublisherTask],
 	harvestInfo: models.portal.HarvestInfo)
@@ -13,7 +13,7 @@
 	}
 }
 
-@main(logo) {
+@main(dashboardConfig) {
 	<div id="content-dashboard">
 		<div class="row">
 			<div class="col-xs-4">
