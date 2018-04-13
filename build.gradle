@@ -134,6 +134,7 @@ project(':geoportaal-dashboard') {
 	dependencies {
 		// Geoportaal dependencies:
 		play "com.google.code.gson:gson:2.8.2"
+		play "commons-io:commons-io:2.6"
 	}
 }
 
