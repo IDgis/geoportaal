@@ -140,12 +140,12 @@ public class Application extends Controller {
 				int jobId = rs.getInt("job_id");
 				String state = rs.getString("state");
 				Timestamp createTime = rs.getTimestamp("create_time");
-				String type = rs.getString("type");
+				String jobType = rs.getString("type");
 				
-				String name = getPublisherTaskName(conn, type, jobId);
+				String name = getPublisherTaskName(conn, jobType, jobId);
 				
 				publisherTasks.add(
-						new PublisherTask(type.toLowerCase(), 
+						new PublisherTask(jobType.toLowerCase(), 
 							name, 
 							createTime.toLocalDateTime(), 
 							"SUCCEEDED".equals(state)));
@@ -157,14 +157,14 @@ public class Application extends Controller {
 		return publisherTasks;
 	}
 	
-	private String getPublisherTaskName(Connection conn, String type, int jobId) throws SQLException {
-		String sql = PublisherTask.getSQL(type);
+	private String getPublisherTaskName(Connection conn, String jobType, int jobId) throws SQLException {
+		String sql = PublisherTask.getSQL(jobType);
 		
 		if(sql != null) {
 			try(PreparedStatement stmt = conn.prepareStatement(sql)) {
 				stmt.setInt(1, jobId);
 				
-				return getPublisherTaskNameResult(stmt, type);
+				return getPublisherTaskNameResult(stmt, jobType);
 			} catch(SQLException se) {
 				throw se;
 			}
@@ -173,13 +173,13 @@ public class Application extends Controller {
 		return PublisherTask.getUnknownName();
 	}
 	
-	private String getPublisherTaskNameResult(PreparedStatement stmt, String type) throws SQLException {
+	private String getPublisherTaskNameResult(PreparedStatement stmt, String jobType) throws SQLException {
 		try(ResultSet rs = stmt.executeQuery()) {
 			rs.next();
 			
-			if("HARVEST".equals(type) || "IMPORT".equals(type)) {
+			if("HARVEST".equals(jobType) || "IMPORT".equals(jobType)) {
 				return rs.getString("name");
-			} else if("SERVICE".equals(type)) {
+			} else if("SERVICE".equals(jobType)) {
 				return rs.getString("name") + 
 						(rs.getBoolean("published") ? 
 								rs.getString("name") + " (" + 
