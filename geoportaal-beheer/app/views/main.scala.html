@@ -34,63 +34,51 @@
 			<div class="titelbalk">
 				<h1 class="header">@title</h1>
 			</div>
-			<div class="grid">
-				<div class="tabs">
-					<a href="@routes.Index.index("", "none", "none", "", "", "", "")">
-						<div class="toptaak-element" id="js-element-index">
-							<div class="toptaak-outer">
-								<div class="@if(title == Messages.get("index.header") || title == Messages.get("form.edit.header")) {toptaak-inner-active} else {toptaak-inner}">
-									<div class="tab-element search-icon" style="background-image:url(@routes.Assets.versioned("images/search.png"))">
-										<span class="toptaak-titel">
-											@Messages.get("main.tab.index")
-										</span>
-									</div>
-								</div>
+			<div id="tabs">
+				<a class="tab@if(title == Messages.get("index.header") || title == Messages.get("form.edit.header")) { tab-active}" href="@routes.Index.index("", "none", "none", "", "", "", "")">
+					<div class="tab-title">
+						<div class="tab-icon">
+							<span class="glyphicon glyphicon-search pull-right"></span>
+						</div>
+						<div class="tab-text">@Messages.get("main.tab.index")</div>
+					</div>
+				</a>
+				<a class="tab@if(title == Messages.get("form.create.header")) { tab-active}" href="@routes.Metadata.renderCreateForm(textSearch, supplierSearch, statusSearch, dateCreateStartSearch, dateCreateEndSearch, dateUpdateStartSearch, dateUpdateEndSearch)">
+					<div class="tab-title">
+						<div class="tab-icon">
+							<span class="glyphicon glyphicon-plus pull-right"></span>
+						</div>
+						<div class="tab-text">@Messages.get("main.tab.add")</div>
+					</div>
+				</a>
+				@if(!roleId.equals(2)) {
+					<a class="tab@if(title == Messages.get("report.header")) { tab-active}" href="@routes.Report.renderReport()">
+						<div class="tab-title">
+							<div class="tab-icon">
+								<span class="glyphicon glyphicon-list-alt pull-right"></span>
 							</div>
+							<div class="tab-text">@Messages.get("main.tab.report")</div>
 						</div>
 					</a>
-					<a href="@routes.Metadata.renderCreateForm(textSearch, supplierSearch, statusSearch, dateCreateStartSearch, dateCreateEndSearch, dateUpdateStartSearch, dateUpdateEndSearch)">
-						<div class="toptaak-element" id="js-element-create">
-							<div class="toptaak-outer">
-								<div class="@if(title == Messages.get("form.create.header")) {toptaak-inner-active} else {toptaak-inner}">
-									<div class="tab-element add-icon" style="background-image:url(@routes.Assets.versioned("images/add.png"))">
-										<span class="toptaak-titel">
-											@Messages.get("main.tab.add")
-										</span>
-									</div>
-								</div>
+				}
+				@if(!roleId.equals(2)) {
+					<a class="tab">
+						<div class="tab-title">
+							<div class="tab-icon">
+								<span class="glyphicon glyphicon-dashboard pull-right"></span>
 							</div>
+							<div class="tab-text">@Messages.get("main.tab.dashboard")</div>
 						</div>
 					</a>
-					@if(!roleId.equals(2)) {
-						<a href="@routes.Report.renderReport()">
-							<div class="toptaak-element" id="js-element-report">
-								<div class="toptaak-outer">
-									<div class="@if(title == Messages.get("report.header")) {toptaak-inner-active} else {toptaak-inner}">
-										<div class="tab-element report-icon" style="background-image:url(@routes.Assets.versioned("images/report.png"))">
-											<span class="toptaak-titel">
-												@Messages.get("main.tab.report")
-											</span>
-										</div>
-									</div>
-								</div>
-							</div>
-						</a>
-					}
-					<a href="@routes.Help.renderHelp()" target="_blank">
-						<div class="toptaak-element" id="js-element-help">
-							<div class="toptaak-outer">
-								<div class="@if(title == Messages.get("help.header")) {toptaak-inner-active} else {toptaak-inner}">
-									<div class="tab-element help-icon" style="background-image:url(@routes.Assets.versioned("images/help.png"))">
-										<span class="toptaak-titel">
-											@Messages.get("main.tab.help")
-										</span>
-									</div>
-								</div>
-							</div>
+				}
+				<a class="tab@if(title == Messages.get("help.header")) { tab-active}" href="@routes.Help.renderHelp()" target="_blank">
+					<div class="tab-title">
+						<div class="tab-icon">
+							<span class="glyphicon glyphicon-info-sign pull-right"></span>
 						</div>
-					</a>
-				</div>
+						<div class="tab-text">@Messages.get("main.tab.help")</div>
+					</div>
+				</a>
 			</div>
 			@content
 		</div>
