@@ -11,6 +11,8 @@
 
 @import play.i18n._
 
+@configValue(key: String) = @{play.Play.application().configuration().getString(key)}
+
 <!DOCTYPE html>
 
 <html lang="en">
@@ -23,11 +25,11 @@
 			<link rel="stylesheet" media="screen" href="@routes.Assets.versioned("stylesheets/tabs-admin.css")">
 		}
 	</head>
-	<body class="claro@if(play.Play.application().configuration().getString("geoportaal.deployment.acceptance") == "true") { background-acceptance}">
+	<body class="claro@if(configValue("geoportaal.deployment.acceptance") == "true") { background-acceptance}">
 		<div class="page">
 			<div class="logo">
 				<a>
-					<img src="@routes.Assets.versioned(play.Play.application().configuration().getString("geoportaal.client.logo"))"></img>
+					<img src="@routes.Assets.versioned(configValue("geoportaal.client.logo"))"></img>
 				</a>
 				<a class="btn btn-default pull-right" href="@routes.User.logout()">@Messages.get("logout")</a>
 			</div>
@@ -62,7 +64,7 @@
 					</a>
 				}
 				@if(!roleId.equals(2)) {
-					<a class="tab">
+					<a class="tab" href="@configValue("geoportaal.dashboard.url")" target="_blank">
 						<div class="tab-title">
 							<div class="tab-icon">
 								<span class="glyphicon glyphicon-dashboard pull-right"></span>
