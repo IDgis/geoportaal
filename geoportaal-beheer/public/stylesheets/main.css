@@ -12,15 +12,62 @@ div.titelbalk {margin-top:20px;margin-bottom:20px;}
 h1.header {padding:.3em .5em;border-radius:0 12px 0 0;background-color:#255c9f;margin-left:0;margin-right:0;color:#ffffff;font-size:1.625em;
 	font-weight:bold;font-style:normal;line-height:47px;}
 	
-.grid {margin-top:20px;margin-bottom:20px;padding-top:5px;padding-bottom:5px;}
-.grid:after {content:'';display:block;clear:both;}
-.toptaak-element {float:left;width:32.95%;height:85px;display:block;}
-.toptaak-outer {height:100%;padding:1px;}
-.toptaak-inner {height:100%;background-color:#831625;}
-.toptaak-inner-active {height:100%;background-color:#dc0000;}
-.toptaak-inner:hover {background-color:#dc0000;cursor:pointer;}
-.toptaak-titel {color:#ffffff;display:inline-block;text-align:left;margin-top:13px;margin-left:50px;line-height:1.2em;font-size:18px;
-	padding-right:20px;width:100%;}
+#tabs {
+	margin:20px auto;
+	padding:5px 0;
+	width:60%;
+}
+
+#tabs:after {
+	clear:both;
+	content: "";
+	display: block;
+}
+
+.tab {
+	float:left;
+	width:33.33%;
+	height:85px;
+	display:block;
+	background-color:#831625;
+	border-right:1px solid #fff;
+	padding-top:10px;
+}
+
+.tab:hover {
+	cursor:pointer;
+	text-decoration:none;
+}
+
+.tab:hover, .tab-active {
+	background-color:#dc0000;
+}
+
+.tab-title {
+	color:#ffffff;
+}
+
+.tab-title:after {
+	clear:both;
+	content: "";
+	display: block;
+}
+
+.tab-icon {
+	position:relative;
+	top:4px;
+	font-size:22px;
+	width:25%;
+	float:left;
+}
+
+.tab-text {
+	font-size:18px;
+	width:75%;
+	float:left;
+	padding-left:15px;
+	padding-right:15px;
+}
 
 div.welkom {margin-top:20px;margin-bottom:20px;padding:10px 0;}
 div.info {margin-top:20px;margin-bottom:20px;padding:10px 0;}
@@ -32,11 +79,6 @@ p.alineastart {margin-top:20px;}
 .knop:hover {background-color:#0096D2;color:#ffffff;text-decoration:none;}
 .knop:focus {background-color:#0096D2;color:#ffffff;text-decoration:none;}
 .help-knop {padding-top:7px;padding-bottom:8px;line-height:20px;}
-
-div.tabs {margin-left:auto;margin-right:auto;width:60%;}
-div.tabs:after {content:'';display:block;clear:both;}
-div.tab-element {height:100%;width:100%;background-position:15px 15px;width:155px !important;height:80px !important;
-	background-repeat:no-repeat;}
 
 #edit-supplier-select {display:none;width:unset;margin-top:15px;}
 .admin-buttons {margin-top:10px;margin-bottom:10px;margin-left:20px;position:relative;left:-13px;}
@@ -85,11 +127,6 @@ input[type="file"].input-attachment {display:inline;}
 .js-page-status {cursor:pointer;}
 
 #perm-delete-checkbox {margin-top:15px;}
-
-.add-icon {background-position:-15px 15px;background-size:25px;}
-.search-icon {background-position:25px 15px;background-size:25px;}
-.report-icon {background-position:25px 15px;background-size:25px;}
-.help-icon {background-position:25px 15px;background-size:15px;}
 
 .edit-btn-published {pointer-events:none;filter:alpha(opacity=65);-webkit-box-shadow:none;box-shadow:none;opacity:0.65;}
 

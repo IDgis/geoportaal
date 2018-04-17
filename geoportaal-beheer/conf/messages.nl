@@ -18,6 +18,7 @@ tsv.language=dutch
 main.tab.index=Zoeken en wijzigen
 main.tab.add=Toevoegen
 main.tab.report=Rapportage
+main.tab.dashboard=Dashboard
 main.tab.help=Help
 
 # Index
