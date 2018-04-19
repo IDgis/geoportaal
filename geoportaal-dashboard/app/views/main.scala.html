@@ -11,7 +11,7 @@
 		<link rel="stylesheet" media="screen" href="@routes.Assets.versioned("stylesheets/main.css")">
 		<link rel="stylesheet" media="screen" href="@routes.Assets.versioned("stylesheets/dashboard.css")">
 	</head>
-	<body>
+	<body class="@if(dashboardConfig.getDeploymentAcceptance()) {background-acceptance}">
 		<div class="page">
 			<div class="logo">
 				<a>
