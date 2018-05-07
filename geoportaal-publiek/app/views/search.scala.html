@@ -12,6 +12,10 @@
 	expand: Boolean
 )
 
+@displayNedstat() = @{
+	play.Play.application().configuration().getString("portal.display.nedstat") == "true"
+}
+
 @import play.i18n._
 @import play.mvc.Http
 
@@ -42,7 +46,8 @@
 		@views.html.searchresult(documents, sdf, textSearch, typesString, count, page, start, startPrevious, startNext, startLast, pageLast, expand)
 	</div>
 	
-	@if("intern".equals(play.Play.application().configuration().getString("portal.access"))) {
+	@if(displayNedstat() && 
+		"intern".equals(play.Play.application().configuration().getString("portal.access"))) {
 		<!-- Begin Nedstat Pro code v2.005f -->
 		<script language="javascript" type="text/javascript">
 			var t='http://m1.nedstatpro.net/nl/nedstatpro.gif?name=provinci18_2';
