@@ -305,8 +305,7 @@ public class Main {
 			List<String> listPotentialUse = metaDoc.getStrings(DatasetPath.POTENTIAL_USE.path());
 			List<String> listOtherConstraint = metaDoc.getStrings(DatasetPath.OTHER_CONSTRAINT.path());
 			List<String> listRelatedDataset = metaDoc.getStrings(DatasetPath.RELATED_DATASET.path());
-			
-			List<String> listViewerUrls = metaDoc.getStrings(DatasetPath.VIEWER_URL.path());
+			List<String> listOnlineResource = metaDoc.getStrings(DatasetPath.ONLINE_SOURCE.path());
 			
 			Integer mdTypeId = qf.select(mdType.id)
 					.from(mdType)
@@ -361,7 +360,12 @@ public class Main {
 			Boolean wmsOnly = false;
 			for(String ul : listUseLimitation) {
 				if(ul.equals("Downloadable data")) {
-					downloadable = true;
+					for(String url : listOnlineResource) {
+						if(url.startsWith(System.getenv("URL_GEOSERVER_DATASET_PUBLIC_PREFIX"))) {
+							downloadable = true;
+							break;
+						}
+					}
 				}
 				
 				if(ul.equals("Alleen WMS extern")) {
@@ -370,7 +374,7 @@ public class Main {
 			}
 			
 			String viewerUrl = null;
-			for(String url : listViewerUrls) {
+			for(String url : listOnlineResource) {
 				if(url.startsWith(System.getenv("VIEWER_URL_DATASET_PUBLIC_PREFIX")) ||
 						url.startsWith(System.getenv("VIEWER_URL_DATASET_SECURE_PREFIX")) ||
 						url.startsWith(System.getenv("VIEWER_URL_DATASET_WMSONLY_PREFIX"))) {
