@@ -265,6 +265,7 @@ public class Metadata extends Controller {
 				warnMessages.put("fileid", dc.getFileId().trim());
 				warnMessages.put("message-1", Messages.get("validate.form.fileid.warning.body.1"));
 				warnMessages.put("message-2", Messages.get("validate.form.fileid.warning.body.2"));
+				warnMessages.put("message-3", Messages.get("validate.form.fileid.warning.body.3"));
 				
 				return validateFormServer(true, null, null, textSearch, supplierSearch, statusSearch, 
 						dateCreateStartSearch, dateCreateEndSearch, dateUpdateStartSearch, dateUpdateEndSearch, 
@@ -664,6 +665,7 @@ public class Metadata extends Controller {
 					warnMessages.put("fileid", dc.getFileId().trim());
 					warnMessages.put("message-1", Messages.get("validate.form.fileid.warning.body.1"));
 					warnMessages.put("message-2", Messages.get("validate.form.fileid.warning.body.2"));
+					warnMessages.put("message-3", Messages.get("validate.form.fileid.warning.body.3"));
 					
 					return validateFormServer(false, datasetRow, attachmentsDataset, textSearch, supplierSearch, statusSearch, 
 							dateCreateStartSearch, dateCreateEndSearch, dateUpdateStartSearch, 
