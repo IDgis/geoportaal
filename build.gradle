@@ -175,34 +175,7 @@ project(':geoportaal-harvester') {
 	apply plugin: 'application'
 	apply plugin: 'com.bmuschko.docker-remote-api'
 	
-	mainClassName = "Main"
-	
-	task runApp(type: JavaExec) {
-		classpath = sourceSets.main.runtimeClasspath
-		main = 'Main'
-		
-		environment 'DB_DRIVER', 'org.postgresql.Driver'
-		environment 'DB_URL', 'jdbc:postgresql://localhost:5432/geoportaal-publiek'
-		environment 'DB_USER', dbUser
-		environment 'DB_PASSWORD', dbPassword
-		
-		environment 'DATA_URL', 'https://acc-metadata.geodataoverijssel.nl/metadata/service/'
-		environment 'DATA_NAME', 'service'
-		environment 'DATA_SECURED', 'false'
-		environment 'HARVEST_INTERVAL', '15'
-		environment 'VIEWER_URL_DATASET_PREFIX', 'http://acc-services.geodataoverijssel.nl:80/viewer/layer/'
-		environment 'VIEWER_URL_SERVICE_PREFIX', 'http://acc-services.geodataoverijssel.nl:80/viewer?service='
-	}
-	
-	repositories {
-		flatDir { dir 'lib' }
-	}
-	
-	eclipse {
-		classpath {
-			downloadSources=true
-		}
-	}
+	mainClassName = 'nl.idgis.portal.harvester.App'
 	
 	dependencies {
 		compile project(':geoportaal-publiek-db')
@@ -210,7 +183,9 @@ project(':geoportaal-harvester') {
 		compile 'org.postgresql:postgresql:9.4.1208'
 		compile 'org.apache.jackrabbit:jackrabbit-jcr2dav:2.12.1'
 		compile 'org.springframework:spring-jdbc:4.2.5.RELEASE'
-		compile 'org.slf4j:slf4j-log4j12:1.7.21'
+		compile 'org.slf4j:slf4j-api:1.7.25'
+		compile 'ch.qos.logback:logback-classic:1.2.3'
+		compile 'ch.qos.logback:logback-core:1.2.3'
 	}
 	
 	task copyTar(type: Copy) {

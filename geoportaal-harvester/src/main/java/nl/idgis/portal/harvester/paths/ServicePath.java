@@ -1,3 +1,4 @@
+package nl.idgis.portal.harvester.paths;
 
 public enum ServicePath {
 	UUID ("/gmd:MD_Metadata/gmd:fileIdentifier/gco:CharacterString/text()"),

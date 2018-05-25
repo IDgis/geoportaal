@@ -1,3 +1,5 @@
+package nl.idgis.portal.harvester.paths;
+
 public enum DatasetPath {
 	UUID ("/gmd:MD_Metadata/gmd:fileIdentifier/gco:CharacterString/text()"),
 	TITLE ("/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:citation/gmd:CI_Citation/gmd:title/gco:CharacterString/text()"),
