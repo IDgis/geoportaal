@@ -90,7 +90,7 @@
 							</li>
 						} else {
 							@for(publisherTask <- publisherTasks) {
-								<li class="list-group-item@if(!publisherTask.isSuccess()) { publisher-task-error}">
+								<li class="list-group-item publisher-task@if(!publisherTask.isSuccess()) { publisher-task-error}">
 									<strong>@publisherTask.getType()</strong>
 									@publisherTask.getName()
 									<div class="text-muted">
