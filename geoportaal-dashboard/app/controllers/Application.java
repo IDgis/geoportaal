@@ -182,11 +182,10 @@ public class Application extends Controller {
 			} else if("SERVICE".equals(jobType)) {
 				return rs.getString("name") + 
 						(rs.getBoolean("published") ? 
-								rs.getString("name") + " (" + 
-								Messages.get("index.publishertasks.service.published") + ")" 
+								" (" + Messages.get("index.publishertasks.service.published") + ")" 
 								: 
-								rs.getString("name") + " (" + 
-								Messages.get("index.publishertasks.service.staging") + ")");
+								" (" + Messages.get("index.publishertasks.service.staging") + ")"
+						);
 			}
 		} catch(SQLException se) {
 			throw se;
