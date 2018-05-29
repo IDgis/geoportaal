@@ -422,7 +422,7 @@ public class Index extends Controller {
 		// Return the index page
 		return redirect(controllers.routes.Index.index(textSearch, supplierSearch, statusSearch, 
 				dateCreateStartSearch, dateCreateEndSearch, dateUpdateStartSearch, dateUpdateEndSearch, 
-			sort, checked));
+			sort, checked) + "#list");
 	}
 	
 	/**
