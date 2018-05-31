@@ -1,5 +1,6 @@
+package nl.idgis.portal.harvester.paths;
 
-public enum DcPath {
+public enum DublinCorePath {
 	UUID ("/rdf:RDF/rdf:Description/dc:identifier/text()"),
 	TITLE ("/rdf:RDF/rdf:Description/dc:title/text()"),
 	DATE_CREATE ("/rdf:RDF/rdf:Description/dc:date/text()"),
@@ -22,7 +23,7 @@ public enum DcPath {
 	
 	private final String path;
 
-	DcPath(String path) {
+	DublinCorePath(String path) {
 		this.path = path;
 	}
 
