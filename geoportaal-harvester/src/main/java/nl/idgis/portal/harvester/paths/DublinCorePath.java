@@ -3,8 +3,8 @@ package nl.idgis.portal.harvester.paths;
 public enum DublinCorePath {
 	UUID ("/rdf:RDF/rdf:Description/dc:identifier/text()"),
 	TITLE ("/rdf:RDF/rdf:Description/dc:title/text()"),
-	DATE_CREATE ("/rdf:RDF/rdf:Description/dc:date/text()"),
-	DATE_ISSUED ("/rdf:RDF/rdf:Description/dcterms:issued/text()"),
+	DATE_CREATED ("/rdf:RDF/rdf:Description/dc:date/text()"),
+	DATE_PUBLISHED ("/rdf:RDF/rdf:Description/dcterms:issued/text()"),
 	ORGANISATION_CREATOR ("/rdf:RDF/rdf:Description/dc:creator/text()"),
 	ABSTRACT ("/rdf:RDF/rdf:Description/dc:description/text()"),
 	

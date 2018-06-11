@@ -103,7 +103,8 @@ public class Database {
 			String uuid,
 			Integer mdTypeId,
 			String title,
-			Timestamp timestamp,
+			Timestamp dateDataset,
+			Timestamp dateDescription,
 			String creator,
 			String description,
 			String thumbnail,
@@ -117,7 +118,8 @@ public class Database {
 			.set(document.uuid, uuid)
 			.set(document.mdTypeId, mdTypeId)
 			.set(document.title, title)
-			.set(document.date, timestamp)
+			.set(document.dateDataset, dateDataset)
+			.set(document.dateDescription, dateDescription)
 			.set(document.creator, creator)
 			.set(document.description, description)
 			.set(document.thumbnail, thumbnail)
@@ -134,7 +136,8 @@ public class Database {
 			String uuid,
 			Integer mdTypeId,
 			String title,
-			Timestamp timestamp,
+			Timestamp dateDataset,
+			Timestamp dateDescription,
 			String creator,
 			String description,
 			String thumbnail,
@@ -145,7 +148,8 @@ public class Database {
 			.set(document.uuid, uuid)
 			.set(document.mdTypeId, mdTypeId)
 			.set(document.title, title)
-			.set(document.date, timestamp)
+			.set(document.dateDataset, dateDataset)
+			.set(document.dateDescription, dateDescription)
 			.set(document.creator, creator)
 			.set(document.description, description)
 			.set(document.thumbnail, thumbnail)
@@ -159,7 +163,8 @@ public class Database {
 			String uuid,
 			Integer mdTypeId,
 			String title,
-			Timestamp timestamp,
+			Timestamp dateDataset,
+			Timestamp dateDescription,
 			String creator,
 			String description,
 			String thumbnail,
@@ -168,7 +173,8 @@ public class Database {
 			.set(document.uuid, uuid)
 			.set(document.mdTypeId, mdTypeId)
 			.set(document.title, title)
-			.set(document.date, timestamp)
+			.set(document.dateDataset, dateDataset)
+			.set(document.dateDescription, dateDescription)
 			.set(document.creator, creator)
 			.set(document.description, description)
 			.set(document.thumbnail, thumbnail)

@@ -1,9 +1,5 @@
 package nl.idgis.portal.harvester.types;
 
-import java.sql.Timestamp;
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -13,6 +9,7 @@ import com.querydsl.sql.SQLQueryFactory;
 
 import nl.idgis.portal.harvester.paths.DatasetPath;
 import nl.idgis.portal.harvester.util.Database;
+import nl.idgis.portal.harvester.util.DateConverter;
 import nl.idgis.portal.harvester.util.GetMetadataDocument;
 import nl.idgis.portal.harvester.util.MetadataDocument;
 
@@ -37,18 +34,6 @@ public class Dataset {
 		MetadataDocument doc = GetMetadataDocument.parse(d, ns, pf);
 		
 		try {
-			String date = doc.getString(DatasetPath.DATE.path());
-			LocalDate localDate = null;
-			if(date != null) {
-				localDate = LocalDate.parse(date);
-			}
-			
-			Timestamp timestamp = null;
-			if(localDate != null) {
-				ZonedDateTime zdt = ZonedDateTime.of(localDate.atStartOfDay(), ZoneId.of("Europe/Amsterdam"));
-				timestamp = Timestamp.valueOf(zdt.toLocalDateTime());
-			}
-			
 			String thumbnail = doc.getString(DatasetPath.THUMBNAIL.path());
 			if(thumbnail != null && thumbnail.trim().startsWith("http")) {
 				thumbnail = thumbnail.trim().replaceAll("\\\\", "/");
@@ -90,7 +75,8 @@ public class Dataset {
 					doc.getString(DatasetPath.UUID.path()),
 					Database.getType(qf, url),
 					doc.getString(DatasetPath.TITLE.path()),
-					timestamp,
+					DateConverter.dateStringToTimestamp(doc.getString(DatasetPath.DATE_FILE.path())),
+					DateConverter.dateStringToTimestamp(doc.getString(DatasetPath.DATE_DESCRIPTION_REVISION.path())),
 					doc.getString(DatasetPath.ORGANISATION_CREATOR.path()),
 					doc.getString(DatasetPath.ABSTRACT.path()),
 					thumbnail,

@@ -34,15 +34,13 @@ public class MetadataDocument {
 	}
 	
 	public List<String> getStrings(String path) throws Exception {
-		if(!path.endsWith("text()") && !path.endsWith("@uuidref") &&!path.endsWith("codeListValue")) {
+		if(!path.endsWith("text()") && !path.endsWith("@uuidref") && !path.endsWith("codeListValue")) {
 			throw new RuntimeException("path should end with text() or @uuidref");
 		}
 		
 		List<String> values = new ArrayList<>();
 		
 		NodeList nl = (NodeList) xp.evaluate(path, d, XPathConstants.NODESET);
-		
-		
 		
 		for(int i = 0; i < nl.getLength(); i++) {
 			values.add(nl.item(i).getNodeValue());
