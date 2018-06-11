@@ -70,26 +70,57 @@ require([
 			filterExpandSubjects();
 		});
 		
-		function filterExpandTypes() {
-			var arrayElements = [];
-			var elements = query('.js-data-type:checked');
-			array.forEach(elements, function(item) {
-				var element = domAttr.get(item, 'data-md-type');
-				arrayElements.push(element);
-			});
-			
-			var start = domAttr.get(dom.byId('js-start-current'), 'value');
+		// Handle sort
+		on(win.doc, 'input[name=sort-records]:click', function(e) {
 			var textSearch = domAttr.get(dom.byId('js-text-search'), 'value');
-			var elementString = arrayElements.join('+');
-			var expandValue = domAttr.get(dom.byId('js-expand-value'), 'value');
-			var expandValueBoolean = (expandValue === 'true');
+			var typesString = getDataTypes('.js-data-type:checked', 'data-md-type');
+			var url = jsRoutes.controllers.Application.search(0, textSearch, typesString, true, true, getSortValue()).url;
 			
-			xhr(jsRoutes.controllers.Application.search(start, textSearch, elementString, true, expandValueBoolean).url, {
-				handleAs: "html"	
+			xhr(url, {
+				handleAs: 'html'
 			}).then(function(data) {
 				domConstruct.empty(dom.byId('js-search-results-all'));
 				domConstruct.place(data, dom.byId('js-search-results-all'));
-				domAttr.set(dom.byId('js-element-string'), 'value', elementString);
+				domAttr.set(dom.byId('js-element-string'), 'value', typesString);
+			});
+		});
+		
+		function getDataTypes(queryClass, typeAttribute) {
+			var typeValues = [];
+			var types = query(queryClass);
+			array.forEach(types, function(type) {
+				var value = domAttr.get(type, typeAttribute);
+				typeValues.push(value);
+			});
+			
+			return typeValues.join('+');
+		}
+		
+		function getSortValue() {
+			var sortDataset = dom.byId('sort-dataset');
+			var sortDescription = dom.byId('sort-description');
+			
+			var sortValue = sortDataset.value;
+			if(sortDescription.checked) {
+				sortValue = sortDescription.value;
+			}
+			
+			return sortValue;
+		}
+		
+		function filterExpandTypes() {
+			var start = domAttr.get(dom.byId('js-start-current'), 'value');
+			var textSearch = domAttr.get(dom.byId('js-text-search'), 'value');
+			var typesString = getDataTypes('.js-data-type:checked', 'data-md-type');
+			var expandValue = domAttr.get(dom.byId('js-expand-value'), 'value');
+			var expandValueBoolean = (expandValue === 'true');
+			
+			xhr(jsRoutes.controllers.Application.search(start, textSearch, typesString, true, expandValueBoolean, getSortValue()).url, {
+				handleAs: 'html'
+			}).then(function(data) {
+				domConstruct.empty(dom.byId('js-search-results-all'));
+				domConstruct.place(data, dom.byId('js-search-results-all'));
+				domAttr.set(dom.byId('js-element-string'), 'value', typesString);
 			});
 		}
 		

@@ -9,7 +9,8 @@
 	startNext: Integer,
 	startLast: Integer,
 	pageLast: Integer,
-	expand: Boolean
+	expand: Boolean,
+	sort: String
 )
 
 @displayNedstat() = @{
@@ -43,7 +44,7 @@
 	}
 	
 	<div id="js-search-results-all">
-		@views.html.searchresult(documents, sdf, textSearch, typesString, count, page, start, startPrevious, startNext, startLast, pageLast, expand)
+		@views.html.searchresult(documents, sdf, textSearch, typesString, count, page, start, startPrevious, startNext, startLast, pageLast, expand, sort)
 	</div>
 	
 	@if(displayNedstat() && 
