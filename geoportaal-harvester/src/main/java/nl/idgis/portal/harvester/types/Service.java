@@ -1,9 +1,5 @@
 package nl.idgis.portal.harvester.types;
 
-import java.sql.Timestamp;
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -13,6 +9,7 @@ import com.querydsl.sql.SQLQueryFactory;
 
 import nl.idgis.portal.harvester.paths.ServicePath;
 import nl.idgis.portal.harvester.util.Database;
+import nl.idgis.portal.harvester.util.DateConverter;
 import nl.idgis.portal.harvester.util.GetMetadataDocument;
 import nl.idgis.portal.harvester.util.MetadataDocument;
 
@@ -36,18 +33,6 @@ public class Service {
 		MetadataDocument doc = GetMetadataDocument.parse(d, ns, pf);
 		
 		try {
-			String date = doc.getString(ServicePath.DATE.path());
-			LocalDate localDate = null;
-			if(date != null) {
-				localDate = LocalDate.parse(date);
-			}
-			
-			Timestamp timestamp = null;
-			if(localDate != null) {
-				ZonedDateTime zdt = ZonedDateTime.of(localDate.atStartOfDay(), ZoneId.of("Europe/Amsterdam"));
-				timestamp = Timestamp.valueOf(zdt.toLocalDateTime());
-			}
-			
 			Integer accessId = Database.getAccessId(qf, "intern");
 			if(confidential == false) {
 				accessId = Database.getAccessId(qf, "extern");
@@ -67,7 +52,8 @@ public class Service {
 					doc.getString(ServicePath.UUID.path()),
 					Database.getType(qf, url),
 					doc.getString(ServicePath.TITLE.path()),
-					timestamp,
+					DateConverter.dateStringToTimestamp(doc.getString(ServicePath.DATE_PUBLISHED.path())),
+					DateConverter.dateStringToTimestamp(doc.getString(ServicePath.DATE_DESCRIPTION_REVISION.path())),
 					doc.getString(ServicePath.ORGANISATION_CREATOR.path()),
 					doc.getString(ServicePath.ABSTRACT.path()),
 					null,

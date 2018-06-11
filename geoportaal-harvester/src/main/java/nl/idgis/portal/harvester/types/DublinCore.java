@@ -1,9 +1,5 @@
 package nl.idgis.portal.harvester.types;
 
-import java.sql.Timestamp;
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -13,6 +9,7 @@ import com.querydsl.sql.SQLQueryFactory;
 
 import nl.idgis.portal.harvester.paths.DublinCorePath;
 import nl.idgis.portal.harvester.util.Database;
+import nl.idgis.portal.harvester.util.DateConverter;
 import nl.idgis.portal.harvester.util.GetMetadataDocument;
 import nl.idgis.portal.harvester.util.MetadataDocument;
 
@@ -32,22 +29,6 @@ public class DublinCore {
 		MetadataDocument doc = GetMetadataDocument.parse(d, ns, pf);
 		
 		try {
-			String dateCreate = doc.getString(DublinCorePath.DATE_CREATE.path());
-			String dateIssued = doc.getString(DublinCorePath.DATE_ISSUED.path());
-			
-			LocalDate localDate = null;
-			if(dateIssued != null) {
-				localDate = LocalDate.parse(dateIssued);
-			} else if(dateCreate != null) {
-				localDate = LocalDate.parse(dateCreate);
-			}
-			
-			Timestamp timestamp = null;
-			if(localDate != null) {
-				ZonedDateTime zdt = ZonedDateTime.of(localDate.atStartOfDay(), ZoneId.of("Europe/Amsterdam"));
-				timestamp = Timestamp.valueOf(zdt.toLocalDateTime());
-			}
-			
 			Integer accessId = Database.getAccessId(qf, "intern");
 			if("De bron mag ook voor externe partijen vindbaar zijn".equals(doc.getString(DublinCorePath.USE_LIMITATION.path()))) {
 				accessId = Database.getAccessId(qf, "extern");
@@ -57,7 +38,8 @@ public class DublinCore {
 					doc.getString(DublinCorePath.UUID.path()),
 					Database.getType(qf, url),
 					doc.getString(DublinCorePath.TITLE.path()),
-					timestamp,
+					DateConverter.dateStringToTimestamp(doc.getString(DublinCorePath.DATE_CREATED.path())),
+					DateConverter.dateStringToTimestamp(doc.getString(DublinCorePath.DATE_PUBLISHED.path())),
 					doc.getString(DublinCorePath.ORGANISATION_CREATOR.path()),
 					doc.getString(DublinCorePath.ABSTRACT.path()),
 					null,
