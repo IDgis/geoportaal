@@ -38,6 +38,7 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.ProcessingInstruction;
 
 import com.querydsl.core.Tuple;
+import com.querydsl.core.types.dsl.DateTimePath;
 import com.querydsl.core.types.dsl.Wildcard;
 import com.querydsl.sql.SQLExpressions;
 import com.querydsl.sql.SQLQuery;
@@ -71,13 +72,13 @@ public class Application extends Controller {
 				intern = true;
 			}
 			
-			SQLQuery<Tuple> queryDocuments = tx.select(document.title, document.uuid, document.dateDescription, 
+			SQLQuery<Tuple> queryDocuments = tx.select(document.title, document.uuid, document.dateDataset, 
 					document.creator, document.description, document.thumbnail, document.downloadable, 
 					document.spatialSchema, document.published, document.typeService, document.viewerUrl, 
 					document.wmsOnly, mdType.url, mdType.name)
 					.from(document)
 					.join(mdType).on(document.mdTypeId.eq(mdType.id))
-					.where(document.dateDescription.isNotNull())
+					.where(document.dateDataset.isNotNull())
 					.where(document.description.isNotNull());
 			
 			if(!intern) {
@@ -89,7 +90,7 @@ public class Application extends Controller {
 				queryDocuments.where(document.accessId.eq(accessId));
 			}
 			
-			List<Tuple> documents = queryDocuments.orderBy(document.dateDescription.desc(), document.title.asc())
+			List<Tuple> documents = queryDocuments.orderBy(document.dateDataset.desc(), document.title.asc())
 					.limit(5)
 					.fetch();
 			
@@ -103,7 +104,7 @@ public class Application extends Controller {
 		Search s = searchForm.bindFromRequest().get();
 		
 		if("search".equals(s.getPage())) {
-			return redirect(controllers.routes.Application.search(0, s.getText(), s.getElementsString(), false, true));
+			return redirect(controllers.routes.Application.search(0, s.getText(), s.getElementsString(), false, true, "sortDataset"));
 		} if("browse".equals(s.getPage())) {
 			return redirect(controllers.routes.Application.browse(0, s.getText(), s.getElementsString(), false, true));
 		} else {
@@ -111,7 +112,7 @@ public class Application extends Controller {
 		}
 	}
 	
-	public Result search(Integer start, String textSearch, String typesString, Boolean filter, Boolean expand) {
+	public Result search(Integer start, String textSearch, String typesString, Boolean filter, Boolean expand, String sort) {
 		String portalAccess = play.Play.application().configuration().getString("portal.access");
 		
 		Lang curLang = Http.Context.current().lang();
@@ -127,13 +128,18 @@ public class Application extends Controller {
 				intern = true;
 			}
 			
-			SQLQuery<Tuple> queryDocuments = tx.select(document.title, document.uuid, document.dateDescription, 
+			DateTimePath<Timestamp> dateColumn = document.dateDataset;
+			if("sortDescription".equals(sort)) {
+				dateColumn = document.dateDescription;
+			}
+			
+			SQLQuery<Tuple> queryDocuments = tx.select(document.title, document.uuid, dateColumn, 
 					document.creator, document.description, document.thumbnail, document.downloadable, 
 					document.spatialSchema, document.published, document.typeService, document.viewerUrl,
 					document.wmsOnly, mdType.url, mdType.name)
 					.from(document)
 					.join(mdType).on(document.mdTypeId.eq(mdType.id))
-					.where(document.dateDescription.isNotNull())
+					.where(dateColumn.isNotNull())
 					.where(document.description.isNotNull())
 					.where(mdType.name.in(types));
 			
@@ -215,16 +221,16 @@ public class Application extends Controller {
 				}
 			}
 			
-			List<Tuple> documents = queryDocuments.orderBy(document.dateDescription.desc(), document.title.asc())
+			List<Tuple> documents = queryDocuments.orderBy(dateColumn.desc(), document.title.asc())
 					.offset(finalStart)
 					.limit(10)
 					.fetch();
 			
 			if(filter) {
-				return ok(searchresult.render(documents, sdf, textSearch, typesString, count, page, finalStart, startPrevious, startNext, startLast, pageLast, expand));
+				return ok(searchresult.render(documents, sdf, textSearch, typesString, count, page, finalStart, startPrevious, startNext, startLast, pageLast, expand, sort));
 			}
 			
-			return ok(search.render(documents, sdf, textSearch, typesString, count, page, finalStart, startPrevious, startNext, startLast, pageLast, expand));
+			return ok(search.render(documents, sdf, textSearch, typesString, count, page, finalStart, startPrevious, startNext, startLast, pageLast, expand, sort));
 		});
 	}
 	
