@@ -24,6 +24,11 @@ metadata.type.dataset=GIS bestanden
 metadata.type.service=Services
 metadata.type.dc=Statische kaarten
 
+metadata.sort.dataset=Sorteer op datum van dataset
+metadata.sort.description=Sorteer op datum van beschrijving
+metadata.date.none=geen datum bekend
+metadata.description.none=Geen omschrijving beschikbaar.
+
 tab.index=Home
 tab.search=Uitgebreid zoeken
 tab.browse=Bladeren
