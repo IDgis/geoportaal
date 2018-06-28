@@ -998,8 +998,8 @@ public class Metadata extends Controller {
 				fileIdCharacter = true;
 			}
 			
-			// check for length < 6
-			if (fileIdCheck.length() < 6){
+			// check for length shorter than 6 and longer than 8
+			if (fileIdCheck.length() < 6 || fileIdCheck.length() > 8){
 				fileIdLength = true;
 			}
 		}
