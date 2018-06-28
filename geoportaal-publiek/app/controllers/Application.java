@@ -106,7 +106,7 @@ public class Application extends Controller {
 		if("search".equals(s.getPage())) {
 			return redirect(controllers.routes.Application.search(0, s.getText(), s.getElementsString(), false, true, "sortDataset"));
 		} if("browse".equals(s.getPage())) {
-			return redirect(controllers.routes.Application.browse(0, s.getText(), s.getElementsString(), false, true));
+			return redirect(controllers.routes.Application.browse(0, s.getText(), s.getElementsString(), false, true, "sortDataset"));
 		} else {
 			return notFound("404 - not found");
 		}
@@ -232,7 +232,7 @@ public class Application extends Controller {
 		});
 	}
 	
-	public Result browse(Integer start, String textSearch, String subjectsString, Boolean filter, Boolean expand) {
+	public Result browse(Integer start, String textSearch, String subjectsString, Boolean filter, Boolean expand, String sort) {
 		String portalAccess = play.Play.application().configuration().getString("portal.access");
 		
 		Lang curLang = Http.Context.current().lang();
@@ -255,14 +255,17 @@ public class Application extends Controller {
 					.orderBy(subjectLabel.title.asc())
 					.fetch();
 			
-			SQLQuery<Tuple> queryDocuments = tx.select(document.uuid, document.title, document.dateDescription, 
+			DateTimePath<Timestamp> dateColumn = document.dateDataset;
+			if("sortDescription".equals(sort)) {
+				dateColumn = document.dateDescription;
+			}
+			
+			SQLQuery<Tuple> queryDocuments = tx.select(document.uuid, document.title, dateColumn, 
 					document.creator, document.description, document.thumbnail, document.downloadable, 
 					document.spatialSchema, document.published, document.typeService, document.viewerUrl,
 					document.wmsOnly, mdType.url, mdType.name)
 					.from(document)
 					.join(mdType).on(document.mdTypeId.eq(mdType.id))
-					.where(document.dateDescription.isNotNull())
-					.where(document.description.isNotNull())
 					.where(document.id.in(SQLExpressions.select(docSubject.documentId)
 							.from(docSubject)
 							.join(subject).on(docSubject.subjectId.eq(subject.id))
@@ -346,7 +349,7 @@ public class Application extends Controller {
 				}
 			}
 			
-			List<Tuple> documents = queryDocuments.orderBy(document.dateDescription.desc(), document.title.asc())
+			List<Tuple> documents = queryDocuments.orderBy(dateColumn.desc().nullsLast(), document.title.asc())
 					.offset(finalStart)
 					.limit(10)
 					.fetch();
@@ -362,7 +365,7 @@ public class Application extends Controller {
 						.fetch();
 				
 				DocSubject ds = new DocSubject(doc.get(document.uuid), doc.get(document.title), 
-						doc.get(document.dateDescription), doc.get(document.creator), doc.get(document.description), 
+						doc.get(dateColumn), doc.get(document.creator), doc.get(document.description), 
 						doc.get(document.thumbnail), docSubjects, doc.get(mdType.url), doc.get(mdType.name),
 						doc.get(document.downloadable), doc.get(document.spatialSchema), doc.get(document.published), 
 						doc.get(document.typeService), doc.get(document.viewerUrl), doc.get(document.wmsOnly));
@@ -371,10 +374,10 @@ public class Application extends Controller {
 			}
 			
 			if(filter) {
-				return ok(browseresult.render(subjects, finalDocuments, sdf, textSearch, subjectsString, count, page, finalStart, startPrevious, startNext, startLast, pageLast, expand));
+				return ok(browseresult.render(subjects, finalDocuments, sdf, textSearch, subjectsString, count, page, finalStart, startPrevious, startNext, startLast, pageLast, expand, sort));
 			}
 			
-			return ok(browse.render(subjects, finalDocuments, sdf, textSearch, subjectsString, count, page, finalStart, startPrevious, startNext, startLast, pageLast, expand));
+			return ok(browse.render(subjects, finalDocuments, sdf, textSearch, subjectsString, count, page, finalStart, startPrevious, startNext, startLast, pageLast, expand, sort));
 		});
 	}
 	
