@@ -139,8 +139,6 @@ public class Application extends Controller {
 					document.wmsOnly, mdType.url, mdType.name)
 					.from(document)
 					.join(mdType).on(document.mdTypeId.eq(mdType.id))
-					.where(dateColumn.isNotNull())
-					.where(document.description.isNotNull())
 					.where(mdType.name.in(types));
 			
 			if(!intern) {
@@ -221,7 +219,7 @@ public class Application extends Controller {
 				}
 			}
 			
-			List<Tuple> documents = queryDocuments.orderBy(dateColumn.desc(), document.title.asc())
+			List<Tuple> documents = queryDocuments.orderBy(dateColumn.desc().nullsLast(), document.title.asc())
 					.offset(finalStart)
 					.limit(10)
 					.fetch();
