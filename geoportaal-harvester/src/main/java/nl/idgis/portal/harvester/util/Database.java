@@ -36,9 +36,9 @@ public class Database {
 			.fetchOne();
 	}
 	
-	public static void removeDocumentsFromType(SQLQueryFactory qf, String url) {
+	public static void removeDocumentsFromType(SQLQueryFactory qf, String dataKey) {
 		qf.delete(mdType)
-			.where(mdType.url.eq(url))
+			.where(mdType.name.eq(dataKey))
 			.execute();
 	}
 	

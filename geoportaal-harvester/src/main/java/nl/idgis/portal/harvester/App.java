@@ -97,7 +97,7 @@ public class App {
 		DocumentBuilder db = GetDocumentBuilder.getDocumentBuilder();
 		
 		// Delete values from previous harvest
-		Database.removeDocumentsFromType(qf, url);
+		Database.removeDocumentsFromType(qf, dataKey);
 		Database.insertType(qf, url, dataKey);
 		
 		for (MultiStatusResponse response : responses) {
