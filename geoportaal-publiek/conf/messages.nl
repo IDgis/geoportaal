@@ -55,31 +55,23 @@ about.paragraph.1.2=Een groot aantal datasets wordt vrij beschikbaar gesteld, zo
 about.paragraph.1.3=Voor de geodatasets en de services heb je speciale software nodig. Hiervoor wordt de verzamelnaam "GIS" gebruikt (geografisch informatiesysteem). Een veel gebruikt GIS is het systeem ARCGIS van het bedrijf ESRI. Maar er zijn ook "open source" GIS systemen. Deze zijn veelal gratis. Een veelgebruikt gratis GIS is bijvoorbeeld QGIS.
 about.paragraph.1.4=De datasets zijn veelal te downloaden, zodat je ze met een GIS verder kan gebruiken.
 about.paragraph.1.5=Voor de andere kaarten (statische kaarten) heb je geen GIS nodig. Dit zijn plaatjes, meestal in de vorm van een PDF. Je kan dit soort bestanden bekijken met bijvoorbeeld Adobe reader.
-about.paragraph.header.2=Tips voor specialisten:
-about.paragraph.2.1=Er worden ook WMS en WFS services via het Geoportaal ontsloten. Deze kun je direct in je eigen GIS applicatie gebruiken. Maak je je eigen app en wil je Geojson gebruiken, dan kan dat ook. Gebruik hiervoor outputformat=json als je een Getfeature request doet op een WFS. Meer tips over Geojson zijn te vinden via onderstaande links:
-about.paragraph.header.3=WFS JSON als output format:
-about.paragraph.3.1=GML is voor veel webontwikkelaars niet de eerste keus. JSON en GeoJSON zijn laagdrempeliger waardoor veel webontwikkelaars daar de voorkeur aan geven. Gelukkig is het GeoJSON formaat ook beschikbaar bij de WFSen die GeoPublisher aanbiedt. Gebruik daarvoor de parameter outputformat=json bij een GetFeature request en je krijgt GeoJSON terug.
-about.paragraph.3.2=Voorbeeld (voor Firefox, Chrome, Safari en Opera, niet geschikt voor IE):
-about.paragraph.3.3=<a class="link" target="_blank" href="http://services.geodataoverijssel.nl/geoserver/B51_recreatie/wfs?service=WFS&version=2.0.0&request=GetFeature&typename=B51_recreatie:B5_Fietsroutes_in_Overijssel&count=100&startindex=1&outputformat=json">Fietsroutes in GeoJSON</a>
-about.paragraph.3.4=Een GeoPublisher WFS steunt nog meer formaten, zoals gmp, shp, dxf, kml en csv. Zie voor een volledige opsomming het element 'ows:AllowedValues' onder 'ows:Parameter name="outputFormat"' in de <a class="link" target="_blank" href="http://services.geodataoverijssel.nl/geoserver/B51_recreatie/wfs?request=GetCapabilities">Capabilities van de WFS voor bijv. Recreatie</a>
-about.paragraph.3.5=Van een aantal datasets zijn wij geen eigenaar. Meestal zijn hierbij dan beperkingen voordat ze gedeeld mogen worden met anderen. Deze beperkingen staan ook in de beschrijving bij de datasets.
-about.paragraph.header.4=Over metadata:
-about.paragraph.4.1=“Metadata” is de term die bij kaarten vaak wordt gebruikt voor de beschrijving van kaarten. Om het delen van gegevens makkelijker te maken, zijn standaarden gemaakt voor de beschrijving van kaarten. In technische termen: ISO19115 en ISO19119. Deze standaarden worden beheerd door een onafhankelijke organisatie (Geonovum: <a class="link" href="http://www.geonovum.nl" target="_blank">http://www.geonovum.nl</a>).
-about.paragraph.header.5=Over downloaden:
-about.paragraph.5.1=De bestanden kan je in veel gevallen op je eigen pc opslaan. Dat is handig, omdat je dan zelf de data verder kan bewerken, analyseren of weergeven. Precies zoals jij dat wilt, voor je eigen doeleinden.
-about.paragraph.5.2=Gebruik hiervoor de knop “download”. Voor gebruik van dit soort gegevens is speciale software nodig. Dat wordt vaak een GIS genoemd (Geografisch Informatie Systeem). Veel gebruikte systemen zijn Arcgis en QGis. Voor meer informatie over dit soort systemen, zie: <a class="link" href="https://nl.wikipedia.org/wiki/Geografisch_informatiesysteem" target="_blank">https://nl.wikipedia.org/wiki/Geografisch_informatiesysteem</a>.
-about.paragraph.5.3=Bij de download kan je kiezen uit verschillend formaten:
-about.paragraph.5.3.option.1=<b>SHP</b> (shape, veel gebruikt open formaat, ontwikkeld door Esri)
-about.paragraph.5.3.option.2=<b>CSV</b> (bestand waarbij de gegevens door komma's zijn gescheiden)
-about.paragraph.5.3.option.3=<b>DXF</b> (Drawing exchange format, veel gebruikt formaat voor AutoCad)
-about.paragraph.5.3.option.4=<b>GeoJson</b> (formaat, eenvoudig geschikt voor ontwikkelaars die JavaScript hanteren)
-about.paragraph.5.3.option.5=<b>GML</b> (Geography Markup Language, een open standaard voor GIS data)
-about.paragraph.5.3.option.6=<b>KML</b> (Keyhole Markup Language, te gebruiken in Google Earth)
-about.paragraph.5.4=Door meerdere formaten beschikbaar te stellen, kan je zelf kiezen welk bestandsformaat het beste past bij de software die jij zelf wilt gebruiken.
-about.paragraph.5.5=Heb je niet de beschikking over dergelijke GIS-software, maar wil je toch kaarten zien? Dat kan, omdat er ook veel pdf-bestanden beschikbaar gesteld worden. Zie hiervoor verder bij de toelichting over de “statische kaarten”.
-about.paragraph.header.6=Over statische kaarten:
-about.paragraph.6.1=Naast bestanden en services kan je ook “statische kaarten” vinden in het Geoportaal. Dat zijn kaarten (meestal pdf’s) die gemaakt zijn op basis van de bestanden en services. Deze kaarten worden speciaal gemaakt voor diverse communicatie-doeleinden.
-about.paragraph.6.2=Je kan dit soort kaarten eenvoudig bekijken. Je hebt daarvoor geen geavanceerd GIS systeem voor nodig. Een pdf kan je openen met een PDF reader. Deze readers worden gratis beschikbaar gesteld, bijvoorbeeld door het bedrijf Adobe (<a class="link" href="http://www.adobe.nl" target="_blank">http://www.adobe.nl</a>).  De metadata van deze statische kaarten wordt ontsloten via de Dublin-core standaard.
+about.paragraph.header.2=Over metadata:
+about.paragraph.2.1=“Metadata” is de term die bij kaarten vaak wordt gebruikt voor de beschrijving van kaarten. Om het delen van gegevens makkelijker te maken, zijn standaarden gemaakt voor de beschrijving van kaarten. In technische termen: ISO19115 en ISO19119. Deze standaarden worden beheerd door een onafhankelijke organisatie (Geonovum: <a class="link" href="http://www.geonovum.nl" target="_blank">http://www.geonovum.nl</a>).
+about.paragraph.header.3=Over downloaden:
+about.paragraph.3.1=De bestanden kan je in veel gevallen op je eigen pc opslaan. Dat is handig, omdat je dan zelf de data verder kan bewerken, analyseren of weergeven. Precies zoals jij dat wilt, voor je eigen doeleinden.
+about.paragraph.3.2=Gebruik hiervoor de knop “download”. Voor gebruik van dit soort gegevens is speciale software nodig. Dat wordt vaak een GIS genoemd (Geografisch Informatie Systeem). Veel gebruikte systemen zijn Arcgis en QGis. Voor meer informatie over dit soort systemen, zie: <a class="link" href="https://nl.wikipedia.org/wiki/Geografisch_informatiesysteem" target="_blank">https://nl.wikipedia.org/wiki/Geografisch_informatiesysteem</a>.
+about.paragraph.3.3=Bij de download kan je kiezen uit verschillend formaten:
+about.paragraph.3.3.option.1=<b>SHP</b> (shape, veel gebruikt open formaat, ontwikkeld door Esri)
+about.paragraph.3.3.option.2=<b>CSV</b> (bestand waarbij de gegevens door komma's zijn gescheiden)
+about.paragraph.3.3.option.3=<b>DXF</b> (Drawing exchange format, veel gebruikt formaat voor AutoCad)
+about.paragraph.3.3.option.4=<b>GeoJson</b> (formaat, eenvoudig geschikt voor ontwikkelaars die JavaScript hanteren)
+about.paragraph.3.3.option.5=<b>GML</b> (Geography Markup Language, een open standaard voor GIS data)
+about.paragraph.3.3.option.6=<b>KML</b> (Keyhole Markup Language, te gebruiken in Google Earth)
+about.paragraph.3.4=Door meerdere formaten beschikbaar te stellen, kan je zelf kiezen welk bestandsformaat het beste past bij de software die jij zelf wilt gebruiken.
+about.paragraph.3.5=Heb je niet de beschikking over dergelijke GIS-software, maar wil je toch kaarten zien? Dat kan, omdat er ook veel pdf-bestanden beschikbaar gesteld worden. Zie hiervoor verder bij de toelichting over de “statische kaarten”.
+about.paragraph.header.4=Over statische kaarten:
+about.paragraph.4.1=Naast bestanden en services kan je ook “statische kaarten” vinden in het Geoportaal. Dat zijn kaarten (meestal pdf’s) die gemaakt zijn op basis van de bestanden en services. Deze kaarten worden speciaal gemaakt voor diverse communicatie-doeleinden.
+about.paragraph.4.2=Je kan dit soort kaarten eenvoudig bekijken. Je hebt daarvoor geen geavanceerd GIS systeem voor nodig. Een pdf kan je openen met een PDF reader. Deze readers worden gratis beschikbaar gesteld, bijvoorbeeld door het bedrijf Adobe (<a class="link" href="http://www.adobe.nl" target="_blank">http://www.adobe.nl</a>).  De metadata van deze statische kaarten wordt ontsloten via de Dublin-core standaard.
 
 contact.header=Contact
 contact.header.intern=Intern: Contact
