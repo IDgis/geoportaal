@@ -9,13 +9,16 @@
 	startNext: Integer,
 	startLast: Integer,
 	pageLast: Integer,
-	expand: Boolean
+	expand: Boolean,
+	sort: String
 )
 
 @import play.i18n._
 @import play.mvc.Http
 @import models.QDocument.document
 @import models.QMdType.mdType
+
+@date(doc: com.querydsl.core.Tuple) = {@if(doc.get(document.dateDataset) != null) {@sdf.format(doc.get(document.dateDataset))} else {@if(doc.get(document.dateDescription) != null) {@sdf.format(doc.get(document.dateDescription))} else {@Messages.get("metadata.date.none")}}}
 
 <div>
 	<div class="data-navigation">
@@ -28,16 +31,16 @@
 					<nav>
 						<ul id="pager-adjusted" class="pager">
 							<li class="@if(start.equals(0)) {disabled paging-disabled}">
-								<a href="@routes.Application.search(0, textSearch, typesString, false, expand)" class="js-nav-button">@Messages.get("button.first")</a>
+								<a href="@routes.Application.search(0, textSearch, typesString, false, expand, sort)" class="js-nav-button">@Messages.get("button.first")</a>
 							</li>
 							<li class="@if(start.equals(0)) {disabled paging-disabled}">
-								<a href="@routes.Application.search(startPrevious, textSearch, typesString, false, expand)" class="js-nav-button">@Messages.get("button.previous")</a>
+								<a href="@routes.Application.search(startPrevious, textSearch, typesString, false, expand, sort)" class="js-nav-button">@Messages.get("button.previous")</a>
 							</li>
 							<li class="@if(startNext >= count) {disabled paging-disabled}">
-								<a href="@routes.Application.search(startNext, textSearch, typesString, false, expand)" class="js-nav-button">@Messages.get("button.next")</a>
+								<a href="@routes.Application.search(startNext, textSearch, typesString, false, expand, sort)" class="js-nav-button">@Messages.get("button.next")</a>
 							</li>
 							<li class="@if(startNext >= count) {disabled paging-disabled}">
-								<a href="@routes.Application.search(startLast, textSearch, typesString, false, expand)" class="js-nav-button">@Messages.get("button.last") (@pageLast)</a>
+								<a href="@routes.Application.search(startLast, textSearch, typesString, false, expand, sort)" class="js-nav-button">@Messages.get("button.last") (@pageLast)</a>
 							</li>
 						</ul>
 					</nav>
@@ -46,6 +49,18 @@
 					<label class="checkbox-inline">
 						<input id="js-expand-all" class="js-expand-all-evt" type="checkbox" @if(expand) {checked}>
 						<span id="js-label-expand-all">@Messages.get("results.expand")</span>
+					</label>
+				</div>
+				<div class="row radio">
+					<label>
+						<input type="radio" name="sort-records" id="sort-dataset" value="sortDataset"@if(!"sortDescription".equals(sort)) { checked}>
+						@Messages.get("metadata.sort.dataset")
+					</label>
+				</div>
+				<div class="row radio">
+					<label>
+						<input type="radio" name="sort-records" id="sort-description" value="sortDescription"@if("sortDescription".equals(sort)) { checked}>
+						@Messages.get("metadata.sort.description")
 					</label>
 				</div>
 			</div>
@@ -86,7 +101,7 @@
 				<div class="col-md-12">
 					<p class="title">
 						<a class="md-title" href="@routes.Application.getMetadata(doc.get(mdType.name), doc.get(document.uuid))" target="_blank">
-							@doc.get(document.title) (@sdf.format(doc.get(document.date).getTime()), @doc.get(document.creator))@if("service".equals(doc.get(mdType.name))){@if("view".equals(doc.get(document.typeService))){ - WMS}@if("download".equals(doc.get(document.typeService))){ - WFS}}
+							@doc.get(document.title) (@date(doc), @doc.get(document.creator))@if("service".equals(doc.get(mdType.name))){@if("view".equals(doc.get(document.typeService))){ - WMS}@if("download".equals(doc.get(document.typeService))){ - WFS}}
 						</a>
 					</p>
 				</div>
@@ -98,10 +113,14 @@
 							</a>
 						}
 						
-						@if(doc.get(document.description).length > 460) {
-							@doc.get(document.description).substring(0, 460)...
+						@if(doc.get(document.description) != null) {
+							@if(doc.get(document.description).length > 460) {
+								@doc.get(document.description).substring(0, 460)...
+							} else {
+								@doc.get(document.description)
+							}
 						} else {
-							@doc.get(document.description)
+							@Messages.get("metadata.description.none")
 						}
 					</p>
 					
@@ -125,16 +144,16 @@
 			<nav>
 				<ul id="pager-adjusted" class="pager">
 					<li class="@if(start.equals(0)) {disabled paging-disabled}">
-						<a href="@routes.Application.search(0, textSearch, typesString, false, expand)" class="js-nav-button">@Messages.get("button.first")</a>
+						<a href="@routes.Application.search(0, textSearch, typesString, false, expand, sort)" class="js-nav-button">@Messages.get("button.first")</a>
 					</li>
 					<li class="@if(start.equals(0)) {disabled paging-disabled}">
-						<a href="@routes.Application.search(startPrevious, textSearch, typesString, false, expand)" class="js-nav-button">@Messages.get("button.previous")</a>
+						<a href="@routes.Application.search(startPrevious, textSearch, typesString, false, expand, sort)" class="js-nav-button">@Messages.get("button.previous")</a>
 					</li>
 					<li class="@if(startNext >= count) {disabled paging-disabled}">
-						<a href="@routes.Application.search(startNext, textSearch, typesString, false, expand)" class="js-nav-button">@Messages.get("button.next")</a>
+						<a href="@routes.Application.search(startNext, textSearch, typesString, false, expand, sort)" class="js-nav-button">@Messages.get("button.next")</a>
 					</li>
 					<li class="@if(startNext >= count) {disabled paging-disabled}">
-						<a href="@routes.Application.search(startLast, textSearch, typesString, false, expand)" class="js-nav-button">@Messages.get("button.last") (@pageLast)</a>
+						<a href="@routes.Application.search(startLast, textSearch, typesString, false, expand, sort)" class="js-nav-button">@Messages.get("button.last") (@pageLast)</a>
 					</li>
 				</ul>
 			</nav>

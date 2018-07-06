@@ -70,49 +70,73 @@ require([
 			filterExpandSubjects();
 		});
 		
-		function filterExpandTypes() {
-			var arrayElements = [];
-			var elements = query('.js-data-type:checked');
-			array.forEach(elements, function(item) {
-				var element = domAttr.get(item, 'data-md-type');
-				arrayElements.push(element);
+		// Handle sort
+		on(win.doc, 'input[name=sort-records]:click', function(e) {
+			var textSearch = domAttr.get(dom.byId('js-text-search'), 'value');
+			
+			if(domAttr.get(dom.byId('js-page'), 'value') === 'search') {
+				var typesString = getDataTypes('.js-data-type:checked', 'data-md-type');
+				var url = jsRoutes.controllers.Application.search(0, textSearch, typesString, true, true, getSortValue()).url;
+				updateHTML(url, 'js-search-results-all', typesString);
+			} else if(domAttr.get(dom.byId('js-page'), 'value') === 'browse') {
+				var typesString = getDataTypes('.js-data-subject:checked', 'data-md-subject');
+				var url = jsRoutes.controllers.Application.browse(0, textSearch, typesString, true, true, getSortValue()).url;
+				updateHTML(url, 'js-browse-results-all', typesString);
+			}
+		});
+		
+		function getDataTypes(queryClass, typeAttribute) {
+			var typeValues = [];
+			var types = query(queryClass);
+			array.forEach(types, function(type) {
+				var value = domAttr.get(type, typeAttribute);
+				typeValues.push(value);
 			});
 			
+			return typeValues.join('+');
+		}
+		
+		function getSortValue() {
+			var sortDataset = dom.byId('sort-dataset');
+			var sortDescription = dom.byId('sort-description');
+			
+			var sortValue = sortDataset.value;
+			if(sortDescription.checked) {
+				sortValue = sortDescription.value;
+			}
+			
+			return sortValue;
+		}
+		
+		function filterExpandTypes() {
 			var start = domAttr.get(dom.byId('js-start-current'), 'value');
 			var textSearch = domAttr.get(dom.byId('js-text-search'), 'value');
-			var elementString = arrayElements.join('+');
+			var typesString = getDataTypes('.js-data-type:checked', 'data-md-type');
 			var expandValue = domAttr.get(dom.byId('js-expand-value'), 'value');
 			var expandValueBoolean = (expandValue === 'true');
+			var url = jsRoutes.controllers.Application.search(start, textSearch, typesString, true, expandValueBoolean, getSortValue()).url;
 			
-			xhr(jsRoutes.controllers.Application.search(start, textSearch, elementString, true, expandValueBoolean).url, {
-				handleAs: "html"	
-			}).then(function(data) {
-				domConstruct.empty(dom.byId('js-search-results-all'));
-				domConstruct.place(data, dom.byId('js-search-results-all'));
-				domAttr.set(dom.byId('js-element-string'), 'value', elementString);
-			});
+			updateHTML(url, 'js-search-results-all', typesString);
 		}
 		
 		function filterExpandSubjects() {
-			var arrayElements = [];
-			var elements = query('.js-data-subject:checked');
-			array.forEach(elements, function(item) {
-				var element = domAttr.get(item, 'data-md-subject');
-				arrayElements.push(element);
-			});
-			
 			var start = domAttr.get(dom.byId('js-start-current'), 'value');
 			var textSearch = domAttr.get(dom.byId('js-text-search'), 'value');
-			var elementString = arrayElements.join('+');
+			var typesString = getDataTypes('.js-data-subject:checked', 'data-md-subject');
 			var expandValue = domAttr.get(dom.byId('js-expand-value'), 'value');
 			var expandValueBoolean = (expandValue === 'true');
+			var url = jsRoutes.controllers.Application.browse(start, textSearch, typesString, true, expandValueBoolean, getSortValue()).url;
 			
-			xhr(jsRoutes.controllers.Application.browse(start, textSearch, elementString, true, expandValueBoolean).url, {
-				handleAs: "html"	
+			updateHTML(url, 'js-browse-results-all', typesString);
+		}
+		
+		function updateHTML(url, containerId, typesString) {
+			xhr(url, {
+				handleAs: 'html'	
 			}).then(function(data) {
-				domConstruct.empty(dom.byId('js-browse-results-all'));
-				domConstruct.place(data, dom.byId('js-browse-results-all'));
-				domAttr.set(dom.byId('js-element-string'), 'value', elementString);
+				domConstruct.empty(dom.byId(containerId));
+				domConstruct.place(data, dom.byId(containerId));
+				domAttr.set(dom.byId('js-element-string'), 'value', typesString);
 			});
 		}
 });

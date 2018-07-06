@@ -9,11 +9,12 @@
 	startNext: Integer,
 	startLast: Integer,
 	pageLast: Integer,
-	expand: Boolean
+	expand: Boolean,
+	sort: String
 )
 
-@displayNedstat() = @{
-	play.Play.application().configuration().getString("portal.display.nedstat") == "true"
+@displayStatsAnalytics() = @{
+	play.Play.application().configuration().getString("portal.display.stats.analytics") == "true"
 }
 
 @import play.i18n._
@@ -43,27 +44,28 @@
 	}
 	
 	<div id="js-search-results-all">
-		@views.html.searchresult(documents, sdf, textSearch, typesString, count, page, start, startPrevious, startNext, startLast, pageLast, expand)
+		@views.html.searchresult(documents, sdf, textSearch, typesString, count, page, start, startPrevious, startNext, startLast, pageLast, expand, sort)
 	</div>
 	
-	@if(displayNedstat() && 
-		"intern".equals(play.Play.application().configuration().getString("portal.access"))) {
-		<!-- Begin Nedstat Pro code v2.005f -->
-		<script language="javascript" type="text/javascript">
-			var t='http://m1.nedstatpro.net/nl/nedstatpro.gif?name=provinci18_2';
-			t+='&v=2.005f&_t='+(new Date()).getTime();var d=document;var n=navigator;var r='';
-			var f=0;if(top!=self){if('\u0041'=='A'){var u=n.userAgent;if(u.indexOf('Safari')==-1){
-			var b=u.indexOf('Opera');if(b==-1||(u.charAt(b+6)+0)>5){b=u.indexOf('Mozilla');
-			var v=b!=-1?u.charAt(b+8)>4:1;if(u.indexOf('compatible')!=-1||v){
-			var c='try{r=top.document.referrer}catch(e){f=1}';eval(c)}}}}}else{r=d.referrer}
-			if (f)t+='&foreignframe=1';else if(r)t+='&referrer='+escape(r);
-			if(d.images){var m=new Image();m.src=t;}else
-			d.write('<img src='+t+' width="1" height="1" align="right">');
-		</script>
-		<noscript>
-			<img src="http://m1.nedstatpro.net/nl/nedstatpro.gif?name=provinci18_2" width="1" height="1" align="right" alt="" />
-		</noscript>
-		<!-- End Nedstat Pro code -->
+	@if(displayStatsAnalytics()) {
+		@if("intern".equals(play.Play.application().configuration().getString("portal.access"))) {
+			<!-- Begin Nedstat Pro code v2.005f -->
+			<script language="javascript" type="text/javascript">
+				var t='http://m1.nedstatpro.net/nl/nedstatpro.gif?name=provinci18_2';
+				t+='&v=2.005f&_t='+(new Date()).getTime();var d=document;var n=navigator;var r='';
+				var f=0;if(top!=self){if('\u0041'=='A'){var u=n.userAgent;if(u.indexOf('Safari')==-1){
+				var b=u.indexOf('Opera');if(b==-1||(u.charAt(b+6)+0)>5){b=u.indexOf('Mozilla');
+				var v=b!=-1?u.charAt(b+8)>4:1;if(u.indexOf('compatible')!=-1||v){
+				var c='try{r=top.document.referrer}catch(e){f=1}';eval(c)}}}}}else{r=d.referrer}
+				if (f)t+='&foreignframe=1';else if(r)t+='&referrer='+escape(r);
+				if(d.images){var m=new Image();m.src=t;}else
+				d.write('<img src='+t+' width="1" height="1" align="right">');
+			</script>
+			<noscript>
+				<img src="http://m1.nedstatpro.net/nl/nedstatpro.gif?name=provinci18_2" width="1" height="1" align="right" alt="" />
+			</noscript>
+			<!-- End Nedstat Pro code -->
+		}
 	}
 	
 	<input type="hidden" id="js-start-current" value="@start">

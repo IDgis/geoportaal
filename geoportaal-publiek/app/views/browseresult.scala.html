@@ -10,12 +10,15 @@
 	startNext: Integer,
 	startLast: Integer,
 	pageLast: Integer,
-	expand: Boolean
+	expand: Boolean,
+	sort: String
 )
 
 @import play.i18n._
 @import models.QSubject.subject
 @import models.QSubjectLabel.subjectLabel
+
+@date(doc: models.DocSubject) = {@if(doc.getDate() != null) {@sdf.format(doc.getDate().getTime())} else {@Messages.get("metadata.date.none")}}
 
 <div class="col-md-12">
 	<div class="data-navigation">
@@ -28,16 +31,16 @@
 					<nav>
 						<ul id="pager-adjusted" class="pager">
 							<li @if(start.equals(0)) {class="disabled paging-disabled"}>
-								<a href="@routes.Application.browse(0, textSearch, subjectsString, false, expand)">@Messages.get("button.first")</a>
+								<a href="@routes.Application.browse(0, textSearch, subjectsString, false, expand, sort)">@Messages.get("button.first")</a>
 							</li>
 							<li @if(start.equals(0)) {class="disabled paging-disabled"}>
-								<a href="@routes.Application.browse(startPrevious, textSearch, subjectsString, false, expand)">@Messages.get("button.previous")</a>
+								<a href="@routes.Application.browse(startPrevious, textSearch, subjectsString, false, expand, sort)">@Messages.get("button.previous")</a>
 							</li>
 							<li @if(startNext >= count) {class="disabled paging-disabled"}>
-								<a href="@routes.Application.browse(startNext, textSearch, subjectsString, false, expand)">@Messages.get("button.next")</a>
+								<a href="@routes.Application.browse(startNext, textSearch, subjectsString, false, expand, sort)">@Messages.get("button.next")</a>
 							</li>
 							<li @if(startNext >= count) {class="disabled paging-disabled"}>
-								<a href="@routes.Application.browse(startLast, textSearch, subjectsString, false, expand)">@Messages.get("button.last") (@pageLast)</a>
+								<a href="@routes.Application.browse(startLast, textSearch, subjectsString, false, expand, sort)">@Messages.get("button.last") (@pageLast)</a>
 							</li>
 						</ul>
 					</nav>
@@ -46,6 +49,18 @@
 					<label class="checkbox-inline">
 						<input id="js-expand-all" class="js-expand-all-evt" type="checkbox" @if(expand) {checked}>
 						<span id="js-label-expand-all">@Messages.get("results.expand")</span>
+					</label>
+				</div>
+				<div class="row radio">
+					<label>
+						<input type="radio" name="sort-records" id="sort-dataset" value="sortDataset"@if(!"sortDescription".equals(sort)) { checked}>
+						@Messages.get("metadata.sort.dataset")
+					</label>
+				</div>
+				<div class="row radio">
+					<label>
+						<input type="radio" name="sort-records" id="sort-description" value="sortDescription"@if("sortDescription".equals(sort)) { checked}>
+						@Messages.get("metadata.sort.description")
 					</label>
 				</div>
 			</div>
@@ -83,7 +98,7 @@
 					<div class="col-md-12 browse-title">
 						<p class="title">
 							<a class="md-title" href="@routes.Application.getMetadata(doc.getMetadataType, doc.getUuid)" target="_blank">
-								@doc.getTitle() (@sdf.format(doc.getDate().getTime()), @doc.getCreator())@if("service".equals(doc.getMetadataType)){@if("view".equals(doc.getTypeService)){ - WMS}@if("download".equals(doc.getTypeService)){ - WFS}}
+								@doc.getTitle() (@date(doc), @doc.getCreator())@if("service".equals(doc.getMetadataType)){@if("view".equals(doc.getTypeService)){ - WMS}@if("download".equals(doc.getTypeService)){ - WFS}}
 							</a>
 						</p>
 					</div>
@@ -95,10 +110,14 @@
 								</a>
 							}
 							
-							@if(doc.getDescription().length > 460) {
-								@doc.getDescription().substring(0, 460)...
+							@if(doc.getDescription() != null) {
+								@if(doc.getDescription().length > 460) {
+									@doc.getDescription().substring(0, 460)...
+								} else {
+									@doc.getDescription()
+								}
 							} else {
-								@doc.getDescription()
+								@Messages.get("metadata.description.none")
 							}
 						</p>
 						
@@ -122,16 +141,16 @@
 				<nav>
 					<ul id="pager-adjusted" class="pager">
 						<li @if(start.equals(0)) {class="disabled paging-disabled"}>
-							<a href="@routes.Application.browse(0, textSearch, subjectsString, false, expand)">@Messages.get("button.first")</a>
+							<a href="@routes.Application.browse(0, textSearch, subjectsString, false, expand, sort)">@Messages.get("button.first")</a>
 						</li>
 						<li @if(start.equals(0)) {class="disabled paging-disabled"}>
-							<a href="@routes.Application.browse(startPrevious, textSearch, subjectsString, false, expand)">@Messages.get("button.previous")</a>
+							<a href="@routes.Application.browse(startPrevious, textSearch, subjectsString, false, expand, sort)">@Messages.get("button.previous")</a>
 						</li>
 						<li @if(startNext >= count) {class="disabled paging-disabled"}>
-							<a href="@routes.Application.browse(startNext, textSearch, subjectsString, false, expand)">@Messages.get("button.next")</a>
+							<a href="@routes.Application.browse(startNext, textSearch, subjectsString, false, expand, sort)">@Messages.get("button.next")</a>
 						</li>
 						<li @if(startNext >= count) {class="disabled paging-disabled"}>
-							<a href="@routes.Application.browse(startLast, textSearch, subjectsString, false, expand)">@Messages.get("button.last") (@pageLast)</a>
+							<a href="@routes.Application.browse(startLast, textSearch, subjectsString, false, expand, sort)">@Messages.get("button.last") (@pageLast)</a>
 						</li>
 					</ul>
 				</nav>

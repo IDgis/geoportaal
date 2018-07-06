@@ -10,7 +10,8 @@
 	startNext: Integer,
 	startLast: Integer,
 	pageLast: Integer,
-	expand: Boolean
+	expand: Boolean,
+	sort: String
 )
 
 @import play.i18n._
@@ -39,7 +40,7 @@
 	}
 	
 	<div id="js-browse-results-all">
-		@views.html.browseresult(subjects, documents, sdf, textSearch, subjectsString, count, page, start, startPrevious, startNext, startLast, pageLast, expand)
+		@views.html.browseresult(subjects, documents, sdf, textSearch, subjectsString, count, page, start, startPrevious, startNext, startLast, pageLast, expand, sort)
 	</div>
 	
 	<input type="hidden" id="js-start-current" value="@start">
