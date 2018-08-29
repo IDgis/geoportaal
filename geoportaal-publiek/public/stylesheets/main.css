@@ -53,8 +53,11 @@ a.md-title:hover {cursor:pointer;}
 .browse-metadata > .row > .browse-title > .titel {margin-top:0;}
 .link {background:none!important;border:none;padding:0!important;cursor:pointer;color:#255c9f;text-decoration:underline;}
 
-.filter-options {margin-top: 10px;margin-bottom: 20px;padding: 0px 0px 0px 15px;}
-.data-navigation {margin-top: 10px;margin-bottom: 10px;padding: 0px 20px 0px 0px;}
+#js-search-results-all {overflow: auto;}
+.data-control {margin: 10px 0 10px -15px;overflow: auto;}
+.page-information {margin-left: 15px;}
+.filter-options {margin: 10px 0 20px 15px;}
+.display-options {margin0top: 10px;}
 #expand-area {margin-top:5px;}
 
 #header-subjects {margin-top: 20px;margin-bottom: 0px;padding: 0px 0px 0px 15px;}
