@@ -41,11 +41,18 @@ class DockerPlugin implements Plugin<Project> {
 				components {
 					play {
 						binaries.all { binary ->
+							def copyRootCA = "copyRootCA"
 							def distTask = "create${binary.name.capitalize()}Dist"
 							def copyUnzipBinaryTask = "copy${binary.name.capitalize()}Docker"
 							def createDockerfileTask = "create${binary.name.capitalize()}Dockerfile"
 							def buildImageTask = "build${binary.name.capitalize()}DockerImage"
 							def copyScriptTask = "copy${binary.name.capitalize()}DockerStartupScript"
+							
+							// Copy the root certificate to the docker build context
+							tasks.create (copyRootCA, Copy) { task ->
+								from "../docker/rootCA.crt"
+								into "${project.buildDir}/docker/${binary.name}"
+							}
 							
 							// Copy and unzip the Play binary ZIP to the directory where the Docker build 
 							// context is materialized:
@@ -86,7 +93,12 @@ class DockerPlugin implements Plugin<Project> {
 									" && chown -R daemon:daemon /var/lib/${binary.name}" +
 									" && usermod -d /var/lib/${binary.name} daemon" +
 									" && chmod +x /opt/start-application.sh"
-									
+								
+								if(project.hasProperty('importRootCA')) {
+									task.copyFile "rootCA.crt", "/opt"
+									task.runCommand "/usr/lib/jvm/zulu-8-amd64/bin/keytool -import -alias server -keystore /usr/lib/jvm/zulu-8-amd64/jre/lib/security/cacerts -file /opt/rootCA.crt -storepass changeit -noprompt"
+								}
+								
 								task.environmentVariable ("JAVA_OPTS", "-Xmx2048m")
 								task.environmentVariable ("PLAY_BINARY_OPTS", "-Dplay.evolutions.db.default.autoApply=true")
 								task.workingDir "/opt/${binary.name}"
@@ -99,6 +111,9 @@ class DockerPlugin implements Plugin<Project> {
 								task.dependsOn createDockerfileTask
 								task.dependsOn copyUnzipBinaryTask
 								task.dependsOn copyScriptTask
+								if(project.hasProperty('importRootCA')) {
+									task.dependsOn copyRootCA
+								}
 								
 								def tagVersion = "${project.version}".replaceAll ("\\+", "-")
 								

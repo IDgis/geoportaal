@@ -5,3 +5,4 @@
 .cache-main
 docker-compose.override.yml
 geoportaal-conversion.sql.gz
+docker/*.crt
