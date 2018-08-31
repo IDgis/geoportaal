@@ -201,6 +201,11 @@ project(':geoportaal-harvester') {
 		compile 'ch.qos.logback:logback-core:1.2.3'
 	}
 	
+	task copyRootCA(type: Copy) {
+		from '../docker/rootCA.crt'
+		into "${project.buildDir}/docker"
+	}
+	
 	task copyTar(type: Copy) {
 		dependsOn distTar
 		from distTar.archivePath
@@ -213,11 +218,18 @@ project(':geoportaal-harvester') {
 		from 'azul/zulu-openjdk:8'
 		copyFile "${distTar.archiveName}", '/opt'
 		runCommand "cd /opt; tar -xvf ${distTar.archiveName}; rm ${distTar.archiveName}; chmod u+x ${project.name}-${project.version}/bin/${project.name}"
+		if(project.hasProperty('importRootCA')) {
+			copyFile 'rootCA.crt', '/opt'
+			runCommand '/usr/lib/jvm/zulu-8-amd64/bin/keytool -import -alias server -keystore /usr/lib/jvm/zulu-8-amd64/jre/lib/security/cacerts -file /opt/rootCA.crt -storepass changeit -noprompt'
+		}
 		defaultCommand "/opt/${project.name}-${project.version}/bin/${project.name}"
 	}
 
 	task buildImage(type: DockerBuildImage) {
 		dependsOn createDockerfile
+		if(project.hasProperty('importRootCA')) {
+			dependsOn copyRootCA
+		}
 		inputDir = project.file('build/docker')
 		def tagVersion = "${project.version}".replaceAll ("\\+", "-")
 		tag = "idgis/${project.name}:${tagVersion}"
