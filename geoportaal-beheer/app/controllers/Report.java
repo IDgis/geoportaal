@@ -125,7 +125,8 @@ public class Report extends Controller {
 		if(url == null) {
 			return Promise.pure(notFound());
 		} else {
-			WSRequest request = ws.url(url).setFollowRedirects(true);
+			// When updating the request timeout, the idle timeout also needs to be updated in application.conf
+			WSRequest request = ws.url(url).setRequestTimeout(300000).setFollowRedirects(true);
 			
 			LocalDate ld = LocalDate.now();
 			response().setContentType("text/csv");
