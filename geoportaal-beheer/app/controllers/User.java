@@ -118,7 +118,8 @@ public class User extends Controller {
 			String dbPassword = tx
 				.select(user.password)
 				.from(user)
-				.where(user.username.equalsIgnoreCase(username))
+				.where(user.username.equalsIgnoreCase(username)
+					.and(user.archived.isFalse()))
 				.fetchOne();
 			
 			// Create a BCrypt encoder
@@ -312,7 +313,7 @@ public class User extends Controller {
 			this.returnUrl = returnUrl;
 		}
 		
-		public String getUsername() {			
+		public String getUsername() {
 			return username;
 		}
 		
