@@ -83,6 +83,7 @@ public class Index extends Controller {
 			// Fetches the supplier list
 			List<Tuple> supplierList = tx.select(user.all())
 				.from(user)
+				.where(user.archived.isFalse())
 				.orderBy(user.label.asc())
 				.fetch();
 			
@@ -595,6 +596,8 @@ public class Index extends Controller {
 						throw new GeoportaalBeheerException("Changing supplier: different amount of affected rows than expected");
 					}
 				}
+				
+				tx.refreshMaterializedViewConcurrently(metadataSearch);
 			}
 			
 			// Return the index page
