@@ -22,6 +22,8 @@ import static models.QUser.user;
 
 import java.sql.Timestamp;
 import java.text.DecimalFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -120,6 +122,12 @@ public class Report extends Controller {
 		}
 	}
 	
+	public String getContentDispositionValue(String type) {
+		LocalDateTime ldt = LocalDateTime.now();
+		String dateTime = ldt.format(DateTimeFormatter.ofPattern("yyyy-MM-dd_hh-mm"));
+		return "attachment; filename=\"rapport_" + type + "_" + dateTime + ".csv\"";
+	}
+	
 	public Promise<Result> writeOtherCSV(String type) {
 		String url = csvUrls.get(type);
 		if(url == null) {
@@ -128,28 +136,20 @@ public class Report extends Controller {
 			// When updating the request timeout, the idle timeout also needs to be updated in application.conf
 			WSRequest request = ws.url(url).setRequestTimeout(300000).setFollowRedirects(true);
 			
-			LocalDate ld = LocalDate.now();
 			response().setContentType("text/csv");
 			response().setHeader(
 				"Content-Disposition", 
-				"attachment; filename=\"rapport_"
-					+ csvNames.get(type)
-					+ "_"
-					+ ld.getYear() 
-					+ ld.getMonthOfYear() 
-					+ ld.getDayOfMonth() 
-					+ ".csv\"");
+				getContentDispositionValue(csvNames.get(type)));
 			
 			return request.get().map(response -> ok(response.getBodyAsStream()));
 		}
 	}
 	
 	public Result writeDcCSV() throws Exception {
-		LocalDate ld = LocalDate.now();
-		
 		response().setContentType("text/csv");
-		response().setHeader("Content-Disposition", "attachment; filename=\"rapport_dublincore_" + ld.getYear() + ld.getMonthOfYear() + 
-				ld.getDayOfMonth() + ".csv\"");
+		response().setHeader(
+				"Content-Disposition",
+				getContentDispositionValue("dublincore"));
 		
 		String header = "\"title\";\"creator\";\"subject\";\"description\";\"date_creation\";\"date_publication\";\"date_valid_start\";"
 				+ "\"date_valid_end\";\"type\";\"format\";\"identifier\";\"location\";\"number\";\"count\";\"source\";\"attachment\";"
