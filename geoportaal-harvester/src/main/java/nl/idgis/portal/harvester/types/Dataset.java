@@ -44,10 +44,13 @@ public class Dataset {
 				accessId = Database.getAccessId(qf, "extern");
 			}
 			
-			Boolean downloadable = false;
-			Boolean wmsOnly = false;
+			boolean downloadable = false;
+			boolean wmsOnly = false;
+			boolean archived = false;
 			for(String ul : doc.getStrings(DatasetPath.USE_LIMITATION.path())) {
-				if(ul.equals("Downloadable data")) {
+				if(ul == null) continue;
+				
+				if("Downloadable data".equals(ul.trim())) {
 					for(String resource : doc.getStrings(DatasetPath.ONLINE_SOURCE.path())) {
 						if(resource.startsWith(URL_GEOSERVER_DATASET_PUBLIC_PREFIX)) {
 							downloadable = true;
@@ -56,8 +59,12 @@ public class Dataset {
 					}
 				}
 				
-				if(ul.equals("Alleen WMS extern")) {
+				if("Alleen WMS extern".equals(ul.trim())) {
 					wmsOnly = true;
+				}
+				
+				if("Alleen beschikbaar in historisch archief".equals(ul.trim())) {
+					archived = true;
 				}
 			}
 			
@@ -85,7 +92,8 @@ public class Dataset {
 					doc.getString(DatasetPath.SPATIAL_SCHEMA.path()),
 					published,
 					viewerUrl,
-					wmsOnly);
+					wmsOnly,
+					archived);
 			
 			Long documentId =  Database.getDocumentId(qf, doc.getString(DatasetPath.UUID.path()));
 			

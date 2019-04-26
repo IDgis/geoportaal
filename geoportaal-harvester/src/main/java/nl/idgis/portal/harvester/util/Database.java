@@ -113,7 +113,8 @@ public class Database {
 			String spatialSchema,
 			boolean published,
 			String viewerUrl,
-			boolean wmsOnly) {
+			boolean wmsOnly,
+			boolean archived) {
 		qf.insert(document)
 			.set(document.uuid, uuid)
 			.set(document.mdTypeId, mdTypeId)
@@ -129,6 +130,7 @@ public class Database {
 			.set(document.published, published)
 			.set(document.viewerUrl, viewerUrl)
 			.set(document.wmsOnly, wmsOnly)
+			.set(document.archived, archived)
 			.execute();
 	}
 	
