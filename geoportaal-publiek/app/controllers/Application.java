@@ -1,9 +1,9 @@
 package controllers;
 
 import static models.QAccess.access;
-import static models.QDocumentSearch.documentSearch;
 import static models.QDocSubject.docSubject;
 import static models.QDocument.document;
+import static models.QDocumentSearch.documentSearch;
 import static models.QMdType.mdType;
 import static models.QSubject.subject;
 import static models.QSubjectLabel.subjectLabel;
@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
+import javax.xml.XMLConstants;
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -27,7 +28,6 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import javax.xml.XMLConstants;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathFactory;
@@ -39,10 +39,8 @@ import org.w3c.dom.ProcessingInstruction;
 
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.dsl.DateTimePath;
-import com.querydsl.core.types.dsl.Wildcard;
 import com.querydsl.sql.SQLExpressions;
 import com.querydsl.sql.SQLQuery;
-import com.querydsl.sql.WindowOver;
 
 import models.DocSubject;
 import models.Search;
@@ -53,7 +51,9 @@ import play.i18n.Messages;
 import play.libs.F.Promise;
 import play.libs.ws.WSClient;
 import play.libs.ws.WSRequest;
-import play.mvc.*;
+import play.mvc.Controller;
+import play.mvc.Http;
+import play.mvc.Result;
 import util.QueryDSL;
 import views.html.*;
 
@@ -79,7 +79,8 @@ public class Application extends Controller {
 					.from(document)
 					.join(mdType).on(document.mdTypeId.eq(mdType.id))
 					.where(document.dateDataset.isNotNull())
-					.where(document.description.isNotNull());
+					.where(document.description.isNotNull())
+					.where(document.archived.isNull().or(document.archived.isFalse()));
 			
 			if(!intern) {
 				Integer accessId = tx.select(access.id)
@@ -123,9 +124,14 @@ public class Application extends Controller {
 		List<String> types = Arrays.asList(typesArray);
 		
 		return q.withTransaction(tx -> {
-			Boolean intern = false;
+			boolean intern = false;
 			if("intern".equals(portalAccess)) {
 				intern = true;
+			}
+			
+			boolean includingDatasetsArchived = false;
+			for(String type : types) {
+				if("datasetArchived".equals(type)) includingDatasetsArchived = true;
 			}
 			
 			DateTimePath<Timestamp> dateColumn = document.dateDataset;
@@ -138,16 +144,28 @@ public class Application extends Controller {
 					document.spatialSchema, document.published, document.typeService, document.viewerUrl,
 					document.wmsOnly, mdType.url, mdType.name)
 					.from(document)
-					.join(mdType).on(document.mdTypeId.eq(mdType.id))
-					.where(mdType.name.in(types));
+					.join(mdType).on(document.mdTypeId.eq(mdType.id));
 			
-			if(!intern) {
+			if(intern) {
+				if(includingDatasetsArchived) {
+					queryDocuments
+						.where((mdType.name.in(types).and(document.archived.isNull().or(document.archived.isFalse())))
+							.or(mdType.name.eq("dataset").and(document.archived.isTrue())));
+				} else {
+					queryDocuments
+						.where(mdType.name.in(types))
+						.where(document.archived.isNull().or(document.archived.isFalse()));
+				}
+			} else {
 				Integer accessId = tx.select(access.id)
-					.from(access)
-					.where(access.name.eq("extern"))
-					.fetchOne();
-				
-				queryDocuments.where(document.accessId.eq(accessId));
+						.from(access)
+						.where(access.name.eq("extern"))
+						.fetchOne();
+					
+				queryDocuments
+					.where(document.accessId.eq(accessId))
+					.where(mdType.name.in(types))
+					.where(document.archived.isNull().or(document.archived.isFalse()));
 			}
 			
 			// Strip characters from text search string that conflict with Postgres full-text search
@@ -225,10 +243,10 @@ public class Application extends Controller {
 					.fetch();
 			
 			if(filter) {
-				return ok(searchresult.render(documents, sdf, textSearch, typesString, count, page, finalStart, startPrevious, startNext, startLast, pageLast, expand, sort));
+				return ok(searchresult.render(documents, sdf, textSearch, types, typesString, count, page, finalStart, startPrevious, startNext, startLast, pageLast, expand, sort));
 			}
 			
-			return ok(search.render(documents, sdf, textSearch, typesString, count, page, finalStart, startPrevious, startNext, startLast, pageLast, expand, sort));
+			return ok(search.render(documents, sdf, textSearch, types, typesString, count, page, finalStart, startPrevious, startNext, startLast, pageLast, expand, sort));
 		});
 	}
 	
@@ -266,6 +284,7 @@ public class Application extends Controller {
 					document.wmsOnly, mdType.url, mdType.name)
 					.from(document)
 					.join(mdType).on(document.mdTypeId.eq(mdType.id))
+					.where(document.archived.isNull().or(document.archived.isFalse()))
 					.where(document.id.in(SQLExpressions.select(docSubject.documentId)
 							.from(docSubject)
 							.join(subject).on(docSubject.subjectId.eq(subject.id))

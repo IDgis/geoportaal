@@ -1,6 +1,7 @@
 @(documents: java.util.List[com.querydsl.core.Tuple],
 	sdf: java.text.SimpleDateFormat,
 	textSearch: String,
+	types: java.util.List[String],
 	typesString: String,
 	count: Integer,
 	page:Integer,
@@ -44,7 +45,7 @@
 	}
 	
 	<div id="js-search-results-all">
-		@views.html.searchresult(documents, sdf, textSearch, typesString, count, page, start, startPrevious, startNext, startLast, pageLast, expand, sort)
+		@views.html.searchresult(documents, sdf, textSearch, types, typesString, count, page, start, startPrevious, startNext, startLast, pageLast, expand, sort)
 	</div>
 	
 	@if(displayStatsAnalytics()) {

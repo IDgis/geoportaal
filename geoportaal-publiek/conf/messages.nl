@@ -21,6 +21,7 @@ results.expand=Resultaten uitklappen
 tsv.language=dutch
 
 metadata.type.dataset=GIS bestanden
+metadata.type.dataset.archived=GIS bestanden in archief
 metadata.type.service=Services
 metadata.type.dc=Statische kaarten
 
