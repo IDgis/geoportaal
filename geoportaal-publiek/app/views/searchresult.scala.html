@@ -1,6 +1,7 @@
 @(documents: java.util.List[com.querydsl.core.Tuple],
 	sdf: java.text.SimpleDateFormat,
 	textSearch: String,
+	types: java.util.List[String],
 	typesString: String,
 	count: Integer,
 	page: Integer,
@@ -31,21 +32,30 @@
 			<div>
 				<label class="checkbox-inline">
 					<input class="js-data-type" type="checkbox" data-md-type="dataset"
-					@if(typesString.contains("dataset")) {checked}>
+					@if(types.indexOf("dataset") != -1) {checked}>
 						@Messages.get("search.checkboxes.label") <strong>@Messages.get("metadata.type.dataset")</strong>
 				</label>
 			</div>
+			@if("intern".equals(play.Play.application().configuration().getString("portal.access"))) {
+				<div>
+					<label class="checkbox-inline">
+						<input class="js-data-type" type="checkbox" data-md-type="datasetArchived"
+						@if(types.indexOf("datasetArchived") != -1) {checked}>
+							@Messages.get("search.checkboxes.label") <strong>@Messages.get("metadata.type.dataset.archived")</strong>
+					</label>
+				</div>
+			}
 			<div>
 				<label class="checkbox-inline">
 					<input class="js-data-type" type="checkbox" data-md-type="service"
-					@if(typesString.contains("service")) {checked}>
+					@if(types.indexOf("service") != -1) {checked}>
 						@Messages.get("search.checkboxes.label") <strong>@Messages.get("metadata.type.service")</strong>
 				</label>
 			</div>
 			<div>
 				<label class="checkbox-inline">
 					<input class="js-data-type" type="checkbox" data-md-type="dc"
-					@if(typesString.contains("dc")) {checked}>
+					@if(types.indexOf("dc") != -1) {checked}>
 						@Messages.get("search.checkboxes.label") <strong>@Messages.get("metadata.type.dc")</strong>
 				</label>
 			</div>
