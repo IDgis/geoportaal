@@ -78,6 +78,7 @@ public class Application extends Controller {
 					document.wmsOnly, mdType.url, mdType.name)
 					.from(document)
 					.join(mdType).on(document.mdTypeId.eq(mdType.id))
+					.where(mdType.name.ne("service"))
 					.where(document.dateDataset.isNotNull())
 					.where(document.description.isNotNull())
 					.where(document.archived.isNull().or(document.archived.isFalse()));
