@@ -124,7 +124,7 @@ public class Report extends Controller {
 	
 	public String getContentDispositionValue(String type) {
 		LocalDateTime ldt = LocalDateTime.now();
-		String dateTime = ldt.format(DateTimeFormatter.ofPattern("yyyy-MM-dd_hh-mm"));
+		String dateTime = ldt.format(DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm"));
 		return "attachment; filename=\"rapport_" + type + "_" + dateTime + ".csv\"";
 	}
 	
