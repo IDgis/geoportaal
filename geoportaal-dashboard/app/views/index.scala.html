@@ -138,14 +138,14 @@
 								harvestInfo.getDatasetInfo())
 						}
 						
-						@if(harvestInfo.getServiceInfo() != null) {
-							@portalstat.item(Messages.get("index.portal.stats.services"), 
-								harvestInfo.getServiceInfo())
-						}
-						
 						@if(harvestInfo.getDcInfo() != null) {
 							@portalstat.item(Messages.get("index.portal.stats.dc"), 
 								harvestInfo.getDcInfo())
+						}
+						
+						@if(harvestInfo.getServiceInfo() != null) {
+							@portalstat.item(Messages.get("index.portal.stats.services"), 
+								harvestInfo.getServiceInfo())
 						}
 					</ul>
 				</div>
