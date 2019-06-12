@@ -63,11 +63,12 @@ about.paragraph.3.1=De bestanden kan je in veel gevallen op je eigen pc opslaan.
 about.paragraph.3.2=Gebruik hiervoor de knop “download”. Voor gebruik van dit soort gegevens is speciale software nodig. Dat wordt vaak een GIS genoemd (Geografisch Informatie Systeem). Veel gebruikte systemen zijn Arcgis en QGis. Voor meer informatie over dit soort systemen, zie: <a class="link" href="https://nl.wikipedia.org/wiki/Geografisch_informatiesysteem" target="_blank">https://nl.wikipedia.org/wiki/Geografisch_informatiesysteem</a>.
 about.paragraph.3.3=Bij de download kan je kiezen uit verschillend formaten:
 about.paragraph.3.3.option.1=<b>SHP</b> (shape, veel gebruikt open formaat, ontwikkeld door Esri)
-about.paragraph.3.3.option.2=<b>CSV</b> (bestand waarbij de gegevens door komma's zijn gescheiden)
-about.paragraph.3.3.option.3=<b>DXF</b> (Drawing exchange format, veel gebruikt formaat voor AutoCad)
-about.paragraph.3.3.option.4=<b>GeoJson</b> (formaat, eenvoudig geschikt voor ontwikkelaars die JavaScript hanteren)
-about.paragraph.3.3.option.5=<b>GML</b> (Geography Markup Language, een open standaard voor GIS data)
-about.paragraph.3.3.option.6=<b>KML</b> (Keyhole Markup Language, te gebruiken in Google Earth)
+about.paragraph.3.3.option.2=<b>Geopackage</b> (bestand met data en ook gegevens over opmaak van de kaart)
+about.paragraph.3.3.option.3=<b>CSV</b> (bestand waarbij de gegevens door komma's zijn gescheiden)
+about.paragraph.3.3.option.4=<b>DXF</b> (Drawing exchange format, veel gebruikt formaat voor AutoCad)
+about.paragraph.3.3.option.5=<b>GeoJson</b> (formaat, eenvoudig geschikt voor ontwikkelaars die JavaScript hanteren)
+about.paragraph.3.3.option.6=<b>GML</b> (Geography Markup Language, een open standaard voor GIS data)
+about.paragraph.3.3.option.7=<b>KML</b> (Keyhole Markup Language, te gebruiken in Google Earth)
 about.paragraph.3.4=Door meerdere formaten beschikbaar te stellen, kan je zelf kiezen welk bestandsformaat het beste past bij de software die jij zelf wilt gebruiken.
 about.paragraph.3.5=Heb je niet de beschikking over dergelijke GIS-software, maar wil je toch kaarten zien? Dat kan, omdat er ook veel pdf-bestanden beschikbaar gesteld worden. Zie hiervoor verder bij de toelichting over de “statische kaarten”.
 about.paragraph.header.4=Over statische kaarten:
