@@ -69,6 +69,8 @@ h1.header {padding:.3em .5em;border-radius:0 12px 0 0;background-color:#255c9f;m
 	padding-right:15px;
 }
 
+#add-user {margin-right: 5px;}
+
 div.welkom {margin-top:20px;margin-bottom:20px;padding:10px 0;}
 div.info {margin-top:20px;margin-bottom:20px;padding:10px 0;}
 p.titel {font-weight:bold;font-size:21px;line-height:25px;margin-top:25px;margin-bottom:25px;}
