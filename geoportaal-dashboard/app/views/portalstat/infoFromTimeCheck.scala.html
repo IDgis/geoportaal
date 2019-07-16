@@ -1,10 +1,14 @@
-@(label: String, infoFromTime: models.portal.InfoFromTime, extern: Boolean)
+@(label: String, infoFromTime: models.portal.InfoFromTime, typeData: String)
 
 @if(infoFromTime != null) {
-	@if(extern) {
+	@if("extern".equals(typeData)) {
 		@portalstat.difference(label, infoFromTime.getCountDifferenceExtern())
 	} else {
-		@portalstat.difference(label, infoFromTime.getCountDifferenceIntern())
+		@if("intern".equals(typeData)) {
+			@portalstat.difference(label, infoFromTime.getCountDifferenceIntern())
+		} else {
+			@portalstat.difference(label, infoFromTime.getCountDifferenceArchived())
+		}
 	}
 } else {
 	@portalstat.noInformation(label)
