@@ -1,12 +1,16 @@
 package nl.idgis.portal.harvester;
 
-import static java.util.concurrent.TimeUnit.MINUTES;
-
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
+
 import javax.xml.parsers.DocumentBuilder;
 
 import org.apache.jackrabbit.webdav.MultiStatusResponse;
@@ -21,8 +25,8 @@ import org.w3c.dom.Document;
 import com.querydsl.sql.SQLQueryFactory;
 
 import nl.idgis.portal.harvester.data.HarvestResponses;
-import nl.idgis.portal.harvester.types.DublinCore;
 import nl.idgis.portal.harvester.types.Dataset;
+import nl.idgis.portal.harvester.types.DublinCore;
 import nl.idgis.portal.harvester.types.Service;
 import nl.idgis.portal.harvester.util.Config;
 import nl.idgis.portal.harvester.util.Database;
@@ -53,9 +57,29 @@ public class App {
 			}
 		};
 		
+		LOGGER.info("harvesting has been delayed with " + getInitialDelay() + " seconds");
+		
 		final ScheduledFuture<?> harvestHandle =
 				Executors.newScheduledThreadPool(1)
-					.scheduleAtFixedRate(harvest, 0, Integer.parseInt(HARVEST_INTERVAL), MINUTES);
+					.scheduleAtFixedRate(
+						harvest, 
+						getInitialDelay(), 
+						Integer.parseInt(HARVEST_INTERVAL) * 60, 
+						TimeUnit.SECONDS
+					);
+	}
+	
+	private static long getInitialDelay() {
+		ZonedDateTime zonedNow = ZonedDateTime.of(LocalDateTime.now(), ZoneId.of("Europe/Amsterdam"));
+		
+		int nowMinute = zonedNow.getMinute();
+		
+		ZonedDateTime zonedNext;
+		if(nowMinute < 15 || nowMinute >= 45) zonedNext = zonedNow.withMinute(15).withSecond(0);
+		else zonedNext = zonedNow.withMinute(45).withSecond(0);
+		
+		if(zonedNow.compareTo(zonedNext) > 0) zonedNext = zonedNext.plusHours(1);
+		return Duration.between(zonedNow, zonedNext).getSeconds();
 	}
 	
 	public static void doHarvest() throws Exception {
