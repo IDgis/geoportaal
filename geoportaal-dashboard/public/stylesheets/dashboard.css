@@ -18,6 +18,10 @@
 	word-break: break-all;
 }
 
+.list-group-item {
+	font-size: 12px;
+}
+
 .datasource-connected, .portal-stats-addition {
 	background-color: #dff0d8;
 }

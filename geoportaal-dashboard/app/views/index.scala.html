@@ -1,6 +1,7 @@
 @(dashboardConfig: util.DashboardConfig,
 	dataSources: java.util.List[models.DataSource], 
 	publisherTasks: java.util.List[models.PublisherTask],
+	portalHarvestActions: java.util.List[models.portal.HarvestSessionInfo],
 	harvestInfo: models.portal.HarvestInfo)
 
 @import play.i18n._
@@ -16,7 +17,7 @@
 @main(dashboardConfig) {
 	<div id="content-dashboard">
 		<div class="row">
-			<div class="col-xs-4">
+			<div class="col-xs-3">
 				<div class="panel panel-info">
 					<div class="panel-heading">
 						<div class="row">
@@ -62,7 +63,7 @@
 					</ul>
 				</div>
 			</div>
-			<div class="col-lg-4">
+			<div class="col-lg-3">
 				<div class="panel panel-info">
 					<div class="panel-heading">
 						<div class="row">
@@ -103,7 +104,46 @@
 					</ul>
 				</div>
 			</div>
-			<div class="col-xs-4">
+			<div class="col-lg-3">
+				<div class="panel panel-info">
+					<div class="panel-heading">
+						<div class="row">
+							<div class="col-xs-12">
+								<div class="col-xs-3 announcement-glyphicon">
+									<span class="glyphicon glyphicon-tasks"></span>
+								</div>
+								<div class="col-xs-7 announcement-heading">
+									<span>@Messages.get("index.portalharvest.header")</span>
+								</div>
+								<div class="col-xs-2">
+									<span class="glyphicon glyphicon-info-sign" 
+										data-toggle="popover" 
+										data-content="@Html(Messages.get("index.portalharvest.popover"))"></span>
+								</div>
+							</div>
+						</div>
+					</div>
+					<ul class="list-group">
+						@if(portalHarvestActions.size() == 0) {
+							<li class="list-group-item">
+								<div>
+									<strong>@Messages.get("index.portalharvest.zero")</strong>
+								</div>
+							</li>
+						} else {
+							@for(portalHarvestAction <- portalHarvestActions) {
+								<li class="list-group-item">
+									<strong>@portalHarvestAction.getType()</strong>
+									<div class="text-muted">
+										@portalHarvestAction.getTimeFormatted()
+									</div>
+								</li>
+							}
+						}
+					</ul>
+				</div>
+			</div>
+			<div class="col-xs-3">
 				<div class="panel panel-info">
 					<div class="panel-heading">
 						<div class="row">

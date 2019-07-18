@@ -35,6 +35,7 @@ import models.portal.MetadataInfo;
 import models.portal.CountDifference;
 import models.portal.CountDifferenceType;
 import models.portal.HarvestInfo;
+import models.portal.HarvestSessionInfo;
 import models.portal.InfoFromTime;
 import models.portal.InfoLast;
 import models.portal.ServiceInfo;
@@ -61,6 +62,7 @@ public class Application extends Controller {
 					new DashboardConfig(config),
 					dataSources, 
 					getPublisherTasks(), 
+					getPortalHarvestActions(), 
 					new HarvestInfo(
 							(DatasetInfo) getMetadataInfo("dataset"), 
 							(ServiceInfo) getMetadataInfo("service"), 
@@ -192,6 +194,42 @@ public class Application extends Controller {
 		}
 		
 		return PublisherTask.getUnknownName();
+	}
+	
+	private List<HarvestSessionInfo> getPortalHarvestActions() {
+		return q.withTransaction(tx -> {
+			List<Tuple> portalHarvestActions = tx.select(harvestSession.type, harvestSession.createTime)
+						.from(harvestSession)
+						.orderBy(harvestSession.createTime.desc())
+						.limit(10)
+						.fetch();
+			
+			List<HarvestSessionInfo> harvestActions = new ArrayList<>();
+			
+			for(Tuple t : portalHarvestActions) {
+				Timestamp time = t.get(harvestSession.createTime);
+				
+				String type;
+				switch(t.get(harvestSession.type)) {
+					case "dc": 
+						type = "statische kaart";
+						break;
+					case "service": 
+						type = "service";
+						break;
+					case "dataset": 
+						type = "dataset";
+						break;
+					default:
+						type = "onbekend";
+				}
+				
+				HarvestSessionInfo hsi = new HarvestSessionInfo(type, time.toLocalDateTime());
+				harvestActions.add(hsi);
+			}
+			
+			return harvestActions;
+		});
 	}
 	
 	private MetadataInfo getMetadataInfo(String metadataType) {
