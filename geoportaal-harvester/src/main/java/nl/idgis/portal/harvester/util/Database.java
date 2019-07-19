@@ -56,22 +56,36 @@ public class Database {
 			.fetchOne();
 	}
 	
-	public static int getInternCount(SQLQueryFactory qf, String dataKey) {
+	public static Integer getInternCount(SQLQueryFactory qf, String dataKey) {
 		return qf.select(document.uuid)
 			.from(document)
 			.join(mdType).on(mdType.id.eq(document.mdTypeId))
-			.where(mdType.name.eq(dataKey))
+			.where(mdType.name.eq(dataKey)
+				.and(document.archived.isNull().or(document.archived.isFalse())))
 			.fetch()
 			.size();
 	}
 	
-	public static int getExternCount(SQLQueryFactory qf, String dataKey) {
+	public static Integer getExternCount(SQLQueryFactory qf, String dataKey) {
 		return qf.select(document.uuid)
 			.from(document)
 			.join(mdType).on(mdType.id.eq(document.mdTypeId))
 			.join(access).on(access.id.eq(document.accessId))
 			.where(mdType.name.eq(dataKey)
-					.and(access.name.eq("extern")))
+				.and(access.name.eq("extern"))
+				.and(document.archived.isNull().or(document.archived.isFalse())))
+			.fetch()
+			.size();
+	}
+	
+	public static Integer getDatasetArchivedCount(SQLQueryFactory qf, String dataKey) {
+		if(!"dataset".equals(dataKey)) return null;
+		
+		return qf.select(document.uuid)
+			.from(document)
+			.join(mdType).on(mdType.id.eq(document.mdTypeId))
+			.where(mdType.name.eq("dataset")
+				.and(document.archived.isTrue()))
 			.fetch()
 			.size();
 	}
@@ -81,6 +95,7 @@ public class Database {
 			.set(harvestSession.type, dataKey)
 			.set(harvestSession.internCount, Database.getInternCount(qf, dataKey))
 			.set(harvestSession.externCount, Database.getExternCount(qf, dataKey))
+			.set(harvestSession.archivedCount, Database.getDatasetArchivedCount(qf, dataKey))
 			.set(harvestSession.createTime, Timestamp.valueOf(LocalDateTime.now()))
 			.execute();
 	}

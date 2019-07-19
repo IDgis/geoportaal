@@ -35,6 +35,7 @@ import models.portal.MetadataInfo;
 import models.portal.CountDifference;
 import models.portal.CountDifferenceType;
 import models.portal.HarvestInfo;
+import models.portal.HarvestSessionInfo;
 import models.portal.InfoFromTime;
 import models.portal.InfoLast;
 import models.portal.ServiceInfo;
@@ -61,6 +62,7 @@ public class Application extends Controller {
 					new DashboardConfig(config),
 					dataSources, 
 					getPublisherTasks(), 
+					getPortalHarvestActions(), 
 					new HarvestInfo(
 							(DatasetInfo) getMetadataInfo("dataset"), 
 							(ServiceInfo) getMetadataInfo("service"), 
@@ -194,9 +196,45 @@ public class Application extends Controller {
 		return PublisherTask.getUnknownName();
 	}
 	
+	private List<HarvestSessionInfo> getPortalHarvestActions() {
+		return q.withTransaction(tx -> {
+			List<Tuple> portalHarvestActions = tx.select(harvestSession.type, harvestSession.createTime)
+						.from(harvestSession)
+						.orderBy(harvestSession.createTime.desc())
+						.limit(10)
+						.fetch();
+			
+			List<HarvestSessionInfo> harvestActions = new ArrayList<>();
+			
+			for(Tuple t : portalHarvestActions) {
+				Timestamp time = t.get(harvestSession.createTime);
+				
+				String type;
+				switch(t.get(harvestSession.type)) {
+					case "dc": 
+						type = "statische kaart";
+						break;
+					case "service": 
+						type = "service";
+						break;
+					case "dataset": 
+						type = "dataset";
+						break;
+					default:
+						type = "onbekend";
+				}
+				
+				HarvestSessionInfo hsi = new HarvestSessionInfo(type, time.toLocalDateTime());
+				harvestActions.add(hsi);
+			}
+			
+			return harvestActions;
+		});
+	}
+	
 	private MetadataInfo getMetadataInfo(String metadataType) {
 		return q.withTransaction(tx -> {
-			Tuple lastTuple = tx.select(harvestSession.internCount, harvestSession.externCount)
+			Tuple lastTuple = tx.select(harvestSession.internCount, harvestSession.externCount, harvestSession.archivedCount)
 						.from(harvestSession)
 						.where(harvestSession.type.eq(metadataType))
 						.orderBy(harvestSession.createTime.desc())
@@ -211,7 +249,7 @@ public class Application extends Controller {
 	}
 	
 	private MetadataInfo getMetadataInfoResult(Tuple lastTuple, String metadataType) {
-		InfoLast infoLast = new InfoLast(lastTuple.get(harvestSession.externCount), lastTuple.get(harvestSession.internCount));
+		InfoLast infoLast = new InfoLast(lastTuple.get(harvestSession.externCount), lastTuple.get(harvestSession.internCount), lastTuple.get(harvestSession.archivedCount));
 		
 		InfoFromTime weekAgoInfo = getPortalInfoFromTime(metadataType, infoLast, LocalDateTime.now(), 1, 
 				ChronoUnit.WEEKS);
@@ -239,7 +277,7 @@ public class Application extends Controller {
 				LocalDateTime timeAgo = now.minus(amountToSubtract, unit);
 				
 				return q.withTransaction(tx -> {
-					Tuple timeTuple = tx.select(harvestSession.internCount, harvestSession.externCount)
+					Tuple timeTuple = tx.select(harvestSession.internCount, harvestSession.externCount, harvestSession.archivedCount)
 								.from(harvestSession)
 								.where(harvestSession.type.eq(metadataType)
 										.and(harvestSession.createTime.loe(Timestamp.valueOf(timeAgo))))
@@ -249,15 +287,18 @@ public class Application extends Controller {
 					if(timeTuple != null) {
 						CountDifference countDifferenceExtern = getPortalCountDifference(infoLast.getCountExtern(), timeTuple.get(harvestSession.externCount));
 						CountDifference countDifferenceIntern = getPortalCountDifference(infoLast.getCountIntern(), timeTuple.get(harvestSession.internCount));
+						CountDifference countDifferenceArchived = getPortalCountDifference(infoLast.getCountArchived(), timeTuple.get(harvestSession.archivedCount));
 						
-						return new InfoFromTime(countDifferenceExtern, countDifferenceIntern);
+						return new InfoFromTime(countDifferenceExtern, countDifferenceIntern, countDifferenceArchived);
 					} else {
 						return null;
 					}
 				});
 	}
 	
-	private CountDifference getPortalCountDifference(int lastCount, int timeCount) {
+	private CountDifference getPortalCountDifference(Integer lastCount, Integer timeCount) {
+		if(lastCount == null || timeCount == null) return new CountDifference(CountDifferenceType.NOCHANGE, 0);
+		
 		if(lastCount > timeCount) {
 			return new CountDifference(CountDifferenceType.ADDITION, lastCount - timeCount);
 		} else if(lastCount < timeCount) {

@@ -7,19 +7,30 @@
 	<div class="portal-stats">
 		<div>@Messages.get("index.portal.stats.extern"): @info.getInfoLast().getCountExtern()</div>
 		@portalstat.infoFromTimeCheck(Messages.get("index.portal.stats.week.label"),
-			info.getWeekAgoInfo(), true)
+			info.getWeekAgoInfo(), "extern")
 		@portalstat.infoFromTimeCheck(Messages.get("index.portal.stats.day.label"),
-			info.getDayAgoInfo(), true)
+			info.getDayAgoInfo(), "extern")
 		@portalstat.infoFromTimeCheck(Messages.get("index.portal.stats.hour.label"),
-			info.getHourAgoInfo(), true)
+			info.getHourAgoInfo(), "extern")
 	</div>
 	<div class="portal-stats">
 		<div>@Messages.get("index.portal.stats.intern"): @info.getInfoLast().getCountIntern()</div>
 		@portalstat.infoFromTimeCheck(Messages.get("index.portal.stats.week.label"),
-			info.getWeekAgoInfo(), false)
+			info.getWeekAgoInfo(), "intern")
 		@portalstat.infoFromTimeCheck(Messages.get("index.portal.stats.day.label"),
-			info.getDayAgoInfo(), false)
+			info.getDayAgoInfo(), "intern")
 		@portalstat.infoFromTimeCheck(Messages.get("index.portal.stats.hour.label"),
-			info.getHourAgoInfo(), false)
+			info.getHourAgoInfo(), "intern")
 	</div>
+	@if(info.getInfoLast().getCountArchived() != null) {
+		<div class="portal-stats">
+			<div>@Messages.get("index.portal.stats.archived"): @info.getInfoLast().getCountArchived()</div>
+			@portalstat.infoFromTimeCheck(Messages.get("index.portal.stats.week.label"),
+				info.getWeekAgoInfo(), "archived")
+			@portalstat.infoFromTimeCheck(Messages.get("index.portal.stats.day.label"),
+				info.getDayAgoInfo(), "archived")
+			@portalstat.infoFromTimeCheck(Messages.get("index.portal.stats.hour.label"),
+				info.getHourAgoInfo(), "archived")
+		</div>
+	}
 </li>

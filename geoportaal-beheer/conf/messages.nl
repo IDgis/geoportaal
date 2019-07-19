@@ -1,6 +1,7 @@
 # Algemeen
 login=Inloggen
 loginhelp=Help inloggen
+addUser=Toevoegen leverancier
 logout=Uitloggen
 save=Opslaan
 confirm.save=Toch opslaan
@@ -13,6 +14,12 @@ application.name=Geoportaal-Beheer
 
 # Query
 tsv.language=dutch
+
+# Add user
+adduser.modal.title=Toevoegen leverancier
+adduser.form.name=Naam
+adduser.form.email=E-mail
+adduser.form.password=Wachtwoord
 
 # Tabbladen
 main.tab.index=Zoeken en wijzigen

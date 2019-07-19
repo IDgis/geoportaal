@@ -1,19 +1,25 @@
 package models.portal;
 
 public class InfoLast {
-	private int countExtern;
-	private int countIntern;
+	private Integer countExtern;
+	private Integer countIntern;
+	private Integer countArchived;
 	
-	public InfoLast(int countExtern, int countIntern) {
+	public InfoLast(Integer countExtern, Integer countIntern, Integer countArchived) {
 		this.countExtern = countExtern;
 		this.countIntern = countIntern;
+		this.countArchived = countArchived;
 	}
 
-	public int getCountExtern() {
+	public Integer getCountExtern() {
 		return countExtern;
 	}
 
-	public int getCountIntern() {
+	public Integer getCountIntern() {
 		return countIntern;
+	}
+
+	public Integer getCountArchived() {
+		return countArchived;
 	}
 }

@@ -2,7 +2,7 @@
 application.title=Dashboard Geoportaal
 
 # Index
-index.provider.connection.header=Connectie GeoPublisher met gegevensbronnen van provider
+index.provider.connection.header=Connectie GeoPublisher met gegevensbronnen
 index.provider.connection.popover=De provider levert vanuit de provincie Overijssel gegevens naar IDgis. Dit betreft de data en metadata van geodatasets. Tabellen aangemaakt in Geosticker worden geharvest samen met de vectordata. Gaat er wat fout bij de connectie, dan wordt de metadata of de data niet aangepast in het Geoportaal. Gevolg is dat je, na verloop van tijd, verouderde informatie in het interne of externe Geoportaal gaat zien. Bij dit soort problemen is het belangrijk om contact op te nemen met de technisch beheerders: Reinder Hoekstra (r.hoekstra@zwolle.nl); Sandro Neumann (sandro.neumann@idgis.nl)
 index.provider.connection.connected=Ok
 index.provider.connection.not.connected=Niet verbonden
@@ -14,7 +14,11 @@ index.publishertasks.zero=Geen systeemtaken gevonden
 index.publishertasks.service.staging=staging
 index.publishertasks.service.published=publicatie
 
-index.portal.stats.header=Aantal datasets, services en statische kaarten in Geoportaal
+index.portalharvest.header=Laatste 10 harvestacties Geoportaal
+index.portalharvest.popover=De harvester van het Geoportaal harvest normaal gesproken elk half uur om :15 en :45.
+index.portalharvest.zero=Geen harvestacties gevonden
+
+index.portal.stats.header=Aantal data in Geoportaal
 index.portal.stats.popover=Door beheer worden er geodatasets, services of statische kaarten aangepast. Meestal komen er nieuwe bij. Soms worden er ook oudere verwijderd. In dit overzicht staan de veranderingen van de laatste week, de laatste dag en het laatste uur. De data moet eerst vanuit de GeoPublisher opgehaald worden. Dit gebeurt elk half uur, waardoor het maximaal een half uur kan duren voordat de wijzigingen in deze kolom te zien zijn. De kleuren zijn indicatief. Rood (afname) hoeft niet een fout te betekenen. Maar als er heel veel datasets zijn verdwenen, dan kan dat een teken zijn, dat er iets niet goed is. Zijn er heel grote veranderingen, dan kan dat duiden op een probleem. Neem in dat geval contact op met  met de technisch beheerders: Reinder Hoekstra (r.hoekstra@zwolle.nl); Sandro Neumann (sandro.neumann@idgis.nl)
 index.portal.stats.zero=Geen informatie gevonden
 index.portal.stats.datasets=Datasets
@@ -22,6 +26,7 @@ index.portal.stats.services=Services
 index.portal.stats.dc=Statische kaarten
 index.portal.stats.extern=extern
 index.portal.stats.intern=intern
+index.portal.stats.archived=archief
 index.portal.stats.week.label=Verschil met 7 dagen geleden
 index.portal.stats.day.label=Verschil met 1 dag geleden
 index.portal.stats.hour.label=Verschil met 1 uur geleden
