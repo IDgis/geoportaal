@@ -110,14 +110,25 @@
 			</div>
 			
 			@if(displayStatsAnalytics()) {
-				<!-- Global site tag (gtag.js) - Google Analytics -->
-				<script async src="https://www.googletagmanager.com/gtag/js?id=UA-132211138-1"></script>
-				<script>
-					window.dataLayer = window.dataLayer || [];
-					function gtag(){dataLayer.push(arguments);}
-					gtag('js', new Date());
-					gtag('config', 'UA-132211138-1');
-				</script>
+				@if("intern".equals(play.Play.application().configuration().getString("portal.access"))) {
+					<!-- Global site tag (gtag.js) - Google Analytics -->
+					<script async src="https://www.googletagmanager.com/gtag/js?id=UA-145662713-1"></script>
+					<script>
+						window.dataLayer = window.dataLayer || [];
+						function gtag(){dataLayer.push(arguments);}
+						gtag('js', new Date());
+						gtag('config', 'UA-145662713-1');
+					</script>
+				} else {
+					<!-- Global site tag (gtag.js) - Google Analytics -->
+					<script async src="https://www.googletagmanager.com/gtag/js?id=UA-132211138-1"></script>
+					<script>
+						window.dataLayer = window.dataLayer || [];
+						function gtag(){dataLayer.push(arguments);}
+						gtag('js', new Date());
+						gtag('config', 'UA-132211138-1');
+					</script>
+				}
 			}
 			
 			@if(!"".equals(jsMain)) {
