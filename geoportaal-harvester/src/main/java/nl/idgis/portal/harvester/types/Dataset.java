@@ -93,7 +93,8 @@ public class Dataset {
 					published,
 					viewerUrl,
 					wmsOnly,
-					archived);
+					archived,
+					doc.getString(DatasetPath.MAINTENANCE_FREQUENCY.path()));
 			
 			Long documentId =  Database.getDocumentId(qf, doc.getString(DatasetPath.UUID.path()));
 			
