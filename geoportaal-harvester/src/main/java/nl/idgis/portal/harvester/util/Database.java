@@ -129,7 +129,8 @@ public class Database {
 			boolean published,
 			String viewerUrl,
 			boolean wmsOnly,
-			boolean archived) {
+			boolean archived,
+			String maintenanceFrequency) {
 		qf.insert(document)
 			.set(document.uuid, uuid)
 			.set(document.mdTypeId, mdTypeId)
@@ -146,6 +147,7 @@ public class Database {
 			.set(document.viewerUrl, viewerUrl)
 			.set(document.wmsOnly, wmsOnly)
 			.set(document.archived, archived)
+			.set(document.maintenanceFrequency, maintenanceFrequency)
 			.execute();
 	}
 	

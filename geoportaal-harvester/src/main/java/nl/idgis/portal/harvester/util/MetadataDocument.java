@@ -20,7 +20,7 @@ public class MetadataDocument {
 	}
 	
 	public String getString(String path) throws XPathExpressionException {
-		if(!path.endsWith("text()") && !path.endsWith("@uuidref") &&!path.endsWith("codeListValue")) {
+		if(!path.endsWith("text()") && !path.endsWith("@uuidref") && !path.endsWith("codeListValue")) {
 			throw new RuntimeException("path should end with text() or @uuidref");
 		}
 		
