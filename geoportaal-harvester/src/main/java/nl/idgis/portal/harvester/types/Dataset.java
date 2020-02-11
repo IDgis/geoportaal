@@ -25,6 +25,7 @@ public class Dataset {
 		Map<String, String> ns = new HashMap<>();
 		ns.put("gmd", "http://www.isotc211.org/2005/gmd");
 		ns.put("gco", "http://www.isotc211.org/2005/gco");
+		ns.put("gml", "http://www.opengis.net/gml");
 		
 		Map<String, String> pf = new HashMap<>();
 		for(Map.Entry<String, String> e : ns.entrySet()) {
@@ -51,7 +52,7 @@ public class Dataset {
 				if(ul == null) continue;
 				
 				if("Downloadable data".equals(ul.trim())) {
-					for(String resource : doc.getStrings(DatasetPath.ONLINE_SOURCE.path())) {
+					for(String resource : doc.getStrings(DatasetPath.ONLINE_RESOURCE.path())) {
 						if(resource.startsWith(URL_GEOSERVER_DATASET_PUBLIC_PREFIX)) {
 							downloadable = true;
 							break;
@@ -69,7 +70,7 @@ public class Dataset {
 			}
 			
 			String viewerUrl = null;
-			for(String resource : doc.getStrings(DatasetPath.ONLINE_SOURCE.path())) {
+			for(String resource : doc.getStrings(DatasetPath.ONLINE_RESOURCE.path())) {
 				if(resource.startsWith(VIEWER_URL_DATASET_PUBLIC_PREFIX) ||
 						resource.startsWith(VIEWER_URL_DATASET_SECURE_PREFIX) ||
 						resource.startsWith(VIEWER_URL_DATASET_WMSONLY_PREFIX)) {
@@ -79,11 +80,11 @@ public class Dataset {
 			}
 			
 			Database.insertDataset(qf, 
-					doc.getString(DatasetPath.UUID.path()),
+					doc.getString(DatasetPath.METADATA_ID.path()),
 					Database.getType(qf, url),
 					doc.getString(DatasetPath.TITLE.path()),
-					DateConverter.dateStringToTimestamp(doc.getString(DatasetPath.DATE_FILE.path())),
-					DateConverter.dateStringToTimestamp(doc.getString(DatasetPath.DATE_DESCRIPTION_REVISION.path())),
+					DateConverter.dateStringToTimestamp(doc.getString(DatasetPath.DATE_SOURCE_REVISION.path())),
+					DateConverter.dateStringToTimestamp(doc.getString(DatasetPath.DATE_METADATA_REVISION.path())),
 					doc.getString(DatasetPath.ORGANISATION_CREATOR.path()),
 					doc.getString(DatasetPath.ABSTRACT.path()),
 					thumbnail,
@@ -96,29 +97,67 @@ public class Dataset {
 					archived,
 					doc.getString(DatasetPath.MAINTENANCE_FREQUENCY.path()));
 			
-			Long documentId =  Database.getDocumentId(qf, doc.getString(DatasetPath.UUID.path()));
+			Long documentId =  Database.getDocumentId(qf, doc.getString(DatasetPath.METADATA_ID.path()));
 			
 			Database.insertDocumentSubjects(qf, doc.getStrings(DatasetPath.SUBJECT.path()), documentId);
 			
-			Database.insertAnyText(qf, documentId, doc.getStrings(DatasetPath.INDIVIDUAL_NAME_CREATOR.path()));
-			Database.insertAnyText(qf, documentId, doc.getStrings(DatasetPath.ALT_TITLE.path()));
-			Database.insertAnyText(qf, documentId, doc.getStrings(DatasetPath.MD_ID.path()));
-			Database.insertAnyText(qf, documentId, doc.getStrings(DatasetPath.DATA_ID.path()));
-			Database.insertAnyText(qf, documentId, doc.getStrings(DatasetPath.KEYWORD.path()));
+			Database.insertAnyText(qf, documentId, doc.getStrings(DatasetPath.SPATIAL_RESOLUTION_SCALE.path()));
+			Database.insertAnyText(qf, documentId, doc.getStrings(DatasetPath.SPATIAL_RESOLUTION_DISTANCE.path()));
+			Database.insertAnyText(qf, documentId, doc.getStrings(DatasetPath.PURPOSE.path()));
+			Database.insertAnyText(qf, documentId, doc.getStrings(DatasetPath.DATE_SOURCE_REVISION.path()));
+			Database.insertAnyText(qf, documentId, doc.getStrings(DatasetPath.USE_LIMITATION.path()));
+			Database.insertAnyText(qf, documentId, doc.getStrings(DatasetPath.SUPPLEMENTAL_INFORMATION.path()));
+			
 			Database.insertAnyText(qf, documentId, doc.getStrings(DatasetPath.INDIVIDUAL_NAME_CONTACT.path()));
 			Database.insertAnyText(qf, documentId, doc.getStrings(DatasetPath.ORGANISATION_CONTACT.path()));
+			Database.insertAnyText(qf, documentId, doc.getStrings(DatasetPath.INDIVIDUAL_NAME_CREATOR.path()));
 			Database.insertAnyText(qf, documentId, doc.getStrings(DatasetPath.INDIVIDUAL_NAME_DISTRIBUTOR.path()));
-			Database.insertAnyText(qf, documentId, doc.getStrings(DatasetPath.ORGSANISATION_DISTRIBUTOR.path()));
+			Database.insertAnyText(qf, documentId, doc.getStrings(DatasetPath.ORGANISATION_DISTRIBUTOR.path()));
+			
 			Database.insertAnyText(qf, documentId, doc.getStrings(DatasetPath.GEO_AREA.path()));
-			Database.insertAnyText(qf, documentId, doc.getStrings(DatasetPath.PURPOSE.path()));
-			Database.insertAnyText(qf, documentId, doc.getStrings(DatasetPath.USE_LIMITATION.path()));
+			Database.insertAnyText(qf, documentId, doc.getStrings(DatasetPath.GEO_XMIN.path()));
+			Database.insertAnyText(qf, documentId, doc.getStrings(DatasetPath.GEO_XMAX.path()));
+			Database.insertAnyText(qf, documentId, doc.getStrings(DatasetPath.GEO_YMIN.path()));
+			Database.insertAnyText(qf, documentId, doc.getStrings(DatasetPath.GEO_YMAX.path()));
+			Database.insertAnyText(qf, documentId, doc.getStrings(DatasetPath.CODE_REFERENCESYSTEM.path()));
+			Database.insertAnyText(qf, documentId, doc.getStrings(DatasetPath.ORGANISATION_REFERENCESYSTEM.path()));
+			
+			Database.insertAnyText(qf, documentId, doc.getStrings(DatasetPath.DATE_SOURCE.path()));
+			Database.insertAnyText(qf, documentId, doc.getStrings(DatasetPath.DATE_NEXT_UPDATE.path()));
+			Database.insertAnyText(qf, documentId, doc.getStrings(DatasetPath.DATE_METADATA_REVISION.path()));
+			Database.insertAnyText(qf, documentId, doc.getStrings(DatasetPath.TIMEPERIOD_BEGIN.path()));
+			Database.insertAnyText(qf, documentId, doc.getStrings(DatasetPath.TIMEPERIOD_END.path()));
+			
+			Database.insertAnyText(qf, documentId, doc.getStrings(DatasetPath.ALTERNATE_TITLE.path()));
+			Database.insertAnyText(qf, documentId, doc.getStrings(DatasetPath.STATUS.path()));
+			Database.insertAnyText(qf, documentId, doc.getStrings(DatasetPath.ONLINE_RESOURCE.path()));
+			Database.insertAnyText(qf, documentId, doc.getStrings(DatasetPath.VERSION.path()));
+			Database.insertAnyText(qf, documentId, doc.getStrings(DatasetPath.STATEMENT.path()));
+			Database.insertAnyText(qf, documentId, doc.getStrings(DatasetPath.POTENTIAL_USE.path()));
+			Database.insertAnyText(qf, documentId, doc.getStrings(DatasetPath.COMPLETENESS.path()));
+			Database.insertAnyText(qf, documentId, doc.getStrings(DatasetPath.EXTERNAL_POSITION_ACCURACY.path()));
+			Database.insertAnyText(qf, documentId, doc.getStrings(DatasetPath.PROCESS_STEP.path()));
+			Database.insertAnyText(qf, documentId, doc.getStrings(DatasetPath.KEYWORD.path()));
+			Database.insertAnyText(qf, documentId, doc.getStrings(DatasetPath.THESAURUS_NAME.path()));
+			Database.insertAnyText(qf, documentId, doc.getStrings(DatasetPath.THESAURUS_DATE.path()));
+			Database.insertAnyText(qf, documentId, doc.getStrings(DatasetPath.OTHER_CONSTRAINT.path()));
 			Database.insertAnyText(qf, documentId, doc.getStrings(DatasetPath.USE_CONSTRAINT.path()));
 			Database.insertAnyText(qf, documentId, doc.getStrings(DatasetPath.ACCESS_CONSTRAINT.path()));
-			Database.insertAnyText(qf, documentId, doc.getStrings(DatasetPath.DESCRIPTION_SOURCE.path()));
-			Database.insertAnyText(qf, documentId, doc.getStrings(DatasetPath.POTENTIAL_USE.path()));
-			Database.insertAnyText(qf, documentId, doc.getStrings(DatasetPath.OTHER_CONSTRAINT.path()));
-			Database.insertAnyText(qf, documentId, doc.getStrings(DatasetPath.RELATED_DATASET.path()));
-			Database.insertAnyText(qf, documentId, doc.getStrings(DatasetPath.SPATIAL_SCHEMA.path()));
+			Database.insertAnyText(qf, documentId, doc.getStrings(DatasetPath.METADATA_LANGUAGE.path()));
+			Database.insertAnyText(qf, documentId, doc.getStrings(DatasetPath.METADATA_CHARACTERSET.path()));
+			Database.insertAnyText(qf, documentId, doc.getStrings(DatasetPath.METADATA_HIERARCHYLEVEL.path()));
+			Database.insertAnyText(qf, documentId, doc.getStrings(DatasetPath.METADATA_STANDARD_NAME.path()));
+			Database.insertAnyText(qf, documentId, doc.getStrings(DatasetPath.METADATA_STANDARD_VERSION.path()));
+			Database.insertAnyText(qf, documentId, doc.getStrings(DatasetPath.SOURCE_LANGUAGE.path()));
+			Database.insertAnyText(qf, documentId, doc.getStrings(DatasetPath.SOURCE_CHARACTERSET.path()));
+			Database.insertAnyText(qf, documentId, doc.getStrings(DatasetPath.SOURCE_ID.path()));
+			Database.insertAnyText(qf, documentId, doc.getStrings(DatasetPath.AGGREGATE_DATASET_NAME.path()));
+			Database.insertAnyText(qf, documentId, doc.getStrings(DatasetPath.SCOPE_LEVEL.path()));
+			Database.insertAnyText(qf, documentId, doc.getStrings(DatasetPath.FEES.path()));
+			Database.insertAnyText(qf, documentId, doc.getStrings(DatasetPath.ORDERING_INSTRUCTIONS.path()));
+			Database.insertAnyText(qf, documentId, doc.getStrings(DatasetPath.TURNAROUND.path()));
+			Database.insertAnyText(qf, documentId, doc.getStrings(DatasetPath.UNITS_OF_DISTRIBUTION.path()));
+			Database.insertAnyText(qf, documentId, doc.getStrings(DatasetPath.MEDIUM_NAME.path()));
 		} catch(Exception e) {
 			e.printStackTrace();
 		}

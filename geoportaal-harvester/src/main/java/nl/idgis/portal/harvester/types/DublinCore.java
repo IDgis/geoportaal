@@ -49,16 +49,19 @@ public class DublinCore {
 			
 			Database.insertDocumentSubjects(qf, doc.getStrings(DublinCorePath.SUBJECT.path()), documentId);
 			
-			Database.insertAnyText(qf, documentId, doc.getStrings(DublinCorePath.LOCATION.path()));
 			Database.insertAnyText(qf, documentId, doc.getStrings(DublinCorePath.NUMBER.path()));
-			Database.insertAnyText(qf, documentId, doc.getStrings(DublinCorePath.TYPE.path()));
+			Database.insertAnyText(qf, documentId, doc.getStrings(DublinCorePath.LOCATION.path()));
+			
 			Database.insertAnyText(qf, documentId, doc.getStrings(DublinCorePath.PUBLISHER.path()));
-			Database.insertAnyText(qf, documentId, doc.getStrings(DublinCorePath.CONTRIBUTOR.path()));
+			Database.insertAnyText(qf, documentId, doc.getStrings(DublinCorePath.SOURCE.path()));
+			
+			Database.insertAnyText(qf, documentId, doc.getStrings(DublinCorePath.SUBJECT.path()));
 			Database.insertAnyText(qf, documentId, doc.getStrings(DublinCorePath.RIGHTS.path()));
 			Database.insertAnyText(qf, documentId, doc.getStrings(DublinCorePath.FORMAT.path()));
-			Database.insertAnyText(qf, documentId, doc.getStrings(DublinCorePath.SOURCE.path()));
-			Database.insertAnyText(qf, documentId, doc.getStrings(DublinCorePath.SUBJECT.path()));
 			Database.insertAnyText(qf, documentId, doc.getStrings(DublinCorePath.LANGUAGE.path()));
+			Database.insertAnyText(qf, documentId, doc.getStrings(DublinCorePath.TYPE.path()));
+			
+			Database.insertAnyText(qf, documentId, doc.getStrings(DublinCorePath.CONTRIBUTOR.path()));
 		} catch(Exception e) {
 			e.printStackTrace();
 		}

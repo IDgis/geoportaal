@@ -203,10 +203,12 @@ public class Database {
 	
 	public static void insertAnyText(SQLQueryFactory qf, Long documentId, List<String> listValues) {
 		for(String value : listValues) {
-			qf.insert(anyText)
-				.set(anyText.documentId, documentId)
-				.set(anyText.content, value.trim())
-				.execute();
+			if(!value.trim().isEmpty()) {
+				qf.insert(anyText)
+					.set(anyText.documentId, documentId)
+					.set(anyText.content, value.trim())
+					.execute();
+			}
 		}
 	}
 	
