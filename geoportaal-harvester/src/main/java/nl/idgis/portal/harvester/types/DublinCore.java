@@ -49,12 +49,16 @@ public class DublinCore {
 			
 			Database.insertDocumentSubjects(qf, doc.getStrings(DublinCorePath.SUBJECT.path()), documentId);
 			
+			Database.insertAnyText(qf, documentId, doc.getStrings(DublinCorePath.TITLE.path()));
+			Database.insertAnyText(qf, documentId, doc.getStrings(DublinCorePath.ABSTRACT.path()));
 			Database.insertAnyText(qf, documentId, doc.getStrings(DublinCorePath.NUMBER.path()));
 			Database.insertAnyText(qf, documentId, doc.getStrings(DublinCorePath.LOCATION.path()));
 			
+			Database.insertAnyText(qf, documentId, doc.getStrings(DublinCorePath.ORGANISATION_CREATOR.path()));
 			Database.insertAnyText(qf, documentId, doc.getStrings(DublinCorePath.PUBLISHER.path()));
 			Database.insertAnyText(qf, documentId, doc.getStrings(DublinCorePath.SOURCE.path()));
 			
+			Database.insertAnyText(qf, documentId, doc.getStrings(DublinCorePath.UUID.path()));
 			Database.insertAnyText(qf, documentId, doc.getStrings(DublinCorePath.SUBJECT.path()));
 			Database.insertAnyText(qf, documentId, doc.getStrings(DublinCorePath.RIGHTS.path()));
 			Database.insertAnyText(qf, documentId, doc.getStrings(DublinCorePath.FORMAT.path()));

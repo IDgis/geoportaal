@@ -1,12 +1,17 @@
 package nl.idgis.portal.harvester;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
@@ -84,6 +89,7 @@ public class App {
 	
 	public static void doHarvest() throws Exception {
 		LOGGER.info("harvesting has started");
+		LocalDateTime start = LocalDateTime.now();
 		
 		Config config = new Config();
 		SQLQueryFactory qf = config.getQueryFactory();
@@ -92,18 +98,46 @@ public class App {
 		config.getTransaction().execute((status) -> {
 			try {
 				// Populate database
+				
 				LOGGER.info("harvesting of datasets has started");
-				executeHarvest(qf, DATASET_URL, DATASET_KEY, MetadataType.DATASET);
+				LocalDateTime beforeDataset = LocalDateTime.now();
+				int lengthDatasets = executeHarvest(qf, DATASET_URL, DATASET_KEY, MetadataType.DATASET);
 				
 				LOGGER.info("harvesting of services has started");
-				executeHarvest(qf, SERVICE_URL, SERVICE_KEY, MetadataType.SERVICE);
+				LocalDateTime beforeService = LocalDateTime.now();
+				int lengthServices = executeHarvest(qf, SERVICE_URL, SERVICE_KEY, MetadataType.SERVICE);
 				
 				LOGGER.info("harvesting of dublin core has started");
-				executeHarvest(qf, DUBLINCORE_URL, DUBLINCORE_KEY, MetadataType.DUBLINCORE);
+				LocalDateTime beforeDc = LocalDateTime.now();
+				int lengthDcs = executeHarvest(qf, DUBLINCORE_URL, DUBLINCORE_KEY, MetadataType.DUBLINCORE);
 				
 				// Refresh materialized view
 				LOGGER.info("refreshing materialized view");
+				LocalDateTime beforeRefreshView = LocalDateTime.now();
 				Database.refreshMaterializedView(dataSource);
+				LocalDateTime afterRefreshView = LocalDateTime.now();
+				
+				long durationBeforeBeginHarvesting = ChronoUnit.MILLIS.between(start, beforeDataset);
+				long durationDataset = ChronoUnit.MILLIS.between(beforeDataset, beforeService);
+				long durationService = ChronoUnit.MILLIS.between(beforeService, beforeDc);
+				long durationDc = ChronoUnit.MILLIS.between(beforeDc, beforeRefreshView);
+				long durationRefreshView = ChronoUnit.MILLIS.between(beforeRefreshView, afterRefreshView);
+				
+				LOGGER.info("milli seconds between start and start datasets: " + durationBeforeBeginHarvesting);
+				
+				LOGGER.info("milli seconds duration of harvesting of datasets: " + durationDataset);
+				LOGGER.info("length of datasets: " + lengthDatasets);
+				if(lengthDatasets > 0) LOGGER.info("average milli seconds duration of dataset: " + (durationDataset / lengthDatasets));
+				
+				LOGGER.info("milli seconds duration of harvesting of services: " + durationService);
+				LOGGER.info("length of services: " + lengthServices);
+				if(lengthServices > 0) LOGGER.info("average milli seconds duration of service: " + (durationService / lengthServices));
+				
+				LOGGER.info("milli seconds duration of harvesting of dcs: " + durationDc);
+				LOGGER.info("length of dcs: " + lengthDcs);
+				if(lengthDcs > 0) LOGGER.info("average milli seconds duration of dc: " + (durationDc / lengthDcs));
+				
+				LOGGER.info("milli seconds between start refresh view and end refresh view: " + durationRefreshView);
 				
 				return true;
 			} catch(Exception e) {
@@ -111,60 +145,75 @@ public class App {
 			}
 		});
 		
+		LocalDateTime end = LocalDateTime.now();
+		long durationTotal = ChronoUnit.MILLIS.between(start, end);
+		LOGGER.info("milli seconds of harvesting: " + durationTotal);
+		
 		LOGGER.info("harvesting is done");
 	}
 	
-	public static void executeHarvest(SQLQueryFactory qf, String url, String dataKey, MetadataType metadataType) throws Exception {
+	public static int executeHarvest(SQLQueryFactory qf, String url, String dataKey, MetadataType metadataType) throws Exception {
 		
 		HarvestResponses harvestResponse = new HarvestResponses(url);
-		MultiStatusResponse[] responses = harvestResponse.getResponses();
+		List<MultiStatusResponse> responses = Arrays.asList(harvestResponse.getResponses());
 		DocumentBuilder db = GetDocumentBuilder.getDocumentBuilder();
 		
 		// Delete values from previous harvest
 		Database.removeDocumentsFromType(qf, dataKey);
 		Database.insertType(qf, url, dataKey);
 		
-		for (MultiStatusResponse response : responses) {
-			String href = response.getHref();
-			
-			if(href != null && href.endsWith(".xml")) {
-				String filename = href.substring(href.lastIndexOf("/") + 1);
-				LOGGER.info("name of metadata file: " + filename);
+		responses
+			.stream()
+			.forEach(response -> {
+				String href = response.getHref();
 				
-				HttpURLConnection connection = (HttpURLConnection)new URL(url + filename).openConnection();
-				if(TRUSTED_HEADER != null) {
-					connection.setRequestProperty(TRUSTED_HEADER, "1");
-				}
-				
-				DavPropertySet properties = response.getProperties(200);
-				DavProperty<?> confidential = 
-						properties.get("confidential", Namespace.getNamespace("http://idgis.nl/geopublisher"));
-				DavProperty<?> published = 
-						properties.get("published", Namespace.getNamespace("http://idgis.nl/geopublisher"));
-				
-				try(InputStream input = connection.getInputStream()) {
-					Document doc = db.parse(input);
-					switch(metadataType) {
-						case DATASET:
-							Dataset.harvest(qf,
-									doc,
-									url,
-									WebDavBooleanParser.parse(confidential),
-									WebDavBooleanParser.parse(published));
-							break;
-						case SERVICE:
-							Service.harvest(qf, doc, url, WebDavBooleanParser.parse(confidential));
-							break;
-						case DUBLINCORE:
-							DublinCore.harvest(qf, doc, url);
+				if(href != null && href.endsWith(".xml")) {
+					String filename = href.substring(href.lastIndexOf("/") + 1);
+					LOGGER.info("name of metadata file: " + filename);
+					
+					HttpURLConnection connection;
+					try {
+						connection = (HttpURLConnection) new URL(url + filename).openConnection();
+						if(TRUSTED_HEADER != null) {
+							connection.setRequestProperty(TRUSTED_HEADER, "1");
+						}
+						
+						DavPropertySet properties = response.getProperties(200);
+						DavProperty<?> confidential = 
+								properties.get("confidential", Namespace.getNamespace("http://idgis.nl/geopublisher"));
+						DavProperty<?> published = 
+								properties.get("published", Namespace.getNamespace("http://idgis.nl/geopublisher"));
+						
+						try(InputStream input = connection.getInputStream()) {
+							Document doc = db.parse(input);
+							switch(metadataType) {
+								case DATASET:
+									Dataset.harvest(qf,
+											doc,
+											url,
+											WebDavBooleanParser.parse(confidential),
+											WebDavBooleanParser.parse(published));
+									break;
+								case SERVICE:
+									Service.harvest(qf, doc, url, WebDavBooleanParser.parse(confidential));
+									break;
+								case DUBLINCORE:
+									DublinCore.harvest(qf, doc, url);
+							}
+						}
+					} catch (MalformedURLException mue) {
+						mue.printStackTrace();
+					} catch (IOException ioe) {
+						ioe.printStackTrace();
+					} catch(Exception e) {
+						e.printStackTrace();
 					}
-				} catch(Exception e) {
-					e.printStackTrace();
 				}
-			}
-		}
+			});
 		
 		// Insert harvest session information
 		Database.insertHarvestSession(qf, dataKey);
+		
+		return (responses.size() -1);
 	}
 }

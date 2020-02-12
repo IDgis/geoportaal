@@ -1,5 +1,6 @@
 package nl.idgis.portal.harvester.types;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -101,8 +102,13 @@ public class Dataset {
 			
 			Database.insertDocumentSubjects(qf, doc.getStrings(DatasetPath.SUBJECT.path()), documentId);
 			
+			Database.insertAnyText(qf, documentId, doc.getStrings(DatasetPath.TITLE.path()));
+			Database.insertAnyText(qf, documentId, doc.getStrings(DatasetPath.ABSTRACT.path()));
+			Database.insertAnyText(qf, documentId, Arrays.asList(viewerUrl));
+			Database.insertAnyText(qf, documentId, Arrays.asList(thumbnail));
 			Database.insertAnyText(qf, documentId, doc.getStrings(DatasetPath.SPATIAL_RESOLUTION_SCALE.path()));
 			Database.insertAnyText(qf, documentId, doc.getStrings(DatasetPath.SPATIAL_RESOLUTION_DISTANCE.path()));
+			Database.insertAnyText(qf, documentId, doc.getStrings(DatasetPath.SPATIAL_SCHEMA.path()));
 			Database.insertAnyText(qf, documentId, doc.getStrings(DatasetPath.PURPOSE.path()));
 			Database.insertAnyText(qf, documentId, doc.getStrings(DatasetPath.DATE_SOURCE_REVISION.path()));
 			Database.insertAnyText(qf, documentId, doc.getStrings(DatasetPath.USE_LIMITATION.path()));
@@ -111,6 +117,7 @@ public class Dataset {
 			Database.insertAnyText(qf, documentId, doc.getStrings(DatasetPath.INDIVIDUAL_NAME_CONTACT.path()));
 			Database.insertAnyText(qf, documentId, doc.getStrings(DatasetPath.ORGANISATION_CONTACT.path()));
 			Database.insertAnyText(qf, documentId, doc.getStrings(DatasetPath.INDIVIDUAL_NAME_CREATOR.path()));
+			Database.insertAnyText(qf, documentId, doc.getStrings(DatasetPath.ORGANISATION_CREATOR.path()));
 			Database.insertAnyText(qf, documentId, doc.getStrings(DatasetPath.INDIVIDUAL_NAME_DISTRIBUTOR.path()));
 			Database.insertAnyText(qf, documentId, doc.getStrings(DatasetPath.ORGANISATION_DISTRIBUTOR.path()));
 			
@@ -124,6 +131,7 @@ public class Dataset {
 			
 			Database.insertAnyText(qf, documentId, doc.getStrings(DatasetPath.DATE_SOURCE.path()));
 			Database.insertAnyText(qf, documentId, doc.getStrings(DatasetPath.DATE_NEXT_UPDATE.path()));
+			Database.insertAnyText(qf, documentId, doc.getStrings(DatasetPath.MAINTENANCE_FREQUENCY.path()));
 			Database.insertAnyText(qf, documentId, doc.getStrings(DatasetPath.DATE_METADATA_REVISION.path()));
 			Database.insertAnyText(qf, documentId, doc.getStrings(DatasetPath.TIMEPERIOD_BEGIN.path()));
 			Database.insertAnyText(qf, documentId, doc.getStrings(DatasetPath.TIMEPERIOD_END.path()));
@@ -143,6 +151,7 @@ public class Dataset {
 			Database.insertAnyText(qf, documentId, doc.getStrings(DatasetPath.OTHER_CONSTRAINT.path()));
 			Database.insertAnyText(qf, documentId, doc.getStrings(DatasetPath.USE_CONSTRAINT.path()));
 			Database.insertAnyText(qf, documentId, doc.getStrings(DatasetPath.ACCESS_CONSTRAINT.path()));
+			Database.insertAnyText(qf, documentId, doc.getStrings(DatasetPath.METADATA_ID.path()));
 			Database.insertAnyText(qf, documentId, doc.getStrings(DatasetPath.METADATA_LANGUAGE.path()));
 			Database.insertAnyText(qf, documentId, doc.getStrings(DatasetPath.METADATA_CHARACTERSET.path()));
 			Database.insertAnyText(qf, documentId, doc.getStrings(DatasetPath.METADATA_HIERARCHYLEVEL.path()));

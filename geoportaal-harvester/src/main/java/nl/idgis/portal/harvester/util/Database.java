@@ -203,7 +203,7 @@ public class Database {
 	
 	public static void insertAnyText(SQLQueryFactory qf, Long documentId, List<String> listValues) {
 		for(String value : listValues) {
-			if(!value.trim().isEmpty()) {
+			if(value != null && !value.trim().isEmpty()) {
 				qf.insert(anyText)
 					.set(anyText.documentId, documentId)
 					.set(anyText.content, value.trim())

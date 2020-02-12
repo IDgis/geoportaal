@@ -1,5 +1,6 @@
 package nl.idgis.portal.harvester.types;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -63,17 +64,22 @@ public class Service {
 			
 			Long documentId =  Database.getDocumentId(qf, doc.getString(ServicePath.UUID.path()));
 			
+			Database.insertAnyText(qf, documentId, doc.getStrings(ServicePath.TITLE.path()));
+			Database.insertAnyText(qf, documentId, doc.getStrings(ServicePath.ABSTRACT.path()));
+			Database.insertAnyText(qf, documentId, Arrays.asList(viewerUrl));
 			Database.insertAnyText(qf, documentId, doc.getStrings(ServicePath.LAYER.path()));
 			Database.insertAnyText(qf, documentId, doc.getStrings(ServicePath.USE_LIMITATION.path()));
 			
 			Database.insertAnyText(qf, documentId, doc.getStrings(ServicePath.INDIVIDUAL_NAME_CONTACT.path()));
 			Database.insertAnyText(qf, documentId, doc.getStrings(ServicePath.ORGANISATION_CONTACT.path()));
 			Database.insertAnyText(qf, documentId, doc.getStrings(ServicePath.INDIVIDUAL_NAME_CREATOR.path()));
+			Database.insertAnyText(qf, documentId, doc.getStrings(ServicePath.ORGANISATION_CREATOR.path()));
 			
 			Database.insertAnyText(qf, documentId, doc.getStrings(ServicePath.GEO_AREA.path()));
 			
 			Database.insertAnyText(qf, documentId, doc.getStrings(ServicePath.ATTACHED_FILE.path()));
 			Database.insertAnyText(qf, documentId, doc.getStrings(ServicePath.KEYWORD.path()));
+			Database.insertAnyText(qf, documentId, doc.getStrings(ServicePath.UUID.path()));
 			Database.insertAnyText(qf, documentId, doc.getStrings(ServicePath.ACCESS_CONSTRAINT.path()));
 			Database.insertAnyText(qf, documentId, doc.getStrings(ServicePath.OTHER_CONSTRAINT.path()));
 		} catch(Exception e) {
