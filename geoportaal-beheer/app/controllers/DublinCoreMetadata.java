@@ -236,28 +236,45 @@ public class DublinCoreMetadata extends SimpleWebDAV {
 	 */
 	@Override
 	public Optional<Resource> resource(String name) throws MalformedURLException, IOException {
-		// Create an object to easily format dates
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		// Strips the extension from the string
+		String metadataUuid = name.substring(0, name.indexOf(".xml"));
 		
-		// Generate metadata
-		DublinCoreXML dcx = generateMetadata(name);
-		
-		// Fetches the message of the use limitation attribute value
-		String useLimitation = Messages.get("xml.uselimitation");
-		
-		String stylesheetIntern = 
-				play.Play.application().configuration().getString("geoportaal.stylesheet.intern.url");
-		String stylesheetExtern = 
-				play.Play.application().configuration().getString("geoportaal.stylesheet.extern.url");
-		
-		// Returns the XML page
-		if("1".equals(Http.Context.current().request().getHeader(play.Play.application().configuration().getString("trusted.header")))) {
-			return Optional.<Resource>of(new DefaultResource("application/xml", 
-					views.xml.metadataintern.render(dcx, sdf, useLimitation, false, stylesheetIntern).body().getBytes("UTF-8")));
-		} else {
-			return Optional.<Resource>of(new DefaultResource("application/xml", 
-					views.xml.metadataextern.render(dcx, sdf, useLimitation, false, stylesheetExtern).body().getBytes("UTF-8")));
-		}
+		return q.withTransaction(tx -> {
+			// Get use limitation of document
+			String useLimitationDocument = tx.select(useLimitation.name)
+				.from(metadata)
+				.join(useLimitation).on(metadata.useLimitation.eq(useLimitation.id))
+				.where(metadata.uuid.eq(metadataUuid))
+				.fetchOne();
+			
+			// Get value of trusted header
+			String headerTrusted = Http.Context.current().request().getHeader(play.Play.application().configuration().getString("trusted.header"));
+			
+			// Create an object to easily format dates
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+			
+			// Generate metadata
+			DublinCoreXML dcx = generateMetadata(name);
+			
+			// Fetches the message of the use limitation attribute value
+			String useLimitation = Messages.get("xml.uselimitation");
+			
+			String stylesheetIntern = 
+					play.Play.application().configuration().getString("geoportaal.stylesheet.intern.url");
+			String stylesheetExtern = 
+					play.Play.application().configuration().getString("geoportaal.stylesheet.extern.url");
+			
+			// Returns the XML page
+			if("1".equals(headerTrusted)) {
+				return Optional.<Resource>of(new DefaultResource("application/xml", 
+						views.xml.metadataintern.render(dcx, sdf, useLimitation, false, stylesheetIntern).body().getBytes("UTF-8")));
+			} else if(!"1".equals(headerTrusted) && "extern".equals(useLimitationDocument)) {
+				return Optional.<Resource>of(new DefaultResource("application/xml", 
+						views.xml.metadataextern.render(dcx, sdf, useLimitation, false, stylesheetExtern).body().getBytes("UTF-8")));
+			} else {
+				return Optional.<Resource>of(new DefaultResource("text/plain", "403: forbidden".getBytes("UTF-8")));
+			}
+		});
 	}
 	
 	public Html getMetadataInternal(String name, Boolean noStyle) throws MalformedURLException, IOException {
