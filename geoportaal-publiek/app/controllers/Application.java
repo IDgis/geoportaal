@@ -432,6 +432,10 @@ public class Application extends Controller {
 		}
 		
 		return request.get().map(response -> {
+			String contentType = response.getHeader("content-type");
+			
+			if(!"application/xml".equals(contentType)) return forbidden("403: forbidden");
+			
 			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 			dbf.setNamespaceAware(true);
 			
