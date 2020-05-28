@@ -30,6 +30,7 @@ import javax.inject.Inject;
 
 import com.querydsl.core.Tuple;
 
+import enums.OriginRequest;
 import models.DublinCoreXML;
 import nl.idgis.dav.model.DefaultResource;
 import nl.idgis.dav.model.DefaultResourceDescription;
@@ -38,6 +39,7 @@ import nl.idgis.dav.model.Resource;
 import nl.idgis.dav.model.ResourceDescription;
 import nl.idgis.dav.model.ResourceProperties;
 import nl.idgis.dav.router.SimpleWebDAV;
+import play.Configuration;
 import play.i18n.Messages;
 import play.mvc.Http;
 import play.twirl.api.Html;
@@ -45,6 +47,7 @@ import util.QueryDSL;
 
 public class DublinCoreMetadata extends SimpleWebDAV {
 	private final QueryDSL q;
+	private final Configuration configuration = play.Play.application().configuration();
 	
 	@Inject
 	public DublinCoreMetadata(QueryDSL q) {
@@ -103,7 +106,7 @@ public class DublinCoreMetadata extends SimpleWebDAV {
 		});
 	}
 	
-	private DublinCoreXML generateMetadata(String name) {
+	private DublinCoreXML generateMetadata(String name, OriginRequest origin) {
 		// Strips the extension from the string
 		String metadataUuid = name.substring(0, name.indexOf(".xml"));
 		
@@ -127,9 +130,8 @@ public class DublinCoreMetadata extends SimpleWebDAV {
 				.where(metadata.uuid.eq(metadataUuid))
 				.fetchOne();
 			
-			if(datasetRow == null) {
-				return Optional.<Resource>empty();
-			}
+			// When the row is null return an empty optional
+			if(datasetRow == null) return Optional.<Resource>empty();
 			
 			// Fetch the attachments from the database
 			List<String> attachmentsDB = tx.select(mdAttachment.attachmentName)
@@ -138,11 +140,23 @@ public class DublinCoreMetadata extends SimpleWebDAV {
 					.orderBy(mdAttachment.attachmentName.asc())
 					.fetch();
 			
-			// Convert attachments from database to requests
+			// Convert attachments from database to url's
 			List<String> attachments = new ArrayList<String>();
 			for(String att : attachmentsDB) {
-				String url = controllers.routes.Attachment.openAttachment(datasetRow.get(metadata.uuid), att).toString();
-				attachments.add(play.Play.application().configuration().getString("geoportaal.admin.host") + url);
+				String url = null;
+				switch(origin) {
+					case ADMIN:
+						url = configuration.getString("geoportaal.adminHost") + controllers.routes.Attachment.download(datasetRow.get(metadata.uuid), att).toString();
+						break;
+					case INTERNAL:
+						url = configuration.getString("geoportaal.attachmentPrefixInternal") + datasetRow.get(metadata.uuid) + "/" + att.replaceAll(" ", "%20");
+						break;
+					case EXTERNAL:
+						url = configuration.getString("geoportaal.attachmentPrefixExternal") + datasetRow.get(metadata.uuid) + "/" + att.replaceAll(" ", "%20");
+						break;
+				}
+				
+				if(url != null) attachments.add(url);
 			}
 			
 			// Fetch the id of the creator
@@ -248,40 +262,41 @@ public class DublinCoreMetadata extends SimpleWebDAV {
 				.fetchOne();
 			
 			// Get value of trusted header
-			String headerTrusted = Http.Context.current().request().getHeader(play.Play.application().configuration().getString("trusted.header"));
+			String headerTrusted = Http.Context.current().request().getHeader(configuration.getString("trusted.header"));
+			
+			// Check if user is allowed access to document
+			if(!"1".equals(headerTrusted) && !"extern".equals(useLimitationDocument)) {
+				return Optional.<Resource>of(new DefaultResource("text/plain", "403: forbidden".getBytes("UTF-8")));
+			}
+			
+			// Generate metadata
+			DublinCoreXML dcx = generateMetadata(name, "1".equals(headerTrusted) ? OriginRequest.INTERNAL : OriginRequest.EXTERNAL);
 			
 			// Create an object to easily format dates
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 			
-			// Generate metadata
-			DublinCoreXML dcx = generateMetadata(name);
-			
 			// Fetches the message of the use limitation attribute value
 			String useLimitation = Messages.get("xml.uselimitation");
 			
-			String stylesheetIntern = 
-					play.Play.application().configuration().getString("geoportaal.stylesheet.intern.url");
-			String stylesheetExtern = 
-					play.Play.application().configuration().getString("geoportaal.stylesheet.extern.url");
+			String stylesheetIntern = configuration.getString("geoportaal.stylesheet.intern.url");
+			String stylesheetExtern = configuration.getString("geoportaal.stylesheet.extern.url");
 			
 			// Returns the XML page
 			if("1".equals(headerTrusted)) {
 				return Optional.<Resource>of(new DefaultResource("application/xml", 
 						views.xml.metadataintern.render(dcx, sdf, useLimitation, false, stylesheetIntern).body().getBytes("UTF-8")));
-			} else if(!"1".equals(headerTrusted) && "extern".equals(useLimitationDocument)) {
+			} else {
 				return Optional.<Resource>of(new DefaultResource("application/xml", 
 						views.xml.metadataextern.render(dcx, sdf, useLimitation, false, stylesheetExtern).body().getBytes("UTF-8")));
-			} else {
-				return Optional.<Resource>of(new DefaultResource("text/plain", "403: forbidden".getBytes("UTF-8")));
 			}
 		});
 	}
 	
-	public Html getMetadataInternal(String name, Boolean noStyle) throws MalformedURLException, IOException {
-		DublinCoreXML dcx = generateMetadata(name);
+	public Html getMetadataInternal(String name, boolean noStyle) throws MalformedURLException, IOException {
+		// Generate metadata
+		DublinCoreXML dcx = generateMetadata(name, OriginRequest.ADMIN);
 		
-		String stylesheet = 
-				play.Play.application().configuration().getString("geoportaal.stylesheet.intern.url");
+		String stylesheet = configuration.getString("geoportaal.stylesheet.intern.url");
 		
 		// Create an object to easily format dates
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -289,6 +304,7 @@ public class DublinCoreMetadata extends SimpleWebDAV {
 		// Fetches the message of the use limitation attribute value
 		String useLimitation = Messages.get("xml.uselimitation");
 		
+		// Returns the XML page
 		return views.xml.metadataintern.render(dcx, sdf, useLimitation, noStyle, stylesheet);
 	}
 }
