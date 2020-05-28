@@ -44,6 +44,7 @@ import com.querydsl.sql.SQLQuery;
 
 import models.DocSubject;
 import models.Search;
+import play.Configuration;
 import play.Routes;
 import play.data.Form;
 import play.i18n.Lang;
@@ -60,9 +61,10 @@ import views.html.*;
 public class Application extends Controller {
 	@Inject QueryDSL q;
 	@Inject WSClient ws;
+	private final Configuration configuration = play.Play.application().configuration();
 	
 	public Result index() {
-		String portalAccess = play.Play.application().configuration().getString("portal.access");
+		String portalAccess = configuration.getString("portal.access");
 		
 		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
 		
@@ -116,7 +118,7 @@ public class Application extends Controller {
 	}
 	
 	public Result search(Integer start, String textSearch, String typesString, Boolean filter, Boolean expand, String sort) {
-		String portalAccess = play.Play.application().configuration().getString("portal.access");
+		String portalAccess = configuration.getString("portal.access");
 		
 		Lang curLang = Http.Context.current().lang();
 		String tsvLang = Messages.get("tsv.language");
@@ -253,7 +255,7 @@ public class Application extends Controller {
 	}
 	
 	public Result browse(Integer start, String textSearch, String subjectsString, Boolean filter, Boolean expand, String sort) {
-		String portalAccess = play.Play.application().configuration().getString("portal.access");
+		String portalAccess = configuration.getString("portal.access");
 		
 		Lang curLang = Http.Context.current().lang();
 		String tsvLang = Messages.get("tsv.language");
@@ -414,8 +416,30 @@ public class Application extends Controller {
 		return ok(help.render());
 	}
 	
+	public Promise<Result> getAttachment(String uuid, String attachmentName) {
+		String portalAccess = configuration.getString("portal.access");
+		String adminUrl = configuration.getString("admin.url");
+		String url = adminUrl + "/attachment/" + uuid + "/" + attachmentName.replaceAll(" ", "%20");
+		
+		WSRequest request = ws.url(url);
+		
+		if("intern".equals(portalAccess)) request.setHeader(configuration.getString("trusted.header"), "1");
+		else request.setHeader(configuration.getString("trusted.header"), "0");
+		
+		return request.get().map(response -> {
+			int statusCode = response.getStatus();
+			String contentType = response.getHeader("content-type");
+			byte[] data = response.asByteArray();
+			
+			if(statusCode == 403) return forbidden(data).as(contentType);
+			else if(statusCode >= 400 && statusCode < 600) return internalServerError(data).as(contentType);
+			
+			return ok(data).as(contentType);
+		});
+	}
+	
 	public Promise<Result> getMetadata(String type, String uuid, Boolean noStyle) throws MalformedURLException, IOException {
-		String access = play.Play.application().configuration().getString("portal.access");
+		String portalAccess = configuration.getString("portal.access");
 		
 		String url = getMetadataUrl(type);
 			
@@ -425,11 +449,8 @@ public class Application extends Controller {
 		
 		WSRequest request = ws.url(url + uuid + ".xml");
 		
-		if("intern".equals(access)) {
-			request.setHeader(play.Play.application().configuration().getString("trusted.header"), "1");
-		} else {
-			request.setHeader(play.Play.application().configuration().getString("trusted.header"), "0");
-		}
+		if("intern".equals(portalAccess)) request.setHeader(configuration.getString("trusted.header"), "1");
+		else request.setHeader(configuration.getString("trusted.header"), "0");
 		
 		return request.get().map(response -> {
 			String contentType = response.getHeader("content-type");
@@ -477,7 +498,7 @@ public class Application extends Controller {
 					}
 				});
 				
-				String metadataPrefix = play.Play.application().configuration().getString("metadata.prefix");
+				String metadataPrefix = configuration.getString("metadata.prefix");
 				String datasetUrls = "/gmd:MD_Metadata/gmd:identificationInfo/srv:SV_ServiceIdentification/"
 						+ "srv:operatesOn/@xlink:href";
 				NodeList nodelist = (NodeList) xpath.evaluate(datasetUrls, d, XPathConstants.NODESET);

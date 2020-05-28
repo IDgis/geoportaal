@@ -188,7 +188,8 @@ public class App {
 							Document doc = db.parse(input);
 							switch(metadataType) {
 								case DATASET:
-									Dataset.harvest(qf,
+									Dataset.harvest(
+											qf,
 											doc,
 											url,
 											WebDavBooleanParser.parse(confidential),
@@ -199,6 +200,7 @@ public class App {
 									break;
 								case DUBLINCORE:
 									DublinCore.harvest(qf, doc, url);
+									break;
 							}
 						}
 					} catch (MalformedURLException mue) {
