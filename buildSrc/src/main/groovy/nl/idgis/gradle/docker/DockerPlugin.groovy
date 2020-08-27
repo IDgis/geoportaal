@@ -96,7 +96,7 @@ class DockerPlugin implements Plugin<Project> {
 								
 								if(project.hasProperty('importRootCA')) {
 									task.copyFile "rootCA.crt", "/opt"
-									task.runCommand "/usr/lib/jvm/zulu-8-amd64/bin/keytool -import -alias server -keystore /usr/lib/jvm/zulu-8-amd64/jre/lib/security/cacerts -file /opt/rootCA.crt -storepass changeit -noprompt"
+									task.runCommand "keytool -import -alias server -keystore /usr/lib/jvm/zulu8-ca-amd64/jre/lib/security/cacerts -file /opt/rootCA.crt -storepass changeit -noprompt"
 								}
 								
 								task.environmentVariable ("JAVA_OPTS", "-Xmx2048m")
