@@ -5,6 +5,7 @@ import static models.QCreatorLabel.creatorLabel;
 import static models.QMdAttachment.mdAttachment;
 import static models.QMdSubject.mdSubject;
 import static models.QMetadata.metadata;
+import static models.QMetadataSearch.metadataSearch;
 import static models.QRights.rights;
 import static models.QRightsLabel.rightsLabel;
 import static models.QStatus.status;
@@ -16,9 +17,12 @@ import static models.QUseLimitation.useLimitation;
 import static models.QUseLimitationLabel.useLimitationLabel;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
@@ -27,6 +31,7 @@ import com.querydsl.sql.SQLQuery;
 
 import actions.DefaultAuthenticator;
 import play.Configuration;
+import play.i18n.Messages;
 import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
@@ -39,7 +44,6 @@ import util.QueryDSL;
  * @author Kevin
  *
  */
-@Security.Authenticated(DefaultAuthenticator.class)
 public class ReportApi extends Controller {
 	
 	@Inject
@@ -50,16 +54,18 @@ public class ReportApi extends Controller {
 	/**
 	 * Returns a {@link JSON} Object with all report data
 	 * 
+	 * @param textSearch - the search value of the text field
 	 * @param offset - The offset to start the search
 	 * @param limit - The number of results to return
+	 * @param sort - the sort type value
 	 * @return a {@link JSON} Object with the report data
 	 */
-	public Result search(long offset, long limit) {
+	public Result search(String textSearch, long offset, long limit, String sort) {
 		return q.withTransaction(tx -> {
 			Map<String, Object> root = new HashMap<>();
 			
 			SQLQuery<Tuple> datasetQuery = tx.select(metadata.id, metadata.uuid, metadata.title, metadata.description, creatorLabel.label,
-					rightsLabel.label, typeInformationLabel.label, useLimitationLabel.label, metadata.dateSourcePublication)
+					rightsLabel.label, typeInformationLabel.label, useLimitationLabel.label, metadata.dateSourcePublication, metadata.uuid)
 				.from(metadata)
 				.join(typeInformation).on(typeInformation.id.eq(metadata.typeInformation))
 				.join(typeInformationLabel).on(typeInformationLabel.typeInformationId.eq(typeInformation.id))
@@ -74,12 +80,55 @@ public class ReportApi extends Controller {
 					.and(useLimitation.name.equalsIgnoreCase("extern"))
 					.and(status.name.equalsIgnoreCase("published")));
 			
+			// Strip characters from text search string that conflict with Postgres full-text search
+			String textSearchFirstStrip = textSearch.replace("&", "");
+			String textSearchSecondStrip = textSearchFirstStrip.replace("(", "");
+			String textSearchThirdStrip = textSearchSecondStrip.replace(")", "");
+			String textSearchFinalStrip = textSearchThirdStrip.replace(":", "");
+			
+			// Convert text search string to an array
+			String[] textSearchTerms = textSearchFinalStrip.split("\\s+");
+			
+			// Convert array of text search words to list
+			// Create a string of all the words in the text search list with a '&' between them
+			String tsQuery = Arrays.asList(textSearchTerms).stream()
+				.filter(word -> !word.isEmpty())
+				.map(word -> word + ":*")
+				.collect(Collectors.joining(" & "));
+			
+			// Filter records on text search words
+			if (!tsQuery.isEmpty()) {
+				// Get local language for query
+				String language = Messages.get("tsv.language");
+				
+				datasetQuery.where(
+					tx.selectOne()
+						.from(metadataSearch)
+						.where(metadataSearch.metadataId.eq(metadata.id))
+						.where(metadataSearch.tsv.query(language, tsQuery))
+						.exists());
+			}
+			
+			if ("dateAsc".equals(sort)) {
+				datasetQuery.orderBy(metadata.dateSourcePublication.asc());
+			}
+			if ("dateDesc".equals(sort)) {
+				datasetQuery.orderBy(metadata.dateSourcePublication.desc());
+			}
+			if ("titleAsc".equals(sort)) {
+				datasetQuery.orderBy(metadata.title.asc());
+			}
+			if ("titleDesc".equals(sort)) {
+				datasetQuery.orderBy(metadata.title.desc());
+			}
+			
 			root.put("count", datasetQuery.fetchCount());
 			
 			List<Map<String, Object>> result = new ArrayList<>();
 			List<Tuple> md = datasetQuery.offset(offset).limit(limit).fetch();
 			for (Tuple mdRow : md) {
 				Map<String, Object> record = new HashMap<>();
+				record.put("uuid", mdRow.get(metadata.uuid));
 				record.put("titel", mdRow.get(metadata.title));
 				record.put("omschrijving", mdRow.get(metadata.description));
 				record.put("eindverantwoordelijke", mdRow.get(creatorLabel.label));
@@ -97,7 +146,6 @@ public class ReportApi extends Controller {
 				for (Tuple attRow : attachments) {
 					Map<String, Object> att = new HashMap<>();
 					att.put("naam", attRow.get(mdAttachment.attachmentName));
-					att.put("url", configuration.getString("geoportaal.attachmentPrefixExternal") + mdRow.get(metadata.uuid) + "/" + attRow.get(mdAttachment.attachmentName));
 					attachmentsList.add(att);
 				}
 				record.put("bijlagen", attachmentsList);
