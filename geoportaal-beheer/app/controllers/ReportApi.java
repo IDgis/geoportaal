@@ -118,4 +118,70 @@ public class ReportApi extends Controller {
 			return ok(Json.toJson(root));
 		});
 	}
+	
+	/**
+	 * Returns a {@link JSON} Object with the report data
+	 * 
+	 * @param metadataUuid the UUID of the metadata
+	 * @return a {@link JSON} Object with the report data
+	 */
+	public Result findReport(String metadataUuid) {
+		return q.withTransaction(tx -> {
+			SQLQuery<Tuple> datasetQuery = tx.select(metadata.id, metadata.uuid, metadata.title, metadata.description, creatorLabel.label,
+					rightsLabel.label, typeInformationLabel.label, useLimitationLabel.label, metadata.dateSourcePublication, metadata.uuid)
+				.from(metadata)
+				.join(typeInformation).on(typeInformation.id.eq(metadata.typeInformation))
+				.join(typeInformationLabel).on(typeInformationLabel.typeInformationId.eq(typeInformation.id))
+				.join(creator).on(creator.id.eq(metadata.creator))
+				.join(creatorLabel).on(creatorLabel.creatorId.eq(creator.id))
+				.join(useLimitation).on(useLimitation.id.eq(metadata.useLimitation))
+				.join(useLimitationLabel).on(useLimitationLabel.useLimitationId.eq(useLimitation.id))
+				.join(rights).on(rights.id.eq(metadata.rights))
+				.join(rightsLabel).on(rightsLabel.rightsId.eq(rights.id))
+				.join(status).on(status.id.eq(metadata.status))
+				.where(typeInformation.name.equalsIgnoreCase("report")
+					.and(useLimitation.name.equalsIgnoreCase("extern"))
+					.and(status.name.equalsIgnoreCase("published"))
+					.and(metadata.uuid.eq(metadataUuid)));
+			
+			Map<String, Object> result = new HashMap<>();
+			
+			Optional<Tuple> mdResult = Optional.ofNullable(datasetQuery.fetchOne());
+			mdResult.ifPresent(record -> {
+				result.put("uuid", record.get(metadata.uuid));
+				result.put("titel", record.get(metadata.title));
+				result.put("omschrijving", record.get(metadata.description));
+				result.put("eindverantwoordelijke", record.get(creatorLabel.label));
+				result.put("eigendomsrechten", record.get(rightsLabel.label));
+				result.put("typeInformatie", record.get(typeInformationLabel.label));
+				result.put("gebruiksrestricties", record.get(useLimitationLabel.label));
+				result.put("datumPublicatie", record.get(metadata.dateSourcePublication).toLocalDateTime().toString());
+				
+				// Bijlagen
+				List<Map<String, Object>> attachmentsList = tx.select(mdAttachment.id, mdAttachment.attachmentName)
+					.from(mdAttachment)
+					.where(mdAttachment.metadataId.eq(record.get(metadata.id)))
+					.fetch()
+					.stream()
+					.map(row -> {
+						Map<String, Object> attachment = new HashMap<>();
+						attachment.put("naam", row.get(mdAttachment.attachmentName));
+						return attachment;
+					})
+					.collect(Collectors.toList());
+				result.put("bijlagen", attachmentsList);
+				
+				// ISO Onderwerpen
+				List<String> subjects = tx.select(subjectLabel.label)
+					.from(mdSubject)
+					.join(subject).on(subject.id.eq(mdSubject.subject))
+					.join(subjectLabel).on(subjectLabel.subjectId.eq(subject.id))
+					.where(mdSubject.metadataId.eq(record.get(metadata.id)))
+					.fetch();
+				result.put("isoOnderwerpen", subjects);
+			});
+			
+			return ok(Json.toJson(result));
+		});
+	}
 }
