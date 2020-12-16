@@ -25,6 +25,8 @@ GET		/attachment/:uuid/:attachmentName		controllers.Attachment.download(uuid: St
 POST	/search									controllers.Index.search()
 POST	/sort									controllers.Index.sort()
 GET		/report									controllers.Report.renderReport()
+GET		/report/query							controllers.ReportApi.search(text ?= "", offset:Long ?= 0, limit:Long ?= 10, sort ?= "dateDesc")
+GET		/report/query/:metadataUuid				controllers.ReportApi.findReport(metadataUuid: String)
 GET		/dccsv									controllers.Report.writeDcCSV()
 GET		/othercsv/:type							controllers.Report.writeOtherCSV(type: String)
 POST	/csv									controllers.Report.getCSV()
