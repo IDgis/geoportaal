@@ -58,9 +58,10 @@ public class ReportApi extends Controller {
 	 * @param offset - The offset to start the search
 	 * @param limit - The number of results to return
 	 * @param sort - the sort type value
+	 * @param subjectFilter - The subject to filter
 	 * @return a {@link JSON} Object with the report data
 	 */
-	public Result search(String textSearch, long offset, long limit, String sort) {
+	public Result search(String textSearch, long offset, long limit, String sort, String subjectFilter) {
 		return q.withTransaction(tx -> {
 			Map<String, Object> root = new HashMap<>();
 			
@@ -106,6 +107,17 @@ public class ReportApi extends Controller {
 						.from(metadataSearch)
 						.where(metadataSearch.metadataId.eq(metadata.id))
 						.where(metadataSearch.tsv.query(language, tsQuery))
+						.exists());
+			}
+			
+			// Filter on subject
+			if (!subjectFilter.isEmpty()) {
+				datasetQuery.where(
+					tx.selectOne()
+						.from(subject)
+						.join(mdSubject).on(mdSubject.subject.eq(subject.id))
+						.where(mdSubject.metadataId.eq(metadata.id))
+						.where(subject.name.equalsIgnoreCase(subjectFilter))
 						.exists());
 			}
 			
@@ -228,6 +240,31 @@ public class ReportApi extends Controller {
 					.fetch();
 				result.put("isoOnderwerpen", subjects);
 			});
+			
+			return ok(Json.toJson(result));
+		});
+	}
+	
+	/**
+	 * Returns a {@link JSON} array with all available subjects
+	 * 
+	 * @return a {@link JSON} array with all available subjects
+	 */
+	public Result getSubjects() {
+		return q.withTransaction(tx -> {
+			List<Map<String, Object>> result = tx.select(subject.name, subjectLabel.label)
+				.from(subject)
+				.join(subjectLabel).on(subjectLabel.subjectId.eq(subject.id))
+				.orderBy(subjectLabel.label.asc())
+				.fetch()
+				.stream()
+				.map(row -> {
+					Map<String, Object> record = new HashMap<>();
+					record.put("id", row.get(subject.name));
+					record.put("label", row.get(subjectLabel.label));
+					return record;
+				})
+				.collect(Collectors.toList());
 			
 			return ok(Json.toJson(result));
 		});
