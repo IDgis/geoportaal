@@ -244,4 +244,29 @@ public class ReportApi extends Controller {
 			return ok(Json.toJson(result));
 		});
 	}
+	
+	/**
+	 * Returns a {@link JSON} array with all available subjects
+	 * 
+	 * @return a {@link JSON} array with all available subjects
+	 */
+	public Result getSubjects() {
+		return q.withTransaction(tx -> {
+			List<Map<String, Object>> result = tx.select(subject.name, subjectLabel.label)
+				.from(subject)
+				.join(subjectLabel).on(subjectLabel.subjectId.eq(subject.id))
+				.orderBy(subjectLabel.label.asc())
+				.fetch()
+				.stream()
+				.map(row -> {
+					Map<String, Object> record = new HashMap<>();
+					record.put("id", row.get(subject.name));
+					record.put("label", row.get(subjectLabel.label));
+					return record;
+				})
+				.collect(Collectors.toList());
+			
+			return ok(Json.toJson(result));
+		});
+	}
 }
