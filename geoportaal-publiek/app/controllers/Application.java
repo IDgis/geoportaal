@@ -8,8 +8,10 @@ import static models.QMdType.mdType;
 import static models.QSubject.subject;
 import static models.QSubjectLabel.subjectLabel;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
@@ -429,12 +431,12 @@ public class Application extends Controller {
 		return request.get().map(response -> {
 			int statusCode = response.getStatus();
 			String contentType = response.getHeader("content-type");
-			byte[] data = response.asByteArray();
+			InputStream inputstream = response.getBodyAsStream();
 			
-			if(statusCode == 403) return forbidden(data).as(contentType);
-			else if(statusCode >= 400 && statusCode < 600) return internalServerError(data).as(contentType);
+			if(statusCode == 403) return forbidden(inputstream).as(contentType);
+			else if(statusCode >= 400 && statusCode < 600) return internalServerError(inputstream).as(contentType);
 			
-			return ok(data).as(contentType);
+			return ok(inputstream).as(contentType);
 		});
 	}
 	
