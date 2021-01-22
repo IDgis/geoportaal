@@ -1169,7 +1169,7 @@
 		  			<xsl:when test=". = '2annually'">
 		 				<p>
 		  					<b><xsl:text>Herzieningsfrequentie bestand: </xsl:text></b>
-		  					<xsl:text>2-jaarlijks</xsl:text>
+		  					<xsl:text>1 x per 2 jaar</xsl:text>
 		 				</p>
 		  			</xsl:when>
 		  			<xsl:when test=". = '3annually'">
