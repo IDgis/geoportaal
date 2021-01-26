@@ -23,7 +23,7 @@ tsv.language=dutch
 metadata.type.dataset=GIS bestanden
 metadata.type.dataset.archived=GIS bestanden in archief
 metadata.type.service=Services
-metadata.type.dc=Statische kaarten
+metadata.type.dc=Overige datasets
 
 metadata.sort.dataset=Sorteer op datum van dataset
 metadata.sort.description=Sorteer op datum van beschrijving
@@ -40,7 +40,7 @@ index.files.info.recent=Vijf meest recente bestanden:
 
 search.header=Uitgebreid zoeken
 search.header.intern=Intern: Uitgebreid zoeken
-search.intro=Zoek naar kaarten. Maak eventueel eerst een selectie: GIS bestanden, services of statische kaarten.
+search.intro=Zoek naar kaarten. Maak eventueel eerst een selectie: GIS bestanden, services of overige datasets.
 search.checkboxes.label=Zoeken naar
 
 browse.header=Bladeren
@@ -55,7 +55,7 @@ about.header.intern=Intern: Over deze site
 about.paragraph.1.2=Een groot aantal datasets wordt vrij beschikbaar gesteld, zodat ook anderen ervan gebruik kunnen maken.
 about.paragraph.1.3=Voor de geodatasets en de services heb je speciale software nodig. Hiervoor wordt de verzamelnaam "GIS" gebruikt (geografisch informatiesysteem). Een veel gebruikt GIS is het systeem ARCGIS van het bedrijf ESRI. Maar er zijn ook "open source" GIS systemen. Deze zijn veelal gratis. Een veelgebruikt gratis GIS is bijvoorbeeld QGIS.
 about.paragraph.1.4=De datasets zijn veelal te downloaden, zodat je ze met een GIS verder kan gebruiken.
-about.paragraph.1.5=Voor de andere kaarten (statische kaarten) heb je geen GIS nodig. Dit zijn plaatjes, meestal in de vorm van een PDF. Je kan dit soort bestanden bekijken met bijvoorbeeld Adobe reader.
+about.paragraph.1.5=Voor de andere kaarten (overige datasets) heb je geen GIS nodig. Dit zijn plaatjes, meestal in de vorm van een PDF. Je kan dit soort bestanden bekijken met bijvoorbeeld Adobe reader.
 about.paragraph.header.2=Over metadata:
 about.paragraph.2.1=“Metadata” is de term die bij kaarten vaak wordt gebruikt voor de beschrijving van kaarten. Om het delen van gegevens makkelijker te maken, zijn standaarden gemaakt voor de beschrijving van kaarten. In technische termen: ISO19115 en ISO19119. Deze standaarden worden beheerd door een onafhankelijke organisatie (Geonovum: <a class="link" href="http://www.geonovum.nl" target="_blank">http://www.geonovum.nl</a>).
 about.paragraph.header.3=Over downloaden:
@@ -70,10 +70,10 @@ about.paragraph.3.3.option.5=<b>Geopackage</b> (bestand met data en ook gegevens
 about.paragraph.3.3.option.6=<b>GML</b> (Geography Markup Language, een open standaard voor GIS data)
 about.paragraph.3.3.option.7=<b>KML</b> (Keyhole Markup Language, te gebruiken in Google Earth)
 about.paragraph.3.4=Door meerdere formaten beschikbaar te stellen, kan je zelf kiezen welk bestandsformaat het beste past bij de software die jij zelf wilt gebruiken.
-about.paragraph.3.5=Heb je niet de beschikking over dergelijke GIS-software, maar wil je toch kaarten zien? Dat kan, omdat er ook veel pdf-bestanden beschikbaar gesteld worden. Zie hiervoor verder bij de toelichting over de “statische kaarten”.
-about.paragraph.header.4=Over statische kaarten:
-about.paragraph.4.1=Naast bestanden en services kan je ook “statische kaarten” vinden in het Geoportaal. Dat zijn kaarten (meestal pdf’s) die gemaakt zijn op basis van de bestanden en services. Deze kaarten worden speciaal gemaakt voor diverse communicatie-doeleinden.
-about.paragraph.4.2=Je kan dit soort kaarten eenvoudig bekijken. Je hebt daarvoor geen geavanceerd GIS systeem voor nodig. Een pdf kan je openen met een PDF reader. Deze readers worden gratis beschikbaar gesteld, bijvoorbeeld door het bedrijf Adobe (<a class="link" href="http://www.adobe.nl" target="_blank">http://www.adobe.nl</a>).  De metadata van deze statische kaarten wordt ontsloten via de Dublin-core standaard.
+about.paragraph.3.5=Heb je niet de beschikking over dergelijke GIS-software, maar wil je toch kaarten zien? Dat kan, omdat er ook veel pdf-bestanden beschikbaar gesteld worden. Zie hiervoor verder bij de toelichting over de “overige datasets”.
+about.paragraph.header.4=Over overige datasets:
+about.paragraph.4.1=Naast bestanden en services kan je ook “overige datasets” vinden in het Geoportaal. Dat zijn kaarten (meestal pdf’s) die gemaakt zijn op basis van de bestanden en services. Deze kaarten worden speciaal gemaakt voor diverse communicatie-doeleinden.
+about.paragraph.4.2=Je kan dit soort kaarten eenvoudig bekijken. Je hebt daarvoor geen geavanceerd GIS systeem voor nodig. Een pdf kan je openen met een PDF reader. Deze readers worden gratis beschikbaar gesteld, bijvoorbeeld door het bedrijf Adobe (<a class="link" href="http://www.adobe.nl" target="_blank">http://www.adobe.nl</a>).  De metadata van deze overige datasets wordt ontsloten via de Dublin-core standaard.
 
 contact.header=Contact
 contact.header.intern=Intern: Contact
@@ -90,7 +90,7 @@ help.paragraph.header.3=Tips bij het zoeken:
 help.paragraph.3.1=Kan je niet snel vinden wat je zoekt, probeer dan eerst eens een term die lijkt op de termen die je al gebruikt. Krijg je teveel zoekresultaten, probeer dan meerdere woorden te zoeken. Het zoekcriterium is “AND”. Dat wil zeggen dat je bij ieder extra woord je zoekresultaten zult beperken.
 help.paragraph.3.2=Zoek je bijvoorbeeld “natuur” dan vind je honderden resultaten. Zoek je “natuur bos” dan vind je er al veel minder. Zoeken met wildcards (* of ?) is niet mogelijk. Zoeken naar een deel van een woord echter wel. Zoek je “natuur” dan krijg je ook resultaten waarin het woord “natuurgebied” in voorkomt.
 help.paragraph.header.4=Over “Uitgebreid zoeken”:
-help.paragraph.4.1=Wil je op een andere manier zoeken dan is dat ook mogelijk. Bij het onderdeel “<b>Uitgebreid zoeken</b>” kan je selecteren of je door alle informatie heen wilt zoeken, of dat je je wilt beperken tot bestanden (geodata), services of statische kaarten. Ook kan je besluiten bij dat onderdeel om de zoekresultaten “<b>uit te klappen</b>”, wat soms ook kan helpen bij het vinden wat je zoekt.
+help.paragraph.4.1=Wil je op een andere manier zoeken dan is dat ook mogelijk. Bij het onderdeel “<b>Uitgebreid zoeken</b>” kan je selecteren of je door alle informatie heen wilt zoeken, of dat je je wilt beperken tot bestanden (geodata), services of overige datasets. Ook kan je besluiten bij dat onderdeel om de zoekresultaten “<b>uit te klappen</b>”, wat soms ook kan helpen bij het vinden wat je zoekt.
 help.paragraph.header.5=Over “Bladeren”:
 help.paragraph.5.1=Bij het onderdeel “<b>Bladeren</b>” is de mogelijkheid om te zoeken op trefwoorden. Wil je alles vinden over “economie”, zet dan alleen een vinkje voor het trefwoord “economie”. Wil je alles vinden over “economie” en ook over “flora en fauna”, dan zet je 2 vinkjes bij de betreffende trefwoorden.
 help.paragraph.5.2=Zowel bij “Uitgebreid zoeken” als bij “Bladeren” kan je ook nog “gewoon” zoeken op woorden. Dat zorgt ervoor dat jij precies zo kan zoeken als je zelf het makkelijkst vind.

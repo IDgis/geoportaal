@@ -203,7 +203,7 @@
 					</a>
 				</div>
 				<div class="titelbalk">
-					<h1 class="titel">Beschrijving statische kaarten Geoportaal</h1>
+					<h1 class="titel">Beschrijving overige datasets Geoportaal</h1>
 				</div>
 				<div class="grid">
 					<div class="tabs">
