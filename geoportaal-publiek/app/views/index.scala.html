@@ -54,7 +54,7 @@
 					<div class="col-md-12">
 						<p>
 							@if(doc.get(document.thumbnail) != null) {
-								<a href="@doc.get(document.thumbnail)" target="_blank">
+								<a href="@routes.Application.getMetadata(doc.get(mdType.name), doc.get(document.uuid))" target="_blank">
 									<img src="@doc.get(document.thumbnail)" class="md-thumbnail">
 								</a>
 							}
