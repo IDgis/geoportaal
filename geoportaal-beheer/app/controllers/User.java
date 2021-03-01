@@ -182,7 +182,7 @@ public class User extends Controller {
 			String dbPassword = tx
 				.select(user.password)
 				.from(user)
-				.where(user.username.eq(cpForm.get().username.trim()))
+				.where(user.username.toLowerCase().eq(cpForm.get().username.trim().toLowerCase()))
 				.fetchOne();
 			
 			// Reject and return with a message if the username isn't known or if the username and old password don't match
@@ -211,7 +211,7 @@ public class User extends Controller {
 			String encodedNP = encoder.encode(cpForm.get().newPassword);
 			tx.update(user)
 				.set(user.password, encodedNP)
-				.where(user.username.eq(cpForm.get().username.trim()))
+				.where(user.username.toLowerCase().eq(cpForm.get().username.trim().toLowerCase()))
 				.execute();
 		});
 		
@@ -257,7 +257,7 @@ public class User extends Controller {
 			// Updates password in the database
 			Long count = tx.update(user)
 				.set(user.password, encodedPW)
-				.where(user.username.eq(fpForm.get().username.trim()))
+				.where(user.username.toLowerCase().eq(fpForm.get().username.trim().toLowerCase()))
 				.execute();
 			
 			Integer finalCount = count.intValue();

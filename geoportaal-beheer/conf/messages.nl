@@ -61,12 +61,12 @@ index.warning.published.record=U heeft 1 of meerdere records geselecteerd, die r
 index.warning.attachment.skipped=U heeft geprobeerd een metadata record op te slaan met bijlages die dezelfde naam hebben. Alleen de eerste is toegevoegd.
 
 # Index modals
-index.modal.status.title=Wijzigen status statische kaarten
-index.modal.delete.title=Verwijderen statische kaarten
+index.modal.status.title=Wijzigen status overige datasets
+index.modal.delete.title=Verwijderen overige datasets
 index.modal.delete.definitive=Definitief verwijderen
 index.modal.delete.selected=Deze actie heeft betrekking op {0} {1}. 
 index.modal.none.selected=U heeft geen records geselecteerd. Deze actie kan niet worden uitgevoerd.
-index.modal.supplier.title=Wijzigen leverancier statische kaarten
+index.modal.supplier.title=Wijzigen leverancier overige datasets
 index.modal.action.label=Aantal record(s) waar deze actie betrekking op heeft:
 index.modal.confirmation=Weet u zeker dat u deze actie wilt uitvoeren?
 
@@ -182,7 +182,7 @@ report.header=Rapportage
 report.intro=Op deze pagina kun je onderstaande rapportages opvragen.
 report.type.dataset=Geodata
 report.type.service=Services
-report.type.dc=Statische kaarten
+report.type.dc=Overige datasets
 report.type.download=Download
 report.start.info.1=De rapportage-opdracht wordt gestart.
 report.start.info.2=Als deze is afgerond dan is het CSV-bestand meestal te vinden in je Download-map. Let op: afhankelijk van je browser-instellingen moet je soms nog bevestigen dat dit bestand moet worden opgeslagen. Je krijgt in dat geval de keuze tussen "Openen" of "Opslaan". Kies dan voor "Opslaan" en het bestand komt in je Download-map.
@@ -198,8 +198,8 @@ report.start.info.5.6=Klik op "Voltooien" en je hebt wel weer gewoon leesbare te
 # Help pagina
 help.header=Geoportaal: help metadata
 help.paragraph.1=<b>Toelichting bij het beheer van metadata.</b>
-help.paragraph.2=Bij dit onderdeel van het Geoportaal kan je je eigen kaarten toevoegen. Het betreft hier statische kaarten (pdf's meestal).
-help.paragraph.3=Bij de statische kaarten zijn enkele velden verplicht. Een aantal velden is al voor je ingevuld, zoals formaat en datum creatie. Deze velden kan je ook, indien nodig, zelf weer aanpassen.
+help.paragraph.2=Bij dit onderdeel van het Geoportaal kan je je eigen kaarten toevoegen. Het betreft hier overige datasets (pdf's meestal).
+help.paragraph.3=Bij de overige datasets zijn enkele velden verplicht. Een aantal velden is al voor je ingevuld, zoals formaat en datum creatie. Deze velden kan je ook, indien nodig, zelf weer aanpassen.
 help.paragraph.4=Er zijn enkele velden verplicht (aangegeven met *). Vul je hier niets in, dan kan je de betreffende kaart niet opslaan.
 help.paragraph.5=Je kan 1 of meerdere kaarten opslaan, bij 1 enkel nummer. Dat is handig omdat sommige kaarten als serie bij elkaar horen. Ze zijn dan onder 1 nummer terug te vinden.
 help.paragraph.6=Bij het onderdeel TOEVOEGEN kan je kaarten aanbieden.

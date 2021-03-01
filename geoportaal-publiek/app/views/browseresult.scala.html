@@ -105,7 +105,7 @@
 					<div class="col-md-12 description @if(!expand) {metadata-collapsed}">
 						<p>
 							@if(doc.getThumbnail() != null) {
-								<a href="@doc.getThumbnail()" target="_blank">
+								<a href="@routes.Application.getMetadata(doc.getMetadataType, doc.getUuid)" target="_blank">
 									<img src="@doc.getThumbnail()" class="md-thumbnail">
 								</a>
 							}

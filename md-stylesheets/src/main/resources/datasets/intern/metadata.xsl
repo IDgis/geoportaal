@@ -441,7 +441,7 @@
 				<p>In het Geoportaal staan actuele kaarten en beschrijvingen van die kaarten.</p>
 				<p>Ter referentie zijn vaak ook nog oudere kaarten beschikbaar gesteld.</p>
 				<p>De provincie Overijssel stelt zoveel mogelijk kaarten als "open data" voor iedereen beschikbaar.</p>
-				<p>Heeft u suggesties of vragen? Stuur dan een email naar <a href="mailto:beleidsinformatie@overijssel.nl">beleidsinformatie@overijssel.nl</a></p>
+				<p>Heeft u suggesties of vragen? Stuur dan een email naar <a href="mailto:kennishub@overijssel.nl">kennishub@overijssel.nl</a></p>
 				<p>Zie proclaimer: 
 					<a target="_blank" href="http://www.overijssel.nl/algemene-onderdelen/proclaimer">http://www.overijssel.nl/algemene-onderdelen/proclaimer</a>
 				</p>
@@ -1169,7 +1169,7 @@
 		  			<xsl:when test=". = '2annually'">
 		 				<p>
 		  					<b><xsl:text>Herzieningsfrequentie bestand: </xsl:text></b>
-		  					<xsl:text>2-jaarlijks</xsl:text>
+		  					<xsl:text>1 x per 2 jaar</xsl:text>
 		 				</p>
 		  			</xsl:when>
 		  			<xsl:when test=". = '3annually'">

@@ -418,7 +418,7 @@ public class Application extends Controller {
 		return ok(help.render());
 	}
 	
-	public Promise<Result> getAttachment(String uuid, String attachmentName) {
+	public Promise<Result> getAttachment(String uuid, String attachmentName) throws IOException {
 		String portalAccess = configuration.getString("portal.access");
 		String adminUrl = configuration.getString("admin.url");
 		String url = adminUrl + "/attachment/" + uuid + "/" + attachmentName.replaceAll(" ", "%20");
@@ -429,14 +429,15 @@ public class Application extends Controller {
 		else request.setHeader(configuration.getString("trusted.header"), "0");
 		
 		return request.get().map(response -> {
-			int statusCode = response.getStatus();
-			String contentType = response.getHeader("content-type");
-			InputStream inputstream = response.getBodyAsStream();
-			
-			if(statusCode == 403) return forbidden(inputstream).as(contentType);
-			else if(statusCode >= 400 && statusCode < 600) return internalServerError(inputstream).as(contentType);
-			
-			return ok(inputstream).as(contentType);
+			try(InputStream inputstream = response.getBodyAsStream()) {
+				int statusCode = response.getStatus();
+				String contentType = response.getHeader("content-type");
+				
+				if(statusCode == 403) return forbidden(inputstream).as(contentType);
+				else if(statusCode >= 400 && statusCode < 600) return internalServerError(inputstream).as(contentType);
+				
+				return ok(inputstream).as(contentType);
+			}
 		});
 	}
 	
