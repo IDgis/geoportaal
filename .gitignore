@@ -10,3 +10,4 @@ docker/*.crt
 # IntelliJ
 .idea
 *.iml
+/.metadata/
