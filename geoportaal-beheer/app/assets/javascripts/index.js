@@ -375,10 +375,17 @@ require([
 			});
 			
 			var statusForm = dom.byId('js-status-form');
-			if(recordsChecked.length === 0 || recordsChecked.length > 20) {
-				$('#status-modal').modal({})
+			if (recordsChecked.length === 0 || recordsChecked.length > 20) {
+				$('#status-modal').modal({});
 			} else {
-				statusForm.submit();
+				xhr(jsRoutes.controllers.Index.changeStatus().url, {
+					handleAs: "html",
+					data: statusForm,
+					method: "POST"
+				}).then(function(data) {
+					console.log(data);
+					statusForm.submit();
+				});
 			}
 		});
 		

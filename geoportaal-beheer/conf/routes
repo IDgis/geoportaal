@@ -17,7 +17,7 @@ GET		/create									controllers.Metadata.renderCreateForm(text ?= "", supplier 
 POST	/createSubmit							controllers.Metadata.createSubmit(text ?= "", supplier ?= "none", status ?= "none", dateCreateStart ?= "", dateCreateEnd ?= "", dateUpdateStart ?= "", dateUpdateEnd ?= "")
 GET		/edit/:metadataUuid						controllers.Metadata.renderEditForm(metadataUuid: String, text ?= "", supplier ?= "none", status ?= "none", dateCreateStart ?= "", dateCreateEnd ?= "", dateUpdateStart ?= "", dateUpdateEnd ?= "")
 POST	/editSubmit/:metadataUuid				controllers.Metadata.editSubmit(metadataUuid: String, text ?= "", supplier ?= "none", status ?= "none", dateCreateStart ?= "", dateCreateEnd ?= "", dateUpdateStart ?= "", dateUpdateEnd ?= "")
-GET		/editStatus								controllers.Index.changeStatus()
+POST	/editStatus								controllers.Index.changeStatus()
 GET		/editSupplier							controllers.Index.changeSupplier()
 GET		/cancel									controllers.Metadata.cancel(text ?= "", supplier ?= "none", status ?= "none", dateCreateStart ?= "", dateCreateEnd ?= "", dateUpdateStart ?= "", dateUpdateEnd ?= "")
 GET		/delete									controllers.Index.deleteMetadata()
