@@ -383,7 +383,6 @@ require([
 					data: statusForm,
 					method: "POST"
 				}).then(function(data) {
-					console.log(data);
 					statusForm.submit();
 				});
 			}
