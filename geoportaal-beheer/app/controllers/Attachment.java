@@ -47,10 +47,10 @@ public class Attachment extends Controller {
 			
 			// Create a byte array and a byte array inputstream
 			byte[] content = attachment.get(mdAttachment.attachmentContent);
-			ByteArrayInputStream bais = new ByteArrayInputStream(content);
-			
-			// Return a new page where the attachment will be opened
-			return ok(bais);
+			try(ByteArrayInputStream bais = new ByteArrayInputStream(content);) {
+				// Return a new page where the attachment will be opened
+				return ok(bais);
+			}
 		});
 	}
 }

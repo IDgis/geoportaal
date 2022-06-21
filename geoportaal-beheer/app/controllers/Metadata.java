@@ -310,19 +310,6 @@ public class Metadata extends Controller {
 			// Insert every attachment individually
 			for(FilePart fp: allFiles) {
 				if(fp != null) {
-					java.io.File file = fp.getFile();
-					InputStream inputStream = new FileInputStream(file);
-					
-					byte[] buffer = new byte[8192];
-					int bytesRead;
-					ByteArrayOutputStream byteOutput = new ByteArrayOutputStream();
-					while((bytesRead = inputStream.read(buffer)) != -1) {
-						byteOutput.write(buffer, 0, bytesRead);
-					}
-					byte[] input = byteOutput.toByteArray();
-					
-					inputStream.close();
-					
 					// Check if attachmentname already exists in the database
 					Long countDuplicate = tx.select(mdAttachment.attachmentName)
 						.from(mdAttachment)
@@ -332,17 +319,30 @@ public class Metadata extends Controller {
 					
 					Integer countDuplicateInt = countDuplicate.intValue();
 					
-					// Only insert attachment if attachmentname doesn't exist yet in the database
-					if(countDuplicateInt.equals(0)) {
-						tx.insert(mdAttachment)
-							.set(mdAttachment.metadataId, metadataId)
-							.set(mdAttachment.attachmentName, fp.getFilename())
-							.set(mdAttachment.attachmentContent, input)
-							.set(mdAttachment.attachmentMimetype, fp.getContentType())
-							.set(mdAttachment.attachmentLength, input.length)
-							.execute();
-					} else {
-						flash("attachmentSkipped", Messages.get("index.warning.attachment.skipped"));
+					java.io.File file = fp.getFile();
+					try(InputStream inputStream = new FileInputStream(file);) {
+						byte[] buffer = new byte[8192];
+						int bytesRead;
+						
+						try(ByteArrayOutputStream byteOutput = new ByteArrayOutputStream();) {
+							while((bytesRead = inputStream.read(buffer)) != -1) {
+								byteOutput.write(buffer, 0, bytesRead);
+							}
+							byte[] input = byteOutput.toByteArray();
+							
+							// Only insert attachment if attachmentname doesn't exist yet in the database
+							if(countDuplicateInt.equals(0)) {
+								tx.insert(mdAttachment)
+									.set(mdAttachment.metadataId, metadataId)
+									.set(mdAttachment.attachmentName, fp.getFilename())
+									.set(mdAttachment.attachmentContent, input)
+									.set(mdAttachment.attachmentMimetype, fp.getContentType())
+									.set(mdAttachment.attachmentLength, input.length)
+									.execute();
+							} else {
+								flash("attachmentSkipped", Messages.get("index.warning.attachment.skipped"));
+							}
+						}
 					}
 				}
 			}
@@ -729,21 +729,6 @@ public class Metadata extends Controller {
 				// Insert every new attachment individually
 				for(FilePart fp: allFiles) {
 					if(fp != null) {
-						java.io.File file = fp.getFile();
-						InputStream inputStream = new FileInputStream(file);
-						
-						byte[] buffer = new byte[8192];
-						int bytesRead;
-						ByteArrayOutputStream byteOutput = new ByteArrayOutputStream();
-						while((bytesRead = inputStream.read(buffer)) != -1)
-						{
-							byteOutput.write(buffer, 0, bytesRead);
-						}
-						byte[] input = byteOutput.toByteArray();
-						
-						
-						inputStream.close();
-						
 						// Check if attachmentname already exists in the database
 						Long countDuplicate = tx.select(mdAttachment.attachmentName)
 							.from(mdAttachment)
@@ -753,17 +738,30 @@ public class Metadata extends Controller {
 						
 						Integer countDuplicateInt = countDuplicate.intValue();
 						
-						// Only insert attachment if attachmentname doesn't exist yet in the database
-						if(countDuplicateInt.equals(0)) {
-							tx.insert(mdAttachment)
-							.set(mdAttachment.metadataId, metadataId)
-							.set(mdAttachment.attachmentName, fp.getFilename())
-							.set(mdAttachment.attachmentContent, input)
-							.set(mdAttachment.attachmentMimetype, fp.getContentType())
-							.set(mdAttachment.attachmentLength, input.length)
-							.execute();
-						} else {
-							flash("attachmentSkipped", Messages.get("index.warning.attachment.skipped"));
+						java.io.File file = fp.getFile();
+						try(InputStream inputStream = new FileInputStream(file);) {
+							byte[] buffer = new byte[8192];
+							int bytesRead;
+							
+							try(ByteArrayOutputStream byteOutput = new ByteArrayOutputStream();) {
+								while((bytesRead = inputStream.read(buffer)) != -1) {
+									byteOutput.write(buffer, 0, bytesRead);
+								}
+								byte[] input = byteOutput.toByteArray();
+								
+								// Only insert attachment if attachmentname doesn't exist yet in the database
+								if(countDuplicateInt.equals(0)) {
+									tx.insert(mdAttachment)
+										.set(mdAttachment.metadataId, metadataId)
+										.set(mdAttachment.attachmentName, fp.getFilename())
+										.set(mdAttachment.attachmentContent, input)
+										.set(mdAttachment.attachmentMimetype, fp.getContentType())
+										.set(mdAttachment.attachmentLength, input.length)
+										.execute();
+								} else {
+									flash("attachmentSkipped", Messages.get("index.warning.attachment.skipped"));
+								}
+							}
 						}
 					}
 				}
