@@ -16,6 +16,8 @@ import static models.QSubject.subject;
 import static models.QSubjectLabel.subjectLabel;
 import static models.QTypeInformation.typeInformation;
 import static models.QTypeInformationLabel.typeInformationLabel;
+import static models.QTypeResearch.typeResearch;
+import static models.QTypeResearchLabel.typeResearchLabel;
 import static models.QUseLimitation.useLimitation;
 import static models.QUseLimitationLabel.useLimitationLabel;
 import static models.QUser.user;

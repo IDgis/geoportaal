@@ -14,6 +14,8 @@ import static models.QSubject.subject;
 import static models.QSubjectLabel.subjectLabel;
 import static models.QTypeInformation.typeInformation;
 import static models.QTypeInformationLabel.typeInformationLabel;
+import static models.QTypeResearch.typeResearch;
+import static models.QTypeResearchLabel.typeResearchLabel;
 import static models.QUseLimitation.useLimitation;
 import static models.QUseLimitationLabel.useLimitationLabel;
 import static models.QUser.user;
@@ -99,6 +101,13 @@ public class Metadata extends Controller {
 				.orderBy(typeInformationLabel.label.asc())
 				.fetch();
 			
+			// Fetch type research list
+			List<Tuple> typeResearchList = tx.select(typeResearch.id, typeResearch.name, typeResearchLabel.label)
+				.from(typeResearch)
+				.join(typeResearchLabel).on(typeResearch.id.eq(typeResearchLabel.typeResearchId))
+				.orderBy(typeResearchLabel.label.asc())
+				.fetch();
+			
 			// Fetch creator list
 			List<Tuple> creatorsList = tx.select(creator.id, creator.name, creatorLabel.label)
 				.from(creator)
@@ -140,8 +149,8 @@ public class Metadata extends Controller {
 					.fetchOne();
 			
 			// Return form page
-			return ok(views.html.form.render(create, today, null, null, null, typeInformationList, creatorsList, rightsList, 
-					useLimitationList, mdFormatList, null, subjectList, roleId, search, false, null, null, null));
+			return ok(views.html.form.render(create, today, null, null, null, typeInformationList, typeResearchList, creatorsList,
+					rightsList, useLimitationList, mdFormatList, null, subjectList, roleId, search, false, null, null, null));
 		});
 	}
 	
@@ -175,6 +184,12 @@ public class Metadata extends Controller {
 			Integer typeInformationKey = tx.select(typeInformation.id)
 				.from(typeInformation)
 				.where(typeInformation.name.eq(dc.getTypeInformation()))
+				.fetchOne();
+			
+			// Fetches the type research key according to form value
+			Integer typeResearchKey = tx.select(typeResearch.id)
+				.from(typeResearch)
+				.where(typeResearch.name.eq(dc.getTypeResearch()))
 				.fetchOne();
 			
 			// Fetches the creator key according to form value
@@ -245,8 +260,8 @@ public class Metadata extends Controller {
 			Map<String, Boolean> numbersCheck = checkNumbers(dc.getFileId(), uuid);
 			
 			DublinCore previousDC = new DublinCore(dc.getLocation(), dc.getFileId(), dc.getTitle(), dc.getDescription(), dc.getTypeInformation(),
-					dc.getCreator(), dc.getCreatorOther(), dc.getRights(), dc.getUseLimitation(), dc.getMdFormat(), dc.getSource(),
-					dc.getDateSourceCreation(), dc.getDateSourcePublication(), dc.getDateSourceValidFrom(), dc.getDateSourceValidUntil(), 
+					dc.getTypeResearch(), dc.getCreator(), dc.getCreatorOther(), dc.getRights(), dc.getUseLimitation(), dc.getMdFormat(),
+					dc.getSource(), dc.getDateSourceCreation(), dc.getDateSourcePublication(), dc.getDateSourceValidFrom(), dc.getDateSourceValidUntil(), 
 					dc.getSubject(), null);
 			
 			Map<String, DublinCore> previousValues = new HashMap<String, DublinCore>();
@@ -281,6 +296,7 @@ public class Metadata extends Controller {
 				.set(metadata.title, dc.getTitle())
 				.set(metadata.description, dc.getDescription())
 				.set(metadata.typeInformation, typeInformationKey)
+				.set(metadata.typeResearch, typeResearchKey)
 				.set(metadata.creator, creatorKey)
 				.set(metadata.creatorOther, creatorOtherValue)
 				.set(metadata.rights, rightsKey)
@@ -413,9 +429,9 @@ public class Metadata extends Controller {
 			
 			// Fetches the metadata record of the form
 			Tuple datasetRow = tx.select(metadata.id, metadata.uuid, metadata.location, metadata.fileId, metadata.title, 
-					metadata.description, metadata.typeInformation, metadata.creator, metadata.creatorOther, metadata.rights, metadata.useLimitation,
-					metadata.mdFormat, metadata.source, metadata.dateSourceCreation, metadata.dateSourcePublication, metadata.dateSourceValidFrom, 
-					metadata.dateSourceValidUntil, creator.name)
+					metadata.description, metadata.typeInformation, metadata.typeResearch, metadata.creator, metadata.creatorOther, metadata.rights,
+					metadata.useLimitation, metadata.mdFormat, metadata.source, metadata.dateSourceCreation, metadata.dateSourcePublication,
+					metadata.dateSourceValidFrom, metadata.dateSourceValidUntil, creator.name)
 				.from(metadata)
 				.join(creator).on(metadata.creator.eq(creator.id))
 				.where(metadata.id.eq(metadataId))
@@ -440,6 +456,13 @@ public class Metadata extends Controller {
 				.from(typeInformation)
 				.join(typeInformationLabel).on(typeInformation.id.eq(typeInformationLabel.typeInformationId))
 				.orderBy(typeInformationLabel.label.asc())
+				.fetch();
+			
+			// Fetches type research list
+			List<Tuple> typeResearchList = tx.select(typeResearch.id, typeResearch.name, typeResearchLabel.label)
+				.from(typeResearch)
+				.join(typeResearchLabel).on(typeResearch.id.eq(typeResearchLabel.typeResearchId))
+				.orderBy(typeResearchLabel.label.asc())
 				.fetch();
 			
 			// Fetches creator list
@@ -489,8 +512,8 @@ public class Metadata extends Controller {
 					.fetchOne();
 			
 			// Return form page
-			return ok(views.html.form.render(create, "", datasetRow, subjectsDataset, attachmentsDataset, typeInformationList, creatorsList, 
-				rightsList, useLimitationList, mdFormatList, sdf, subjectList, roleId, search, false, null, df, null));
+			return ok(views.html.form.render(create, "", datasetRow, subjectsDataset, attachmentsDataset, typeInformationList, typeResearchList,
+				creatorsList, rightsList, useLimitationList, mdFormatList, sdf, subjectList, roleId, search, false, null, df, null));
 		});
 	}
 	
@@ -563,6 +586,12 @@ public class Metadata extends Controller {
 					.where(typeInformation.name.eq(dc.getTypeInformation()))
 					.fetchOne();
 				
+				// Fetches the type research key according to form value
+				Integer typeResearchKey = tx.select(typeResearch.id)
+					.from(typeResearch)
+					.where(typeResearch.name.eq(dc.getTypeResearch()))
+					.fetchOne();
+				
 				// Fetches the creator key according to form value
 				Integer creatorKey = tx.select(creator.id)
 					.from(creator)
@@ -621,7 +650,7 @@ public class Metadata extends Controller {
 				Map<String, Boolean> numbersCheck = checkNumbers(dc.getFileId(), metadataUuid);
 				
 				DublinCore previousDC = new DublinCore(dc.getLocation(), dc.getFileId(), dc.getTitle(), dc.getDescription(), dc.getTypeInformation(),
-						dc.getCreator(), dc.getCreatorOther(), dc.getRights(), dc.getUseLimitation(), dc.getMdFormat(), dc.getSource(),
+						dc.getTypeResearch(), dc.getCreator(), dc.getCreatorOther(), dc.getRights(), dc.getUseLimitation(), dc.getMdFormat(), dc.getSource(),
 						dc.getDateSourceCreation(), dc.getDateSourcePublication(), dc.getDateSourceValidFrom(), dc.getDateSourceValidUntil(), 
 						dc.getSubject(), dc.getDeletedAttachment());
 					
@@ -629,7 +658,7 @@ public class Metadata extends Controller {
 				previousValues.put("metadata", previousDC);
 				
 				Tuple datasetRow = tx.select(metadata.id, metadata.uuid, metadata.location, metadata.fileId, metadata.title, 
-						metadata.description, metadata.typeInformation, metadata.creator, metadata.creatorOther, metadata.rights, 
+						metadata.description, metadata.typeInformation, metadata.typeResearch, metadata.creator, metadata.creatorOther, metadata.rights, 
 						metadata.useLimitation, metadata.mdFormat, metadata.source, metadata.dateSourceCreation, 
 						metadata.dateSourcePublication, metadata.dateSourceValidFrom, metadata.dateSourceValidUntil, creator.name)
 					.from(metadata)
@@ -682,6 +711,7 @@ public class Metadata extends Controller {
 					.set(metadata.title, dc.getTitle())
 					.set(metadata.description, dc.getDescription())
 					.set(metadata.typeInformation, typeInformationKey)
+					.set(metadata.typeResearch, typeResearchKey)
 					.set(metadata.creator, creatorKey)
 					.set(metadata.creatorOther, creatorOtherValue)
 					.set(metadata.rights, rightsKey)
@@ -1106,6 +1136,13 @@ public class Metadata extends Controller {
 				.orderBy(typeInformationLabel.label.asc())
 				.fetch();
 			
+			// Fetches the type research list
+			List<Tuple> typeResearchList = tx.select(typeResearch.id, typeResearch.name, typeResearchLabel.label)
+				.from(typeResearch)
+				.join(typeResearchLabel).on(typeResearch.id.eq(typeResearchLabel.typeResearchId))
+				.orderBy(typeResearchLabel.label.asc())
+				.fetch();
+			
 			// Fetches the creator list
 			List<Tuple> creatorsList = tx.select(creator.id, creator.name, creatorLabel.label)
 				.from(creator)
@@ -1150,8 +1187,8 @@ public class Metadata extends Controller {
 			DecimalFormat df = new DecimalFormat("0.##");
 			
 			// Return form page
-			return ok(views.html.form.render(create, today, datasetRow, null, attachmentsDataset, typeInformationList, creatorsList, rightsList, 
-					useLimitationList, mdFormatList, sdf, subjectList, roleId, search, validate, previousValues, df, warnMessages));
+			return ok(views.html.form.render(create, today, datasetRow, null, attachmentsDataset, typeInformationList, typeResearchList, creatorsList,
+					rightsList, useLimitationList, mdFormatList, sdf, subjectList, roleId, search, validate, previousValues, df, warnMessages));
 		});
 	}
 	

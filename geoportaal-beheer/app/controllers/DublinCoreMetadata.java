@@ -14,6 +14,8 @@ import static models.QStatus.status;
 import static models.QSubject.subject;
 import static models.QTypeInformation.typeInformation;
 import static models.QTypeInformationLabel.typeInformationLabel;
+import static models.QTypeResearch.typeResearch;
+import static models.QTypeResearchLabel.typeResearchLabel;
 import static models.QUseLimitation.useLimitation;
 import static models.QUseLimitationLabel.useLimitationLabel;
 
@@ -113,9 +115,9 @@ public class DublinCoreMetadata extends SimpleWebDAV {
 		return (DublinCoreXML) q.withTransaction(tx -> {
 			// Fetch the metadata record with all relevant information
 			Tuple datasetRow = tx.select(metadata.id, metadata.uuid, metadata.title, metadata.description, metadata.location, metadata.fileId, 
-					typeInformationLabel.label, metadata.creator, creatorLabel.label, metadata.creatorOther, rightsLabel.label, useLimitationLabel.label, 
-					mdFormatLabel.label, metadata.source, metadata.dateSourceCreation, metadata.dateSourcePublication, metadata.dateSourceValidFrom, 
-					metadata.dateSourceValidUntil)
+					typeInformationLabel.label, typeResearchLabel.label, metadata.creator, creatorLabel.label, metadata.creatorOther, rightsLabel.label,
+					useLimitationLabel.label, mdFormatLabel.label, metadata.source, metadata.dateSourceCreation, metadata.dateSourcePublication,
+					metadata.dateSourceValidFrom, metadata.dateSourceValidUntil)
 				.from(metadata)
 				.join(creator).on(metadata.creator.eq(creator.id))
 				.join(creatorLabel).on(creator.id.eq(creatorLabel.creatorId))
@@ -125,6 +127,8 @@ public class DublinCoreMetadata extends SimpleWebDAV {
 				.join(rightsLabel).on(rights.id.eq(rightsLabel.rightsId))
 				.join(typeInformation).on(metadata.typeInformation.eq(typeInformation.id))
 				.join(typeInformationLabel).on(typeInformation.id.eq(typeInformationLabel.typeInformationId))
+				.join(typeResearch).on(metadata.typeResearch.eq(typeResearch.id))
+				.join(typeResearchLabel).on(typeResearch.id.eq(typeResearchLabel.typeResearchId))
 				.join(useLimitation).on(metadata.useLimitation.eq(useLimitation.id))
 				.join(useLimitationLabel).on(useLimitation.id.eq(useLimitationLabel.useLimitationId))
 				.where(metadata.uuid.eq(metadataUuid))
@@ -220,6 +224,7 @@ public class DublinCoreMetadata extends SimpleWebDAV {
 					datasetRow.get(metadata.fileId),
 					attachments,
 					datasetRow.get(typeInformationLabel.label),
+					datasetRow.get(typeResearchLabel.label),
 					creator,
 					constantsRow.get(constants.publisher),
 					constantsRow.get(constants.contributor),

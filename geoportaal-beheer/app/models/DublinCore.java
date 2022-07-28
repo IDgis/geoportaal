@@ -16,6 +16,7 @@ public class DublinCore {
 	private String title;
 	private String description;
 	private String typeInformation;
+	private String typeResearch;
 	private String creator;
 	private String creatorOther;
 	private String rights;
@@ -41,6 +42,7 @@ public class DublinCore {
 	 * @param title the title field
 	 * @param description the description field
 	 * @param typeInformation the type information option selected
+	 * @param typeResearch the type research option selected
 	 * @param creator the creator option selected
 	 * @param creatorOther the creator other field (only applicable if creator option selected is other)
 	 * @param rights the rights option selected
@@ -55,7 +57,7 @@ public class DublinCore {
 	 * @param subject the subjects checked
 	 * @param deletedAttachment the UUID's of the attachments about to be deleted
 	 */
-	public DublinCore(String location, String fileId, String title, String description, String typeInformation, String creator, 
+	public DublinCore(String location, String fileId, String title, String description, String typeInformation, String typeResearch, String creator, 
 			String creatorOther, String rights, String useLimitation, String mdFormat, String source, Date dateSourceCreation, 
 			Date dateSourcePublication, Date dateSourceValidFrom, Date dateSourceValidUntil, List<String> subject, List<String> deletedAttachment) {
 		super();
@@ -64,6 +66,7 @@ public class DublinCore {
 		this.title = title;
 		this.description = description;
 		this.typeInformation = typeInformation;
+		this.typeResearch = typeResearch;
 		this.creator = creator;
 		this.creatorOther = creatorOther;
 		this.rights = rights;
@@ -107,6 +110,14 @@ public class DublinCore {
 
 	public void setTypeInformation(String typeInformation) {
 		this.typeInformation = typeInformation;
+	}
+	
+	public String getTypeResearch() {
+		return typeResearch;
+	}
+	
+	public void setTypeResearch(String typeResearch) {
+		this.typeResearch = typeResearch;
 	}
 
 	public String getCreator() {

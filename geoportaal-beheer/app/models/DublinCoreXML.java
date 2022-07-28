@@ -18,6 +18,7 @@ public class DublinCoreXML {
 	private String fileId;
 	private List<String> attachments;
 	private String type;
+	private String typeResearch;
 	private String creator;
 	private String publisher;
 	private String contributor;
@@ -47,6 +48,7 @@ public class DublinCoreXML {
 	 * @param fileId the number of the metadata
 	 * @param attachments the list of attachments
 	 * @param type the type XML element
+	 * @param typeResearch the research type
 	 * @param creator the creator XML element
 	 * @param publisher the publisher XML element
 	 * @param contributor the contributor XML element
@@ -64,7 +66,7 @@ public class DublinCoreXML {
 	 * @param upperCorner the upper corner of the coordinates
 	 */
 	public DublinCoreXML(String identifier, String title, String description, String location, String fileId, List<String> attachments, String type, 
-		String creator, String publisher, String contributor, String rights, String useLimitation, String format, String source, Date date, 
+		String typeResearch, String creator, String publisher, String contributor, String rights, String useLimitation, String format, String source, Date date,
 		Date dateIssued, Date dateValidStart, Date dateValidEnd, List<String> subjects, String language, String lowerCorner, String upperCorner) {
 		super();
 		this.identifier = identifier;
@@ -74,6 +76,7 @@ public class DublinCoreXML {
 		this.fileId = fileId;
 		this.attachments = attachments;
 		this.type = type;
+		this.typeResearch = typeResearch;
 		this.creator = creator;
 		this.publisher = publisher;
 		this.contributor = contributor;
@@ -145,6 +148,14 @@ public class DublinCoreXML {
 
 	public void setType(String type) {
 		this.type = type;
+	}
+
+	public String getTypeResearch() {
+		return typeResearch;
+	}
+
+	public void setTypeResearch(String typeResearch) {
+		this.typeResearch = typeResearch;
 	}
 
 	public String getCreator() {

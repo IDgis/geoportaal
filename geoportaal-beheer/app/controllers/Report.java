@@ -16,6 +16,8 @@ import static models.QStatusLabel.statusLabel;
 import static models.QSubject.subject;
 import static models.QTypeInformation.typeInformation;
 import static models.QTypeInformationLabel.typeInformationLabel;
+import static models.QTypeResearch.typeResearch;
+import static models.QTypeResearchLabel.typeResearchLabel;
 import static models.QUseLimitation.useLimitation;
 import static models.QUseLimitationLabel.useLimitationLabel;
 import static models.QUser.user;
@@ -164,14 +166,16 @@ public class Report extends Controller {
 		return q.withTransaction(tx -> {
 			List<Tuple> mds =  tx.select(metadata.id, metadata.uuid, metadata.title, metadata.location, metadata.fileId, metadata.description, 
 					metadata.creator, metadata.creatorOther, creatorLabel.label, metadata.dateSourceCreation, metadata.dateSourcePublication, 
-					metadata.dateSourceValidFrom, metadata.dateSourceValidUntil, typeInformationLabel.label, mdFormatLabel.label, metadata.source, 
-					rightsLabel.label, useLimitationLabel.label, statusLabel.label, user.label, metadata.lastRevisionUser, 
+					metadata.dateSourceValidFrom, metadata.dateSourceValidUntil, typeInformationLabel.label, typeResearchLabel.label, mdFormatLabel.label,
+					metadata.source, rightsLabel.label, useLimitationLabel.label, statusLabel.label, user.label, metadata.lastRevisionUser, 
 					metadata.lastRevisionDate, role1.role)
 				.from(metadata)
 				.join(creator).on(metadata.creator.eq(creator.id))
 				.join(creatorLabel).on(creator.id.eq(creatorLabel.creatorId))
 				.join(typeInformation).on(metadata.typeInformation.eq(typeInformation.id))
 				.join(typeInformationLabel).on(typeInformation.id.eq(typeInformationLabel.typeInformationId))
+				.join(typeResearch).on(metadata.typeResearch.eq(typeResearch.id))
+				.join(typeResearchLabel).on(typeResearch.id.eq(typeResearchLabel.typeResearchId))
 				.join(mdFormat).on(metadata.mdFormat.eq(mdFormat.id))
 				.join(mdFormatLabel).on(mdFormat.id.eq(mdFormatLabel.mdFormatId))
 				.join(rights).on(metadata.rights.eq(rights.id))
@@ -235,6 +239,7 @@ public class Report extends Controller {
 				strb.append("\"" + getValueDate(md.get(metadata.dateSourceValidUntil)) + "\";");
 				
 				strb.append("\"" + escapeQuotes(md.get(typeInformationLabel.label)) + "\";");
+				strb.append("\"" + escapeQuotes(md.get(typeResearchLabel.label)) + "\";");
 				strb.append("\"" + escapeQuotes(md.get(mdFormatLabel.label)) + "\";");
 				strb.append("\"" + escapeQuotes(md.get(metadata.uuid)) + "\";");
 				strb.append("\"" + escapeQuotes(md.get(metadata.location)) + "\";");

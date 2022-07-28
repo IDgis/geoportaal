@@ -13,6 +13,8 @@ import static models.QSubject.subject;
 import static models.QSubjectLabel.subjectLabel;
 import static models.QTypeInformation.typeInformation;
 import static models.QTypeInformationLabel.typeInformationLabel;
+import static models.QTypeResearch.typeResearch;
+import static models.QTypeResearchLabel.typeResearchLabel;
 import static models.QUseLimitation.useLimitation;
 import static models.QUseLimitationLabel.useLimitationLabel;
 
@@ -66,10 +68,13 @@ public class ReportApi extends Controller {
 			Map<String, Object> root = new HashMap<>();
 			
 			SQLQuery<Tuple> datasetQuery = tx.select(metadata.id, metadata.uuid, metadata.title, metadata.description, creatorLabel.label,
-					rightsLabel.label, typeInformationLabel.label, useLimitationLabel.label, metadata.dateSourcePublication, metadata.uuid)
+					rightsLabel.label, typeInformationLabel.label, typeResearchLabel.label, useLimitationLabel.label, metadata.dateSourcePublication,
+					metadata.uuid)
 				.from(metadata)
 				.join(typeInformation).on(typeInformation.id.eq(metadata.typeInformation))
 				.join(typeInformationLabel).on(typeInformationLabel.typeInformationId.eq(typeInformation.id))
+				.join(typeResearch).on(typeResearch.id.eq(metadata.typeResearch))
+				.join(typeResearchLabel).on(typeResearchLabel.typeResearchId.eq(typeResearch.id))
 				.join(creator).on(creator.id.eq(metadata.creator))
 				.join(creatorLabel).on(creatorLabel.creatorId.eq(creator.id))
 				.join(useLimitation).on(useLimitation.id.eq(metadata.useLimitation))
@@ -146,6 +151,7 @@ public class ReportApi extends Controller {
 				record.put("eindverantwoordelijke", mdRow.get(creatorLabel.label));
 				record.put("eigendomsrechten", mdRow.get(rightsLabel.label));
 				record.put("typeInformatie", mdRow.get(typeInformationLabel.label));
+				record.put("typeOnderzoek", mdRow.get(typeResearchLabel.label));
 				record.put("gebruiksrestricties", mdRow.get(useLimitationLabel.label));
 				record.put("datumPublicatie", mdRow.get(metadata.dateSourcePublication).toLocalDateTime().toString());
 				
@@ -188,10 +194,13 @@ public class ReportApi extends Controller {
 	public Result findReport(String metadataUuid) {
 		return q.withTransaction(tx -> {
 			SQLQuery<Tuple> datasetQuery = tx.select(metadata.id, metadata.uuid, metadata.title, metadata.description, creatorLabel.label,
-					rightsLabel.label, typeInformationLabel.label, useLimitationLabel.label, metadata.dateSourcePublication, metadata.uuid)
+					rightsLabel.label, typeInformationLabel.label, typeResearchLabel.label, useLimitationLabel.label, metadata.dateSourcePublication,
+					metadata.uuid)
 				.from(metadata)
 				.join(typeInformation).on(typeInformation.id.eq(metadata.typeInformation))
 				.join(typeInformationLabel).on(typeInformationLabel.typeInformationId.eq(typeInformation.id))
+				.join(typeResearch).on(typeResearch.id.eq(metadata.typeResearch))
+				.join(typeResearchLabel).on(typeResearchLabel.typeResearchId.eq(typeResearch.id))
 				.join(creator).on(creator.id.eq(metadata.creator))
 				.join(creatorLabel).on(creatorLabel.creatorId.eq(creator.id))
 				.join(useLimitation).on(useLimitation.id.eq(metadata.useLimitation))
@@ -214,6 +223,7 @@ public class ReportApi extends Controller {
 				result.put("eindverantwoordelijke", record.get(creatorLabel.label));
 				result.put("eigendomsrechten", record.get(rightsLabel.label));
 				result.put("typeInformatie", record.get(typeInformationLabel.label));
+				result.put("typeOnderzoek", record.get(typeResearchLabel.label));
 				result.put("gebruiksrestricties", record.get(useLimitationLabel.label));
 				result.put("datumPublicatie", record.get(metadata.dateSourcePublication).toLocalDateTime().toString());
 				
