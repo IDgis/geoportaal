@@ -116,6 +116,25 @@ require([
 				domStyle.set(dom.byId('js-other-creator'), 'display', 'none');
 			}
 		});
+
+		var typeResearchSelect = dom.byId('js-type-research-select');
+		if (domAttr.get(typeResearchSelect, 'value') === 'none') {
+			domStyle.set(dom.byId('js-subject-list'), 'display', 'block');
+			domStyle.set(dom.byId('js-theme-list'), 'display', 'none');
+		} else {
+			domStyle.set(dom.byId('js-subject-list'), 'display', 'none');
+			domStyle.set(dom.byId('js-theme-list'), 'display', 'block');
+		}
+
+		on(typeResearchSelect, 'change', function(e) {
+			if (domAttr.get(typeResearchSelect, 'value') === 'none') {
+				domStyle.set(dom.byId('js-subject-list'), 'display', 'block');
+				domStyle.set(dom.byId('js-theme-list'), 'display', 'none');
+			} else {
+				domStyle.set(dom.byId('js-subject-list'), 'display', 'none');
+				domStyle.set(dom.byId('js-theme-list'), 'display', 'block');
+			}
+		});
 		
 		on(dom.byId('js-save-form'), 'click', function(e) {
 			domAttr.set(this, 'type', 'button');
