@@ -28,6 +28,7 @@ public class DublinCore {
 	private Date dateSourceValidFrom;
 	private Date dateSourceValidUntil;
 	private List<String> subject;
+	private List<String> theme;
 	private List<String> deletedAttachment;
 	
 	public DublinCore() {
@@ -55,11 +56,13 @@ public class DublinCore {
 	 * @param dateSourceValidFrom the start date when the data was valid
 	 * @param dateSourceValidUntil the end date when the data was valid
 	 * @param subject the subjects checked
+	 * @param theme the themes checked
 	 * @param deletedAttachment the UUID's of the attachments about to be deleted
 	 */
 	public DublinCore(String location, String fileId, String title, String description, String typeInformation, String typeResearch, String creator, 
 			String creatorOther, String rights, String useLimitation, String mdFormat, String source, Date dateSourceCreation, 
-			Date dateSourcePublication, Date dateSourceValidFrom, Date dateSourceValidUntil, List<String> subject, List<String> deletedAttachment) {
+			Date dateSourcePublication, Date dateSourceValidFrom, Date dateSourceValidUntil, List<String> subject, List<String> theme,
+			List<String> deletedAttachment) {
 		super();
 		this.location = location;
 		this.fileId = fileId;
@@ -78,6 +81,7 @@ public class DublinCore {
 		this.dateSourceValidFrom = dateSourceValidFrom;
 		this.dateSourceValidUntil = dateSourceValidUntil;
 		this.subject = subject;
+		this.theme = theme;
 		this.deletedAttachment = deletedAttachment;
 	}
 	public String getLocation() {
@@ -198,6 +202,14 @@ public class DublinCore {
 
 	public void setSubject(List<String> subject) {
 		this.subject = subject;
+	}
+	
+	public List<String> getTheme() {
+		return theme;
+	}
+	
+	public void setTheme(List<String> theme) {
+		this.theme = theme;
 	}
 
 	public List<String> getDeletedAttachment() {

@@ -7,6 +7,7 @@ import static models.QMdAttachment.mdAttachment;
 import static models.QMdFormat.mdFormat;
 import static models.QMdFormatLabel.mdFormatLabel;
 import static models.QMdSubject.mdSubject;
+import static models.QMdTheme.mdTheme;
 import static models.QMetadata.metadata;
 import static models.QRights.rights;
 import static models.QRightsLabel.rightsLabel;
@@ -14,6 +15,7 @@ import static models.QRole.role1;
 import static models.QStatus.status;
 import static models.QStatusLabel.statusLabel;
 import static models.QSubject.subject;
+import static models.QTheme.theme;
 import static models.QTypeInformation.typeInformation;
 import static models.QTypeInformationLabel.typeInformationLabel;
 import static models.QTypeResearch.typeResearch;
@@ -153,7 +155,7 @@ public class Report extends Controller {
 				"Content-Disposition",
 				getContentDispositionValue("dublincore"));
 		
-		String header = "\"title\";\"creator\";\"subject\";\"description\";\"date_creation\";\"date_publication\";\"date_valid_start\";"
+		String header = "\"title\";\"creator\";\"subject\";\"theme\";\"description\";\"date_creation\";\"date_publication\";\"date_valid_start\";"
 				+ "\"date_valid_end\";\"type\";\"format\";\"identifier\";\"location\";\"number\";\"count_number\";\"source\";\"attachment\";"
 				+ "\"count_attachment\";\"attachment_size_in_mb\";\"attachment_size_in_mb_total\";\"rights\";\"use_limitation\";\"supplier\";"
 				+ "\"role_supplier\";\"status\";\"last_revision_user\";\"last_revision_date\";\"publisher\";\"contributor\";\"language\";"
@@ -227,6 +229,22 @@ public class Report extends Controller {
 						strb.append(escapeQuotes(subjects.get(i)));
 					} else {
 						strb.append(escapeQuotes(subjects.get(i)) + " | ");
+					}
+				}
+				strb.append("\";");
+				
+				List<String> themes = tx.select(theme.name)
+					.from(mdTheme)
+					.join(theme).on(mdTheme.theme.eq(theme.id))
+					.where(mdTheme.metadataId.eq(md.get(metadata.id)))
+					.fetch();
+				
+				strb.append("\"");
+				for (Integer i = 0; i < themes.size(); i++) {
+					if (i.equals(themes.size() - 1)) {
+						strb.append(escapeQuotes(themes.get(i)));
+					} else {
+						strb.append(escapeQuotes(themes.get(i)) + " | ");
 					}
 				}
 				strb.append("\";");

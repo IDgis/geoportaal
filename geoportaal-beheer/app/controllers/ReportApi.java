@@ -4,6 +4,7 @@ import static models.QCreator.creator;
 import static models.QCreatorLabel.creatorLabel;
 import static models.QMdAttachment.mdAttachment;
 import static models.QMdSubject.mdSubject;
+import static models.QMdTheme.mdTheme;
 import static models.QMetadata.metadata;
 import static models.QMetadataSearch.metadataSearch;
 import static models.QRights.rights;
@@ -11,6 +12,8 @@ import static models.QRightsLabel.rightsLabel;
 import static models.QStatus.status;
 import static models.QSubject.subject;
 import static models.QSubjectLabel.subjectLabel;
+import static models.QTheme.theme;
+import static models.QThemeLabel.themeLabel;
 import static models.QTypeInformation.typeInformation;
 import static models.QTypeInformationLabel.typeInformationLabel;
 import static models.QTypeResearch.typeResearch;
@@ -61,9 +64,10 @@ public class ReportApi extends Controller {
 	 * @param limit - The number of results to return
 	 * @param sort - the sort type value
 	 * @param subjectFilter - The subject to filter
+	 * @Param themeFilter - The theme to filter
 	 * @return a {@link JSON} Object with the report data
 	 */
-	public Result search(String textSearch, long offset, long limit, String sort, String subjectFilter) {
+	public Result search(String textSearch, long offset, long limit, String sort, String subjectFilter, String themeFilter) {
 		return q.withTransaction(tx -> {
 			Map<String, Object> root = new HashMap<>();
 			
@@ -126,6 +130,17 @@ public class ReportApi extends Controller {
 						.exists());
 			}
 			
+			// Filter on theme
+			if (!themeFilter.isEmpty()) {
+				datasetQuery.where(
+					tx.selectOne()
+						.from(theme)
+						.join(mdTheme).on(mdTheme.theme.eq(theme.id))
+						.where(mdTheme.metadataId.eq(metadata.id))
+						.where(theme.name.equalsIgnoreCase(themeFilter))
+						.exists());
+			}
+			
 			if ("dateAsc".equals(sort)) {
 				datasetQuery.orderBy(metadata.dateSourcePublication.asc());
 			}
@@ -176,6 +191,15 @@ public class ReportApi extends Controller {
 					.where(mdSubject.metadataId.eq(mdRow.get(metadata.id)))
 					.fetch();
 				record.put("isoOnderwerpen", subjects);
+				
+				// Themas
+				List<String> themes = tx.select(themeLabel.label)
+					.from(mdTheme)
+					.join(theme).on(theme.id.eq(mdTheme.theme))
+					.join(themeLabel).on(themeLabel.themeId.eq(theme.id))
+					.where(mdTheme.metadataId.eq(mdRow.get(metadata.id)))
+					.fetch();
+				record.put("themas", themes);
 				
 				result.add(record);
 			}
@@ -249,6 +273,15 @@ public class ReportApi extends Controller {
 					.where(mdSubject.metadataId.eq(record.get(metadata.id)))
 					.fetch();
 				result.put("isoOnderwerpen", subjects);
+				
+				// Themas
+				List<String> themes = tx.select(themeLabel.label)
+					.from(mdTheme)
+					.join(theme).on(theme.id.eq(mdTheme.theme))
+					.join(themeLabel).on(themeLabel.themeId.eq(theme.id))
+					.where(mdTheme.metadataId.eq(record.get(metadata.id)))
+					.fetch();
+				result.put("themas", themes);
 			});
 			
 			return ok(Json.toJson(result));
@@ -272,6 +305,31 @@ public class ReportApi extends Controller {
 					Map<String, Object> record = new HashMap<>();
 					record.put("id", row.get(subject.name));
 					record.put("label", row.get(subjectLabel.label));
+					return record;
+				})
+				.collect(Collectors.toList());
+			
+			return ok(Json.toJson(result));
+		});
+	}
+	
+	/**
+	 * Returns a {@link JSON} array with all available themes
+	 * 
+	 * @return a {@link JSON} array with all available themes
+	 */
+	public Result getThemes() {
+		return q.withTransaction(tx -> {
+			List<Map<String, Object>> result = tx.select(theme.name, themeLabel.label)
+				.from(theme)
+				.join(themeLabel).on(themeLabel.themeId.eq(theme.id))
+				.orderBy(themeLabel.label.asc())
+				.fetch()
+				.stream()
+				.map(row -> {
+					Map<String, Object> record = new HashMap<>();
+					record.put("id", row.get(theme.name));
+					record.put("label", row.get(themeLabel.label));
 					return record;
 				})
 				.collect(Collectors.toList());

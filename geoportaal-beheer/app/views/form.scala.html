@@ -2,6 +2,7 @@
 	today: String,
 	datasetRow: com.querydsl.core.Tuple, 
 	subjectsDataset: java.util.List[com.querydsl.core.Tuple],
+	themesDataset: java.util.List[com.querydsl.core.Tuple],
 	attachmentsDataset: java.util.List[com.querydsl.core.Tuple], 
 	typeInformationList: java.util.List[com.querydsl.core.Tuple],
 	typeResearchList: java.util.List[com.querydsl.core.Tuple],
@@ -11,6 +12,7 @@
 	mdFormatList: java.util.List[com.querydsl.core.Tuple],
 	sdf: java.text.SimpleDateFormat,
 	subjectList: java.util.List[com.querydsl.core.Tuple],
+	themeList: java.util.List[com.querydsl.core.Tuple],
 	roleId: Integer,
 	search: models.Search,
 	validate: Boolean,
@@ -29,8 +31,10 @@
 @import models.QUseLimitation.useLimitation
 @import models.QMdFormat.mdFormat
 @import models.QSubject.subject
+@import models.QTheme.theme
 @import models.QMdAttachment.mdAttachment
 @import models.QMdSubject.mdSubject
+@import models.QMdTheme.mdTheme
 @import models.QTypeInformationLabel.typeInformationLabel
 @import models.QTypeResearchLabel.typeResearchLabel
 @import models.QCreatorLabel.creatorLabel
@@ -38,6 +42,7 @@
 @import models.QUseLimitationLabel.useLimitationLabel
 @import models.QMdFormatLabel.mdFormatLabel
 @import models.QSubjectLabel.subjectLabel
+@import models.QThemeLabel.themeLabel
 
 @main(if(create) {Messages.get("form.create.header")} else {Messages.get("form.edit.header")}, search.getText(), search.getSupplier(), search.getStatus(), 
 	search.getDateCreateStart(), search.getDateCreateEnd(), search.getDateUpdateStart(), search.getDateUpdateEnd(), 
@@ -181,7 +186,7 @@
 		<div class="form-group">
 			<label class="col-sm-3 control-label">@Messages.get("form.typeresearch.label")</label>
 			<div class="col-sm-7">
-				<select class="form-control" data-toggle="tooltip" data-placement="top" title="@Messages.get("form.typeresearch.title")"
+				<select id="js-type-research" class="form-control" data-toggle="tooltip" data-placement="top" title="@Messages.get("form.typeresearch.title")"
 				name="typeResearch">
 					@for(typeResearchOption <- typeResearchList) {
 						<option value="@typeResearchOption.get(typeResearch.name)"
@@ -382,7 +387,7 @@
 				</button>
 			</div>
 		</div>
-		<div class="form-group" data-toggle="tooltip" data-placement="top" title="@Messages.get("form.subject.title")">
+		<div id="js-subject-list" class="form-group" data-toggle="tooltip" data-placement="top" title="@Messages.get("form.subject.title")">
 			<label class="col-sm-3 control-label">@Messages.get("form.subject.label")</label>
 			<div class="col-sm-7">
 				<div class="col-sm-6">
@@ -439,6 +444,67 @@
 			<div class="col-sm-2">
 				<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" tabindex="-1"
 				data-content="@Messages.get("form.subject.tooltip")">
+					<span class="glyphicon glyphicon-info-sign"></span>
+				</button>
+			</div>
+		</div>
+		<div id="js-theme-list" class="form-group" data-toggle="tooltip" data-placement="top" title="@Messages.get("form.theme.title")">
+			<label class="col-sm-3 control-label">@Messages.get("form.theme.label")</label>
+			<div class="col-sm-7">
+				<div class="col-sm-6">
+					@for(themeOption <- themeList) {
+						@if(themeOption.get(theme.id) < 10) {
+							<div>
+								<label class="checkbox-inline">
+									<input type="checkbox" class="js-theme-input" name="theme[]" value="@themeOption.get(theme.name)"
+										@if(validate) {
+											@if(previousValues.get("metadata").getTheme() != null) {
+												@for(themeChecked <- previousValues.get("metadata").getTheme()) {
+													@if(themeChecked == themeOption.get(theme.name)) {checked}
+												}
+											}
+										}
+
+										@if(!validate && themesDataset != null) {
+											@for(themeChecked <- themesDataset) {
+												@if(themeChecked.get(mdTheme.theme) == themeOption.get(theme.id)) {checked}
+											}
+										}
+									>@themeOption.get(themeLabel.label)
+								</label>
+							</div>
+						}
+					}
+				</div>
+				<div class="col-sm-6">
+					@for(themeOption <- themeList) {
+						@if(themeOption.get(theme.id) > 9) {
+							<div>
+								<label class="checkbox-inline">
+									<input type="checkbox" class="js-theme-input" name="theme[]" value="@themeOption.get(theme.name)"
+										@if(validate) {
+											@if(previousValues.get("metadata").getTheme() != null) {
+												@for(themeChecked <- previousValues.get("metadata").getTheme()) {
+													@if(themeChecked == themeOption.get(theme.name)) {checked}
+												}
+											}
+										}
+
+										@if(!validate && themesDataset != null) {
+											@for(themeChecked <- themesDataset) {
+												@if(themeChecked.get(mdTheme.theme) == themeOption.get(theme.id)) {checked}
+											}
+										}
+									>@themeOption.get(themeLabel.label)
+								</label>
+							</div>
+						}
+					}
+				</div>
+			</div>
+			<div class="col-sm-2">
+				<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" tabindex="-1"
+				data-content="@Messages.get("form.theme.tooltip")">
 					<span class="glyphicon glyphicon-info-sign"></span>
 				</button>
 			</div>
@@ -519,6 +585,13 @@
 						<div>
 							<div class="alert alert-danger" role="alert" data-error="true">
 								<b>@Messages.get("validate.form.subject.list")</b>
+							</div>
+						</div>
+					}
+					@if(previousValues.get("metadata").getTheme() == null) {
+						<div>
+							<div class="alert alert-danger" role="alert" data-error="true">
+								<b>@Messages.get("validate.form.theme.list")</b>
 							</div>
 						</div>
 					}

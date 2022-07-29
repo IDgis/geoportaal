@@ -7,11 +7,13 @@ import static models.QMdAttachment.mdAttachment;
 import static models.QMdFormat.mdFormat;
 import static models.QMdFormatLabel.mdFormatLabel;
 import static models.QMdSubject.mdSubject;
+import static models.QMdTheme.mdTheme;
 import static models.QMetadata.metadata;
 import static models.QRights.rights;
 import static models.QRightsLabel.rightsLabel;
 import static models.QStatus.status;
 import static models.QSubject.subject;
+import static models.QTheme.theme;
 import static models.QTypeInformation.typeInformation;
 import static models.QTypeInformationLabel.typeInformationLabel;
 import static models.QTypeResearch.typeResearch;
@@ -206,6 +208,14 @@ public class DublinCoreMetadata extends SimpleWebDAV {
 				.orderBy(subject.name.asc())
 				.fetch();
 			
+			// Fetches the themes
+			List<String> themes = tx.select(theme.name)
+				.from(mdTheme)
+				.join(theme).on(mdTheme.theme.eq(theme.id))
+				.where(mdTheme.metadataId.eq(datasetRow.get(metadata.id)))
+				.orderBy(theme.name.asc())
+				.fetch();
+			
 			// Fetches the values of the constants table
 			Tuple constantsRow = tx.select(constants.all())
 					.from(constants)
@@ -237,6 +247,7 @@ public class DublinCoreMetadata extends SimpleWebDAV {
 					dvs,
 					dve,
 					subjects,
+					themes,
 					constantsRow.get(constants.language),
 					lowerCorner,
 					upperCorner

@@ -112,6 +112,8 @@ form.date.valid.end.label=Datum geldig, tot
 form.date.valid.end.title=Vul de datum in tot wanneer de bron geldig is
 form.subject.label=ISO onderwerp*
 form.subject.title=Vink de onderwerpen aan die van toepassing zijn op de data
+form.theme.label=Thema*
+form.theme.title=Vink de thema's aan die van toepassing zijn op de data
 
 # Tooltips index
 index.text.tooltip=Tekst in die je wilt zoeken. Meerdere woorden zijn mogelijk. Vul je niets in, dan wordt alles gekozen als je gaat zoeken.
@@ -140,6 +142,7 @@ form.date.publication.tooltip=Datum waarop de kaart is gepubliceerd.
 form.date.valid.start.tooltip=Geldigheidsdatum: begindatum.
 form.date.valid.end.tooltip=Geldigheidsdatum: einddatum.
 form.subject.tooltip=Onderwerp. Onderwerpen waar de kaart bij hoort. Je kan meerdere onderwerpen kiezen, als de kaart bij meerdere onderwerpen hoort.
+form.theme.tooltip=Thema. Thema's waar de kaart bij hoort. Je kan meerdere thema's kiezen, als de kaart bij meerdere thema's hoort.
 
 # Inloggen
 login.header=Inloggen beheermodule Geoportaal
@@ -240,6 +243,7 @@ validate.form.date.create=De datum creatie moet ingevuld zijn.
 validate.form.date.create.publish.check=Er is een onlogische datum ingevoerd. Datum "creatie" is later dan de datum "publicatie".
 validate.form.date.valid.check=Er is een onlogische datum ingevoerd. Datum "geldig van" is later dan de datum "geldig tot".
 validate.form.subject.list=Er moet minimaal één onderwerp aangevinkt zijn.
+validate.form.theme.list=Er moet minimaal één thema aangevinkt zijn.
 validate.form.parse.date.create=De datum creatie is niet correct ingevuld.
 validate.form.parse.date.publication=De datum publicatie is niet correct ingevuld.
 validate.form.parse.date.valid.start=De datum geldig, van is niet correct ingevuld.

@@ -6,12 +6,15 @@ import static models.QMdAttachment.mdAttachment;
 import static models.QMdFormat.mdFormat;
 import static models.QMdFormatLabel.mdFormatLabel;
 import static models.QMdSubject.mdSubject;
+import static models.QMdTheme.mdTheme;
 import static models.QMetadata.metadata;
 import static models.QMetadataSearch.metadataSearch;
 import static models.QRights.rights;
 import static models.QRightsLabel.rightsLabel;
 import static models.QSubject.subject;
 import static models.QSubjectLabel.subjectLabel;
+import static models.QTheme.theme;
+import static models.QThemeLabel.themeLabel;
 import static models.QTypeInformation.typeInformation;
 import static models.QTypeInformationLabel.typeInformationLabel;
 import static models.QTypeResearch.typeResearch;
@@ -142,6 +145,12 @@ public class Metadata extends Controller {
 				.join(subjectLabel).on(subject.id.eq(subjectLabel.subjectId))
 				.fetch();
 			
+			// Fetch theme list
+			List<Tuple> themeList = tx.select(theme.id, theme.name, themeLabel.label)
+				.from(theme)
+				.join(themeLabel).on(theme.id.eq(themeLabel.themeId))
+				.fetch();
+			
 			// Fetches the role of the logged in user
 			Integer roleId = tx.select(user.roleId)
 					.from(user)
@@ -149,8 +158,8 @@ public class Metadata extends Controller {
 					.fetchOne();
 			
 			// Return form page
-			return ok(views.html.form.render(create, today, null, null, null, typeInformationList, typeResearchList, creatorsList,
-					rightsList, useLimitationList, mdFormatList, null, subjectList, roleId, search, false, null, null, null));
+			return ok(views.html.form.render(create, today, null, null, null, null, typeInformationList, typeResearchList, creatorsList,
+					rightsList, useLimitationList, mdFormatList, null, subjectList, themeList, roleId, search, false, null, null, null));
 		});
 	}
 	
@@ -262,7 +271,7 @@ public class Metadata extends Controller {
 			DublinCore previousDC = new DublinCore(dc.getLocation(), dc.getFileId(), dc.getTitle(), dc.getDescription(), dc.getTypeInformation(),
 					dc.getTypeResearch(), dc.getCreator(), dc.getCreatorOther(), dc.getRights(), dc.getUseLimitation(), dc.getMdFormat(),
 					dc.getSource(), dc.getDateSourceCreation(), dc.getDateSourcePublication(), dc.getDateSourceValidFrom(), dc.getDateSourceValidUntil(), 
-					dc.getSubject(), null);
+					dc.getSubject(), dc.getTheme(), null);
 			
 			Map<String, DublinCore> previousValues = new HashMap<String, DublinCore>();
 			previousValues.put("metadata", previousDC);
@@ -270,7 +279,7 @@ public class Metadata extends Controller {
 			// Checks if every mandatory field has been completed, if not return the form with previous state
 			if("".equals(dc.getTitle().trim()) || "".equals(dc.getDescription().trim()) || "".equals(dc.getLocation().trim()) || 
 				"".equals(dc.getFileId().trim()) || creatorKey == null || creatorOtherFailed || useLimitationKey == null || 
-				dateSourceCreationValue == null || dc.getSubject() == null || !dateCreatePublicationCheck || !dateValidCheck) {
+				dateSourceCreationValue == null || dc.getSubject() == null || dc.getTheme() == null || !dateCreatePublicationCheck || !dateValidCheck) {
 					return validateFormServer(true, null, null, textSearch, supplierSearch, statusSearch, 
 							dateCreateStartSearch, dateCreateEndSearch, dateUpdateStartSearch, 
 							dateUpdateEndSearch, previousValues, null);
@@ -378,6 +387,21 @@ public class Metadata extends Controller {
 				}
 			}
 			
+			// Insert every theme individually
+			if (dc.getTheme() != null) {
+				for (String themeStr : dc.getTheme()) {
+					Integer themeKey = tx.select(theme.id)
+						.from(theme)
+						.where(theme.name.eq(themeStr))
+						.fetchOne();
+					
+					tx.insert(mdTheme)
+						.set(mdTheme.metadataId, metadataId)
+						.set(mdTheme.theme, themeKey)
+						.execute();
+				}
+			}
+			
 			// Refresh materialized view
 			tx.refreshMaterializedViewConcurrently(metadataSearch);
 			
@@ -443,6 +467,12 @@ public class Metadata extends Controller {
 				.where(mdSubject.metadataId.eq(metadataId))
 				.fetch();
 			
+			// Fetches the themes of the form
+			List<Tuple> themesDataset = tx.select(mdTheme.all())
+				.from(mdTheme)
+				.where(mdTheme.metadataId.eq(metadataId))
+				.fetch();
+			
 			// Fetches the attachments of the form
 			List<Tuple> attachmentsDataset = tx.select(mdAttachment.id, mdAttachment.metadataId, mdAttachment.attachmentName, 
 					mdAttachment.attachmentMimetype, mdAttachment.attachmentLength)
@@ -499,6 +529,12 @@ public class Metadata extends Controller {
 				.join(subjectLabel).on(subject.id.eq(subjectLabel.subjectId))
 				.fetch();
 			
+			// Fetches theme list
+			List<Tuple> themeList = tx.select(theme.id, theme.name, themeLabel.label)
+				.from(theme)
+				.join(themeLabel).on(theme.id.eq(themeLabel.themeId))
+				.fetch();
+			
 			// Create SimpleDateFormat in yyyy-MM-dd and dd-MM-yyyy format
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 			
@@ -512,8 +548,8 @@ public class Metadata extends Controller {
 					.fetchOne();
 			
 			// Return form page
-			return ok(views.html.form.render(create, "", datasetRow, subjectsDataset, attachmentsDataset, typeInformationList, typeResearchList,
-				creatorsList, rightsList, useLimitationList, mdFormatList, sdf, subjectList, roleId, search, false, null, df, null));
+			return ok(views.html.form.render(create, "", datasetRow, subjectsDataset, themesDataset, attachmentsDataset, typeInformationList, typeResearchList,
+				creatorsList, rightsList, useLimitationList, mdFormatList, sdf, subjectList, themeList, roleId, search, false, null, df, null));
 		});
 	}
 	
@@ -633,6 +669,9 @@ public class Metadata extends Controller {
 				// Fetch the submitted subjects of the form
 				List<String> subjects = dc.getSubject();
 				
+				// Fetch the submitted themes of the form
+				List<String> themes = dc.getTheme();
+				
 				// Check if creator other isn't empty if creator is other
 				Boolean creatorOtherFailed = false;
 				if(creatorKey != null) {
@@ -652,7 +691,7 @@ public class Metadata extends Controller {
 				DublinCore previousDC = new DublinCore(dc.getLocation(), dc.getFileId(), dc.getTitle(), dc.getDescription(), dc.getTypeInformation(),
 						dc.getTypeResearch(), dc.getCreator(), dc.getCreatorOther(), dc.getRights(), dc.getUseLimitation(), dc.getMdFormat(), dc.getSource(),
 						dc.getDateSourceCreation(), dc.getDateSourcePublication(), dc.getDateSourceValidFrom(), dc.getDateSourceValidUntil(), 
-						dc.getSubject(), dc.getDeletedAttachment());
+						dc.getSubject(), dc.getTheme(), dc.getDeletedAttachment());
 					
 				Map<String, DublinCore> previousValues = new HashMap<String, DublinCore>();
 				previousValues.put("metadata", previousDC);
@@ -682,7 +721,7 @@ public class Metadata extends Controller {
 				// Checks if every mandatory field has been completed, if not return the form with previous state
 				if("".equals(dc.getTitle().trim()) || "".equals(dc.getDescription().trim()) || "".equals(dc.getLocation().trim()) || 
 					"".equals(dc.getFileId().trim()) || creatorKey == null || creatorOtherFailed || useLimitationKey == null || 
-					dateSourceCreationValue == null || dc.getSubject() == null || !dateCreatePublicationCheck || !dateValidCheck) {
+					dateSourceCreationValue == null || dc.getSubject() == null || dc.getTheme() == null || !dateCreatePublicationCheck || !dateValidCheck) {
 						
 					
 					return validateFormServer(false, datasetRow, attachmentsDataset, textSearch, supplierSearch, statusSearch, 
@@ -828,6 +867,39 @@ public class Metadata extends Controller {
 							.execute();
 					}
 				}
+				
+				// Delete old themes and insert new themes
+				if (themes != null) {
+					// Fetch old themes
+					List<Integer> existingThemes = tx.select(mdTheme.id)
+						.from(mdTheme)
+						.where(mdTheme.metadataId.eq(metadataId))
+						.fetch();
+					
+					// Delete all old themes
+					Long themesCount = tx.delete(mdTheme)
+						.where(mdTheme.metadataId.eq(metadataId))
+						.execute();
+					
+					// Check if the count of deleted themes is what is expected
+					Integer themesFinalCount = themesCount.intValue();
+					if (!themesFinalCount.equals(existingThemes.size())) {
+						throw new GeoportaalBeheerException("Updating themes: different amount of affected rows than expected");
+					}
+					
+					// Insert the new themes
+					for (String themeStr : themes) {
+						Integer themeKey = tx.select(theme.id)
+							.from(theme)
+							.where(theme.name.eq(themeStr))
+							.fetchOne();
+						
+						tx.insert(mdTheme)
+							.set(mdTheme.metadataId, metadataId)
+							.set(mdTheme.theme, themeKey)
+							.execute();
+					}
+				}
 			}
 			
 			// Refresh the materialized view
@@ -964,7 +1036,7 @@ public class Metadata extends Controller {
 			
 			// Return specific error message view
 			return ok(validateform.render(title, description, location, fileId, numbersCheck.get("duplicate"), numbersCheck.get("character"), 
-					numbersCheck.get("length"), creator, creatorOther, dc.getDateSourceCreation(), dc.getSubject(), dateCreatePublicationCheck, dateValidCheck));
+					numbersCheck.get("length"), creator, creatorOther, dc.getDateSourceCreation(), dc.getSubject(), dc.getTheme(), dateCreatePublicationCheck, dateValidCheck));
 		} catch(IllegalStateException ise) {
 			Logger.error(ise.getMessage(), ise);
 			
@@ -1177,6 +1249,12 @@ public class Metadata extends Controller {
 				.join(subjectLabel).on(subject.id.eq(subjectLabel.subjectId))
 				.fetch();
 			
+			// Fetched the theme list
+			List<Tuple> themeList = tx.select(theme.id, theme.name, themeLabel.label)
+				.from(theme)
+				.join(themeLabel).on(theme.id.eq(themeLabel.themeId))
+				.fetch();
+			
 			// Fetches the role of the logged in user
 			Integer roleId = tx.select(user.roleId)
 					.from(user)
@@ -1187,8 +1265,8 @@ public class Metadata extends Controller {
 			DecimalFormat df = new DecimalFormat("0.##");
 			
 			// Return form page
-			return ok(views.html.form.render(create, today, datasetRow, null, attachmentsDataset, typeInformationList, typeResearchList, creatorsList,
-					rightsList, useLimitationList, mdFormatList, sdf, subjectList, roleId, search, validate, previousValues, df, warnMessages));
+			return ok(views.html.form.render(create, today, datasetRow, null, null, attachmentsDataset, typeInformationList, typeResearchList, creatorsList,
+					rightsList, useLimitationList, mdFormatList, sdf, subjectList, themeList, roleId, search, validate, previousValues, df, warnMessages));
 		});
 	}
 	
