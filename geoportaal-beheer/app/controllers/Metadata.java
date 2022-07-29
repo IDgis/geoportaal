@@ -279,7 +279,8 @@ public class Metadata extends Controller {
 			// Checks if every mandatory field has been completed, if not return the form with previous state
 			if("".equals(dc.getTitle().trim()) || "".equals(dc.getDescription().trim()) || "".equals(dc.getLocation().trim()) || 
 				"".equals(dc.getFileId().trim()) || creatorKey == null || creatorOtherFailed || useLimitationKey == null || 
-				dateSourceCreationValue == null || dc.getSubject() == null || dc.getTheme() == null || !dateCreatePublicationCheck || !dateValidCheck) {
+				dateSourceCreationValue == null || ((dc.getTypeResearch() == null || "none".equals(dc.getTypeResearch())) && dc.getSubject() == null) ||
+				((dc.getTypeResearch() != null && !"none".equals(dc.getTypeResearch())) && dc.getTheme() == null) || !dateCreatePublicationCheck || !dateValidCheck) {
 					return validateFormServer(true, null, null, textSearch, supplierSearch, statusSearch, 
 							dateCreateStartSearch, dateCreateEndSearch, dateUpdateStartSearch, 
 							dateUpdateEndSearch, previousValues, null);
@@ -721,7 +722,8 @@ public class Metadata extends Controller {
 				// Checks if every mandatory field has been completed, if not return the form with previous state
 				if("".equals(dc.getTitle().trim()) || "".equals(dc.getDescription().trim()) || "".equals(dc.getLocation().trim()) || 
 					"".equals(dc.getFileId().trim()) || creatorKey == null || creatorOtherFailed || useLimitationKey == null || 
-					dateSourceCreationValue == null || dc.getSubject() == null || dc.getTheme() == null || !dateCreatePublicationCheck || !dateValidCheck) {
+					dateSourceCreationValue == null || ((dc.getTypeResearch() == null || "none".equals(dc.getTypeResearch())) && dc.getSubject() == null) ||
+					((dc.getTypeResearch() != null && !"none".equals(dc.getTypeResearch())) && dc.getTheme() == null) || !dateCreatePublicationCheck || !dateValidCheck) {
 						
 					
 					return validateFormServer(false, datasetRow, attachmentsDataset, textSearch, supplierSearch, statusSearch, 
@@ -1036,7 +1038,8 @@ public class Metadata extends Controller {
 			
 			// Return specific error message view
 			return ok(validateform.render(title, description, location, fileId, numbersCheck.get("duplicate"), numbersCheck.get("character"), 
-					numbersCheck.get("length"), creator, creatorOther, dc.getDateSourceCreation(), dc.getSubject(), dc.getTheme(), dateCreatePublicationCheck, dateValidCheck));
+					numbersCheck.get("length"), dc.getTypeResearch(), creator, creatorOther, dc.getDateSourceCreation(), dc.getSubject(), dc.getTheme(),
+					dateCreatePublicationCheck, dateValidCheck));
 		} catch(IllegalStateException ise) {
 			Logger.error(ise.getMessage(), ise);
 			

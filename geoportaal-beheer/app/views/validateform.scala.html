@@ -1,4 +1,4 @@
-@(title: String, description: String, location: String, fileId: String, fileIdDuplicate: Boolean, fileIdCharacter: Boolean, fileIdLength: Boolean, creator: String, 
+@(title: String, description: String, location: String, fileId: String, fileIdDuplicate: Boolean, fileIdCharacter: Boolean, fileIdLength: Boolean, typeResearch: String, creator: String,
 	creatorOther: String, dateCreate: java.util.Date, subjectList: java.util.List[String], themeList: java.util.List[String], dateCreatePublicationCheck: Boolean, dateValidCheck: Boolean)
 
 @import play.i18n._
@@ -79,20 +79,24 @@
 			</div>
 		</div>
 	}
-	
-	@if(subjectList == null) {
-		<div>
-			<div class="alert alert-danger" role="alert" data-error="true">
-				<b>@Messages.get("validate.form.subject.list")</b>
+
+	@if(typeResearch == null || "none".equals(typeResearch)) {
+		@if(subjectList == null) {
+			<div>
+				<div class="alert alert-danger" role="alert" data-error="true">
+					<b>@Messages.get("validate.form.subject.list")</b>
+				</div>
 			</div>
-		</div>
+		}
 	}
 
-	@if(themeList == null) {
-	<div>
-		<div class="alert alert-danger" role="alert" data-error="true">
-			<b>@Messages.get("validate.form.theme.list")</b>
-		</div>
-	</div>
+	@if(typeResearch != null && !"none".equals(typeResearch)) {
+		@if(themeList == null) {
+			<div>
+				<div class="alert alert-danger" role="alert" data-error="true">
+					<b>@Messages.get("validate.form.theme.list")</b>
+				</div>
+			</div>
+		}
 	}
 </div>

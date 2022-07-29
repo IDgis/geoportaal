@@ -128,6 +128,7 @@ require([
 			var descriptionVal = domAttr.get(dom.byId('js-description'), 'value');
 			var locationVal = domAttr.get(dom.byId('js-location'), 'value');
 			var fileIdVal = domAttr.get(dom.byId('js-file-id'), 'value');
+			var typeResearchVal = domAttr.get(dom.byId('js-type-research-select'), 'value');
 			
 			var dateCreation;
 			var datePublication;
@@ -152,6 +153,7 @@ require([
 			formData.append('dateSourceValidUntil', dateValidUntil);
 			
 			var subjectList = query('.js-subject-input:checked');
+			var themeList = query('.js-theme-input:checked');
 			var creatorVal = domAttr.get(dom.byId('js-creator-select'), 'value');
 			
 			formData.append('title', titleVal);
@@ -159,6 +161,7 @@ require([
 			formData.append('location', locationVal);
 			formData.append('fileId', fileIdVal);
 			formData.append('creator', creatorVal);
+			formData.append('typeResearch', typeResearchVal);
 			
 			if(creatorVal === 'other') {
 				var otherCreatorVal = domAttr.get(dom.byId('js-other-creator-input'), 'value');
@@ -169,7 +172,11 @@ require([
 				var subjectValue = domAttr.get(item, 'value');
 				formData.append('subject[]', subjectValue);
 			});
-			
+
+			array.forEach(themeList, function(item) {
+			    var themeValue = domAttr.get(item, 'value');
+			    formData.append('theme[]', themeValue);
+			});
 			
 			xhr(jsRoutes.controllers.Metadata.validateForm(id).url, {
 					handleAs: "html",
