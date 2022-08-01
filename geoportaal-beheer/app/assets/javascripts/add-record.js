@@ -128,9 +128,17 @@ require([
 
 		on(typeResearchSelect, 'change', function(e) {
 			if (domAttr.get(typeResearchSelect, 'value') === 'none') {
+				array.forEach(query('.js-theme-input:checked'), function(item) {
+					domAttr.set(item, 'checked', false);
+				});
+
 				domStyle.set(dom.byId('js-subject-list'), 'display', 'block');
 				domStyle.set(dom.byId('js-theme-list'), 'display', 'none');
 			} else {
+				array.forEach(query('.js-subject-input:checked'), function(item) {
+					domAttr.set(item, 'checked', false);
+				});
+
 				domStyle.set(dom.byId('js-subject-list'), 'display', 'none');
 				domStyle.set(dom.byId('js-theme-list'), 'display', 'block');
 			}
