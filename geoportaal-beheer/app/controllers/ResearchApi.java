@@ -64,7 +64,8 @@ public class ResearchApi extends Controller {
 			Map<String, Object> root = new HashMap<>();
 			
 			SQLQuery<Tuple> datasetQuery = tx.select(metadata.id, metadata.uuid, metadata.title, metadata.description, creatorLabel.label,
-					rightsLabel.label, typeInformationLabel.label, typeResearchLabel.label, useLimitationLabel.label, metadata.dateSourcePublication)
+					rightsLabel.label, typeInformationLabel.label, typeResearchLabel.label, useLimitationLabel.label, metadata.dateSourcePublication,
+					metadata.dateSourceCreation)
 				.from(metadata)
 				.join(typeInformation).on(typeInformation.id.eq(metadata.typeInformation))
 				.join(typeInformationLabel).on(typeInformationLabel.typeInformationId.eq(typeInformation.id))
@@ -159,6 +160,7 @@ public class ResearchApi extends Controller {
 				record.put("typeOnderzoek", mdRow.get(typeResearchLabel.label));
 				record.put("gebruiksrestricties", mdRow.get(useLimitationLabel.label));
 				record.put("datumPublicatie", mdRow.get(metadata.dateSourcePublication).toLocalDateTime().toString());
+				record.put("datumCreatie", mdRow.get(metadata.dateSourceCreation).toLocalDateTime().toString());
 				
 				// Bijlagen
 				List<Map<String, Object>> attachmentsList = new ArrayList<>();
@@ -199,7 +201,8 @@ public class ResearchApi extends Controller {
 	public Result findResearch(String metadataUuid) {
 		return q.withTransaction(tx -> {
 			SQLQuery<Tuple> datasetQuery = tx.select(metadata.id, metadata.uuid, metadata.title, metadata.description, creatorLabel.label,
-					rightsLabel.label, typeInformationLabel.label, typeResearchLabel.label, useLimitationLabel.label, metadata.dateSourcePublication)
+					rightsLabel.label, typeInformationLabel.label, typeResearchLabel.label, useLimitationLabel.label, metadata.dateSourcePublication,
+					metadata.dateSourceCreation)
 				.from(metadata)
 				.join(typeInformation).on(typeInformation.id.eq(metadata.typeInformation))
 				.join(typeInformationLabel).on(typeInformationLabel.typeInformationId.eq(typeInformation.id))
@@ -230,6 +233,7 @@ public class ResearchApi extends Controller {
 				result.put("typeOnderzoek", record.get(typeResearchLabel.label));
 				result.put("gebruiksrestricties", record.get(useLimitationLabel.label));
 				result.put("datumPublicatie", record.get(metadata.dateSourcePublication).toLocalDateTime().toString());
+				result.put("datumCreatie", record.get(metadata.dateSourceCreation).toLocalDateTime().toString());
 				
 				// Bijlagen
 				List<Map<String, Object>> attachmentsList = tx.select(mdAttachment.id, mdAttachment.attachmentName)
