@@ -3,15 +3,12 @@ package controllers;
 import static models.QCreator.creator;
 import static models.QCreatorLabel.creatorLabel;
 import static models.QMdAttachment.mdAttachment;
-import static models.QMdSubject.mdSubject;
 import static models.QMdTheme.mdTheme;
 import static models.QMetadata.metadata;
 import static models.QMetadataSearch.metadataSearch;
 import static models.QRights.rights;
 import static models.QRightsLabel.rightsLabel;
 import static models.QStatus.status;
-import static models.QSubject.subject;
-import static models.QSubjectLabel.subjectLabel;
 import static models.QTheme.theme;
 import static models.QThemeLabel.themeLabel;
 import static models.QTypeInformation.typeInformation;
@@ -34,13 +31,10 @@ import javax.inject.Inject;
 import com.querydsl.core.Tuple;
 import com.querydsl.sql.SQLQuery;
 
-import actions.DefaultAuthenticator;
-import play.Configuration;
 import play.i18n.Messages;
 import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
-import play.mvc.Security;
 import util.QueryDSL;
 
 /**
@@ -49,31 +43,28 @@ import util.QueryDSL;
  * @author Kevin
  *
  */
-public class ReportApi extends Controller {
+public class ResearchApi extends Controller {
 	
 	@Inject
 	private QueryDSL q;
 	
-	private final Configuration configuration = play.Play.application().configuration();
-	
 	/**
-	 * Returns a {@link JSON} Object with all report data
+	 * Returns a {@link JSON} Object with all research data
 	 * 
 	 * @param textSearch - the search value of the text field
 	 * @param offset - The offset to start the search
 	 * @param limit - The number of results to return
 	 * @param sort - the sort type value
-	 * @param subjectFilter - The subject to filter
+	 * @param typeFilter - The type of research to filter
 	 * @Param themeFilter - The theme to filter
-	 * @return a {@link JSON} Object with the report data
+	 * @return a {@link JSON} Object with the research data
 	 */
-	public Result search(String textSearch, long offset, long limit, String sort, String subjectFilter, String themeFilter) {
+	public Result search(String textSearch, long offset, long limit, String sort, String typeFilter, String themeFilter) {
 		return q.withTransaction(tx -> {
 			Map<String, Object> root = new HashMap<>();
 			
 			SQLQuery<Tuple> datasetQuery = tx.select(metadata.id, metadata.uuid, metadata.title, metadata.description, creatorLabel.label,
-					rightsLabel.label, typeInformationLabel.label, typeResearchLabel.label, useLimitationLabel.label, metadata.dateSourcePublication,
-					metadata.uuid)
+					rightsLabel.label, typeInformationLabel.label, typeResearchLabel.label, useLimitationLabel.label, metadata.dateSourcePublication)
 				.from(metadata)
 				.join(typeInformation).on(typeInformation.id.eq(metadata.typeInformation))
 				.join(typeInformationLabel).on(typeInformationLabel.typeInformationId.eq(typeInformation.id))
@@ -86,9 +77,9 @@ public class ReportApi extends Controller {
 				.join(rights).on(rights.id.eq(metadata.rights))
 				.join(rightsLabel).on(rightsLabel.rightsId.eq(rights.id))
 				.join(status).on(status.id.eq(metadata.status))
-				.where(typeInformation.name.equalsIgnoreCase("report")
-					.and(useLimitation.name.equalsIgnoreCase("extern"))
-					.and(status.name.equalsIgnoreCase("published")));
+				.where(useLimitation.name.equalsIgnoreCase("extern")
+					.and(status.name.equalsIgnoreCase("published"))
+					.and(typeResearch.name.notEqualsIgnoreCase("none")));
 			
 			// Strip characters from text search string that conflict with Postgres full-text search
 			String textSearchFirstStrip = textSearch.replace("&", "");
@@ -119,14 +110,13 @@ public class ReportApi extends Controller {
 						.exists());
 			}
 			
-			// Filter on subject
-			if (!subjectFilter.isEmpty()) {
+			// Filter on type of research
+			if (!typeFilter.isEmpty()) {
 				datasetQuery.where(
 					tx.selectOne()
-						.from(subject)
-						.join(mdSubject).on(mdSubject.subject.eq(subject.id))
-						.where(mdSubject.metadataId.eq(metadata.id))
-						.where(subject.name.equalsIgnoreCase(subjectFilter))
+						.from(typeResearch)
+						.join(metadata).on(metadata.typeResearch.eq(typeResearch.id))
+						.where(typeResearch.name.equalsIgnoreCase(typeFilter))
 						.exists());
 			}
 			
@@ -183,15 +173,6 @@ public class ReportApi extends Controller {
 				}
 				record.put("bijlagen", attachmentsList);
 				
-				// ISO Onderwerpen
-				List<String> subjects = tx.select(subjectLabel.label)
-					.from(mdSubject)
-					.join(subject).on(subject.id.eq(mdSubject.subject))
-					.join(subjectLabel).on(subjectLabel.subjectId.eq(subject.id))
-					.where(mdSubject.metadataId.eq(mdRow.get(metadata.id)))
-					.fetch();
-				record.put("isoOnderwerpen", subjects);
-				
 				// Themas
 				List<String> themes = tx.select(themeLabel.label)
 					.from(mdTheme)
@@ -210,16 +191,15 @@ public class ReportApi extends Controller {
 	}
 	
 	/**
-	 * Returns a {@link JSON} Object with the report data
+	 * Returns a {@link JSON} Object with the research data
 	 * 
 	 * @param metadataUuid the UUID of the metadata
-	 * @return a {@link JSON} Object with the report data
+	 * @return a {@link JSON} Object with the research data
 	 */
-	public Result findReport(String metadataUuid) {
+	public Result findResearch(String metadataUuid) {
 		return q.withTransaction(tx -> {
 			SQLQuery<Tuple> datasetQuery = tx.select(metadata.id, metadata.uuid, metadata.title, metadata.description, creatorLabel.label,
-					rightsLabel.label, typeInformationLabel.label, typeResearchLabel.label, useLimitationLabel.label, metadata.dateSourcePublication,
-					metadata.uuid)
+					rightsLabel.label, typeInformationLabel.label, typeResearchLabel.label, useLimitationLabel.label, metadata.dateSourcePublication)
 				.from(metadata)
 				.join(typeInformation).on(typeInformation.id.eq(metadata.typeInformation))
 				.join(typeInformationLabel).on(typeInformationLabel.typeInformationId.eq(typeInformation.id))
@@ -232,9 +212,9 @@ public class ReportApi extends Controller {
 				.join(rights).on(rights.id.eq(metadata.rights))
 				.join(rightsLabel).on(rightsLabel.rightsId.eq(rights.id))
 				.join(status).on(status.id.eq(metadata.status))
-				.where(typeInformation.name.equalsIgnoreCase("report")
-					.and(useLimitation.name.equalsIgnoreCase("extern"))
+				.where(useLimitation.name.equalsIgnoreCase("extern")
 					.and(status.name.equalsIgnoreCase("published"))
+					.and(typeResearch.name.notEqualsIgnoreCase("none"))
 					.and(metadata.uuid.eq(metadataUuid)));
 			
 			Map<String, Object> result = new HashMap<>();
@@ -265,15 +245,6 @@ public class ReportApi extends Controller {
 					.collect(Collectors.toList());
 				result.put("bijlagen", attachmentsList);
 				
-				// ISO Onderwerpen
-				List<String> subjects = tx.select(subjectLabel.label)
-					.from(mdSubject)
-					.join(subject).on(subject.id.eq(mdSubject.subject))
-					.join(subjectLabel).on(subjectLabel.subjectId.eq(subject.id))
-					.where(mdSubject.metadataId.eq(record.get(metadata.id)))
-					.fetch();
-				result.put("isoOnderwerpen", subjects);
-				
 				// Themas
 				List<String> themes = tx.select(themeLabel.label)
 					.from(mdTheme)
@@ -287,24 +258,25 @@ public class ReportApi extends Controller {
 			return ok(Json.toJson(result));
 		});
 	}
-	
+
 	/**
-	 * Returns a {@link JSON} array with all available subjects
+	 * Returns a {@link JSON} array with all available types of researches
 	 * 
-	 * @return a {@link JSON} array with all available subjects
+	 * @return a {@link JSON} array with all available types of researches 
 	 */
-	public Result getSubjects() {
+	public Result getTypesResearch() {
 		return q.withTransaction(tx -> {
-			List<Map<String, Object>> result = tx.select(subject.name, subjectLabel.label)
-				.from(subject)
-				.join(subjectLabel).on(subjectLabel.subjectId.eq(subject.id))
-				.orderBy(subjectLabel.label.asc())
+			List<Map<String, Object>> result = tx.select(typeResearch.name, typeResearchLabel.label)
+				.from(typeResearch)
+				.join(typeResearchLabel).on(typeResearchLabel.typeResearchId.eq(typeResearch.id))
+				.where(typeResearch.name.notEqualsIgnoreCase("none"))
+				.orderBy(typeResearchLabel.label.asc())
 				.fetch()
 				.stream()
 				.map(row -> {
 					Map<String, Object> record = new HashMap<>();
-					record.put("id", row.get(subject.name));
-					record.put("label", row.get(subjectLabel.label));
+					record.put("id", row.get(typeResearch.name));
+					record.put("label", row.get(typeResearchLabel.label));
 					return record;
 				})
 				.collect(Collectors.toList());
