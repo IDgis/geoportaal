@@ -116,7 +116,7 @@ public class ResearchApi extends Controller {
 				datasetQuery.where(
 					tx.selectOne()
 						.from(typeResearch)
-						.join(metadata).on(metadata.typeResearch.eq(typeResearch.id))
+						.where(typeResearch.id.eq(metadata.typeResearch))
 						.where(typeResearch.name.equalsIgnoreCase(typeFilter))
 						.exists());
 			}
