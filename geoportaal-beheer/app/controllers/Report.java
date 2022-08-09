@@ -156,7 +156,7 @@ public class Report extends Controller {
 				getContentDispositionValue("dublincore"));
 		
 		String header = "\"title\";\"creator\";\"subject\";\"theme\";\"description\";\"date_creation\";\"date_publication\";\"date_valid_start\";"
-				+ "\"date_valid_end\";\"type\";\"format\";\"identifier\";\"location\";\"number\";\"count_number\";\"source\";\"attachment\";"
+				+ "\"date_valid_end\";\"type\";\"typeResearch\";\"format\";\"identifier\";\"location\";\"number\";\"count_number\";\"source\";\"attachment\";"
 				+ "\"count_attachment\";\"attachment_size_in_mb\";\"attachment_size_in_mb_total\";\"rights\";\"use_limitation\";\"supplier\";"
 				+ "\"role_supplier\";\"status\";\"last_revision_user\";\"last_revision_date\";\"publisher\";\"contributor\";\"language\";"
 				+ "\"west_bound\";\"east_bound\";\"south_bound\";\"north_bound\";";
