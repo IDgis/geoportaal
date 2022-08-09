@@ -116,6 +116,33 @@ require([
 				domStyle.set(dom.byId('js-other-creator'), 'display', 'none');
 			}
 		});
+
+		var typeResearchSelect = dom.byId('js-type-research-select');
+		if (domAttr.get(typeResearchSelect, 'value') === 'none') {
+			domStyle.set(dom.byId('js-subject-list'), 'display', 'block');
+			domStyle.set(dom.byId('js-theme-list'), 'display', 'none');
+		} else {
+			domStyle.set(dom.byId('js-subject-list'), 'display', 'none');
+			domStyle.set(dom.byId('js-theme-list'), 'display', 'block');
+		}
+
+		on(typeResearchSelect, 'change', function(e) {
+			if (domAttr.get(typeResearchSelect, 'value') === 'none') {
+				array.forEach(query('.js-theme-input:checked'), function(item) {
+					domAttr.set(item, 'checked', false);
+				});
+
+				domStyle.set(dom.byId('js-subject-list'), 'display', 'block');
+				domStyle.set(dom.byId('js-theme-list'), 'display', 'none');
+			} else {
+				array.forEach(query('.js-subject-input:checked'), function(item) {
+					domAttr.set(item, 'checked', false);
+				});
+
+				domStyle.set(dom.byId('js-subject-list'), 'display', 'none');
+				domStyle.set(dom.byId('js-theme-list'), 'display', 'block');
+			}
+		});
 		
 		on(dom.byId('js-save-form'), 'click', function(e) {
 			domAttr.set(this, 'type', 'button');
@@ -128,6 +155,7 @@ require([
 			var descriptionVal = domAttr.get(dom.byId('js-description'), 'value');
 			var locationVal = domAttr.get(dom.byId('js-location'), 'value');
 			var fileIdVal = domAttr.get(dom.byId('js-file-id'), 'value');
+			var typeResearchVal = domAttr.get(dom.byId('js-type-research-select'), 'value');
 			
 			var dateCreation;
 			var datePublication;
@@ -152,6 +180,7 @@ require([
 			formData.append('dateSourceValidUntil', dateValidUntil);
 			
 			var subjectList = query('.js-subject-input:checked');
+			var themeList = query('.js-theme-input:checked');
 			var creatorVal = domAttr.get(dom.byId('js-creator-select'), 'value');
 			
 			formData.append('title', titleVal);
@@ -159,6 +188,7 @@ require([
 			formData.append('location', locationVal);
 			formData.append('fileId', fileIdVal);
 			formData.append('creator', creatorVal);
+			formData.append('typeResearch', typeResearchVal);
 			
 			if(creatorVal === 'other') {
 				var otherCreatorVal = domAttr.get(dom.byId('js-other-creator-input'), 'value');
@@ -169,7 +199,11 @@ require([
 				var subjectValue = domAttr.get(item, 'value');
 				formData.append('subject[]', subjectValue);
 			});
-			
+
+			array.forEach(themeList, function(item) {
+			    var themeValue = domAttr.get(item, 'value');
+			    formData.append('theme[]', themeValue);
+			});
 			
 			xhr(jsRoutes.controllers.Metadata.validateForm(id).url, {
 					handleAs: "html",

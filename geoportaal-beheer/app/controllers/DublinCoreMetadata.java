@@ -7,13 +7,17 @@ import static models.QMdAttachment.mdAttachment;
 import static models.QMdFormat.mdFormat;
 import static models.QMdFormatLabel.mdFormatLabel;
 import static models.QMdSubject.mdSubject;
+import static models.QMdTheme.mdTheme;
 import static models.QMetadata.metadata;
 import static models.QRights.rights;
 import static models.QRightsLabel.rightsLabel;
 import static models.QStatus.status;
 import static models.QSubject.subject;
+import static models.QTheme.theme;
 import static models.QTypeInformation.typeInformation;
 import static models.QTypeInformationLabel.typeInformationLabel;
+import static models.QTypeResearch.typeResearch;
+import static models.QTypeResearchLabel.typeResearchLabel;
 import static models.QUseLimitation.useLimitation;
 import static models.QUseLimitationLabel.useLimitationLabel;
 
@@ -113,9 +117,9 @@ public class DublinCoreMetadata extends SimpleWebDAV {
 		return (DublinCoreXML) q.withTransaction(tx -> {
 			// Fetch the metadata record with all relevant information
 			Tuple datasetRow = tx.select(metadata.id, metadata.uuid, metadata.title, metadata.description, metadata.location, metadata.fileId, 
-					typeInformationLabel.label, metadata.creator, creatorLabel.label, metadata.creatorOther, rightsLabel.label, useLimitationLabel.label, 
-					mdFormatLabel.label, metadata.source, metadata.dateSourceCreation, metadata.dateSourcePublication, metadata.dateSourceValidFrom, 
-					metadata.dateSourceValidUntil)
+					typeInformationLabel.label, typeResearchLabel.label, metadata.creator, creatorLabel.label, metadata.creatorOther, rightsLabel.label,
+					useLimitationLabel.label, mdFormatLabel.label, metadata.source, metadata.dateSourceCreation, metadata.dateSourcePublication,
+					metadata.dateSourceValidFrom, metadata.dateSourceValidUntil)
 				.from(metadata)
 				.join(creator).on(metadata.creator.eq(creator.id))
 				.join(creatorLabel).on(creator.id.eq(creatorLabel.creatorId))
@@ -125,6 +129,8 @@ public class DublinCoreMetadata extends SimpleWebDAV {
 				.join(rightsLabel).on(rights.id.eq(rightsLabel.rightsId))
 				.join(typeInformation).on(metadata.typeInformation.eq(typeInformation.id))
 				.join(typeInformationLabel).on(typeInformation.id.eq(typeInformationLabel.typeInformationId))
+				.join(typeResearch).on(metadata.typeResearch.eq(typeResearch.id))
+				.join(typeResearchLabel).on(typeResearch.id.eq(typeResearchLabel.typeResearchId))
 				.join(useLimitation).on(metadata.useLimitation.eq(useLimitation.id))
 				.join(useLimitationLabel).on(useLimitation.id.eq(useLimitationLabel.useLimitationId))
 				.where(metadata.uuid.eq(metadataUuid))
@@ -202,6 +208,14 @@ public class DublinCoreMetadata extends SimpleWebDAV {
 				.orderBy(subject.name.asc())
 				.fetch();
 			
+			// Fetches the themes
+			List<String> themes = tx.select(theme.name)
+				.from(mdTheme)
+				.join(theme).on(mdTheme.theme.eq(theme.id))
+				.where(mdTheme.metadataId.eq(datasetRow.get(metadata.id)))
+				.orderBy(theme.name.asc())
+				.fetch();
+			
 			// Fetches the values of the constants table
 			Tuple constantsRow = tx.select(constants.all())
 					.from(constants)
@@ -220,6 +234,7 @@ public class DublinCoreMetadata extends SimpleWebDAV {
 					datasetRow.get(metadata.fileId),
 					attachments,
 					datasetRow.get(typeInformationLabel.label),
+					datasetRow.get(typeResearchLabel.label),
 					creator,
 					constantsRow.get(constants.publisher),
 					constantsRow.get(constants.contributor),
@@ -232,6 +247,7 @@ public class DublinCoreMetadata extends SimpleWebDAV {
 					dvs,
 					dve,
 					subjects,
+					themes,
 					constantsRow.get(constants.language),
 					lowerCorner,
 					upperCorner

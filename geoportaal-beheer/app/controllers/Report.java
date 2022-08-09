@@ -7,6 +7,7 @@ import static models.QMdAttachment.mdAttachment;
 import static models.QMdFormat.mdFormat;
 import static models.QMdFormatLabel.mdFormatLabel;
 import static models.QMdSubject.mdSubject;
+import static models.QMdTheme.mdTheme;
 import static models.QMetadata.metadata;
 import static models.QRights.rights;
 import static models.QRightsLabel.rightsLabel;
@@ -14,8 +15,11 @@ import static models.QRole.role1;
 import static models.QStatus.status;
 import static models.QStatusLabel.statusLabel;
 import static models.QSubject.subject;
+import static models.QTheme.theme;
 import static models.QTypeInformation.typeInformation;
 import static models.QTypeInformationLabel.typeInformationLabel;
+import static models.QTypeResearch.typeResearch;
+import static models.QTypeResearchLabel.typeResearchLabel;
 import static models.QUseLimitation.useLimitation;
 import static models.QUseLimitationLabel.useLimitationLabel;
 import static models.QUser.user;
@@ -151,8 +155,8 @@ public class Report extends Controller {
 				"Content-Disposition",
 				getContentDispositionValue("dublincore"));
 		
-		String header = "\"title\";\"creator\";\"subject\";\"description\";\"date_creation\";\"date_publication\";\"date_valid_start\";"
-				+ "\"date_valid_end\";\"type\";\"format\";\"identifier\";\"location\";\"number\";\"count_number\";\"source\";\"attachment\";"
+		String header = "\"title\";\"creator\";\"subject\";\"theme\";\"description\";\"date_creation\";\"date_publication\";\"date_valid_start\";"
+				+ "\"date_valid_end\";\"type\";\"typeResearch\";\"format\";\"identifier\";\"location\";\"number\";\"count_number\";\"source\";\"attachment\";"
 				+ "\"count_attachment\";\"attachment_size_in_mb\";\"attachment_size_in_mb_total\";\"rights\";\"use_limitation\";\"supplier\";"
 				+ "\"role_supplier\";\"status\";\"last_revision_user\";\"last_revision_date\";\"publisher\";\"contributor\";\"language\";"
 				+ "\"west_bound\";\"east_bound\";\"south_bound\";\"north_bound\";";
@@ -164,14 +168,16 @@ public class Report extends Controller {
 		return q.withTransaction(tx -> {
 			List<Tuple> mds =  tx.select(metadata.id, metadata.uuid, metadata.title, metadata.location, metadata.fileId, metadata.description, 
 					metadata.creator, metadata.creatorOther, creatorLabel.label, metadata.dateSourceCreation, metadata.dateSourcePublication, 
-					metadata.dateSourceValidFrom, metadata.dateSourceValidUntil, typeInformationLabel.label, mdFormatLabel.label, metadata.source, 
-					rightsLabel.label, useLimitationLabel.label, statusLabel.label, user.label, metadata.lastRevisionUser, 
+					metadata.dateSourceValidFrom, metadata.dateSourceValidUntil, typeInformationLabel.label, typeResearchLabel.label, mdFormatLabel.label,
+					metadata.source, rightsLabel.label, useLimitationLabel.label, statusLabel.label, user.label, metadata.lastRevisionUser, 
 					metadata.lastRevisionDate, role1.role)
 				.from(metadata)
 				.join(creator).on(metadata.creator.eq(creator.id))
 				.join(creatorLabel).on(creator.id.eq(creatorLabel.creatorId))
 				.join(typeInformation).on(metadata.typeInformation.eq(typeInformation.id))
 				.join(typeInformationLabel).on(typeInformation.id.eq(typeInformationLabel.typeInformationId))
+				.join(typeResearch).on(metadata.typeResearch.eq(typeResearch.id))
+				.join(typeResearchLabel).on(typeResearch.id.eq(typeResearchLabel.typeResearchId))
 				.join(mdFormat).on(metadata.mdFormat.eq(mdFormat.id))
 				.join(mdFormatLabel).on(mdFormat.id.eq(mdFormatLabel.mdFormatId))
 				.join(rights).on(metadata.rights.eq(rights.id))
@@ -227,6 +233,22 @@ public class Report extends Controller {
 				}
 				strb.append("\";");
 				
+				List<String> themes = tx.select(theme.name)
+					.from(mdTheme)
+					.join(theme).on(mdTheme.theme.eq(theme.id))
+					.where(mdTheme.metadataId.eq(md.get(metadata.id)))
+					.fetch();
+				
+				strb.append("\"");
+				for (Integer i = 0; i < themes.size(); i++) {
+					if (i.equals(themes.size() - 1)) {
+						strb.append(escapeQuotes(themes.get(i)));
+					} else {
+						strb.append(escapeQuotes(themes.get(i)) + " | ");
+					}
+				}
+				strb.append("\";");
+				
 				strb.append("\"" + escapeQuotes(md.get(metadata.description).replaceAll("[\\t\\n\\r]", " ")) + "\";");
 				
 				strb.append("\"" + getValueDate(md.get(metadata.dateSourceCreation)) + "\";");
@@ -235,6 +257,7 @@ public class Report extends Controller {
 				strb.append("\"" + getValueDate(md.get(metadata.dateSourceValidUntil)) + "\";");
 				
 				strb.append("\"" + escapeQuotes(md.get(typeInformationLabel.label)) + "\";");
+				strb.append("\"" + escapeQuotes(md.get(typeResearchLabel.label)) + "\";");
 				strb.append("\"" + escapeQuotes(md.get(mdFormatLabel.label)) + "\";");
 				strb.append("\"" + escapeQuotes(md.get(metadata.uuid)) + "\";");
 				strb.append("\"" + escapeQuotes(md.get(metadata.location)) + "\";");

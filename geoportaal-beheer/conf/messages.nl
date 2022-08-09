@@ -89,6 +89,8 @@ form.attachment.button.empty=Bijlage leegmaken
 form.attachment.button.delete=Bijlage verwijderen
 form.typeinformation.label=Type informatie
 form.typeinformation.title=Selecteer het type informatie
+form.typeresearch.label=Type onderzoek
+form.typeresearch.title=Selecteer het type onderzoek
 form.creator.label=Eindverantwoordelijke*
 form.creator.title=Selecteer de eindverantwoordelijke
 form.creator.other.title=Voer eindverantwoordelijke van bestand in
@@ -110,6 +112,8 @@ form.date.valid.end.label=Datum geldig, tot
 form.date.valid.end.title=Vul de datum in tot wanneer de bron geldig is
 form.subject.label=ISO onderwerp*
 form.subject.title=Vink de onderwerpen aan die van toepassing zijn op de data
+form.theme.label=Thema*
+form.theme.title=Vink de thema's aan die van toepassing zijn op de data
 
 # Tooltips index
 index.text.tooltip=Tekst in die je wilt zoeken. Meerdere woorden zijn mogelijk. Vul je niets in, dan wordt alles gekozen als je gaat zoeken.
@@ -127,6 +131,7 @@ form.location.tooltip=Vul hier het pad in. Goed: K:\BAB\Geo-informatie\2015\ . N
 form.fileid.tooltip=Nummer van de dataset. Gebruik hier alleen het nummer. Geen volgnummers of andere code. Goed: 150047. Niet goed: 150047_Salland. Tekstveld kan maximaal 200 tekens bevatten.
 form.attachment.tooltip=Koppel hier de bijlage (meestal een pdf). Meer bijlagen nodig? Klik op de PLUS. Zie je een OOG, dan kan je de bijlage bekijken. Bestanden die als bijlage zijn gekoppeld, die kan je verwijderen met het x-je. Heb je nog geen bestand gekoppeld, dan kan je het gommetje gebruiken. De maximale grootte is 200 MB. Dit geldt voor individuele bestanden. Je kan 1 bestand van 200 MB aanbieden, of 2 bestanden van 100 MB. Wil je nog meer data toevoegen, dan kan je dit record opslaan en daarna wijzigen. Je kan dan weer 200 MB maximaal toevoegen.
 form.typeinformation.tooltip=Type informatie.
+form.typeresearch.tooltip=Type onderzoek.
 form.creator.tooltip=Organisatie die de data heeft gemaakt. Dit is de leverancier van de achterliggende data. Dat hoeft niet dezelfde organisatie te zijn als de organisatie die de kaart heeft gemaakt. Tekstveld bij selectie ''Andere'' kan maximaal 200 tekens bevatten.
 form.rights.tooltip=Eigendomsrechten, die voor de data gelden.
 form.uselimitation.tooltip=Beperkingen (intern of ook extern). Bij twijfel, kies intern of vraag het na bij de leverancier. Kies je voor extern dan wordt alle informatie ook extern zichtbaar. 
@@ -137,6 +142,7 @@ form.date.publication.tooltip=Datum waarop de kaart is gepubliceerd.
 form.date.valid.start.tooltip=Geldigheidsdatum: begindatum.
 form.date.valid.end.tooltip=Geldigheidsdatum: einddatum.
 form.subject.tooltip=Onderwerp. Onderwerpen waar de kaart bij hoort. Je kan meerdere onderwerpen kiezen, als de kaart bij meerdere onderwerpen hoort.
+form.theme.tooltip=Thema. Thema's waar de kaart bij hoort. Je kan meerdere thema's kiezen, als de kaart bij meerdere thema's hoort.
 
 # Inloggen
 login.header=Inloggen beheermodule Geoportaal
@@ -237,6 +243,7 @@ validate.form.date.create=De datum creatie moet ingevuld zijn.
 validate.form.date.create.publish.check=Er is een onlogische datum ingevoerd. Datum "creatie" is later dan de datum "publicatie".
 validate.form.date.valid.check=Er is een onlogische datum ingevoerd. Datum "geldig van" is later dan de datum "geldig tot".
 validate.form.subject.list=Er moet minimaal één onderwerp aangevinkt zijn.
+validate.form.theme.list=Er moet minimaal één thema aangevinkt zijn.
 validate.form.parse.date.create=De datum creatie is niet correct ingevuld.
 validate.form.parse.date.publication=De datum publicatie is niet correct ingevuld.
 validate.form.parse.date.valid.start=De datum geldig, van is niet correct ingevuld.

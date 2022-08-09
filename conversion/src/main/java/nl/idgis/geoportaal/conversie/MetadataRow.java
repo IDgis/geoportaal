@@ -11,6 +11,7 @@ public class MetadataRow {
 
 	private static final String DATA_TYPE = "rdf:datatype";
 	private static final String TABLE_TYPE_INFORMATION = "type_information";
+	private static final String TABLE_TYPE_RESEARCH = "type_research";
 	private static final String TABLE_CREATOR = "creator";
 	private static final String TABLE_RIGHTS = "rights";
 	private static final String TABLE_USE_LIMITATION = "use_limitation";
@@ -28,6 +29,7 @@ public class MetadataRow {
 	private String title;
 	private String description;
 	private Label typeInformation;
+	private Label typeResearch;
 	private Label creator;
 	private Label creatorOther;
 	private Label rights;
@@ -73,6 +75,7 @@ public class MetadataRow {
 		row.setTitle(retrieveFirstStringOrNull(Path.TITLE, d));
 		row.setDescription(retrieveFirstStringOrNull(Path.DESCRIPTION, d));
 		row.setTypeInformation(new Label(retrieveFirstStringOrNull(Path.TYPE_INFORMATION, d), TABLE_TYPE_INFORMATION));
+		row.setTypeResearch(new Label(retrieveFirstStringOrNull(Path.RESEARCH_INFORMATION, d), TABLE_TYPE_RESEARCH));
 		row.setCreator(new Label(map(retrieveFirstStringOrNull(Path.CREATOR, d), creatorMapper), TABLE_CREATOR));
 		row.setCreatorOther(new Label(map(retrieveFirstStringOrNull(Path.CREATOR, d), creatorMapper), TABLE_CREATOR));
 		row.setRights(new Label(map(retrieveFirstStringOrNull(Path.RIGHTS, d, DATA_TYPE, "gebruiksrestricties", false), rightsMapper), TABLE_RIGHTS));
@@ -187,6 +190,14 @@ public class MetadataRow {
 
 	public void setTypeInformation(Label typeInformation) {
 		this.typeInformation = typeInformation;
+	}
+
+	public Label getTypeResearch() {
+		return typeResearch;
+	}
+
+	public void setTypeResearch(Label typeResearch) {
+		this.typeResearch = typeResearch;
 	}
 
 	public Label getCreator() {
@@ -320,8 +331,8 @@ public class MetadataRow {
 	@Override
 	public String toString() {
 		return "MetadataRow [uuid=" + uuid + ", location=" + location + ", fileId=" + fileId + ", title=" + title
-				+ ", description=" + description + ", typeInformation=" + typeInformation + ", creator=" + creator
-				+ ", creatorOther=" + creatorOther + ", rights=" + rights + ", useLimitation=" + useLimitation
+				+ ", description=" + description + ", typeInformation=" + typeInformation + ", typeResearch=" + typeResearch
+				+ ", creator=" + creator + ", creatorOther=" + creatorOther + ", rights=" + rights + ", useLimitation=" + useLimitation
 				+ ", mdFormat=" + mdFormat + ", source=" + source + ", dateSourceCreation=" + dateSourceCreation
 				+ ", dateSourcePublication=" + dateSourcePublication + ", dateSourceValidFrom=" + dateSourceValidFrom
 				+ ", dateSourceValidUntil=" + dateSourceValidUntil + ", supplier=" + supplier + ", status=" + status
