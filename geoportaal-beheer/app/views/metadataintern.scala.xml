@@ -34,7 +34,10 @@
 			}
 		</dcterms:valid>
 		@for(subject <- dcx.getSubjects()) {
-			<dc:subject>@subject</dc:subject>
+			<dc:subject>subject: @subject</dc:subject>
+		}
+		@for(theme <- dcx.getThemes()) {
+			<dc:subject>theme: @theme</dc:subject>
 		}
 		<dc:language>@dcx.getLanguage()</dc:language>
 		<ows:WGS84BoundingBox>
