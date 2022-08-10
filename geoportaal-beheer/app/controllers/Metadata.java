@@ -837,25 +837,25 @@ public class Metadata extends Controller {
 					}
 				}
 				
-				// Delete old subjects and insert new subjects
+				// Fetch old subjects
+				List<Integer> existingSubjects = tx.select(mdSubject.id)
+					.from(mdSubject)
+					.where(mdSubject.metadataId.eq(metadataId))
+					.fetch();
+				
+				// Delete all old subjects
+				Long subjectsCount = tx.delete(mdSubject)
+					.where(mdSubject.metadataId.eq(metadataId))
+					.execute();
+				
+				// Check if the count of deleted subjects is what is expected
+				Integer subjectsFinalCount = subjectsCount.intValue();
+				if(!subjectsFinalCount.equals(existingSubjects.size())) {
+					throw new GeoportaalBeheerException("Updating subjects: different amount of affected rows than expected");
+				}
+				
+				// Insert new subjects
 				if(subjects != null) {
-					// Fetch the old subjects
-					List<Integer> existingSubjects = tx.select(mdSubject.id)
-						.from(mdSubject)
-						.where(mdSubject.metadataId.eq(metadataId))
-						.fetch();
-					
-					// Delete all old subjects
-					Long subjectsCount = tx.delete(mdSubject)
-						.where(mdSubject.metadataId.eq(metadataId))
-						.execute();
-					
-					// Check if the count of deleted subjects is what is expected
-					Integer subjectsFinalCount = subjectsCount.intValue();
-					if(!subjectsFinalCount.equals(existingSubjects.size())) {
-						throw new GeoportaalBeheerException("Updating subjects: different amount of affected rows than expected");
-					}
-					
 					// Insert the new subjects
 					for(String subjectStr : subjects) {
 						Integer subjectKey = tx.select(subject.id)
@@ -870,25 +870,25 @@ public class Metadata extends Controller {
 					}
 				}
 				
-				// Delete old themes and insert new themes
+				// Fetch old themes
+				List<Integer> existingThemes = tx.select(mdTheme.id)
+					.from(mdTheme)
+					.where(mdTheme.metadataId.eq(metadataId))
+					.fetch();
+				
+				// Delete all old themes
+				Long themesCount = tx.delete(mdTheme)
+					.where(mdTheme.metadataId.eq(metadataId))
+					.execute();
+				
+				// Check if the count of deleted themes is what is expected
+				Integer themesFinalCount = themesCount.intValue();
+				if (!themesFinalCount.equals(existingThemes.size())) {
+					throw new GeoportaalBeheerException("Updating themes: different amount of affected rows than expected");
+				}
+				
+				// Insert new themes
 				if (themes != null) {
-					// Fetch old themes
-					List<Integer> existingThemes = tx.select(mdTheme.id)
-						.from(mdTheme)
-						.where(mdTheme.metadataId.eq(metadataId))
-						.fetch();
-					
-					// Delete all old themes
-					Long themesCount = tx.delete(mdTheme)
-						.where(mdTheme.metadataId.eq(metadataId))
-						.execute();
-					
-					// Check if the count of deleted themes is what is expected
-					Integer themesFinalCount = themesCount.intValue();
-					if (!themesFinalCount.equals(existingThemes.size())) {
-						throw new GeoportaalBeheerException("Updating themes: different amount of affected rows than expected");
-					}
-					
 					// Insert the new themes
 					for (String themeStr : themes) {
 						Integer themeKey = tx.select(theme.id)
