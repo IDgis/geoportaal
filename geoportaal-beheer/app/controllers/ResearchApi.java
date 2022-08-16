@@ -56,10 +56,11 @@ public class ResearchApi extends Controller {
 	 * @param limit - The number of results to return
 	 * @param sort - the sort type value
 	 * @param typeFilter - The type of research to filter
-	 * @Param themeFilter - The theme to filter
+	 * @param themeFilter - The theme to filter
+	 * @param creationYear - The year of creation to filter
 	 * @return a {@link JSON} Object with the research data
 	 */
-	public Result search(String textSearch, long offset, long limit, String sort, String typeFilter, String themeFilter) {
+	public Result search(String textSearch, long offset, long limit, String sort, String typeFilter, String themeFilter, long creationYear) {
 		return q.withTransaction(tx -> {
 			Map<String, Object> root = new HashMap<>();
 			
@@ -130,6 +131,11 @@ public class ResearchApi extends Controller {
 						.where(mdTheme.metadataId.eq(metadata.id))
 						.where(theme.name.equalsIgnoreCase(themeFilter))
 						.exists());
+			}
+			
+			// Filter on creationYear
+			if (creationYear > 0) {
+				datasetQuery.where(metadata.dateSourceCreation.year().eq((int) creationYear));
 			}
 			
 			if ("dateAsc".equals(sort)) {
