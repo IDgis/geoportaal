@@ -15,12 +15,16 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
 import com.querydsl.sql.SQLQueryFactory;
 
 public class Database {
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(Database.class);
 	
 	public static int getAccessId(SQLQueryFactory qf, String type) {
 		return qf.select(access.id)
@@ -102,15 +106,31 @@ public class Database {
 	
 	public static void insertDocumentSubjects(SQLQueryFactory qf, List<String> list, Long documentId) {
 		for(String subjectItem : list) {
-			Integer subjectId = qf.select(subject.id)
-					.from(subject)
-					.where(subject.name.eq(subjectItem))
-					.fetchOne();
+			String subjectItemName = null;
 			
-			qf.insert(docSubject)
-					.set(docSubject.documentId, documentId)
-					.set(docSubject.subjectId, subjectId)
-					.execute();
+			if(subjectItem.startsWith("subject: ")) {
+				subjectItemName = subjectItem.substring("subject: ".length());
+			} else if(subjectItem.startsWith("theme: ")) {
+				// do nothing
+			} else {
+				subjectItemName = subjectItem;
+			}
+			
+			if(subjectItemName != null) {
+				Integer subjectId = qf.select(subject.id)
+						.from(subject)
+						.where(subject.name.eq(subjectItemName))
+						.fetchOne();
+				
+				if(subjectId != null) {
+					qf.insert(docSubject)
+						.set(docSubject.documentId, documentId)
+						.set(docSubject.subjectId, subjectId)
+						.execute();
+				} else {
+					LOGGER.warn("subject id for subject item {} is null", subjectItem);
+				}
+			}
 		}
 	}
 	
