@@ -12,6 +12,9 @@
 			<dc:relation>@attachment</dc:relation>
 		}
 		<dc:type>@dcx.getType()</dc:type>
+		@if(dcx.getTypeResearch() != null) {
+			<dc:typeresearch>@dcx.getTypeResearch()</dc:typeresearch>
+		}
 		<dc:creator>@dcx.getCreator()</dc:creator>
 		<dc:publisher>@dcx.getPublisher()</dc:publisher>
 		<dc:contributor>@dcx.getContributor()</dc:contributor>
