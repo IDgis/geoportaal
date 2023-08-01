@@ -81,7 +81,7 @@ configure([
 		play "com.typesafe.play:play-cache_2.11:2.4.8"				// cache
 		play "com.typesafe.play:play-java-ws_2.11:2.4.8"			// javaWs
 		play "com.typesafe.play:play-jdbc-evolutions_2.11:2.4.8"	// evolutions
-		play "nl.idgis.commons:commons-utils:0.0.14"
+		play "nl.idgis.commons:commons-utils:0.0.15"
 		
 		// Geoportaal dependencies:
 		play "org.webjars:webjars-play_${scalaAbiVersion}:2.4.0-2"
@@ -132,7 +132,7 @@ configure([
 	dependencies {
 		// Geoportaal dependencies:
 		play "org.webjars:modernizr:2.8.3"
-		play ("nl.idgis.sys:provisioning-registration:1.1.3-SNAPSHOT") {
+		play ("nl.idgis.sys:provisioning-registration:1.1.6-SNAPSHOT") {
 			exclude module: "ch.qos.logback"
 			exclude module: "logback-classic"
 		}
