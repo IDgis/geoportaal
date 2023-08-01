@@ -20,6 +20,20 @@ subprojects {
 	apply plugin: 'org.ajoberstar.release-opinion'
 	
 	repositories {
+		maven {
+			url = "https://maven.pkg.github.com/IDgis/sysadmin"
+			credentials {
+				username = System.getenv("GITHUB_USER") ?: ghUser
+				password = System.getenv("GITHUB_TOKEN") ?: ghKey
+			}
+		}
+		maven {
+			url = "https://maven.pkg.github.com/IDgis/idgis-commons"
+			credentials {
+				username = System.getenv("GITHUB_USER") ?: ghUser
+				password = System.getenv("GITHUB_TOKEN") ?: ghKey
+			}
+		}
 		mavenCentral ()
 	}
 	
