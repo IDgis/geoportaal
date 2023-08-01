@@ -34,6 +34,13 @@ subprojects {
 				password = System.getenv("GITHUB_TOKEN") ?: ghKey
 			}
 		}
+		maven {
+			url = "https://maven.pkg.github.com/IDgis/play-simple-webdav"
+			credentials {
+				username = System.getenv("GITHUB_USER") ?: ghUser
+				password = System.getenv("GITHUB_TOKEN") ?: ghKey
+			}
+		}
 		mavenCentral ()
 	}
 	
@@ -158,7 +165,7 @@ project(':geoportaal-beheer') {
 		
 		play project(':querydsl-tsvector')		
 		play "org.springframework.security:spring-security-web:4.0.3.RELEASE"
-		play "nl.idgis.dav:play-simple-webdav_2.11:1.0.0"
+		play "nl.idgis.dav:play-simple-webdav:1.1.0"
 	}
 	
 	queryDSL {
