@@ -1,13 +1,5 @@
 repositories {
-	maven {
-		name "idgis-public"
-		url "http://nexus.idgis.eu/content/groups/public/"
-		credentials {
-			username nexusUser 
-			password nexusPassword
-		}
-	}
-	jcenter()
+	mavenCentral()
 }
 
 dependencies {

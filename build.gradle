@@ -1,6 +1,7 @@
 buildscript {
 	repositories {
 		jcenter()
+		mavenCentral()
 	}
 
 	dependencies {
@@ -19,25 +20,28 @@ subprojects {
 	apply plugin: 'org.ajoberstar.release-opinion'
 	
 	repositories {
+		maven {
+			url = "https://maven.pkg.github.com/IDgis/sysadmin"
+			credentials {
+				username = System.getenv("GITHUB_USER") ?: ghUser
+				password = System.getenv("GITHUB_TOKEN") ?: ghKey
+			}
+		}
+		maven {
+			url = "https://maven.pkg.github.com/IDgis/idgis-commons"
+			credentials {
+				username = System.getenv("GITHUB_USER") ?: ghUser
+				password = System.getenv("GITHUB_TOKEN") ?: ghKey
+			}
+		}
+		maven {
+			url = "https://maven.pkg.github.com/IDgis/play-simple-webdav"
+			credentials {
+				username = System.getenv("GITHUB_USER") ?: ghUser
+				password = System.getenv("GITHUB_TOKEN") ?: ghKey
+			}
+		}
 		mavenCentral ()
-		
-		// Add IDgis repositories:
-		maven {
-			name "idgis-public"
-			url "http://nexus.idgis.eu/content/groups/public/"
-			credentials {
-				username nexusUser 
-				password nexusPassword
-			}
-		}
-		maven {
-			name "idgis-restricted"
-			url "http://nexus.idgis.eu/content/groups/restricted/"
-			credentials {
-				username nexusUser 
-				password nexusPassword
-			}
-		}
 	}
 	
 	// Configure gradle-git release procedure (https://github.com/ajoberstar/gradle-git):
@@ -84,7 +88,7 @@ configure([
 		play "com.typesafe.play:play-cache_2.11:2.4.8"				// cache
 		play "com.typesafe.play:play-java-ws_2.11:2.4.8"			// javaWs
 		play "com.typesafe.play:play-jdbc-evolutions_2.11:2.4.8"	// evolutions
-		play "nl.idgis.commons:commons-utils:0.0.14"
+		play "nl.idgis.commons:commons-utils:0.0.15"
 		
 		// Geoportaal dependencies:
 		play "org.webjars:webjars-play_${scalaAbiVersion}:2.4.0-2"
@@ -135,7 +139,7 @@ configure([
 	dependencies {
 		// Geoportaal dependencies:
 		play "org.webjars:modernizr:2.8.3"
-		play ("nl.idgis.sys:provisioning-registration:1.1.3-SNAPSHOT") {
+		play ("nl.idgis.sys:provisioning-registration:1.1.6-SNAPSHOT") {
 			exclude module: "ch.qos.logback"
 			exclude module: "logback-classic"
 		}
@@ -161,11 +165,16 @@ project(':geoportaal-beheer') {
 		
 		play project(':querydsl-tsvector')		
 		play "org.springframework.security:spring-security-web:4.0.3.RELEASE"
-		play "nl.idgis.dav:play-simple-webdav_2.11:1.0.0"
+		play "nl.idgis.dav:play-simple-webdav:1.1.0"
 	}
 	
 	queryDSL {
-		databaseHost = project.databaseHost
+		def env = System.env
+		if (project.properties.containsKey("databaseHost")) {
+			databaseHost = project.databaseHost
+		} else if (env.containsKey('DATABASE_HOST')) {
+			databaseHost = "$env.DATABASE_HOST"
+		}
 	}
 }
 
@@ -243,8 +252,14 @@ project(':geoportaal-publiek-db') {
 	queryDSL {
 		evolutionsDir = project.file "src/main/resources"
 		sourceDir = project.file "src/main/java"
-		classpath = project.configurations.compile 
-		databaseHost = project.databaseHost
+		classpath = project.configurations.compile
+		
+		def env = System.env
+		if (project.properties.containsKey("databaseHost")) {
+			databaseHost = project.databaseHost
+		} else if (env.containsKey('DATABASE_HOST')) {
+			databaseHost = "$env.DATABASE_HOST"
+		}
 	}
 	
 	dependencies {
@@ -274,7 +289,9 @@ allprojects {
 						certPath = project.file "$env.DOCKER_CERT_PATH"
 					}
 				} else {
-					url = "http://${project.dockerHost}:2375"
+					if (project.properties.containsKey("dockerHost")) {
+						url = "http://${dockerHost}:2375"
+					}
 				}
 			}
 		}
