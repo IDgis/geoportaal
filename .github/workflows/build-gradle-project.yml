@@ -23,4 +23,5 @@ jobs:
       env:
         GITHUB_USER: "github"
         GITHUB_TOKEN: ${{ github.token }}
+        DATABASE_HOST: "localhost"
       

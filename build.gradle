@@ -148,7 +148,12 @@ project(':geoportaal-beheer') {
 	}
 	
 	queryDSL {
-		databaseHost = project.databaseHost
+		def env = System.env
+		if (project.properties.containsKey("databaseHost")) {
+			databaseHost = project.databaseHost
+		} else if (env.containsKey('DATABASE_HOST')) {
+			databaseHost = "$env.DATABASE_HOST"
+		}
 	}
 }
 
@@ -226,8 +231,14 @@ project(':geoportaal-publiek-db') {
 	queryDSL {
 		evolutionsDir = project.file "src/main/resources"
 		sourceDir = project.file "src/main/java"
-		classpath = project.configurations.compile 
-		databaseHost = project.databaseHost
+		classpath = project.configurations.compile
+		
+		def env = System.env
+		if (project.properties.containsKey("databaseHost")) {
+			databaseHost = project.databaseHost
+		} else if (env.containsKey('DATABASE_HOST')) {
+			databaseHost = "$env.DATABASE_HOST"
+		}
 	}
 	
 	dependencies {
