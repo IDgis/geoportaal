@@ -38,6 +38,10 @@ POST	/validate								controllers.Index.validateForm()
 ->		/metadata/dc/							controllers.DublinCoreMetadata
 GET		/metadata/:metadataUuid					controllers.Metadata.getMetadata(metadataUuid: String, noStyle: Boolean ?= false)
 GET		/webjars/*file							controllers.WebJarAssets.at(file)
+
+GET		/robots.txt										controllers.WOO.robots()
+GET		/sitemaps/sitemapindex-diwoo-infocat:id.xml		controllers.WOO.sitemapindex(id)
+
 GET		/routes.js								controllers.Index.jsRoutes()
 
 GET		/mockup/dashboard						controllers.Dashboard.renderDashboard()
