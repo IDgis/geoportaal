@@ -143,12 +143,14 @@ public class Metadata extends Controller {
 			List<Tuple> subjectList = tx.select(subject.id, subject.name, subjectLabel.label)
 				.from(subject)
 				.join(subjectLabel).on(subject.id.eq(subjectLabel.subjectId))
+				.orderBy(subjectLabel.label.asc())
 				.fetch();
 			
 			// Fetch theme list
 			List<Tuple> themeList = tx.select(theme.id, theme.name, themeLabel.label)
 				.from(theme)
 				.join(themeLabel).on(theme.id.eq(themeLabel.themeId))
+				.orderBy(themeLabel.label.asc())
 				.fetch();
 			
 			// Fetches the role of the logged in user

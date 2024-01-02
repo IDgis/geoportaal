@@ -453,8 +453,8 @@
 			<label class="col-sm-3 control-label">@Messages.get("form.theme.label")</label>
 			<div class="col-sm-7">
 				<div class="col-sm-6">
-					@for(themeOption <- themeList) {
-						@if(themeOption.get(theme.id) < 10) {
+					@for((themeOption, index) <- themeList.zipWithIndex) {
+						@if(index <= (themeList.size() / 2)) {
 							<div>
 								<label class="checkbox-inline">
 									<input type="checkbox" class="js-theme-input" name="theme[]" value="@themeOption.get(theme.name)"
@@ -478,8 +478,8 @@
 					}
 				</div>
 				<div class="col-sm-6">
-					@for(themeOption <- themeList) {
-						@if(themeOption.get(theme.id) > 9) {
+					@for((themeOption, index) <- themeList.zipWithIndex) {
+						@if(index > (themeList.size() / 2)) {
 							<div>
 								<label class="checkbox-inline">
 									<input type="checkbox" class="js-theme-input" name="theme[]" value="@themeOption.get(theme.name)"
