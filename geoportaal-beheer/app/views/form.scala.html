@@ -3,16 +3,10 @@
 	datasetRow: com.querydsl.core.Tuple, 
 	subjectsDataset: java.util.List[com.querydsl.core.Tuple],
 	themesDataset: java.util.List[com.querydsl.core.Tuple],
+	wooThemesDataset: java.util.List[com.querydsl.core.Tuple],
 	attachmentsDataset: java.util.List[com.querydsl.core.Tuple], 
-	typeInformationList: java.util.List[com.querydsl.core.Tuple],
-	typeResearchList: java.util.List[com.querydsl.core.Tuple],
-	creatorList: java.util.List[com.querydsl.core.Tuple], 
-	rightsList: java.util.List[com.querydsl.core.Tuple], 
-	useLimitationList: java.util.List[com.querydsl.core.Tuple],
-	mdFormatList: java.util.List[com.querydsl.core.Tuple],
 	sdf: java.text.SimpleDateFormat,
-	subjectList: java.util.List[com.querydsl.core.Tuple],
-	themeList: java.util.List[com.querydsl.core.Tuple],
+	lists: java.util.Map[String, java.util.List[com.querydsl.core.Tuple]],
 	roleId: Integer,
 	search: models.Search,
 	validate: Boolean,
@@ -23,26 +17,29 @@
 
 @import play.i18n._
 @import play.mvc.Http
-@import models.QMetadata.metadata
-@import models.QTypeInformation.typeInformation
-@import models.QTypeResearch.typeResearch
 @import models.QCreator.creator
-@import models.QRights.rights
-@import models.QUseLimitation.useLimitation
-@import models.QMdFormat.mdFormat
-@import models.QSubject.subject
-@import models.QTheme.theme
+@import models.QCreatorLabel.creatorLabel
 @import models.QMdAttachment.mdAttachment
+@import models.QMdFormat.mdFormat
+@import models.QMdFormatLabel.mdFormatLabel
 @import models.QMdSubject.mdSubject
 @import models.QMdTheme.mdTheme
-@import models.QTypeInformationLabel.typeInformationLabel
-@import models.QTypeResearchLabel.typeResearchLabel
-@import models.QCreatorLabel.creatorLabel
+@import models.QMdWooTheme.mdWooTheme
+@import models.QMetadata.metadata
+@import models.QRights.rights
 @import models.QRightsLabel.rightsLabel
-@import models.QUseLimitationLabel.useLimitationLabel
-@import models.QMdFormatLabel.mdFormatLabel
+@import models.QSubject.subject
 @import models.QSubjectLabel.subjectLabel
+@import models.QTheme.theme
 @import models.QThemeLabel.themeLabel
+@import models.QTypeInformation.typeInformation
+@import models.QTypeInformationLabel.typeInformationLabel
+@import models.QTypeResearch.typeResearch
+@import models.QTypeResearchLabel.typeResearchLabel
+@import models.QUseLimitation.useLimitation
+@import models.QUseLimitationLabel.useLimitationLabel
+@import models.QWooTheme.wooTheme
+@import models.QWooThemeLabel.wooThemeLabel
 
 @main(if(create) {Messages.get("form.create.header")} else {Messages.get("form.edit.header")}, search.getText(), search.getSupplier(), search.getStatus(), 
 	search.getDateCreateStart(), search.getDateCreateEnd(), search.getDateUpdateStart(), search.getDateUpdateEnd(), 
@@ -166,7 +163,7 @@
 			<div class="col-sm-7">
 				<select class="form-control" data-toggle="tooltip" data-placement="top" title="@Messages.get("form.typeinformation.title")"
 				name="typeInformation">
-					@for(typeInformationOption <- typeInformationList) {
+					@for(typeInformationOption <- lists.get("typeInformationList")) {
 						<option value="@typeInformationOption.get(typeInformation.name)" 
 						@if(validate && typeInformationOption.get(typeInformation.name) == previousValues.get("metadata").getTypeInformation()) {selected} 
 						@if(!validate && create && typeInformationOption.get(typeInformation.name) == "map") {selected}
@@ -188,7 +185,7 @@
 			<div class="col-sm-7">
 				<select id="js-type-research-select" class="form-control" data-toggle="tooltip" data-placement="top" title="@Messages.get("form.typeresearch.title")"
 				name="typeResearch">
-					@for(typeResearchOption <- typeResearchList) {
+					@for(typeResearchOption <- lists.get("typeResearchList")) {
 						<option value="@typeResearchOption.get(typeResearch.name)"
 						@if(validate && typeResearchOption.get(typeResearch.name) == previousValues.get("metadata").getTypeResearch()) {selected}
 						@if(!validate && create && typeResearchOption.get(typeResearch.name) == "none") {selected}
@@ -211,7 +208,7 @@
 				<select id="js-creator-select" class="form-control" data-toggle="tooltip" data-placement="top" 
 				title="@Messages.get("form.creator.title")" name="creator">
 					<option></option>
-					@for(creatorOption <- creatorList) {
+					@for(creatorOption <- lists.get("creatorList")) {
 						<option value="@creatorOption.get(creator.name)"
 						@if(validate && creatorOption.get(creator.name) == previousValues.get("metadata").getCreator()) {selected}
 						@if(!validate && !create && datasetRow.get(metadata.creator) == creatorOption.get(creator.id)) {selected}>
@@ -241,7 +238,7 @@
 			<div class="col-sm-7">
 				<select class="form-control" data-toggle="tooltip" data-placement="top" title="@Messages.get("form.rights.title")"
 				name="rights">
-					@for(rightsOption <- rightsList) {
+					@for(rightsOption <- lists.get("rightsList")) {
 						<option value="@rightsOption.get(rights.name)"
 						@if(validate && rightsOption.get(rights.name) == previousValues.get("metadata").getRights()) {selected}
 						@if(!validate && create && rightsOption.get(rights.id) == 2) {selected}
@@ -263,7 +260,7 @@
 			<div class="col-sm-7">
 				<select class="form-control" data-toggle="tooltip" data-placement="top" title="@Messages.get("form.uselimitation.title")"
 				name="useLimitation">
-					@for(useLimitationOption <- useLimitationList) {
+					@for(useLimitationOption <- lists.get("useLimitationList")) {
 						<option value="@useLimitationOption.get(useLimitation.name)"
 						@if(validate && useLimitationOption.get(useLimitation.name) == previousValues.get("metadata").getUseLimitation()) {selected}
 						@if(!validate && !create && datasetRow.get(metadata.useLimitation) == useLimitationOption.get(useLimitation.id)) {selected}>
@@ -284,7 +281,7 @@
 			<div class="col-sm-7">
 				<select class="form-control" data-toggle="tooltip" data-placement="top" 
 				title="@Messages.get("form.format.title")" name="mdFormat">
-					@for(mdFormatOption <- mdFormatList) {
+					@for(mdFormatOption <- lists.get("mdFormatList")) {
 						<option value="@mdFormatOption.get(mdFormat.name)"
 						@if(validate && mdFormatOption.get(mdFormat.name) == previousValues.get("metadata").getMdFormat()) {selected}
 						@if(!validate && create && mdFormatOption.get(mdFormat.id) == 8) {selected}
@@ -392,7 +389,7 @@
 			<label class="col-sm-3 control-label">@Messages.get("form.subject.label")</label>
 			<div class="col-sm-7">
 				<div class="col-sm-6">
-					@for(subjectOption <- subjectList) {
+					@for(subjectOption <- lists.get("subjectList")) {
 						@if(subjectOption.get(subject.id) < 11) {
 							<div>
 								<label class="checkbox-inline">
@@ -417,7 +414,7 @@
 					}
 				</div>
 				<div class="col-sm-6">
-					@for(subjectOption <- subjectList) {
+					@for(subjectOption <- lists.get("subjectList")) {
 						@if(subjectOption.get(subject.id) > 10) {	
 							<div>
 								<label class="checkbox-inline">
@@ -453,8 +450,8 @@
 			<label class="col-sm-3 control-label">@Messages.get("form.theme.label")</label>
 			<div class="col-sm-7">
 				<div class="col-sm-6">
-					@for((themeOption, index) <- themeList.zipWithIndex) {
-						@if(index <= (themeList.size() / 2)) {
+					@for((themeOption, index) <- lists.get("themeList").zipWithIndex) {
+						@if(index <= (lists.get("themeList").size() / 2)) {
 							<div>
 								<label class="checkbox-inline">
 									<input type="checkbox" class="js-theme-input" name="theme[]" value="@themeOption.get(theme.name)"
@@ -478,8 +475,8 @@
 					}
 				</div>
 				<div class="col-sm-6">
-					@for((themeOption, index) <- themeList.zipWithIndex) {
-						@if(index > (themeList.size() / 2)) {
+					@for((themeOption, index) <- lists.get("themeList").zipWithIndex) {
+						@if(index > (lists.get("themeList").size() / 2)) {
 							<div>
 								<label class="checkbox-inline">
 									<input type="checkbox" class="js-theme-input" name="theme[]" value="@themeOption.get(theme.name)"
@@ -497,6 +494,67 @@
 											}
 										}
 									>@themeOption.get(themeLabel.label)
+								</label>
+							</div>
+						}
+					}
+				</div>
+			</div>
+			<div class="col-sm-2">
+				<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" tabindex="-1"
+				data-content="@Messages.get("form.theme.tooltip")">
+					<span class="glyphicon glyphicon-info-sign"></span>
+				</button>
+			</div>
+		</div>
+		<div id="js-woo-theme-list" class="form-group" data-toggle="tooltip" data-placement="top" title="@Messages.get("form.woo.theme.title")">
+			<label class="col-sm-3 control-label">@Messages.get("form.woo.theme.label")</label>
+			<div class="col-sm-7">
+				<div class="col-sm-6">
+					@for((wooThemeOption, index) <- lists.get("wooThemeList").zipWithIndex) {
+						@if(index <= (lists.get("wooThemeList").size() / 2)) {
+							<div>
+								<label class="checkbox-inline">
+									<input type="checkbox" class="js-woo-theme-input" name="wooTheme[]" value="@wooThemeOption.get(wooTheme.name)"
+										@if(validate) {
+											@if(previousValues.get("metadata").getWooTheme() != null) {
+												@for(wooThemeChecked <- previousValues.get("metadata").getWooTheme()) {
+													@if(wooThemeChecked == wooThemeOption.get(wooTheme.name)) {checked}
+												}
+											}
+										}
+
+										@if(!validate && wooThemesDataset != null) {
+											@for(wooThemeChecked <- wooThemesDataset) {
+												@if(wooThemeChecked.get(mdWooTheme.wooTheme) == wooThemeOption.get(wooTheme.id)) {checked}
+											}
+										}
+									>@wooThemeOption.get(wooThemeLabel.label)
+								</label>
+							</div>
+						}
+					}
+				</div>
+				<div class="col-sm-6">
+					@for((wooThemeOption, index) <- lists.get("wooThemeList").zipWithIndex) {
+						@if(index > (lists.get("wooThemeList").size() / 2)) {
+							<div>
+								<label class="checkbox-inline">
+									<input type="checkbox" class="js-woo-theme-input" name="wooTheme[]" value="@wooThemeOption.get(wooTheme.name)"
+										@if(validate) {
+											@if(previousValues.get("metadata").getWooTheme() != null) {
+												@for(wooThemeChecked <- previousValues.get("metadata").getWooTheme()) {
+													@if(wooThemeChecked == wooThemeOption.get(wooTheme.name)) {checked}
+												}
+											}
+										}
+
+										@if(!validate && wooThemesDataset != null) {
+											@for(wooThemeChecked <- wooThemesDataset) {
+												@if(wooThemeChecked.get(mdWooTheme.wooTheme) == wooThemeOption.get(wooTheme.id)) {checked}
+											}
+										}
+									>@wooThemeOption.get(wooThemeLabel.label)
 								</label>
 							</div>
 						}
@@ -590,14 +648,23 @@
 								</div>
 							</div>
 						}
-					}
-					@if(!"none".equals(previousValues.get("metadata").getTypeResearch())) {
-						@if(previousValues.get("metadata").getTheme() == null) {
-							<div>
-								<div class="alert alert-danger" role="alert" data-error="true">
-									<b>@Messages.get("validate.form.theme.list")</b>
+					} else {
+						@if("wooDocument".equals(previousValues.get("metadata").getTypeResearch())) {
+							@if(previousValues.get("metadata").getWooTheme() == null) {
+								<div>
+									<div class="alert alert-danger" role="alert" data-error="true">
+										<b>@Messages.get("validate.form.woo.theme.list")</b>
+									</div>
 								</div>
-							</div>
+							}
+						} else {
+							@if(previousValues.get("metadata").getTheme() == null) {
+								<div>
+									<div class="alert alert-danger" role="alert" data-error="true">
+										<b>@Messages.get("validate.form.theme.list")</b>
+									</div>
+								</div>
+							}
 						}
 					}
 				</div>
@@ -611,7 +678,6 @@
 					search.getDateUpdateEnd())">@Messages.get("cancel")</a>
 			</div>
 		</div>
-		
 		<div class="modal fade in" id="validateNumberModal">
 			<div class="modal-dialog">
 				<div class="modal-content">

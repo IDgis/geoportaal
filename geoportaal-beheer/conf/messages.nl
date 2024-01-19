@@ -114,6 +114,8 @@ form.subject.label=ISO onderwerp*
 form.subject.title=Vink de onderwerpen aan die van toepassing zijn op de data
 form.theme.label=Thema*
 form.theme.title=Vink de thema's aan die van toepassing zijn op de data
+form.woo.theme.label=WOO thema*
+form.woo.theme.title=Vink de WOO thema's aan die van toepassing zijn op de data
 
 # Tooltips index
 index.text.tooltip=Tekst in die je wilt zoeken. Meerdere woorden zijn mogelijk. Vul je niets in, dan wordt alles gekozen als je gaat zoeken.
@@ -244,6 +246,7 @@ validate.form.date.create.publish.check=Er is een onlogische datum ingevoerd. Da
 validate.form.date.valid.check=Er is een onlogische datum ingevoerd. Datum "geldig van" is later dan de datum "geldig tot".
 validate.form.subject.list=Er moet minimaal één onderwerp aangevinkt zijn.
 validate.form.theme.list=Er moet minimaal één thema aangevinkt zijn.
+validate.form.woo.theme.list=Er moet minimaal één WOO thema aangevinkt zijn.
 validate.form.parse.date.create=De datum creatie is niet correct ingevuld.
 validate.form.parse.date.publication=De datum publicatie is niet correct ingevuld.
 validate.form.parse.date.valid.start=De datum geldig, van is niet correct ingevuld.

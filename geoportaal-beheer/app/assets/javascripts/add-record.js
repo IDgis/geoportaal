@@ -121,9 +121,15 @@ require([
 		if (domAttr.get(typeResearchSelect, 'value') === 'none') {
 			domStyle.set(dom.byId('js-subject-list'), 'display', 'block');
 			domStyle.set(dom.byId('js-theme-list'), 'display', 'none');
+			domStyle.set(dom.byId('js-woo-theme-list'), 'display', 'none');
+		} else if (domAttr.get(typeResearchSelect, 'value') === 'wooDocument') {
+			domStyle.set(dom.byId('js-subject-list'), 'display', 'none');
+			domStyle.set(dom.byId('js-theme-list'), 'display', 'none');
+			domStyle.set(dom.byId('js-woo-theme-list'), 'display', 'block');
 		} else {
 			domStyle.set(dom.byId('js-subject-list'), 'display', 'none');
 			domStyle.set(dom.byId('js-theme-list'), 'display', 'block');
+			domStyle.set(dom.byId('js-woo-theme-list'), 'display', 'none');
 		}
 
 		on(typeResearchSelect, 'change', function(e) {
@@ -131,16 +137,38 @@ require([
 				array.forEach(query('.js-theme-input:checked'), function(item) {
 					domAttr.set(item, 'checked', false);
 				});
-
+				
+				array.forEach(query('.js-woo-theme-input:checked'), function(item) {
+					domAttr.set(item, 'checked', false);
+				});
+				
 				domStyle.set(dom.byId('js-subject-list'), 'display', 'block');
 				domStyle.set(dom.byId('js-theme-list'), 'display', 'none');
+				domStyle.set(dom.byId('js-woo-theme-list'), 'display', 'none');
+			} else if (domAttr.get(typeResearchSelect, 'value') === 'wooDocument') {
+				array.forEach(query('.js-subject-input:checked'), function(item) {
+					domAttr.set(item, 'checked', false);
+				});
+				
+				array.forEach(query('.js-theme-input:checked'), function(item) {
+					domAttr.set(item, 'checked', false);
+				});
+				
+				domStyle.set(dom.byId('js-subject-list'), 'display', 'none');
+				domStyle.set(dom.byId('js-theme-list'), 'display', 'none');
+			domStyle.set(dom.byId('js-woo-theme-list'), 'display', 'block');
 			} else {
 				array.forEach(query('.js-subject-input:checked'), function(item) {
 					domAttr.set(item, 'checked', false);
 				});
-
+				
+				array.forEach(query('.js-woo-theme-input:checked'), function(item) {
+					domAttr.set(item, 'checked', false);
+				});
+				
 				domStyle.set(dom.byId('js-subject-list'), 'display', 'none');
 				domStyle.set(dom.byId('js-theme-list'), 'display', 'block');
+				domStyle.set(dom.byId('js-woo-theme-list'), 'display', 'none');
 			}
 		});
 		
@@ -181,6 +209,7 @@ require([
 			
 			var subjectList = query('.js-subject-input:checked');
 			var themeList = query('.js-theme-input:checked');
+			var wooThemeList = query('.js-woo-theme-input:checked');
 			var creatorVal = domAttr.get(dom.byId('js-creator-select'), 'value');
 			
 			formData.append('title', titleVal);
@@ -201,8 +230,13 @@ require([
 			});
 
 			array.forEach(themeList, function(item) {
-			    var themeValue = domAttr.get(item, 'value');
-			    formData.append('theme[]', themeValue);
+				var themeValue = domAttr.get(item, 'value');
+				formData.append('theme[]', themeValue);
+			});
+
+			array.forEach(wooThemeList, function(item) {
+				var wooThemeValue = domAttr.get(item, 'value');
+				formData.append('wooTheme[]', wooThemeValue);
 			});
 			
 			xhr(jsRoutes.controllers.Metadata.validateForm(id).url, {

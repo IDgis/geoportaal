@@ -7,6 +7,7 @@ import static models.QMdFormat.mdFormat;
 import static models.QMdFormatLabel.mdFormatLabel;
 import static models.QMdSubject.mdSubject;
 import static models.QMdTheme.mdTheme;
+import static models.QMdWooTheme.mdWooTheme;
 import static models.QMetadata.metadata;
 import static models.QMetadataSearch.metadataSearch;
 import static models.QRights.rights;
@@ -22,6 +23,8 @@ import static models.QTypeResearchLabel.typeResearchLabel;
 import static models.QUseLimitation.useLimitation;
 import static models.QUseLimitationLabel.useLimitationLabel;
 import static models.QUser.user;
+import static models.QWooTheme.wooTheme;
+import static models.QWooThemeLabel.wooThemeLabel;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
@@ -112,7 +115,7 @@ public class Metadata extends Controller {
 				.fetch();
 			
 			// Fetch creator list
-			List<Tuple> creatorsList = tx.select(creator.id, creator.name, creatorLabel.label)
+			List<Tuple> creatorList = tx.select(creator.id, creator.name, creatorLabel.label)
 				.from(creator)
 				.join(creatorLabel).on(creator.id.eq(creatorLabel.creatorId))
 				.orderBy(creator.id.asc())
@@ -153,6 +156,24 @@ public class Metadata extends Controller {
 				.orderBy(themeLabel.label.asc())
 				.fetch();
 			
+			// Fetch WOO theme list
+			List<Tuple> wooThemeList = tx.select(wooTheme.id, wooTheme.name, wooThemeLabel.label)
+					.from(wooTheme)
+					.join(wooThemeLabel).on(wooTheme.id.eq(wooThemeLabel.wooThemeId))
+					.orderBy(wooThemeLabel.label.asc())
+					.fetch();
+			
+			Map<String, List<Tuple>> lists = new HashMap<String, List<Tuple>>();
+			lists.put("typeInformationList", typeInformationList);
+			lists.put("typeResearchList", typeResearchList);
+			lists.put("creatorList", creatorList);
+			lists.put("rightsList", rightsList);
+			lists.put("useLimitationList", useLimitationList);
+			lists.put("mdFormatList", mdFormatList);
+			lists.put("subjectList", subjectList);
+			lists.put("themeList", themeList);
+			lists.put("wooThemeList", wooThemeList);
+			
 			// Fetches the role of the logged in user
 			Integer roleId = tx.select(user.roleId)
 					.from(user)
@@ -160,8 +181,8 @@ public class Metadata extends Controller {
 					.fetchOne();
 			
 			// Return form page
-			return ok(views.html.form.render(create, today, null, null, null, null, typeInformationList, typeResearchList, creatorsList,
-					rightsList, useLimitationList, mdFormatList, null, subjectList, themeList, roleId, search, false, null, null, null));
+			return ok(views.html.form.render(create, today, null, null, null, null, null, 
+					null, lists, roleId, search, false, null, null, null));
 		});
 	}
 	
@@ -273,16 +294,25 @@ public class Metadata extends Controller {
 			DublinCore previousDC = new DublinCore(dc.getLocation(), dc.getFileId(), dc.getTitle(), dc.getDescription(), dc.getTypeInformation(),
 					dc.getTypeResearch(), dc.getCreator(), dc.getCreatorOther(), dc.getRights(), dc.getUseLimitation(), dc.getMdFormat(),
 					dc.getSource(), dc.getDateSourceCreation(), dc.getDateSourcePublication(), dc.getDateSourceValidFrom(), dc.getDateSourceValidUntil(), 
-					dc.getSubject(), dc.getTheme(), null);
+					dc.getSubject(), dc.getTheme(), dc.getWooTheme(), null);
 			
 			Map<String, DublinCore> previousValues = new HashMap<String, DublinCore>();
 			previousValues.put("metadata", previousDC);
 			
 			// Checks if every mandatory field has been completed, if not return the form with previous state
-			if("".equals(dc.getTitle().trim()) || "".equals(dc.getDescription().trim()) || "".equals(dc.getLocation().trim()) || 
-				"".equals(dc.getFileId().trim()) || creatorKey == null || creatorOtherFailed || useLimitationKey == null || 
-				dateSourceCreationValue == null || ((dc.getTypeResearch() == null || "none".equals(dc.getTypeResearch())) && dc.getSubject() == null) ||
-				((dc.getTypeResearch() != null && !"none".equals(dc.getTypeResearch())) && dc.getTheme() == null) || !dateCreatePublicationCheck || !dateValidCheck) {
+			if("".equals(dc.getTitle().trim()) || 
+					"".equals(dc.getDescription().trim()) || 
+					"".equals(dc.getLocation().trim()) || 
+					"".equals(dc.getFileId().trim()) || 
+					creatorKey == null || 
+					creatorOtherFailed || 
+					useLimitationKey == null || 
+					dateSourceCreationValue == null || 
+					((dc.getTypeResearch() == null || "none".equals(dc.getTypeResearch())) && dc.getSubject() == null) ||
+					((dc.getTypeResearch() != null && !"none".equals(dc.getTypeResearch()) && !"wooDocument".equals(dc.getTypeResearch())) && dc.getTheme() == null) || 
+					((dc.getTypeResearch() != null && "wooDocument".equals(dc.getTypeResearch())) && dc.getWooTheme() == null) ||
+					!dateCreatePublicationCheck || 
+					!dateValidCheck) {
 					return validateFormServer(true, null, null, textSearch, supplierSearch, statusSearch, 
 							dateCreateStartSearch, dateCreateEndSearch, dateUpdateStartSearch, 
 							dateUpdateEndSearch, previousValues, null);
@@ -405,6 +435,21 @@ public class Metadata extends Controller {
 				}
 			}
 			
+			// Insert every WOO theme individually
+			if (dc.getWooTheme() != null) {
+				for (String wooThemeStr : dc.getWooTheme()) {
+					Integer wooThemeKey = tx.select(wooTheme.id)
+						.from(wooTheme)
+						.where(wooTheme.name.eq(wooThemeStr))
+						.fetchOne();
+					
+					tx.insert(mdWooTheme)
+						.set(mdWooTheme.metadataId, metadataId)
+						.set(mdWooTheme.wooTheme, wooThemeKey)
+						.execute();
+				}
+			}
+			
 			// Refresh materialized view
 			tx.refreshMaterializedViewConcurrently(metadataSearch);
 			
@@ -476,6 +521,12 @@ public class Metadata extends Controller {
 				.where(mdTheme.metadataId.eq(metadataId))
 				.fetch();
 			
+			// Fetches the themes of the form
+			List<Tuple> wooThemesDataset = tx.select(mdWooTheme.all())
+				.from(mdWooTheme)
+				.where(mdWooTheme.metadataId.eq(metadataId))
+				.fetch();
+			
 			// Fetches the attachments of the form
 			List<Tuple> attachmentsDataset = tx.select(mdAttachment.id, mdAttachment.metadataId, mdAttachment.attachmentName, 
 					mdAttachment.attachmentMimetype, mdAttachment.attachmentLength)
@@ -499,7 +550,7 @@ public class Metadata extends Controller {
 				.fetch();
 			
 			// Fetches creator list
-			List<Tuple> creatorsList = tx.select(creator.id, creator.name, creatorLabel.label)
+			List<Tuple> creatorList = tx.select(creator.id, creator.name, creatorLabel.label)
 				.from(creator)
 				.join(creatorLabel).on(creator.id.eq(creatorLabel.creatorId))
 				.orderBy(creator.id.asc())
@@ -538,6 +589,24 @@ public class Metadata extends Controller {
 				.join(themeLabel).on(theme.id.eq(themeLabel.themeId))
 				.fetch();
 			
+			// Fetches WOO theme list
+			List<Tuple> wooThemeList = tx.select(wooTheme.id, wooTheme.name, wooThemeLabel.label)
+				.from(wooTheme)
+				.join(wooThemeLabel).on(wooTheme.id.eq(wooThemeLabel.wooThemeId))
+				.orderBy(wooThemeLabel.label.asc())
+				.fetch();
+			
+			Map<String, List<Tuple>> lists = new HashMap<String, List<Tuple>>();
+			lists.put("typeInformationList", typeInformationList);
+			lists.put("typeResearchList", typeResearchList);
+			lists.put("creatorList", creatorList);
+			lists.put("rightsList", rightsList);
+			lists.put("useLimitationList", useLimitationList);
+			lists.put("mdFormatList", mdFormatList);
+			lists.put("subjectList", subjectList);
+			lists.put("themeList", themeList);
+			lists.put("wooThemeList", wooThemeList);
+			
 			// Create SimpleDateFormat in yyyy-MM-dd and dd-MM-yyyy format
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 			
@@ -551,8 +620,9 @@ public class Metadata extends Controller {
 					.fetchOne();
 			
 			// Return form page
-			return ok(views.html.form.render(create, "", datasetRow, subjectsDataset, themesDataset, attachmentsDataset, typeInformationList, typeResearchList,
-				creatorsList, rightsList, useLimitationList, mdFormatList, sdf, subjectList, themeList, roleId, search, false, null, df, null));
+			return ok(views.html.form.render(create, "", datasetRow, subjectsDataset, 
+					themesDataset, wooThemesDataset, attachmentsDataset, sdf, lists, roleId, 
+					search, false, null, df, null));
 		});
 	}
 	
@@ -675,6 +745,9 @@ public class Metadata extends Controller {
 				// Fetch the submitted themes of the form
 				List<String> themes = dc.getTheme();
 				
+				// Fetch the submitted WOO themes of the form
+				List<String> wooThemes = dc.getWooTheme();
+				
 				// Check if creator other isn't empty if creator is other
 				Boolean creatorOtherFailed = false;
 				if(creatorKey != null) {
@@ -694,7 +767,7 @@ public class Metadata extends Controller {
 				DublinCore previousDC = new DublinCore(dc.getLocation(), dc.getFileId(), dc.getTitle(), dc.getDescription(), dc.getTypeInformation(),
 						dc.getTypeResearch(), dc.getCreator(), dc.getCreatorOther(), dc.getRights(), dc.getUseLimitation(), dc.getMdFormat(), dc.getSource(),
 						dc.getDateSourceCreation(), dc.getDateSourcePublication(), dc.getDateSourceValidFrom(), dc.getDateSourceValidUntil(), 
-						dc.getSubject(), dc.getTheme(), dc.getDeletedAttachment());
+						dc.getSubject(), dc.getTheme(), dc.getWooTheme(), dc.getDeletedAttachment());
 					
 				Map<String, DublinCore> previousValues = new HashMap<String, DublinCore>();
 				previousValues.put("metadata", previousDC);
@@ -722,12 +795,19 @@ public class Metadata extends Controller {
 					.fetch();
 				
 				// Checks if every mandatory field has been completed, if not return the form with previous state
-				if("".equals(dc.getTitle().trim()) || "".equals(dc.getDescription().trim()) || "".equals(dc.getLocation().trim()) || 
-					"".equals(dc.getFileId().trim()) || creatorKey == null || creatorOtherFailed || useLimitationKey == null || 
-					dateSourceCreationValue == null || ((dc.getTypeResearch() == null || "none".equals(dc.getTypeResearch())) && dc.getSubject() == null) ||
-					((dc.getTypeResearch() != null && !"none".equals(dc.getTypeResearch())) && dc.getTheme() == null) || !dateCreatePublicationCheck || !dateValidCheck) {
-						
-					
+				if("".equals(dc.getTitle().trim()) || 
+						"".equals(dc.getDescription().trim()) || 
+						"".equals(dc.getLocation().trim()) || 
+						"".equals(dc.getFileId().trim()) || 
+						creatorKey == null || 
+						creatorOtherFailed || 
+						useLimitationKey == null || 
+						dateSourceCreationValue == null || 
+						((dc.getTypeResearch() == null || "none".equals(dc.getTypeResearch())) && dc.getSubject() == null) ||
+						((dc.getTypeResearch() != null && !"none".equals(dc.getTypeResearch()) && !"wooDocument".equals(dc.getTypeResearch())) && dc.getTheme() == null) || 
+						((dc.getTypeResearch() != null && "wooDocument".equals(dc.getTypeResearch())) && dc.getWooTheme() == null) ||
+						!dateCreatePublicationCheck || 
+						!dateValidCheck) {
 					return validateFormServer(false, datasetRow, attachmentsDataset, textSearch, supplierSearch, statusSearch, 
 							dateCreateStartSearch, dateCreateEndSearch, dateUpdateStartSearch, 
 							dateUpdateEndSearch, previousValues, null);
@@ -904,6 +984,39 @@ public class Metadata extends Controller {
 							.execute();
 					}
 				}
+				
+				// Fetch old WOO themes
+				List<Integer> existingWooThemes = tx.select(mdWooTheme.id)
+					.from(mdWooTheme)
+					.where(mdWooTheme.metadataId.eq(metadataId))
+					.fetch();
+				
+				// Delete all old WOO themes
+				Long wooThemesCount = tx.delete(mdWooTheme)
+					.where(mdWooTheme.metadataId.eq(metadataId))
+					.execute();
+				
+				// Check if the count of deleted themes is what is expected
+				Integer wooThemesFinalCount = wooThemesCount.intValue();
+				if (!wooThemesFinalCount.equals(existingWooThemes.size())) {
+					throw new GeoportaalBeheerException("Updating WOO themes: different amount of affected rows than expected");
+				}
+				
+				// Insert new WOO themes
+				if (wooThemes != null) {
+					// Insert the new themes
+					for (String wooThemeStr : wooThemes) {
+						Integer wooThemeKey = tx.select(wooTheme.id)
+							.from(wooTheme)
+							.where(wooTheme.name.eq(wooThemeStr))
+							.fetchOne();
+						
+						tx.insert(mdWooTheme)
+							.set(mdWooTheme.metadataId, metadataId)
+							.set(mdWooTheme.wooTheme, wooThemeKey)
+							.execute();
+					}
+				}
 			}
 			
 			// Refresh the materialized view
@@ -1041,7 +1154,7 @@ public class Metadata extends Controller {
 			// Return specific error message view
 			return ok(validateform.render(title, description, location, fileId, numbersCheck.get("duplicate"), numbersCheck.get("character"), 
 					numbersCheck.get("length"), dc.getTypeResearch(), creator, creatorOther, dc.getDateSourceCreation(), dc.getSubject(), dc.getTheme(),
-					dateCreatePublicationCheck, dateValidCheck));
+					dc.getWooTheme(), dateCreatePublicationCheck, dateValidCheck));
 		} catch(IllegalStateException ise) {
 			Logger.error(ise.getMessage(), ise);
 			
@@ -1221,7 +1334,7 @@ public class Metadata extends Controller {
 				.fetch();
 			
 			// Fetches the creator list
-			List<Tuple> creatorsList = tx.select(creator.id, creator.name, creatorLabel.label)
+			List<Tuple> creatorList = tx.select(creator.id, creator.name, creatorLabel.label)
 				.from(creator)
 				.join(creatorLabel).on(creator.id.eq(creatorLabel.creatorId))
 				.orderBy(creator.id.asc())
@@ -1254,11 +1367,29 @@ public class Metadata extends Controller {
 				.join(subjectLabel).on(subject.id.eq(subjectLabel.subjectId))
 				.fetch();
 			
-			// Fetched the theme list
+			// Fetches the theme list
 			List<Tuple> themeList = tx.select(theme.id, theme.name, themeLabel.label)
 				.from(theme)
 				.join(themeLabel).on(theme.id.eq(themeLabel.themeId))
 				.fetch();
+			
+			// Fetches WOO theme list
+			List<Tuple> wooThemeList = tx.select(wooTheme.id, wooTheme.name, wooThemeLabel.label)
+				.from(wooTheme)
+				.join(wooThemeLabel).on(wooTheme.id.eq(wooThemeLabel.wooThemeId))
+				.orderBy(wooThemeLabel.label.asc())
+				.fetch();
+			
+			Map<String, List<Tuple>> lists = new HashMap<String, List<Tuple>>();
+			lists.put("typeInformationList", typeInformationList);
+			lists.put("typeResearchList", typeResearchList);
+			lists.put("creatorList", creatorList);
+			lists.put("rightsList", rightsList);
+			lists.put("useLimitationList", useLimitationList);
+			lists.put("mdFormatList", mdFormatList);
+			lists.put("subjectList", subjectList);
+			lists.put("themeList", themeList);
+			lists.put("wooThemeList", wooThemeList);
 			
 			// Fetches the role of the logged in user
 			Integer roleId = tx.select(user.roleId)
@@ -1270,8 +1401,9 @@ public class Metadata extends Controller {
 			DecimalFormat df = new DecimalFormat("0.##");
 			
 			// Return form page
-			return ok(views.html.form.render(create, today, datasetRow, null, null, attachmentsDataset, typeInformationList, typeResearchList, creatorsList,
-					rightsList, useLimitationList, mdFormatList, sdf, subjectList, themeList, roleId, search, validate, previousValues, df, warnMessages));
+			return ok(views.html.form.render(create, today, datasetRow, null, null, null, 
+					attachmentsDataset, sdf, lists, roleId, search, validate, 
+					previousValues, df, warnMessages));
 		});
 	}
 	

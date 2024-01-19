@@ -29,6 +29,7 @@ public class DublinCore {
 	private Date dateSourceValidUntil;
 	private List<String> subject;
 	private List<String> theme;
+	private List<String> wooTheme;
 	private List<String> deletedAttachment;
 	
 	public DublinCore() {
@@ -62,7 +63,7 @@ public class DublinCore {
 	public DublinCore(String location, String fileId, String title, String description, String typeInformation, String typeResearch, String creator, 
 			String creatorOther, String rights, String useLimitation, String mdFormat, String source, Date dateSourceCreation, 
 			Date dateSourcePublication, Date dateSourceValidFrom, Date dateSourceValidUntil, List<String> subject, List<String> theme,
-			List<String> deletedAttachment) {
+			List<String> wooTheme, List<String> deletedAttachment) {
 		super();
 		this.location = location;
 		this.fileId = fileId;
@@ -82,6 +83,7 @@ public class DublinCore {
 		this.dateSourceValidUntil = dateSourceValidUntil;
 		this.subject = subject;
 		this.theme = theme;
+		this.wooTheme = wooTheme;
 		this.deletedAttachment = deletedAttachment;
 	}
 	public String getLocation() {
@@ -206,6 +208,14 @@ public class DublinCore {
 	
 	public List<String> getTheme() {
 		return theme;
+	}
+	
+	public void setWooTheme(List<String> wooTheme) {
+		this.wooTheme = wooTheme;
+	}
+	
+	public List<String> getWooTheme() {
+		return wooTheme;
 	}
 	
 	public void setTheme(List<String> theme) {
