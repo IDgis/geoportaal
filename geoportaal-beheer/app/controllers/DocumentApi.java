@@ -43,13 +43,13 @@ import util.QueryDSL;
  * @author Kevin
  *
  */
-public class ResearchApi extends Controller {
+public class DocumentApi extends Controller {
 	
 	@Inject
 	private QueryDSL q;
 	
 	/**
-	 * Returns a {@link JSON} Object with all research data
+	 * Returns a {@link JSON} Object with all document data
 	 * 
 	 * @param textSearch - the search value of the text field
 	 * @param offset - The offset to start the search
@@ -58,7 +58,7 @@ public class ResearchApi extends Controller {
 	 * @param typeFilter - The type of research to filter
 	 * @param themeFilter - The theme to filter
 	 * @param creationYear - The year of creation to filter
-	 * @return a {@link JSON} Object with the research data
+	 * @return a {@link JSON} Object with the document data
 	 */
 	public Result search(String textSearch, long offset, long limit, String sort, String typeFilter, String themeFilter, long creationYear) {
 		return q.withTransaction(tx -> {
@@ -199,12 +199,12 @@ public class ResearchApi extends Controller {
 	}
 	
 	/**
-	 * Returns a {@link JSON} Object with the research data
+	 * Returns a {@link JSON} Object with the document data
 	 * 
 	 * @param metadataUuid the UUID of the metadata
-	 * @return a {@link JSON} Object with the research data
+	 * @return a {@link JSON} Object with the document data
 	 */
-	public Result findResearch(String metadataUuid) {
+	public Result findDocument(String metadataUuid) {
 		return q.withTransaction(tx -> {
 			SQLQuery<Tuple> datasetQuery = tx.select(metadata.id, metadata.uuid, metadata.title, metadata.description, creatorLabel.label,
 					rightsLabel.label, typeInformationLabel.label, typeResearchLabel.label, useLimitationLabel.label, metadata.dateSourcePublication,
