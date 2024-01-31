@@ -4,6 +4,7 @@ import static models.QCreator.creator;
 import static models.QCreatorLabel.creatorLabel;
 import static models.QMdAttachment.mdAttachment;
 import static models.QMdTheme.mdTheme;
+import static models.QMdWooTheme.mdWooTheme;
 import static models.QMetadata.metadata;
 import static models.QMetadataSearch.metadataSearch;
 import static models.QRights.rights;
@@ -17,6 +18,8 @@ import static models.QTypeResearch.typeResearch;
 import static models.QTypeResearchLabel.typeResearchLabel;
 import static models.QUseLimitation.useLimitation;
 import static models.QUseLimitationLabel.useLimitationLabel;
+import static models.QWooTheme.wooTheme;
+import static models.QWooThemeLabel.wooThemeLabel;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -31,6 +34,7 @@ import javax.inject.Inject;
 import com.querydsl.core.Tuple;
 import com.querydsl.sql.SQLQuery;
 
+import enums.TypeApp;
 import play.i18n.Messages;
 import play.libs.Json;
 import play.mvc.Controller;
@@ -60,7 +64,19 @@ public class DocumentApi extends Controller {
 	 * @param creationYear - The year of creation to filter
 	 * @return a {@link JSON} Object with the document data
 	 */
-	public Result search(String textSearch, long offset, long limit, String sort, String typeFilter, String themeFilter, long creationYear) {
+	public Result search(String typeApp, String textSearch, long offset, long limit, String sort, String typeFilter, String themeFilter, long creationYear) {
+		TypeApp ta;
+		switch(typeApp) {
+			case "woo":
+				ta = TypeApp.WOO_PORTAAL;
+				break;
+			case "ob":
+				ta = TypeApp.ONDERZOEKS_BIBLIOTHEEK;
+				break;
+			default:
+				return notFound();
+		}
+		
 		return q.withTransaction(tx -> {
 			Map<String, Object> root = new HashMap<>();
 			
@@ -80,8 +96,14 @@ public class DocumentApi extends Controller {
 				.join(rightsLabel).on(rightsLabel.rightsId.eq(rights.id))
 				.join(status).on(status.id.eq(metadata.status))
 				.where(useLimitation.name.equalsIgnoreCase("extern")
-					.and(status.name.equalsIgnoreCase("published"))
-					.and(typeResearch.name.notEqualsIgnoreCase("none")));
+					.and(status.name.equalsIgnoreCase("published")));
+			
+			if(ta.equals(TypeApp.ONDERZOEKS_BIBLIOTHEEK)) {
+				datasetQuery.where(typeResearch.name.notEqualsIgnoreCase("none")
+					.and(typeResearch.name.notEqualsIgnoreCase("wooDocument")));
+			} else if(ta.equals(TypeApp.WOO_PORTAAL)) {
+				datasetQuery.where(typeResearch.name.equalsIgnoreCase("wooDocument"));
+			}
 			
 			// Strip characters from text search string that conflict with Postgres full-text search
 			String textSearchFirstStrip = textSearch.replace("&", "");
@@ -163,7 +185,9 @@ public class DocumentApi extends Controller {
 				record.put("eindverantwoordelijke", mdRow.get(creatorLabel.label));
 				record.put("eigendomsrechten", mdRow.get(rightsLabel.label));
 				record.put("typeInformatie", mdRow.get(typeInformationLabel.label));
-				record.put("typeOnderzoek", mdRow.get(typeResearchLabel.label));
+				if(!ta.equals(TypeApp.WOO_PORTAAL)) {
+					record.put("typeOnderzoek", mdRow.get(typeResearchLabel.label));
+				}
 				record.put("gebruiksrestricties", mdRow.get(useLimitationLabel.label));
 				record.put("datumPublicatie", mdRow.get(metadata.dateSourcePublication).toLocalDateTime().toString());
 				record.put("datumCreatie", mdRow.get(metadata.dateSourceCreation).toLocalDateTime().toString());
@@ -182,13 +206,26 @@ public class DocumentApi extends Controller {
 				record.put("bijlagen", attachmentsList);
 				
 				// Themas
-				List<String> themes = tx.select(themeLabel.label)
-					.from(mdTheme)
-					.join(theme).on(theme.id.eq(mdTheme.theme))
-					.join(themeLabel).on(themeLabel.themeId.eq(theme.id))
-					.where(mdTheme.metadataId.eq(mdRow.get(metadata.id)))
-					.fetch();
-				record.put("themas", themes);
+				if(!ta.equals(TypeApp.WOO_PORTAAL)) {
+					List<String> themes = tx.select(themeLabel.label)
+						.from(mdTheme)
+						.join(theme).on(theme.id.eq(mdTheme.theme))
+						.join(themeLabel).on(themeLabel.themeId.eq(theme.id))
+						.where(mdTheme.metadataId.eq(mdRow.get(metadata.id)))
+						.fetch();
+					record.put("themas", themes);
+				}
+				
+				// WOO themas
+				if(!ta.equals(TypeApp.ONDERZOEKS_BIBLIOTHEEK)) {
+					List<String> wooThemes = tx.select(wooThemeLabel.label)
+						.from(mdWooTheme)
+						.join(wooTheme).on(wooTheme.id.eq(mdWooTheme.wooTheme))
+						.join(wooThemeLabel).on(wooThemeLabel.wooThemeId.eq(wooTheme.id))
+						.where(mdWooTheme.metadataId.eq(mdRow.get(metadata.id)))
+						.fetch();
+					record.put("wooThemas", wooThemes);
+				}
 				
 				result.add(record);
 			}

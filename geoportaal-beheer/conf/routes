@@ -25,7 +25,7 @@ GET		/attachment/:uuid/:attachmentName		controllers.Attachment.download(uuid: St
 POST	/search									controllers.Index.search()
 POST	/sort									controllers.Index.sort()
 GET		/report									controllers.Report.renderReport()
-GET		/api/document/search					controllers.DocumentApi.search(text ?= "", offset:Long ?= 0, limit:Long ?= 10, sort ?= "dateDesc", typeFilter ?= "", themeFilter ?= "", creationYear:Long ?= 0)
+GET		/api/document/search/:typeApp			controllers.DocumentApi.search(typeApp: String, text ?= "", offset:Long ?= 0, limit:Long ?= 10, sort ?= "dateDesc", typeFilter ?= "", themeFilter ?= "", creationYear:Long ?= 0)
 GET		/api/document/types						controllers.DocumentApi.getTypesResearch()
 GET		/api/document/themes					controllers.DocumentApi.getThemes()
 GET		/api/document/:metadataUuid				controllers.DocumentApi.findDocument(metadataUuid: String)
