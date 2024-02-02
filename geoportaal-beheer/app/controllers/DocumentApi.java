@@ -146,13 +146,23 @@ public class DocumentApi extends Controller {
 			
 			// Filter on theme
 			if (!themeFilter.isEmpty()) {
-				datasetQuery.where(
-					tx.selectOne()
-						.from(theme)
-						.join(mdTheme).on(mdTheme.theme.eq(theme.id))
-						.where(mdTheme.metadataId.eq(metadata.id))
-						.where(theme.name.equalsIgnoreCase(themeFilter))
-						.exists());
+				if(ta.equals(TypeApp.ONDERZOEKS_BIBLIOTHEEK)) {
+					datasetQuery.where(
+						tx.selectOne()
+							.from(theme)
+							.join(mdTheme).on(mdTheme.theme.eq(theme.id))
+							.where(mdTheme.metadataId.eq(metadata.id))
+							.where(theme.name.equalsIgnoreCase(themeFilter))
+							.exists());
+				} else if(ta.equals(TypeApp.WOO_PORTAAL)) {
+					datasetQuery.where(
+						tx.selectOne()
+							.from(wooTheme)
+							.join(mdWooTheme).on(mdWooTheme.wooTheme.eq(wooTheme.id))
+							.where(mdWooTheme.metadataId.eq(metadata.id))
+							.where(wooTheme.name.equalsIgnoreCase(themeFilter))
+							.exists());
+				}
 			}
 			
 			// Filter on creationYear
@@ -350,6 +360,31 @@ public class DocumentApi extends Controller {
 					Map<String, Object> record = new HashMap<>();
 					record.put("id", row.get(theme.name));
 					record.put("label", row.get(themeLabel.label));
+					return record;
+				})
+				.collect(Collectors.toList());
+			
+			return ok(Json.toJson(result));
+		});
+	}
+	
+	/**
+	 * Returns a {@link JSON} array with all available WOO themes
+	 * 
+	 * @return a {@link JSON} array with all available WOO themes
+	 */
+	public Result getWooThemes() {
+		return q.withTransaction(tx -> {
+			List<Map<String, Object>> result = tx.select(wooTheme.name, wooThemeLabel.label)
+				.from(wooTheme)
+				.join(wooThemeLabel).on(wooThemeLabel.wooThemeId.eq(wooTheme.id))
+				.orderBy(wooThemeLabel.label.asc())
+				.fetch()
+				.stream()
+				.map(row -> {
+					Map<String, Object> record = new HashMap<>();
+					record.put("id", row.get(wooTheme.name));
+					record.put("label", row.get(wooThemeLabel.label));
 					return record;
 				})
 				.collect(Collectors.toList());
