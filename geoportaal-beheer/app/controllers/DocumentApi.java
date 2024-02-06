@@ -40,6 +40,7 @@ import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
 import util.QueryDSL;
+import util.QueryDSL.Transaction;
 
 /**
  * The class to query report data
@@ -65,17 +66,8 @@ public class DocumentApi extends Controller {
 	 * @return a {@link JSON} Object with the document data
 	 */
 	public Result search(String typeApp, String textSearch, long offset, long limit, String sort, String typeFilter, String themeFilter, long creationYear) {
-		TypeApp ta;
-		switch(typeApp) {
-			case "woo":
-				ta = TypeApp.WOO_PORTAAL;
-				break;
-			case "ob":
-				ta = TypeApp.ONDERZOEKS_BIBLIOTHEEK;
-				break;
-			default:
-				return notFound();
-		}
+		TypeApp ta = getTypeApp(typeApp);
+		if(ta == null) return notFound();
 		
 		return q.withTransaction(tx -> {
 			Map<String, Object> root = new HashMap<>();
@@ -98,12 +90,7 @@ public class DocumentApi extends Controller {
 				.where(useLimitation.name.equalsIgnoreCase("extern")
 					.and(status.name.equalsIgnoreCase("published")));
 			
-			if(ta.equals(TypeApp.ONDERZOEKS_BIBLIOTHEEK)) {
-				datasetQuery.where(typeResearch.name.notEqualsIgnoreCase("none")
-					.and(typeResearch.name.notEqualsIgnoreCase("wooDocument")));
-			} else if(ta.equals(TypeApp.WOO_PORTAAL)) {
-				datasetQuery.where(typeResearch.name.equalsIgnoreCase("wooDocument"));
-			}
+			filterTypeApp(ta, datasetQuery);
 			
 			// Strip characters from text search string that conflict with Postgres full-text search
 			String textSearchFirstStrip = textSearch.replace("&", "");
@@ -187,57 +174,10 @@ public class DocumentApi extends Controller {
 			
 			List<Map<String, Object>> result = new ArrayList<>();
 			List<Tuple> md = datasetQuery.offset(offset).limit(limit).fetch();
-			for (Tuple mdRow : md) {
-				Map<String, Object> record = new HashMap<>();
-				record.put("uuid", mdRow.get(metadata.uuid));
-				record.put("titel", mdRow.get(metadata.title));
-				record.put("omschrijving", mdRow.get(metadata.description));
-				record.put("eindverantwoordelijke", mdRow.get(creatorLabel.label));
-				record.put("eigendomsrechten", mdRow.get(rightsLabel.label));
-				record.put("typeInformatie", mdRow.get(typeInformationLabel.label));
-				if(!ta.equals(TypeApp.WOO_PORTAAL)) {
-					record.put("typeOnderzoek", mdRow.get(typeResearchLabel.label));
-				}
-				record.put("gebruiksrestricties", mdRow.get(useLimitationLabel.label));
-				record.put("datumPublicatie", mdRow.get(metadata.dateSourcePublication).toLocalDateTime().toString());
-				record.put("datumCreatie", mdRow.get(metadata.dateSourceCreation).toLocalDateTime().toString());
-				
-				// Bijlagen
-				List<Map<String, Object>> attachmentsList = new ArrayList<>();
-				List<Tuple> attachments = tx.select(mdAttachment.id, mdAttachment.attachmentName)
-					.from(mdAttachment)
-					.where(mdAttachment.metadataId.eq(mdRow.get(metadata.id)))
-					.fetch();
-				for (Tuple attRow : attachments) {
-					Map<String, Object> att = new HashMap<>();
-					att.put("naam", attRow.get(mdAttachment.attachmentName));
-					attachmentsList.add(att);
-				}
-				record.put("bijlagen", attachmentsList);
-				
-				// Themas
-				if(!ta.equals(TypeApp.WOO_PORTAAL)) {
-					List<String> themes = tx.select(themeLabel.label)
-						.from(mdTheme)
-						.join(theme).on(theme.id.eq(mdTheme.theme))
-						.join(themeLabel).on(themeLabel.themeId.eq(theme.id))
-						.where(mdTheme.metadataId.eq(mdRow.get(metadata.id)))
-						.fetch();
-					record.put("themas", themes);
-				}
-				
-				// WOO themas
-				if(!ta.equals(TypeApp.ONDERZOEKS_BIBLIOTHEEK)) {
-					List<String> wooThemes = tx.select(wooThemeLabel.label)
-						.from(mdWooTheme)
-						.join(wooTheme).on(wooTheme.id.eq(mdWooTheme.wooTheme))
-						.join(wooThemeLabel).on(wooThemeLabel.wooThemeId.eq(wooTheme.id))
-						.where(mdWooTheme.metadataId.eq(mdRow.get(metadata.id)))
-						.fetch();
-					record.put("wooThemas", wooThemes);
-				}
-				
-				result.add(record);
+			for(Tuple t : md) {
+				Map<String, Object> r = new HashMap<>();
+				createJsonObject(tx, t, ta, r);
+				result.add(r);
 			}
 			root.put("records", result);
 			
@@ -251,7 +191,10 @@ public class DocumentApi extends Controller {
 	 * @param metadataUuid the UUID of the metadata
 	 * @return a {@link JSON} Object with the document data
 	 */
-	public Result findDocument(String metadataUuid) {
+	public Result findDocument(String typeApp, String metadataUuid) {
+		TypeApp ta = getTypeApp(typeApp);
+		if(ta == null) return notFound();
+		
 		return q.withTransaction(tx -> {
 			SQLQuery<Tuple> datasetQuery = tx.select(metadata.id, metadata.uuid, metadata.title, metadata.description, creatorLabel.label,
 					rightsLabel.label, typeInformationLabel.label, typeResearchLabel.label, useLimitationLabel.label, metadata.dateSourcePublication,
@@ -270,49 +213,15 @@ public class DocumentApi extends Controller {
 				.join(status).on(status.id.eq(metadata.status))
 				.where(useLimitation.name.equalsIgnoreCase("extern")
 					.and(status.name.equalsIgnoreCase("published"))
-					.and(typeResearch.name.notEqualsIgnoreCase("none"))
 					.and(metadata.uuid.eq(metadataUuid)));
 			
-			Map<String, Object> result = new HashMap<>();
+			filterTypeApp(ta, datasetQuery);
 			
+			Map<String, Object> r = new HashMap<>();
 			Optional<Tuple> mdResult = Optional.ofNullable(datasetQuery.fetchOne());
-			mdResult.ifPresent(record -> {
-				result.put("uuid", record.get(metadata.uuid));
-				result.put("titel", record.get(metadata.title));
-				result.put("omschrijving", record.get(metadata.description));
-				result.put("eindverantwoordelijke", record.get(creatorLabel.label));
-				result.put("eigendomsrechten", record.get(rightsLabel.label));
-				result.put("typeInformatie", record.get(typeInformationLabel.label));
-				result.put("typeOnderzoek", record.get(typeResearchLabel.label));
-				result.put("gebruiksrestricties", record.get(useLimitationLabel.label));
-				result.put("datumPublicatie", record.get(metadata.dateSourcePublication).toLocalDateTime().toString());
-				result.put("datumCreatie", record.get(metadata.dateSourceCreation).toLocalDateTime().toString());
-				
-				// Bijlagen
-				List<Map<String, Object>> attachmentsList = tx.select(mdAttachment.id, mdAttachment.attachmentName)
-					.from(mdAttachment)
-					.where(mdAttachment.metadataId.eq(record.get(metadata.id)))
-					.fetch()
-					.stream()
-					.map(row -> {
-						Map<String, Object> attachment = new HashMap<>();
-						attachment.put("naam", row.get(mdAttachment.attachmentName));
-						return attachment;
-					})
-					.collect(Collectors.toList());
-				result.put("bijlagen", attachmentsList);
-				
-				// Themas
-				List<String> themes = tx.select(themeLabel.label)
-					.from(mdTheme)
-					.join(theme).on(theme.id.eq(mdTheme.theme))
-					.join(themeLabel).on(themeLabel.themeId.eq(theme.id))
-					.where(mdTheme.metadataId.eq(record.get(metadata.id)))
-					.fetch();
-				result.put("themas", themes);
-			});
+			mdResult.ifPresent(t -> createJsonObject(tx, t, ta, r));
 			
-			return ok(Json.toJson(result));
+			return ok(Json.toJson(r));
 		});
 	}
 
@@ -332,10 +241,10 @@ public class DocumentApi extends Controller {
 				.fetch()
 				.stream()
 				.map(row -> {
-					Map<String, Object> record = new HashMap<>();
-					record.put("id", row.get(typeResearch.name));
-					record.put("label", row.get(typeResearchLabel.label));
-					return record;
+					Map<String, Object> r = new HashMap<>();
+					r.put("id", row.get(typeResearch.name));
+					r.put("label", row.get(typeResearchLabel.label));
+					return r;
 				})
 				.collect(Collectors.toList());
 			
@@ -357,10 +266,10 @@ public class DocumentApi extends Controller {
 				.fetch()
 				.stream()
 				.map(row -> {
-					Map<String, Object> record = new HashMap<>();
-					record.put("id", row.get(theme.name));
-					record.put("label", row.get(themeLabel.label));
-					return record;
+					Map<String, Object> r = new HashMap<>();
+					r.put("id", row.get(theme.name));
+					r.put("label", row.get(themeLabel.label));
+					return r;
 				})
 				.collect(Collectors.toList());
 			
@@ -382,14 +291,86 @@ public class DocumentApi extends Controller {
 				.fetch()
 				.stream()
 				.map(row -> {
-					Map<String, Object> record = new HashMap<>();
-					record.put("id", row.get(wooTheme.name));
-					record.put("label", row.get(wooThemeLabel.label));
-					return record;
+					Map<String, Object> r = new HashMap<>();
+					r.put("id", row.get(wooTheme.name));
+					r.put("label", row.get(wooThemeLabel.label));
+					return r;
 				})
 				.collect(Collectors.toList());
 			
 			return ok(Json.toJson(result));
 		});
+	}
+	
+	private TypeApp getTypeApp(String typeApp) {
+		switch(typeApp) {
+			case "woo":
+				return TypeApp.WOO_PORTAAL;
+			case "ob":
+				return TypeApp.ONDERZOEKS_BIBLIOTHEEK;
+			default:
+				return null;
+		}
+	}
+	
+	private void filterTypeApp(TypeApp ta, SQLQuery<Tuple> datasetQuery) {
+		if(ta.equals(TypeApp.ONDERZOEKS_BIBLIOTHEEK)) {
+			datasetQuery
+				.where(typeResearch.name.notEqualsIgnoreCase("none")
+					.and(typeResearch.name.notEqualsIgnoreCase("wooDocument")));
+		} else if(ta.equals(TypeApp.WOO_PORTAAL)) {
+			datasetQuery.where(typeResearch.name.equalsIgnoreCase("wooDocument"));
+		}
+	}
+	
+	private void createJsonObject(Transaction tx, Tuple t, TypeApp ta, Map<String, Object> r) {
+		r.put("uuid", t.get(metadata.uuid));
+		r.put("titel", t.get(metadata.title));
+		r.put("omschrijving", t.get(metadata.description));
+		r.put("eindverantwoordelijke", t.get(creatorLabel.label));
+		r.put("eigendomsrechten", t.get(rightsLabel.label));
+		r.put("typeInformatie", t.get(typeInformationLabel.label));
+		if(ta.equals(TypeApp.ONDERZOEKS_BIBLIOTHEEK)) {
+			r.put("typeOnderzoek", t.get(typeResearchLabel.label));
+		}
+		r.put("gebruiksrestricties", t.get(useLimitationLabel.label));
+		r.put("datumPublicatie", t.get(metadata.dateSourcePublication).toLocalDateTime().toString());
+		r.put("datumCreatie", t.get(metadata.dateSourceCreation).toLocalDateTime().toString());
+		
+		// Bijlagen
+		List<Map<String, Object>> attachmentsList = tx.select(mdAttachment.id, mdAttachment.attachmentName)
+			.from(mdAttachment)
+			.where(mdAttachment.metadataId.eq(t.get(metadata.id)))
+			.fetch()
+			.stream()
+			.map(row -> {
+				Map<String, Object> attachment = new HashMap<>();
+				attachment.put("naam", row.get(mdAttachment.attachmentName));
+				return attachment;
+			})
+			.collect(Collectors.toList());
+		r.put("bijlagen", attachmentsList);
+		
+		// Themas
+		if(ta.equals(TypeApp.ONDERZOEKS_BIBLIOTHEEK)) {
+			List<String> themes = tx.select(themeLabel.label)
+				.from(mdTheme)
+				.join(theme).on(theme.id.eq(mdTheme.theme))
+				.join(themeLabel).on(themeLabel.themeId.eq(theme.id))
+				.where(mdTheme.metadataId.eq(t.get(metadata.id)))
+				.fetch();
+			r.put("themas", themes);
+		}
+		
+		// WOO themas
+		if(ta.equals(TypeApp.WOO_PORTAAL)) {
+			List<String> wooThemes = tx.select(wooThemeLabel.label)
+				.from(mdWooTheme)
+				.join(wooTheme).on(wooTheme.id.eq(mdWooTheme.wooTheme))
+				.join(wooThemeLabel).on(wooThemeLabel.wooThemeId.eq(wooTheme.id))
+				.where(mdWooTheme.metadataId.eq(t.get(metadata.id)))
+				.fetch();
+			r.put("wooThemas", wooThemes);
+		}
 	}
 }

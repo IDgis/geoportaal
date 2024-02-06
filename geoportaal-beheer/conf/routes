@@ -29,7 +29,7 @@ GET		/api/document/search/:typeApp			controllers.DocumentApi.search(typeApp: Str
 GET		/api/document/types						controllers.DocumentApi.getTypesResearch()
 GET		/api/document/themes					controllers.DocumentApi.getThemes()
 GET		/api/document/woothemes					controllers.DocumentApi.getWooThemes()
-GET		/api/document/:metadataUuid				controllers.DocumentApi.findDocument(metadataUuid: String)
+GET		/api/document/:typeApp/:metadataUuid	controllers.DocumentApi.findDocument(typeApp: String, metadataUuid: String)
 GET		/dccsv									controllers.Report.writeDcCSV()
 GET		/othercsv/:type							controllers.Report.writeOtherCSV(type: String)
 POST	/csv									controllers.Report.getCSV()
