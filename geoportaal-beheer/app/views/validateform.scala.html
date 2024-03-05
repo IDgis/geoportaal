@@ -11,7 +11,6 @@
 	subjectList: java.util.List[String],
 	themeList: java.util.List[String], 
 	wooThemeList: java.util.List[String],
-	dateCreatePublicationCheck: Boolean,
 	dateValidCheck: Boolean)
 
 @import play.i18n._
@@ -73,14 +72,6 @@
 		<div>
 			<div class="alert alert-danger" role="alert" data-error="true">
 				<b>@Messages.get("validate.form.date.create")</b>
-			</div>
-		</div>
-	}
-	
-	@if(!dateCreatePublicationCheck) {
-		<div>
-			<div class="alert alert-danger" role="alert" data-error="true">
-				<b>@Messages.get("validate.form.date.create.publish.check")</b>
 			</div>
 		</div>
 	}

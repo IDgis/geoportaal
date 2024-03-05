@@ -1,4 +1,4 @@
-@(genericMsg: String, createMsg: String, publicationMsg: String, validFromMsg: String, validUntilMsg: String, 
+@(genericMsg: String, createMsg: String, validFromMsg: String, validUntilMsg: String, 
 	createStartMsg: String, createEndMsg: String, updateStartMsg: String, updateEndMsg: String
 )
 
@@ -15,14 +15,6 @@
 		<div>
 			<div class="alert alert-danger" role="alert" data-error="true">
 				<b>@createMsg</b>
-			</div>
-		</div>
-	}
-	
-	@if(publicationMsg != null) {
-		<div>
-			<div class="alert alert-danger" role="alert" data-error="true">
-				<b>@publicationMsg</b>
 			</div>
 		</div>
 	}

@@ -780,13 +780,13 @@ public class Index extends Controller {
 			}
 			
 			// Return specific error message view
-			return ok(bindingerror.render(null, null, null, null, null, dateCreateSearchStartMsg, 
+			return ok(bindingerror.render(null, null, null, null, dateCreateSearchStartMsg, 
 					dateCreateSearchEndMsg, dateUpdateSearchStartMsg, dateUpdateSearchEndMsg));
 		} catch(IllegalStateException ise) {
 			Logger.error(ise.getMessage(), ise);
 			
 			// Return generic error message view
-			return ok(bindingerror.render(Messages.get("validate.search.generic"), null, null, null, null, null, 
+			return ok(bindingerror.render(Messages.get("validate.search.generic"), null, null, null, null, 
 					null, null, null));
 		}
 	}

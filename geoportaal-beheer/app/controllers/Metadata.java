@@ -266,7 +266,6 @@ public class Metadata extends Controller {
 			
 			// Check if dates are null
 			Timestamp dateSourceCreationValue = nullCheckDate(dc.getDateSourceCreation());
-			Timestamp dateSourcePublicationValue = nullCheckDate(dc.getDateSourcePublication());
 			Timestamp dateSourceValidFromValue = nullCheckDate(dc.getDateSourceValidFrom());
 			Timestamp dateSourceValidUntilValue = nullCheckDate(dc.getDateSourceValidUntil());
 			
@@ -286,14 +285,13 @@ public class Metadata extends Controller {
 				}
 			}
 			
-			Boolean dateCreatePublicationCheck = logicCheckDate(dc.getDateSourceCreation(), dc.getDateSourcePublication());
 			Boolean dateValidCheck = logicCheckDate(dc.getDateSourceValidFrom(), dc.getDateSourceValidUntil());
 			
 			Map<String, Boolean> numbersCheck = checkNumbers(dc.getFileId(), uuid);
 			
 			DublinCore previousDC = new DublinCore(dc.getLocation(), dc.getFileId(), dc.getTitle(), dc.getDescription(), dc.getTypeInformation(),
 					dc.getTypeResearch(), dc.getCreator(), dc.getCreatorOther(), dc.getRights(), dc.getUseLimitation(), dc.getMdFormat(),
-					dc.getSource(), dc.getDateSourceCreation(), dc.getDateSourcePublication(), dc.getDateSourceValidFrom(), dc.getDateSourceValidUntil(), 
+					dc.getSource(), dc.getDateSourceCreation(), dc.getDateSourceValidFrom(), dc.getDateSourceValidUntil(), 
 					dc.getSubject(), dc.getTheme(), dc.getWooTheme(), null);
 			
 			Map<String, DublinCore> previousValues = new HashMap<String, DublinCore>();
@@ -311,7 +309,6 @@ public class Metadata extends Controller {
 					((dc.getTypeResearch() == null || "none".equals(dc.getTypeResearch())) && dc.getSubject() == null) ||
 					((dc.getTypeResearch() != null && !"none".equals(dc.getTypeResearch()) && !"wooDocument".equals(dc.getTypeResearch())) && dc.getTheme() == null) || 
 					((dc.getTypeResearch() != null && "wooDocument".equals(dc.getTypeResearch())) && dc.getWooTheme() == null) ||
-					!dateCreatePublicationCheck || 
 					!dateValidCheck) {
 					return validateFormServer(true, null, null, textSearch, supplierSearch, statusSearch, 
 							dateCreateStartSearch, dateCreateEndSearch, dateUpdateStartSearch, 
@@ -346,7 +343,6 @@ public class Metadata extends Controller {
 				.set(metadata.mdFormat, formatKey)
 				.set(metadata.source, dc.getSource())
 				.set(metadata.dateSourceCreation, dateSourceCreationValue)
-				.set(metadata.dateSourcePublication, dateSourcePublicationValue)
 				.set(metadata.dateSourceValidFrom, dateSourceValidFromValue)
 				.set(metadata.dateSourceValidUntil, dateSourceValidUntilValue)
 				.set(metadata.supplier, supplierId)
@@ -502,7 +498,7 @@ public class Metadata extends Controller {
 			// Fetches the metadata record of the form
 			Tuple datasetRow = tx.select(metadata.id, metadata.uuid, metadata.location, metadata.fileId, metadata.title, 
 					metadata.description, metadata.typeInformation, metadata.typeResearch, metadata.creator, metadata.creatorOther, metadata.rights,
-					metadata.useLimitation, metadata.mdFormat, metadata.source, metadata.dateSourceCreation, metadata.dateSourcePublication,
+					metadata.useLimitation, metadata.mdFormat, metadata.source, metadata.dateSourceCreation, 
 					metadata.dateSourceValidFrom, metadata.dateSourceValidUntil, creator.name)
 				.from(metadata)
 				.join(creator).on(metadata.creator.eq(creator.id))
@@ -737,7 +733,6 @@ public class Metadata extends Controller {
 				
 				// Check if dates are null
 				Timestamp dateSourceCreationValue = nullCheckDate(dc.getDateSourceCreation());
-				Timestamp dateSourcePublicationValue = nullCheckDate(dc.getDateSourcePublication());
 				Timestamp dateSourceValidFromValue = nullCheckDate(dc.getDateSourceValidFrom());
 				Timestamp dateSourceValidUntilValue = nullCheckDate(dc.getDateSourceValidUntil());
 				
@@ -761,14 +756,13 @@ public class Metadata extends Controller {
 				}
 				
 				// Calculations for returning previous state if validation fails
-				Boolean dateCreatePublicationCheck = logicCheckDate(dc.getDateSourceCreation(), dc.getDateSourcePublication());
 				Boolean dateValidCheck = logicCheckDate(dc.getDateSourceValidFrom(), dc.getDateSourceValidUntil());
 				
 				Map<String, Boolean> numbersCheck = checkNumbers(dc.getFileId(), metadataUuid);
 				
 				DublinCore previousDC = new DublinCore(dc.getLocation(), dc.getFileId(), dc.getTitle(), dc.getDescription(), dc.getTypeInformation(),
 						dc.getTypeResearch(), dc.getCreator(), dc.getCreatorOther(), dc.getRights(), dc.getUseLimitation(), dc.getMdFormat(), dc.getSource(),
-						dc.getDateSourceCreation(), dc.getDateSourcePublication(), dc.getDateSourceValidFrom(), dc.getDateSourceValidUntil(), 
+						dc.getDateSourceCreation(), dc.getDateSourceValidFrom(), dc.getDateSourceValidUntil(), 
 						dc.getSubject(), dc.getTheme(), dc.getWooTheme(), dc.getDeletedAttachment());
 					
 				Map<String, DublinCore> previousValues = new HashMap<String, DublinCore>();
@@ -777,7 +771,7 @@ public class Metadata extends Controller {
 				Tuple datasetRow = tx.select(metadata.id, metadata.uuid, metadata.location, metadata.fileId, metadata.title, 
 						metadata.description, metadata.typeInformation, metadata.typeResearch, metadata.creator, metadata.creatorOther, metadata.rights, 
 						metadata.useLimitation, metadata.mdFormat, metadata.source, metadata.dateSourceCreation, 
-						metadata.dateSourcePublication, metadata.dateSourceValidFrom, metadata.dateSourceValidUntil, creator.name)
+						metadata.dateSourceValidFrom, metadata.dateSourceValidUntil, creator.name)
 					.from(metadata)
 					.join(creator).on(metadata.creator.eq(creator.id))
 					.where(metadata.id.eq(metadataId))
@@ -808,7 +802,6 @@ public class Metadata extends Controller {
 						((dc.getTypeResearch() == null || "none".equals(dc.getTypeResearch())) && dc.getSubject() == null) ||
 						((dc.getTypeResearch() != null && !"none".equals(dc.getTypeResearch()) && !"wooDocument".equals(dc.getTypeResearch())) && dc.getTheme() == null) || 
 						((dc.getTypeResearch() != null && "wooDocument".equals(dc.getTypeResearch())) && dc.getWooTheme() == null) ||
-						!dateCreatePublicationCheck || 
 						!dateValidCheck) {
 					return validateFormServer(false, datasetRow, attachmentsDataset, textSearch, supplierSearch, statusSearch, 
 							dateCreateStartSearch, dateCreateEndSearch, dateUpdateStartSearch, 
@@ -844,7 +837,6 @@ public class Metadata extends Controller {
 					.set(metadata.mdFormat, formatKey)
 					.set(metadata.source, dc.getSource())
 					.set(metadata.dateSourceCreation, dateSourceCreationValue)
-					.set(metadata.dateSourcePublication, dateSourcePublicationValue)
 					.set(metadata.dateSourceValidFrom, dateSourceValidFromValue)
 					.set(metadata.dateSourceValidUntil, dateSourceValidUntilValue)
 					.set(metadata.lastRevisionUser, session("username"))
@@ -1048,20 +1040,17 @@ public class Metadata extends Controller {
 			// Fetches the form fields
 			DynamicForm requestData = Form.form().bindFromRequest();
 			String dateCreate = requestData.get("dateSourceCreation");
-			String datePublication = requestData.get("dateSourcePublication");
 			String dateValidFrom = requestData.get("dateSourceValidFrom");
 			String dateValidUntil = requestData.get("dateSourceValidUntil");
 			
 			// Validate the dates
 			Boolean dateCreateReturn = validateDate(dateCreate);
-			Boolean datePublicationReturn = validateDate(datePublication);
 			Boolean dateValidFromReturn = validateDate(dateValidFrom);
 			Boolean dateValidUntilReturn = validateDate(dateValidUntil);
 			
 			// Check if one or more dates couldn't be parsed, if so return an error message 
-			if(!dateCreateReturn || !datePublicationReturn || !dateValidFromReturn || !dateValidUntilReturn) {
+			if(!dateCreateReturn || !dateValidFromReturn || !dateValidUntilReturn) {
 				String dateCreateMsg;
-				String datePublicationMsg;
 				String dateValidFromMsg;
 				String dateValidUntilMsg;
 				
@@ -1069,12 +1058,6 @@ public class Metadata extends Controller {
 					dateCreateMsg = Messages.get("validate.form.parse.date.create");
 				} else {
 					dateCreateMsg = null;
-				}
-				
-				if(!datePublicationReturn) {
-					datePublicationMsg = Messages.get("validate.form.parse.date.publication");
-				} else {
-					datePublicationMsg = null;
 				}
 				
 				if(!dateValidFromReturn) {
@@ -1089,7 +1072,7 @@ public class Metadata extends Controller {
 					dateValidUntilMsg = null;
 				}
 				
-				return ok(bindingerror.render(null, dateCreateMsg, datePublicationMsg, dateValidFromMsg, dateValidUntilMsg, null, null, null, null));
+				return ok(bindingerror.render(null, dateCreateMsg, dateValidFromMsg, dateValidUntilMsg, null, null, null, null));
 			}
 			
 			// Fetches the form
@@ -1150,18 +1133,17 @@ public class Metadata extends Controller {
 				creatorOther = "";
 			}
 			
-			Boolean dateCreatePublicationCheck = logicCheckDate(dc.getDateSourceCreation(), dc.getDateSourcePublication());
 			Boolean dateValidCheck = logicCheckDate(dc.getDateSourceValidFrom(), dc.getDateSourceValidUntil());
 			
 			// Return specific error message view
 			return ok(validateform.render(title, description, location, fileId, numbersCheck.get("duplicate"), numbersCheck.get("character"), 
 					numbersCheck.get("length"), dc.getTypeResearch(), creator, creatorOther, dc.getDateSourceCreation(), dc.getSubject(), dc.getTheme(),
-					dc.getWooTheme(), dateCreatePublicationCheck, dateValidCheck));
+					dc.getWooTheme(), dateValidCheck));
 		} catch(IllegalStateException ise) {
 			Logger.error(ise.getMessage(), ise);
 			
 			// Return generic error message view
-			return ok(bindingerror.render(Messages.get("validate.search.generic"), null, null, null, null, null, null, null, null));
+			return ok(bindingerror.render(Messages.get("validate.search.generic"), null, null, null, null, null, null, null));
 		}
 	}
 	

@@ -332,24 +332,6 @@
 			</div>
 		</div>
 		<div class="form-group">
-			<label class="col-sm-3 control-label">@Messages.get("form.date.publication.label")</label>
-			<div class="col-sm-4">
-				<input class="form-control js-date" type="date" data-toggle="tooltip" data-placement="top" 
-				title="@Messages.get("form.date.publication.title")" id="js-date-publication" name="dateSourcePublication" 
-				data-language="@Http.Context.current().lang().code()"
-				@if(validate && previousValues.get("metadata").getDateSourcePublication != null) {
-					value="@sdf.format(previousValues.get("metadata").getDateSourcePublication.getTime())"}
-				@if(!validate && !create && datasetRow.get(metadata.dateSourcePublication) != null) {
-					value="@sdf.format(datasetRow.get(metadata.dateSourcePublication).getTime())"}>
-			</div>
-			<div class="col-sm-offset-3 col-sm-2">
-				<button class="btn btn-default" data-trigger="focus" data-toggle="popover" data-placement="top" type="button" tabindex="-1"
-				data-content="@Messages.get("form.date.publication.tooltip")">
-					<span class="glyphicon glyphicon-info-sign"></span>
-				</button>
-			</div>
-		</div>
-		<div class="form-group">
 			<label class="col-sm-3 control-label">@Messages.get("form.date.valid.from.label")</label>
 			<div class="col-sm-4">
 				<input class="form-control js-date" type="date" data-toggle="tooltip" data-placement="top" 
@@ -621,15 +603,6 @@
 								<b>@Messages.get("validate.form.date.create")</b>
 							</div>
 						</div>
-					}
-					@if(previousValues.get("metadata").getDateSourceCreation() != null && previousValues.get("metadata").getDateSourcePublication() != null) {
-						@if(previousValues.get("metadata").getDateSourceCreation().after(previousValues.get("metadata").getDateSourcePublication())) {
-							<div>
-								<div class="alert alert-danger" role="alert" data-error="true">
-									<b>@Messages.get("validate.form.date.create.publish.check")</b>
-								</div>
-							</div>
-						}
 					}
 					@if(previousValues.get("metadata").getDateSourceValidFrom() != null && previousValues.get("metadata").getDateSourceValidUntil() != null) {
 						@if(previousValues.get("metadata").getDateSourceValidFrom().after(previousValues.get("metadata").getDateSourceValidUntil())) {
