@@ -186,24 +186,20 @@ require([
 			var typeResearchVal = domAttr.get(dom.byId('js-type-research-select'), 'value');
 			
 			var dateCreation;
-			var datePublication;
 			var dateValidFrom;
 			var dateValidUntil;
 			
 			if(!Modernizr.inputtypes.date) {
 				dateCreation = domAttr.get(query('#js-date-creation ~ input')[0], 'value');
-				datePublication = domAttr.get(query('#js-date-publication ~ input')[0], 'value');
 				dateValidFrom = domAttr.get(query('#js-date-valid-from ~ input')[0], 'value');
 				dateValidUntil = domAttr.get(query('#js-date-valid-until ~ input')[0], 'value');
 			} else {
 				dateCreation = domAttr.get(dom.byId('js-date-creation'), 'value');
-				datePublication = domAttr.get(dom.byId('js-date-publication'), 'value');
 				dateValidFrom = domAttr.get(dom.byId('js-date-valid-from'), 'value');
 				dateValidUntil = domAttr.get(dom.byId('js-date-valid-until'), 'value');
 			}
 			
 			formData.append('dateSourceCreation', dateCreation);
-			formData.append('dateSourcePublication', datePublication);
 			formData.append('dateSourceValidFrom', dateValidFrom);
 			formData.append('dateSourceValidUntil', dateValidUntil);
 			

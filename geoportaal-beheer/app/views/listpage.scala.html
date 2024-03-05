@@ -31,7 +31,7 @@
 			<span class="action-button glyphicon glyphicon-edit" title="@Messages.get("list.action.edit")"></span>
 		</a>
 	</td>
-	<td>@datasetRow.get(metadata.fileId)</td>
+	<td title="@datasetRow.get(metadata.fileId)">@if(datasetRow.get(metadata.fileId).length() > 15){@datasetRow.get(metadata.fileId).substring(0, 15)...}else{@datasetRow.get(metadata.fileId)}</td>
 	<td>@datasetRow.get(metadata.title)</td>
 	<td>@datasetRow.get(user.label)</td>
 	<td>@datasetRow.get(statusLabel.label)</td>
