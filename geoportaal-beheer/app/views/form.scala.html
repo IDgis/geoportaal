@@ -433,7 +433,7 @@
 			<div class="col-sm-7">
 				<div class="col-sm-6">
 					@for((themeOption, index) <- lists.get("themeList").zipWithIndex) {
-						@if(index <= (lists.get("themeList").size() / 2)) {
+						@if(index < (lists.get("themeList").size() / 2.0)) {
 							<div>
 								<label class="checkbox-inline">
 									<input type="checkbox" class="js-theme-input" name="theme[]" value="@themeOption.get(theme.name)"
@@ -458,7 +458,7 @@
 				</div>
 				<div class="col-sm-6">
 					@for((themeOption, index) <- lists.get("themeList").zipWithIndex) {
-						@if(index > (lists.get("themeList").size() / 2)) {
+						@if(index >= (lists.get("themeList").size() / 2.0)) {
 							<div>
 								<label class="checkbox-inline">
 									<input type="checkbox" class="js-theme-input" name="theme[]" value="@themeOption.get(theme.name)"
@@ -494,7 +494,7 @@
 			<div class="col-sm-7">
 				<div class="col-sm-6">
 					@for((wooThemeOption, index) <- lists.get("wooThemeList").zipWithIndex) {
-						@if(index <= (lists.get("wooThemeList").size() / 2)) {
+						@if(index < (lists.get("wooThemeList").size() / 2.0)) {
 							<div>
 								<label class="checkbox-inline">
 									<input type="checkbox" class="js-woo-theme-input" name="wooTheme[]" value="@wooThemeOption.get(wooTheme.name)"
@@ -519,7 +519,7 @@
 				</div>
 				<div class="col-sm-6">
 					@for((wooThemeOption, index) <- lists.get("wooThemeList").zipWithIndex) {
-						@if(index > (lists.get("wooThemeList").size() / 2)) {
+						@if(index >= (lists.get("wooThemeList").size() / 2.0)) {
 							<div>
 								<label class="checkbox-inline">
 									<input type="checkbox" class="js-woo-theme-input" name="wooTheme[]" value="@wooThemeOption.get(wooTheme.name)"
