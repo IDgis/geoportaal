@@ -47,7 +47,7 @@
 					<div class="col-md-12">
 						<p class="title">
 							<a class="md-title" href="@routes.Application.getMetadata(doc.get(mdType.name), doc.get(document.uuid))" target="_blank">
-								@doc.get(document.title) (@sdf.format(doc.get(document.dateDescription).getTime()), @doc.get(document.creator))@if("service".equals(doc.get(mdType.name))){@if("view".equals(doc.get(document.typeService))){ - WMS}@if("download".equals(doc.get(document.typeService))){ - WFS}}
+								@doc.get(document.title) (@sdf.format(doc.get(document.dateDataset).getTime()), @doc.get(document.creator))@if("service".equals(doc.get(mdType.name))){@if("view".equals(doc.get(document.typeService))){ - WMS}@if("download".equals(doc.get(document.typeService))){ - WFS}}
 							</a>
 						</p>
 					</div>

@@ -76,14 +76,14 @@ public class Application extends Controller {
 				intern = true;
 			}
 			
-			SQLQuery<Tuple> queryDocuments = tx.select(document.title, document.uuid, document.dateDescription, 
+			SQLQuery<Tuple> queryDocuments = tx.select(document.title, document.uuid, document.dateDataset, 
 					document.creator, document.description, document.thumbnail, document.downloadable, 
 					document.spatialSchema, document.published, document.typeService, document.viewerUrl, 
 					document.wmsOnly, mdType.url, mdType.name)
 					.from(document)
 					.join(mdType).on(document.mdTypeId.eq(mdType.id))
 					.where(mdType.name.ne("service"))
-					.where(document.dateDescription.isNotNull())
+					.where(document.dateDataset.isNotNull())
 					.where(document.description.isNotNull())
 					.where(document.archived.isNull()
 							.or(document.archived.isFalse()))
@@ -100,7 +100,7 @@ public class Application extends Controller {
 				queryDocuments.where(document.accessId.eq(accessId));
 			}
 			
-			List<Tuple> documents = queryDocuments.orderBy(document.dateDescription.desc(), document.title.asc())
+			List<Tuple> documents = queryDocuments.orderBy(document.dateDataset.desc(), document.title.asc())
 					.limit(5)
 					.fetch();
 			
