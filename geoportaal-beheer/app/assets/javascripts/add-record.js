@@ -121,9 +121,15 @@ require([
 		if (domAttr.get(typeResearchSelect, 'value') === 'none') {
 			domStyle.set(dom.byId('js-subject-list'), 'display', 'block');
 			domStyle.set(dom.byId('js-theme-list'), 'display', 'none');
+			domStyle.set(dom.byId('js-woo-theme-list'), 'display', 'none');
+		} else if (domAttr.get(typeResearchSelect, 'value') === 'wooDocument') {
+			domStyle.set(dom.byId('js-subject-list'), 'display', 'none');
+			domStyle.set(dom.byId('js-theme-list'), 'display', 'none');
+			domStyle.set(dom.byId('js-woo-theme-list'), 'display', 'block');
 		} else {
 			domStyle.set(dom.byId('js-subject-list'), 'display', 'none');
 			domStyle.set(dom.byId('js-theme-list'), 'display', 'block');
+			domStyle.set(dom.byId('js-woo-theme-list'), 'display', 'none');
 		}
 
 		on(typeResearchSelect, 'change', function(e) {
@@ -131,16 +137,38 @@ require([
 				array.forEach(query('.js-theme-input:checked'), function(item) {
 					domAttr.set(item, 'checked', false);
 				});
-
+				
+				array.forEach(query('.js-woo-theme-input:checked'), function(item) {
+					domAttr.set(item, 'checked', false);
+				});
+				
 				domStyle.set(dom.byId('js-subject-list'), 'display', 'block');
 				domStyle.set(dom.byId('js-theme-list'), 'display', 'none');
+				domStyle.set(dom.byId('js-woo-theme-list'), 'display', 'none');
+			} else if (domAttr.get(typeResearchSelect, 'value') === 'wooDocument') {
+				array.forEach(query('.js-subject-input:checked'), function(item) {
+					domAttr.set(item, 'checked', false);
+				});
+				
+				array.forEach(query('.js-theme-input:checked'), function(item) {
+					domAttr.set(item, 'checked', false);
+				});
+				
+				domStyle.set(dom.byId('js-subject-list'), 'display', 'none');
+				domStyle.set(dom.byId('js-theme-list'), 'display', 'none');
+			domStyle.set(dom.byId('js-woo-theme-list'), 'display', 'block');
 			} else {
 				array.forEach(query('.js-subject-input:checked'), function(item) {
 					domAttr.set(item, 'checked', false);
 				});
-
+				
+				array.forEach(query('.js-woo-theme-input:checked'), function(item) {
+					domAttr.set(item, 'checked', false);
+				});
+				
 				domStyle.set(dom.byId('js-subject-list'), 'display', 'none');
 				domStyle.set(dom.byId('js-theme-list'), 'display', 'block');
+				domStyle.set(dom.byId('js-woo-theme-list'), 'display', 'none');
 			}
 		});
 		
@@ -158,29 +186,26 @@ require([
 			var typeResearchVal = domAttr.get(dom.byId('js-type-research-select'), 'value');
 			
 			var dateCreation;
-			var datePublication;
 			var dateValidFrom;
 			var dateValidUntil;
 			
 			if(!Modernizr.inputtypes.date) {
 				dateCreation = domAttr.get(query('#js-date-creation ~ input')[0], 'value');
-				datePublication = domAttr.get(query('#js-date-publication ~ input')[0], 'value');
 				dateValidFrom = domAttr.get(query('#js-date-valid-from ~ input')[0], 'value');
 				dateValidUntil = domAttr.get(query('#js-date-valid-until ~ input')[0], 'value');
 			} else {
 				dateCreation = domAttr.get(dom.byId('js-date-creation'), 'value');
-				datePublication = domAttr.get(dom.byId('js-date-publication'), 'value');
 				dateValidFrom = domAttr.get(dom.byId('js-date-valid-from'), 'value');
 				dateValidUntil = domAttr.get(dom.byId('js-date-valid-until'), 'value');
 			}
 			
 			formData.append('dateSourceCreation', dateCreation);
-			formData.append('dateSourcePublication', datePublication);
 			formData.append('dateSourceValidFrom', dateValidFrom);
 			formData.append('dateSourceValidUntil', dateValidUntil);
 			
 			var subjectList = query('.js-subject-input:checked');
 			var themeList = query('.js-theme-input:checked');
+			var wooThemeList = query('.js-woo-theme-input:checked');
 			var creatorVal = domAttr.get(dom.byId('js-creator-select'), 'value');
 			
 			formData.append('title', titleVal);
@@ -201,8 +226,13 @@ require([
 			});
 
 			array.forEach(themeList, function(item) {
-			    var themeValue = domAttr.get(item, 'value');
-			    formData.append('theme[]', themeValue);
+				var themeValue = domAttr.get(item, 'value');
+				formData.append('theme[]', themeValue);
+			});
+
+			array.forEach(wooThemeList, function(item) {
+				var wooThemeValue = domAttr.get(item, 'value');
+				formData.append('wooTheme[]', wooThemeValue);
 			});
 			
 			xhr(jsRoutes.controllers.Metadata.validateForm(id).url, {

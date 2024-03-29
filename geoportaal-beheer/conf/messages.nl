@@ -104,8 +104,6 @@ form.source.label=Bron (leverancier)
 form.source.title=Vul de persoon of organisatie in waar de bron vandaan komt
 form.date.create.label=Datum creatie*
 form.date.create.title=Vul de datum in wanneer de metadata gemaakt is
-form.date.publication.label=Datum publicatie
-form.date.publication.title=Vul de datum in wanneer de metadata gepubliceerd is
 form.date.valid.from.label=Datum geldig, van
 form.date.valid.from.title=Vul de datum in vanaf wanneer de bron geldig is
 form.date.valid.end.label=Datum geldig, tot
@@ -114,6 +112,8 @@ form.subject.label=ISO onderwerp*
 form.subject.title=Vink de onderwerpen aan die van toepassing zijn op de data
 form.theme.label=Thema*
 form.theme.title=Vink de thema's aan die van toepassing zijn op de data
+form.woo.theme.label=WOO thema*
+form.woo.theme.title=Vink de WOO thema's aan die van toepassing zijn op de data
 
 # Tooltips index
 index.text.tooltip=Tekst in die je wilt zoeken. Meerdere woorden zijn mogelijk. Vul je niets in, dan wordt alles gekozen als je gaat zoeken.
@@ -138,7 +138,6 @@ form.uselimitation.tooltip=Beperkingen (intern of ook extern). Bij twijfel, kies
 form.format.tooltip=Format van de oorspronkelijke dataset. MXD: meestal bij kaarten die met Arcgis zijn gemaakt. Adobe Illustrator meestal bij handgetekende kaarten.
 form.source.tooltip=Leverancier van de data van de kaart. Tekstveld kan maximaal 200 tekens bevatten.
 form.date.creation.tooltip=Datum waarop de kaart gemaakt is. Standaard is de huidige datum alvast ingevuld. Je kan deze datum ook aanpassen, indien relevant.
-form.date.publication.tooltip=Datum waarop de kaart is gepubliceerd. 
 form.date.valid.start.tooltip=Geldigheidsdatum: begindatum.
 form.date.valid.end.tooltip=Geldigheidsdatum: einddatum.
 form.subject.tooltip=Onderwerp. Onderwerpen waar de kaart bij hoort. Je kan meerdere onderwerpen kiezen, als de kaart bij meerdere onderwerpen hoort.
@@ -244,8 +243,8 @@ validate.form.date.create.publish.check=Er is een onlogische datum ingevoerd. Da
 validate.form.date.valid.check=Er is een onlogische datum ingevoerd. Datum "geldig van" is later dan de datum "geldig tot".
 validate.form.subject.list=Er moet minimaal één onderwerp aangevinkt zijn.
 validate.form.theme.list=Er moet minimaal één thema aangevinkt zijn.
+validate.form.woo.theme.list=Er moet minimaal één WOO thema aangevinkt zijn.
 validate.form.parse.date.create=De datum creatie is niet correct ingevuld.
-validate.form.parse.date.publication=De datum publicatie is niet correct ingevuld.
 validate.form.parse.date.valid.start=De datum geldig, van is niet correct ingevuld.
 validate.form.parse.date.valid.end=De datum geldig, tot is niet correct ingevuld.
 

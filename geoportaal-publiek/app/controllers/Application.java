@@ -85,8 +85,11 @@ public class Application extends Controller {
 					.where(mdType.name.ne("service"))
 					.where(document.dateDataset.isNotNull())
 					.where(document.description.isNotNull())
-					.where(document.archived.isNull().or(document.archived.isFalse()))
-					.where(document.maintenanceFrequency.isNull().or(document.maintenanceFrequency.ne("daily")));
+					.where(document.archived.isNull()
+							.or(document.archived.isFalse()))
+					.where(document.maintenanceFrequency.isNull()
+							.or(document.maintenanceFrequency.ne("daily")
+									.and(document.maintenanceFrequency.ne("weekly"))));
 			
 			if(!intern) {
 				Integer accessId = tx.select(access.id)

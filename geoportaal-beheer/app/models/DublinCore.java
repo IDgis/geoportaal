@@ -24,11 +24,11 @@ public class DublinCore {
 	private String mdFormat;
 	private String source;
 	private Date dateSourceCreation;
-	private Date dateSourcePublication;
 	private Date dateSourceValidFrom;
 	private Date dateSourceValidUntil;
 	private List<String> subject;
 	private List<String> theme;
+	private List<String> wooTheme;
 	private List<String> deletedAttachment;
 	
 	public DublinCore() {
@@ -51,7 +51,6 @@ public class DublinCore {
 	 * @param mdFormat the format option selected
 	 * @param source the source field
 	 * @param dateSourceCreation the date when the data was created
-	 * @param dateSourcePublication the date when the data was published
 	 * @param dateSourceRevision the date when the data was last changed
 	 * @param dateSourceValidFrom the start date when the data was valid
 	 * @param dateSourceValidUntil the end date when the data was valid
@@ -61,8 +60,8 @@ public class DublinCore {
 	 */
 	public DublinCore(String location, String fileId, String title, String description, String typeInformation, String typeResearch, String creator, 
 			String creatorOther, String rights, String useLimitation, String mdFormat, String source, Date dateSourceCreation, 
-			Date dateSourcePublication, Date dateSourceValidFrom, Date dateSourceValidUntil, List<String> subject, List<String> theme,
-			List<String> deletedAttachment) {
+			Date dateSourceValidFrom, Date dateSourceValidUntil, List<String> subject, List<String> theme,
+			List<String> wooTheme, List<String> deletedAttachment) {
 		super();
 		this.location = location;
 		this.fileId = fileId;
@@ -77,11 +76,11 @@ public class DublinCore {
 		this.mdFormat = mdFormat;
 		this.source = source;
 		this.dateSourceCreation = dateSourceCreation;
-		this.dateSourcePublication = dateSourcePublication;
 		this.dateSourceValidFrom = dateSourceValidFrom;
 		this.dateSourceValidUntil = dateSourceValidUntil;
 		this.subject = subject;
 		this.theme = theme;
+		this.wooTheme = wooTheme;
 		this.deletedAttachment = deletedAttachment;
 	}
 	public String getLocation() {
@@ -172,14 +171,6 @@ public class DublinCore {
 		this.dateSourceCreation = dateSourceCreation;
 	}
 
-	public Date getDateSourcePublication() {
-		return dateSourcePublication;
-	}
-
-	public void setDateSourcePublication(Date dateSourcePublication) {
-		this.dateSourcePublication = dateSourcePublication;
-	}
-
 	public Date getDateSourceValidFrom() {
 		return dateSourceValidFrom;
 	}
@@ -206,6 +197,14 @@ public class DublinCore {
 	
 	public List<String> getTheme() {
 		return theme;
+	}
+	
+	public void setWooTheme(List<String> wooTheme) {
+		this.wooTheme = wooTheme;
+	}
+	
+	public List<String> getWooTheme() {
+		return wooTheme;
 	}
 	
 	public void setTheme(List<String> theme) {
