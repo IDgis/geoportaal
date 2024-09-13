@@ -12,3 +12,5 @@ docker/*.crt
 .idea
 *.iml
 /.metadata/
+
+wsl-gradle-build.sh
