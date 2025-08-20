@@ -94,7 +94,7 @@ configure([
 		play "org.webjars:webjars-play_${scalaAbiVersion}:2.4.0-2"
 		play "org.webjars:dojo:1.10.4"
 		play "org.webjars:bootstrap:3.3.5"
-		play "org.postgresql:postgresql:9.4-1202-jdbc42"
+		play "org.postgresql:postgresql:42.7.7"
 	}
 	
 	model {
@@ -161,7 +161,7 @@ project(':geoportaal-beheer') {
 	
 	dependencies {
 		queryDSLMetaDataExporter project(':querydsl-tsvector')
-		queryDSLMetaDataExporter "org.postgresql:postgresql:9.4-1202-jdbc42"
+		queryDSLMetaDataExporter "org.postgresql:postgresql:42.7.7"
 		
 		play project(':querydsl-tsvector')		
 		play "org.springframework.security:spring-security-web:4.0.3.RELEASE"
@@ -202,7 +202,7 @@ project(':geoportaal-harvester') {
 	dependencies {
 		compile project(':geoportaal-publiek-db')
 		compile 'com.querydsl:querydsl-sql:4.0.6'
-		compile 'org.postgresql:postgresql:9.4.1208'
+		compile 'org.postgresql:postgresql:42.7.7'
 		compile 'org.apache.jackrabbit:jackrabbit-jcr2dav:2.12.1'
 		compile 'org.springframework:spring-jdbc:4.2.5.RELEASE'
 		compile 'org.slf4j:slf4j-api:1.7.25'
@@ -264,37 +264,9 @@ project(':geoportaal-publiek-db') {
 	
 	dependencies {
 		queryDSLMetaDataExporter project(':querydsl-tsvector')
-		queryDSLMetaDataExporter "org.postgresql:postgresql:9.4-1202-jdbc42"
+		queryDSLMetaDataExporter "org.postgresql:postgresql:42.7.7"
 		
 		compile project(':querydsl-tsvector')
-	}
-}
-
-// configure docker plugin
-allprojects {
-	afterEvaluate { project ->
-		if(project.plugins.hasPlugin('com.bmuschko.docker-remote-api')) {
-			docker {
-				def env = System.env
-				if(env.containsKey('DOCKER_HOST')) {
-					url = "$env.DOCKER_HOST"
-
-					if(env.containsKey('DOCKER_TLS_VERIFY')) {
-						url = url.replace('tcp', 'https')
-					} else {
-						url = url.replace('tcp', 'http')
-					}
-
-					if(env.containsKey('DOCKER_CERT_PATH')) {
-						certPath = project.file "$env.DOCKER_CERT_PATH"
-					}
-				} else {
-					if (project.properties.containsKey("dockerHost")) {
-						url = "http://${dockerHost}:2375"
-					}
-				}
-			}
-		}
 	}
 }
 
