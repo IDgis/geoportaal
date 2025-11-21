@@ -1,0 +1,38 @@
+name: Build project
+
+on:
+  pull_request:
+    branches:
+      - develop
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    services:
+      db:
+        image: postgres:17.6
+        ports:
+          - 5432:5432
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: zulu
+          java-version: 8
+      
+      - name: Build
+        env:
+          GITHUB_USER: "github"
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+          DATABASE_HOST: "localhost"
+        run: ./gradlew build
