@@ -34,10 +34,13 @@ import javax.inject.Inject;
 import com.querydsl.core.Tuple;
 import com.querydsl.sql.SQLQuery;
 
+import enums.TypeAccess;
 import enums.TypeApp;
+import play.Configuration;
 import play.i18n.Messages;
 import play.libs.Json;
 import play.mvc.Controller;
+import play.mvc.Http;
 import play.mvc.Result;
 import util.QueryDSL;
 import util.QueryDSL.Transaction;
@@ -52,6 +55,7 @@ public class DocumentApi extends Controller {
 	
 	@Inject
 	private QueryDSL q;
+	private final Configuration configuration = play.Play.application().configuration();
 	
 	/**
 	 * Returns a {@link JSON} Object with all document data
@@ -65,9 +69,15 @@ public class DocumentApi extends Controller {
 	 * @param creationYear - The year of creation to filter
 	 * @return a {@link JSON} Object with the document data
 	 */
-	public Result search(String typeApp, String textSearch, long offset, long limit, String sort, String typeFilter, String themeFilter, long creationYear) {
-		TypeApp ta = getTypeApp(typeApp);
-		if(ta == null) return notFound();
+	public Result search(String typeAppText, String typeAccessText, String textSearch, long offset, long limit, String sort, String typeFilter, String themeFilter, long creationYear) {
+		TypeApp typeApp = getTypeApp(typeAppText);
+		if(typeApp == null) return notFound("404 Not Found");
+		
+		TypeAccess typeAccess = getTypeAccess(typeAccessText);
+		if(typeAccess == null) return notFound("404 Not Found");
+		
+		String headerTrusted = Http.Context.current().request().getHeader(configuration.getString("trusted.header"));
+		if(!"1".equals(headerTrusted) && typeAccess.equals(TypeAccess.INTERN)) return forbidden("403 Forbidden");
 		
 		return q.withTransaction(tx -> {
 			Map<String, Object> root = new HashMap<>();
@@ -87,10 +97,14 @@ public class DocumentApi extends Controller {
 				.join(rights).on(rights.id.eq(metadata.rights))
 				.join(rightsLabel).on(rightsLabel.rightsId.eq(rights.id))
 				.join(status).on(status.id.eq(metadata.status))
-				.where(useLimitation.name.equalsIgnoreCase("extern")
-					.and(status.name.equalsIgnoreCase("published")));
+				.where(status.name.equalsIgnoreCase("published"));
 			
-			filterTypeApp(ta, datasetQuery);
+			// Filter on type access
+			if (typeAccess.equals(TypeAccess.EXTERN)) {
+				datasetQuery.where(useLimitation.name.equalsIgnoreCase("extern"));
+			}
+			
+			filterTypeApp(typeApp, datasetQuery);
 			
 			// Strip characters from text search string that conflict with Postgres full-text search
 			String textSearchFirstStrip = textSearch.replace("&", "");
@@ -133,7 +147,7 @@ public class DocumentApi extends Controller {
 			
 			// Filter on theme
 			if (!themeFilter.isEmpty()) {
-				if(ta.equals(TypeApp.ONDERZOEKS_BIBLIOTHEEK)) {
+				if(typeApp.equals(TypeApp.ONDERZOEKS_BIBLIOTHEEK)) {
 					datasetQuery.where(
 						tx.selectOne()
 							.from(theme)
@@ -141,7 +155,7 @@ public class DocumentApi extends Controller {
 							.where(mdTheme.metadataId.eq(metadata.id))
 							.where(theme.name.equalsIgnoreCase(themeFilter))
 							.exists());
-				} else if(ta.equals(TypeApp.WOO_PORTAAL)) {
+				} else if(typeApp.equals(TypeApp.WOO_PORTAAL)) {
 					datasetQuery.where(
 						tx.selectOne()
 							.from(wooTheme)
@@ -176,7 +190,7 @@ public class DocumentApi extends Controller {
 			List<Tuple> md = datasetQuery.offset(offset).limit(limit).fetch();
 			for(Tuple t : md) {
 				Map<String, Object> r = new HashMap<>();
-				createJsonObject(tx, t, ta, r);
+				createJsonObject(tx, t, typeApp, r);
 				result.add(r);
 			}
 			root.put("records", result);
@@ -191,9 +205,15 @@ public class DocumentApi extends Controller {
 	 * @param metadataUuid the UUID of the metadata
 	 * @return a {@link JSON} Object with the document data
 	 */
-	public Result findDocument(String typeApp, String metadataUuid) {
-		TypeApp ta = getTypeApp(typeApp);
-		if(ta == null) return notFound();
+	public Result findDocument(String typeAppText, String typeAccessText, String metadataUuid) {
+		TypeApp typeApp = getTypeApp(typeAppText);
+		if(typeApp == null) return notFound("404 Not Found");
+		
+		TypeAccess typeAccess = getTypeAccess(typeAccessText);
+		if(typeAccess == null) return notFound("404 Not Found");
+		
+		String headerTrusted = Http.Context.current().request().getHeader(configuration.getString("trusted.header"));
+		if(!"1".equals(headerTrusted) && typeAccess.equals(TypeAccess.INTERN)) return forbidden("403 Forbidden");
 		
 		return q.withTransaction(tx -> {
 			SQLQuery<Tuple> datasetQuery = tx.select(metadata.id, metadata.uuid, metadata.title, metadata.description, creatorLabel.label,
@@ -211,15 +231,19 @@ public class DocumentApi extends Controller {
 				.join(rights).on(rights.id.eq(metadata.rights))
 				.join(rightsLabel).on(rightsLabel.rightsId.eq(rights.id))
 				.join(status).on(status.id.eq(metadata.status))
-				.where(useLimitation.name.equalsIgnoreCase("extern")
-					.and(status.name.equalsIgnoreCase("published"))
+				.where(status.name.equalsIgnoreCase("published")
 					.and(metadata.uuid.eq(metadataUuid)));
 			
-			filterTypeApp(ta, datasetQuery);
+			// Filter on type access
+			if (typeAccess.equals(TypeAccess.EXTERN)) {
+				datasetQuery.where(useLimitation.name.equalsIgnoreCase("extern"));
+			}
+			
+			filterTypeApp(typeApp, datasetQuery);
 			
 			Map<String, Object> r = new HashMap<>();
 			Optional<Tuple> mdResult = Optional.ofNullable(datasetQuery.fetchOne());
-			mdResult.ifPresent(t -> createJsonObject(tx, t, ta, r));
+			mdResult.ifPresent(t -> createJsonObject(tx, t, typeApp, r));
 			
 			return ok(Json.toJson(r));
 		});
@@ -308,6 +332,17 @@ public class DocumentApi extends Controller {
 				return TypeApp.WOO_PORTAAL;
 			case "ob":
 				return TypeApp.ONDERZOEKS_BIBLIOTHEEK;
+			default:
+				return null;
+		}
+	}
+	
+	private TypeAccess getTypeAccess(String typeAccess) {
+		switch(typeAccess) {
+			case "intern":
+				return TypeAccess.INTERN;
+			case "extern":
+				return TypeAccess.EXTERN;
 			default:
 				return null;
 		}
