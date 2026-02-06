@@ -21,7 +21,6 @@
 		<dc:rights>@dcx.getRights()</dc:rights>
 		<dc:rights rdf:datatype="@useLimitation">@dcx.getUseLimitation()</dc:rights>
 		<dc:format>@dcx.getFormat()</dc:format> 
-		<dc:source>@dcx.getSource()</dc:source>
 		@if(dcx.getDate() != null) {
 			<dc:date>@sdf.format(dcx.getDate().getTime())</dc:date>
 		}
