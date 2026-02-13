@@ -41,6 +41,9 @@
 		@for(theme <- dcx.getThemes()) {
 			<dc:subject>theme: @theme</dc:subject>
 		}
+		@for(wooTheme <- dcx.getWooThemes()) {
+			<dc:subject>woo theme: @wooTheme</dc:subject>
+		}
 		<dc:language>@dcx.getLanguage()</dc:language>
 		<ows:WGS84BoundingBox>
 			<ows:LowerCorner>@dcx.getLowerCorner()</ows:LowerCorner>
