@@ -43,7 +43,8 @@ public class DublinCore {
 					doc.getString(DublinCorePath.ORGANISATION_CREATOR.path()),
 					doc.getString(DublinCorePath.ABSTRACT.path()),
 					null,
-					accessId);
+					accessId,
+					doc.getString(DublinCorePath.TYPE.path()));
 			
 			Long documentId =  Database.getDocumentId(qf, doc.getString(DublinCorePath.UUID.path()));
 			
