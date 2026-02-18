@@ -130,7 +130,10 @@ public class Application extends Controller {
 		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
 		
 		String[] typesArray = typesString.split("\\++");
-		List<String> types = Arrays.asList(typesArray);
+		List<String> originalTypes = Arrays.asList(typesArray);
+		List<String> types = new ArrayList<String>(originalTypes);
+		types.remove("dcMap");
+		types.remove("dcRest");
 		
 		return q.withTransaction(tx -> {
 			boolean intern = false;
@@ -139,8 +142,10 @@ public class Application extends Controller {
 			}
 			
 			boolean includingDatasetsArchived = false;
-			for(String type : types) {
-				if("datasetArchived".equals(type)) includingDatasetsArchived = true;
+			if(types.contains("datasetArchived")) includingDatasetsArchived = true;
+			
+			if(originalTypes.contains("dcMap") || originalTypes.contains("dcRest")) {
+				types.add("dc");
 			}
 			
 			DateTimePath<Timestamp> dateColumn = document.dateDataset;
@@ -158,8 +163,16 @@ public class Application extends Controller {
 			if(intern) {
 				if(includingDatasetsArchived) {
 					queryDocuments
-						.where((mdType.name.in(types).and(document.archived.isNull().or(document.archived.isFalse())))
-							.or(mdType.name.eq("dataset").and(document.archived.isTrue())));
+						.where(
+							(
+								mdType.name.in(types)
+								.and(document.archived.isNull().or(document.archived.isFalse()))
+							)
+							.or(
+								mdType.name.eq("dataset")
+								.and(document.archived.isTrue())
+							)
+						);
 				} else {
 					queryDocuments
 						.where(mdType.name.in(types))
@@ -175,6 +188,12 @@ public class Application extends Controller {
 					.where(document.accessId.eq(accessId))
 					.where(mdType.name.in(types))
 					.where(document.archived.isNull().or(document.archived.isFalse()));
+			}
+			
+			if(originalTypes.contains("dcMap") && !originalTypes.contains("dcRest")) {
+				queryDocuments.where(document.typeInformation.isNull().or(document.typeInformation.eq("Kaart")));
+			} else if(!originalTypes.contains("dcMap") && originalTypes.contains("dcRest")) {
+				queryDocuments.where(document.typeInformation.isNull().or(document.typeInformation.ne("Kaart")));
 			}
 			
 			// Strip characters from text search string that conflict with Postgres full-text search
@@ -252,10 +271,10 @@ public class Application extends Controller {
 					.fetch();
 			
 			if(filter) {
-				return ok(searchresult.render(documents, sdf, textSearch, types, typesString, count, page, finalStart, startPrevious, startNext, startLast, pageLast, expand, sort));
+				return ok(searchresult.render(documents, sdf, textSearch, originalTypes, typesString, count, page, finalStart, startPrevious, startNext, startLast, pageLast, expand, sort));
 			}
 			
-			return ok(search.render(documents, sdf, textSearch, types, typesString, count, page, finalStart, startPrevious, startNext, startLast, pageLast, expand, sort));
+			return ok(search.render(documents, sdf, textSearch, originalTypes, typesString, count, page, finalStart, startPrevious, startNext, startLast, pageLast, expand, sort));
 		});
 	}
 	
