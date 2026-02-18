@@ -76,20 +76,37 @@ public class Application extends Controller {
 				intern = true;
 			}
 			
-			SQLQuery<Tuple> queryDocuments = tx.select(document.title, document.uuid, document.dateDataset, 
-					document.creator, document.description, document.thumbnail, document.downloadable, 
-					document.spatialSchema, document.published, document.typeService, document.viewerUrl, 
-					document.wmsOnly, mdType.url, mdType.name)
-					.from(document)
-					.join(mdType).on(document.mdTypeId.eq(mdType.id))
-					.where(mdType.name.ne("service"))
-					.where(document.dateDataset.isNotNull())
-					.where(document.description.isNotNull())
-					.where(document.archived.isNull()
-							.or(document.archived.isFalse()))
-					.where(document.maintenanceFrequency.isNull()
-							.or(document.maintenanceFrequency.ne("daily")
-									.and(document.maintenanceFrequency.ne("weekly"))));
+			SQLQuery<Tuple> queryDocuments = tx.select(
+				document.title, 
+				document.uuid, 
+				document.dateDataset, 
+				document.creator, 
+				document.description, 
+				document.thumbnail, 
+				document.downloadable, 
+				document.spatialSchema, 
+				document.published, 
+				document.typeService, 
+				document.viewerUrl, 
+				document.wmsOnly, 
+				mdType.url, 
+				mdType.name
+			)
+				.from(document)
+				.join(mdType).on(document.mdTypeId.eq(mdType.id))
+				.where(mdType.name.ne("service"))
+				.where(document.dateDataset.isNotNull())
+				.where(document.description.isNotNull())
+				.where(document.archived.isNull()
+					.or(document.archived.isFalse()))
+				.where(
+					document.maintenanceFrequency.isNull()
+					.or(
+						document.maintenanceFrequency.ne("daily")
+						.and(document.maintenanceFrequency.ne("weekly"))
+					)
+				)
+				.where(document.typeInformation.isNull().or(document.typeInformation.eq("Kaart")));
 			
 			if(!intern) {
 				Integer accessId = tx.select(access.id)
