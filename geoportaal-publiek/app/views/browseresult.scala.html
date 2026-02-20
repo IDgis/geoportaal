@@ -121,7 +121,7 @@
 							}
 						</p>
 						
-						@views.html.metadatalink(doc.getMetadataType, doc.getUuid)
+						@views.html.metadatalink(doc.getTitle, doc.getMetadataType, doc.getUuid, doc.getTypeService)
 						@views.html.viewerlink(doc.getViewerUrl)
 						@if("dataset".equals(doc.getMetadataType)
 							&& (doc.getDownloadable.equals(true)

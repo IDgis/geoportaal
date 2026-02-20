@@ -70,7 +70,7 @@
 							}
 						</p>
 						
-						@views.html.metadatalink(doc.get(mdType.name), doc.get(document.uuid))
+						@views.html.metadatalink(doc.get(document.title), doc.get(mdType.name), doc.get(document.uuid), doc.get(document.typeService))
 						@views.html.viewerlink(doc.get(document.viewerUrl))
 						@if("dataset".equals(doc.get(mdType.name)) 
 							&& (doc.get(document.downloadable).equals(true) 
