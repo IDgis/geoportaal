@@ -17,6 +17,9 @@
 		}
 	</head>
 	<body class="@if(play.Play.application().configuration().getString("portal.deployment.acceptance") == "true") {background-acceptance}">
+		<a href="#main-content" class="portal-sr-only portal-sr-only-focusable">
+			Direct naar hoofdinhoud
+		</a>
 		<div class="page">
 			<div>
 				<a href="/">
@@ -104,7 +107,9 @@
 						</div>
 					</a>
 				</div>
-				@content
+				<main id="main-content" tabIndex="-1">
+					@content
+				</div>
 			</div>
 		</div>
 		

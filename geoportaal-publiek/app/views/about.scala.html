@@ -2,7 +2,7 @@
 
 @main(if("intern".equals(play.Play.application().configuration().getString("portal.access"))) { Messages.get("about.header.intern") } else { 
 	Messages.get("about.header") }, "") {
-	<div class="content">
+	<div class="content-body">
 		<p>@play.Play.application().configuration().getString("portal.about.intro")</p>
 		<p>@Messages.get("about.paragraph.1.2")</p>
 		<p>@Messages.get("about.paragraph.1.3")</p>

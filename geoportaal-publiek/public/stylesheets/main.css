@@ -21,7 +21,7 @@ p.negate-margin {
 }
 
 div.page {
-	margin:20px auto 20px auto;.
+	margin:20px auto 20px auto;
 	width:1100px;
 	padding:0px 20px;
 	border-left:1px solid #AAAAAA;
@@ -46,7 +46,7 @@ div.intro {
 	margin-bottom:20px;
 	padding:10px 0;
 }
-div.content {
+div.content-body {
 	margin-top:20px;
 }
 div#accessibility-info {
@@ -305,4 +305,31 @@ a.md-title:hover {
 	-webkit-appearance:button;
 	position:relative;
 	top:-1px;
+}
+
+.portal-sr-only {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+	clip-path: inset(50%);
+}
+
+.portal-sr-only-focusable:focus {
+	top: 0;
+	left: 50%;
+	transform: translateX(-50%);
+	width: auto;
+	height: auto;
+	padding: 8px 12px;
+	border: 0;
+	overflow: visible;
+	clip-path: none;
+	background: #831625;
+	text-decoration: none;
+	color: #fff;
+	border-radius: 0 0 5px 5px;
+	outline: unset;
+	outline-offset: unset;
+	z-index: 100;
 }
