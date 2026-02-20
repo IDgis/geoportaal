@@ -11,6 +11,7 @@ div.header {margin-top:20px;margin-bottom:20px;}
 #index-extra-text {font-size:16px;margin-top:50px;margin-bottom:20px;padding:0;}
 div.intro {margin-top:20px;margin-bottom:20px;padding:10px 0;}
 div.content {margin-top:20px;}
+div#accessibility-info {margin-top:40px;}
 div.tabs {margin-left:auto;margin-right:auto;width:100%;}
 div.tabs:after {content:'';display:block;clear:both;}
 div.tab-element {height:100%;width:100%;background-position:15px 15px;width:155px !important;height:80px !important;

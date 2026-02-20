@@ -30,5 +30,12 @@
 		<p>@Html(Messages.get("about.paragraph.4.2"))</p>
 		<p>@play.Play.application().configuration().getString("portal.about.aim")</p>
 		<p>@Html(play.Play.application().configuration().getString("portal.about.email")) <a class="link" href="mailto:@play.Play.application().configuration().getString("portal.email")">@play.Play.application().configuration().getString("portal.email")</a></p>
+		
+		<div id="accessibility-info">
+			<p>@Html(play.Play.application().configuration().getString("portal.about.accessibility.intro"))</p>
+			<p>@Html(play.Play.application().configuration().getString("portal.about.accessibility.declarationApp"))</p>
+			<p>@Html(play.Play.application().configuration().getString("portal.about.accessibility.declarationOverview"))</p>
+			<p>@Html(play.Play.application().configuration().getString("portal.about.accessibility.contact"))</p>
+		</div>
 	</div>
 }
