@@ -112,6 +112,8 @@ public class Database {
 				subjectItemName = subjectItem.substring("subject: ".length());
 			} else if(subjectItem.startsWith("theme: ")) {
 				// do nothing
+			} else if(subjectItem.startsWith("woo theme: ")) {
+				// do nothing
 			} else {
 				subjectItemName = subjectItem;
 			}
