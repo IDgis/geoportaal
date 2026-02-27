@@ -329,7 +329,7 @@ a.md-title:hover {
 	text-decoration: none;
 	color: #fff;
 	border-radius: 0 0 5px 5px;
-	outline: unset;
-	outline-offset: unset;
+	outline: -webkit-focus-ring-color auto 1px;
+	outline-offset: 1px;
 	z-index: 100;
 }
