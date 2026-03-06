@@ -17,34 +17,34 @@
 		<p>@play.Play.application().configuration().getString("portal.index.intro")</p>
 	</div>
 	
-	@helper.form(action = routes.Application.searchText(), 'class -> "search-bar col-md-offset-1") {
-		<div class="form-group">
-			<label for="search-input" id="search-label">@Messages.get("search.label")</label>
-			<input
-				id="search-input"
-				class="form-control"
-				type="text"
-				placeholder="@Messages.get("search.placeholder")"
-				name="text"
-			/>
-			<input type="hidden" id="js-element-string" name="elementsString" value="dataset+service+dc">
-			<input type="hidden" name="page" value="search">
-		</div>
-		<div class="form-group">
-			<button type="submit" class="button-ovs" id="search-button">@Messages.get("button.search")</button>
-			<a href="@routes.Application.help()#help-home" class="button-ovs link-as-button" target="_blank">
-				@Messages.get("button.help")
-			</a>
-		</div>
-	}
+	<section>
+		@helper.form(action = routes.Application.searchText(), 'class -> "search-bar col-md-offset-1") {
+			<div class="form-group">
+				<label for="search-input" id="search-label">@Messages.get("search.label")</label>
+				<input
+					id="search-input"
+					class="form-control"
+					type="text"
+					placeholder="@Messages.get("search.placeholder")"
+					name="text"
+				/>
+				<input type="hidden" id="js-element-string" name="elementsString" value="dataset+service+dc">
+				<input type="hidden" name="page" value="search">
+			</div>
+			<div class="form-group">
+				<button type="submit" class="button-ovs" id="search-button">@Messages.get("button.search")</button>
+				<a href="@routes.Application.help()#help-home" class="button-ovs link-as-button" target="_blank">
+					@Messages.get("button.help")
+				</a>
+			</div>
+		}
+	</section>
 	
-	<div class="header-recent-files">
-		<div class="col-md-12">
-			<span class="files-info">@Messages.get("index.files.info.recent")</span>
-		</div>
-	</div>
+	<section class="index-metadata-items">
+		<h4 class="files-info">
+			<b>@Messages.get("index.files.info.recent")</b>
+		</h4>
 		
-	<div class="col-md-11 col-md-offset-1">
 		@for(doc <- documents) {
 			<div class="home-metadata">
 				<div class="row">
@@ -84,5 +84,5 @@
 				</div>
 			</div>
 		}
-	</div>
+	</section>
 }
