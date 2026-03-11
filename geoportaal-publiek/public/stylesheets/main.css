@@ -173,7 +173,7 @@ a.md-title:hover {
 	padding-left: 15px;
 	padding-right: 15px;
 }
-.files-info {
+#index-results-header {
 	font-size:17px;
 }
 
@@ -207,11 +207,13 @@ a.md-title:hover {
 	overflow: auto;
 }
 .results-controls {
-	margin: 10px 0 10px -15px;
 	overflow: auto;
 }
-.page-information {
+#search-page-information {
 	margin-left: 15px;
+}
+#browse-page-information {
+	padding-left: 20px;
 }
 .filter-options {
 	margin: 10px 0 20px 15px;
@@ -220,17 +222,14 @@ a.md-title:hover {
 	margin-top: 10px;
 }
 #expand-area {
-	margin-top:5px;
+	margin-top: 7px;
 }
-
-#header-subjects {
-	margin-top: 20px;
-	margin-bottom: 0px;
-	padding: 0px 0px 0px 15px;
-}
-#browse-info {
+#browse-subjects-header {
 	font-size: 17px;
 	font-weight: bold;
+	margin-top: 20px;
+	margin-bottom: 0px;
+	padding-left: 35px;
 }
 #subjects-list {
 	border-right: 4px solid #A9A9A9;

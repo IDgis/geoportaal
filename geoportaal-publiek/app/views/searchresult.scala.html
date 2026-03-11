@@ -21,9 +21,9 @@
 
 @date(doc: com.querydsl.core.Tuple) = {@if(doc.get(document.dateDataset) != null) {@sdf.format(doc.get(document.dateDataset))} else {@if(doc.get(document.dateDescription) != null) {@sdf.format(doc.get(document.dateDescription))} else {@Messages.get("metadata.date.none")}}}
 
-<nav class="results-controls" aria-label="Filter opties, sortering en paginering resultaten">
+<div class="results-controls" aria-label="Filter opties, paginering en sortering resultaten">
 	<div class="pull-left">
-		<div class="page-information">
+		<div id="search-page-information">
 			<span>@if(count == 0) {@Messages.get("result.count.label.zero")}
 				@if(count == 1) {@count @Messages.get("result.count.label.one")} @if(count > 1) {
 					@count @Messages.get("result.count.label.multiple")}@if(count > 0) {, pagina @page}</span>
@@ -69,7 +69,7 @@
 		</div>
 	</div>
 	<div class="pull-right">
-		<div>
+		<nav>
 			<ul id="pager-adjusted" class="pager">
 				<li class="@if(start.equals(0)) {disabled paging-disabled}">
 					<a href="@routes.Application.search(0, textSearch, typesString, false, expand, sort)" class="js-nav-button">@Messages.get("button.first")</a>
@@ -84,7 +84,7 @@
 					<a href="@routes.Application.search(startLast, textSearch, typesString, false, expand, sort)" class="js-nav-button">@Messages.get("button.last") (@pageLast)</a>
 				</li>
 			</ul>
-		</div>
+		</nav>
 		<div class="display-options">
 			<div id="expand-area">
 				<label class="checkbox-inline">
@@ -106,7 +106,7 @@
 			</div>
 		</div>
 	</div>
-</nav>
+</div>
 
 <div class="col-md-11 col-md-offset-1">
 	@for(doc <- documents) {

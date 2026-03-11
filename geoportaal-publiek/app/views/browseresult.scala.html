@@ -20,62 +20,51 @@
 
 @date(doc: models.DocSubject) = {@if(doc.getDate() != null) {@sdf.format(doc.getDate().getTime())} else {@Messages.get("metadata.date.none")}}
 
-<div class="col-md-12">
-	<div class="data-navigation">
-		<div class="row">
-			<span class="col-md-3">@if(count == 0) {@Messages.get("result.count.label.zero")}
-				@if(count == 1) {@count @Messages.get("result.count.label.one")} @if(count > 1) {
-					@count @Messages.get("result.count.label.multiple")}@if(count > 0) {, pagina @page}</span>
-			<div class="pull-right">
-				<div id="nav-top" class="row">
-					<nav>
-						<ul id="pager-adjusted" class="pager">
-							<li @if(start.equals(0)) {class="disabled paging-disabled"}>
-								<a href="@routes.Application.browse(0, textSearch, subjectsString, false, expand, sort)">@Messages.get("button.first")</a>
-							</li>
-							<li @if(start.equals(0)) {class="disabled paging-disabled"}>
-								<a href="@routes.Application.browse(startPrevious, textSearch, subjectsString, false, expand, sort)">@Messages.get("button.previous")</a>
-							</li>
-							<li @if(startNext >= count) {class="disabled paging-disabled"}>
-								<a href="@routes.Application.browse(startNext, textSearch, subjectsString, false, expand, sort)">@Messages.get("button.next")</a>
-							</li>
-							<li @if(startNext >= count) {class="disabled paging-disabled"}>
-								<a href="@routes.Application.browse(startLast, textSearch, subjectsString, false, expand, sort)">@Messages.get("button.last") (@pageLast)</a>
-							</li>
-						</ul>
-					</nav>
-				</div>
-				<div class="row" id="expand-area">
-					<label class="checkbox-inline">
-						<input id="js-expand-all" class="js-expand-all-evt" type="checkbox" @if(expand) {checked}>
-						<span id="js-label-expand-all">@Messages.get("results.expand")</span>
-					</label>
-				</div>
-				<div class="row radio">
-					<label>
-						<input type="radio" name="sort-records" id="sort-dataset" value="sortDataset"@if(!"sortDescription".equals(sort)) { checked}>
-						@Messages.get("metadata.sort.dataset")
-					</label>
-				</div>
-				<div class="row radio">
-					<label>
-						<input type="radio" name="sort-records" id="sort-description" value="sortDescription"@if("sortDescription".equals(sort)) { checked}>
-						@Messages.get("metadata.sort.description")
-					</label>
-				</div>
-			</div>
+<div class="results-controls" aria-label="Paginering en sortering resultaten">
+	<span id="browse-page-information">@if(count == 0) {@Messages.get("result.count.label.zero")}
+		@if(count == 1) {@count @Messages.get("result.count.label.one")} @if(count > 1) {
+			@count @Messages.get("result.count.label.multiple")}@if(count > 0) {, pagina @page}</span>
+	<div class="pull-right">
+		<nav>
+			<ul id="pager-adjusted" class="pager">
+				<li @if(start.equals(0)) {class="disabled paging-disabled"}>
+					<a href="@routes.Application.browse(0, textSearch, subjectsString, false, expand, sort)">@Messages.get("button.first")</a>
+				</li>
+				<li @if(start.equals(0)) {class="disabled paging-disabled"}>
+					<a href="@routes.Application.browse(startPrevious, textSearch, subjectsString, false, expand, sort)">@Messages.get("button.previous")</a>
+				</li>
+				<li @if(startNext >= count) {class="disabled paging-disabled"}>
+					<a href="@routes.Application.browse(startNext, textSearch, subjectsString, false, expand, sort)">@Messages.get("button.next")</a>
+				</li>
+				<li @if(startNext >= count) {class="disabled paging-disabled"}>
+					<a href="@routes.Application.browse(startLast, textSearch, subjectsString, false, expand, sort)">@Messages.get("button.last") (@pageLast)</a>
+				</li>
+			</ul>
+		</nav>
+		<div id="expand-area">
+			<label class="checkbox-inline">
+				<input id="js-expand-all" class="js-expand-all-evt" type="checkbox" @if(expand) {checked}>
+				<span id="js-label-expand-all">@Messages.get("results.expand")</span>
+			</label>
+		</div>
+		<div class="radio">
+			<label>
+				<input type="radio" name="sort-records" id="sort-dataset" value="sortDataset"@if(!"sortDescription".equals(sort)) { checked}>
+				@Messages.get("metadata.sort.dataset")
+			</label>
+		</div>
+		<div class="radio">
+			<label>
+				<input type="radio" name="sort-records" id="sort-description" value="sortDescription"@if("sortDescription".equals(sort)) { checked}>
+				@Messages.get("metadata.sort.description")
+			</label>
 		</div>
 	</div>
 </div>
 
-<div class="row" id="header-subjects">
-	<div class="col-md-12">
-		<span id="browse-info">@Messages.get("browse.subject.list.label")</span>
-	</div>
-</div>
-
 <div class="row">
-	<div class="col-md-4" id="subjects-list">
+	<h4 id="browse-subjects-header">@Messages.get("browse.subject.list.label")</h4>
+	<div class="col-md-4" id="subjects-list" aria-labelledby="browse-subjects-header">
 		<div id="subject-selection-buttons">
 			<button class="button-ovs js-subject-select-all" type="button">@Messages.get("browse.button.select.all")</button>
 			<button class="button-ovs js-subject-select-none" type="button">@Messages.get("browse.button.select.nothing")</button>
@@ -137,24 +126,22 @@
 		}
 		
 		@if(count != 0) {
-			<div id="nav-bottom">
-				<nav>
-					<ul id="pager-adjusted" class="pager">
-						<li @if(start.equals(0)) {class="disabled paging-disabled"}>
-							<a href="@routes.Application.browse(0, textSearch, subjectsString, false, expand, sort)">@Messages.get("button.first")</a>
-						</li>
-						<li @if(start.equals(0)) {class="disabled paging-disabled"}>
-							<a href="@routes.Application.browse(startPrevious, textSearch, subjectsString, false, expand, sort)">@Messages.get("button.previous")</a>
-						</li>
-						<li @if(startNext >= count) {class="disabled paging-disabled"}>
-							<a href="@routes.Application.browse(startNext, textSearch, subjectsString, false, expand, sort)">@Messages.get("button.next")</a>
-						</li>
-						<li @if(startNext >= count) {class="disabled paging-disabled"}>
-							<a href="@routes.Application.browse(startLast, textSearch, subjectsString, false, expand, sort)">@Messages.get("button.last") (@pageLast)</a>
-						</li>
-					</ul>
-				</nav>
-			</div>
+			<nav aria-label="Paginering resultaten">
+				<ul id="pager-adjusted" class="pager">
+					<li @if(start.equals(0)) {class="disabled paging-disabled"}>
+						<a href="@routes.Application.browse(0, textSearch, subjectsString, false, expand, sort)">@Messages.get("button.first")</a>
+					</li>
+					<li @if(start.equals(0)) {class="disabled paging-disabled"}>
+						<a href="@routes.Application.browse(startPrevious, textSearch, subjectsString, false, expand, sort)">@Messages.get("button.previous")</a>
+					</li>
+					<li @if(startNext >= count) {class="disabled paging-disabled"}>
+						<a href="@routes.Application.browse(startNext, textSearch, subjectsString, false, expand, sort)">@Messages.get("button.next")</a>
+					</li>
+					<li @if(startNext >= count) {class="disabled paging-disabled"}>
+						<a href="@routes.Application.browse(startLast, textSearch, subjectsString, false, expand, sort)">@Messages.get("button.last") (@pageLast)</a>
+					</li>
+				</ul>
+			</nav>
 		}
 	</div>
 </div>
