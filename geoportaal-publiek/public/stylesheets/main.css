@@ -206,7 +206,7 @@ a.md-title:hover {
 #js-search-results-all {
 	overflow: auto;
 }
-.data-control {
+.results-controls {
 	margin: 10px 0 10px -15px;
 	overflow: auto;
 }

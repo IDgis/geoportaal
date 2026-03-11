@@ -17,7 +17,7 @@
 		<p>@play.Play.application().configuration().getString("portal.index.intro")</p>
 	</div>
 	
-	<section>
+	<section aria-labelledby="search-label">
 		@helper.form(action = routes.Application.searchText(), 'class -> "search-bar col-md-offset-1") {
 			<div class="form-group">
 				<label for="search-input" id="search-label">@Messages.get("search.label")</label>
