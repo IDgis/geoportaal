@@ -1,7 +1,17 @@
-@(typeName: String,
-	uuid: String
+@(
+	title: String,
+	typeName: String,
+	uuid: String,
+	typeService: String
 )
 	
 @import play.i18n._
 
-<a class="link" href="@routes.Application.getMetadata(typeName, uuid)" target="_blank">@Messages.get("button.metadata")</a>
+<a
+	class="link"
+	href="@routes.Application.getMetadata(typeName, uuid)"
+	target="_blank"
+	aria-label="@title@if("service".equals(typeName)){@if("view".equals(typeService)){ - WMS}@if("download".equals(typeService)){ - WFS}}"
+>
+	@Messages.get("button.metadata")
+</a>
