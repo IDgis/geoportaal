@@ -32,6 +32,7 @@ public class DublinCoreXML {
 	private Date dateValidEnd;
 	private List<String> subjects;
 	private List<String> themes;
+	private List<String> wooThemes;
 	private String language;
 	private String lowerCorner;
 	private String upperCorner;
@@ -67,9 +68,32 @@ public class DublinCoreXML {
 	 * @param lowerCorner the lower corner of the coordinates
 	 * @param upperCorner the upper corner of the coordinates
 	 */
-	public DublinCoreXML(String identifier, String title, String description, String location, String fileId, List<String> attachments, String type, 
-		String typeResearch, String creator, String publisher, String contributor, String rights, String useLimitation, String format, String source, Date date,
-		Date dateIssued, Date dateValidStart, Date dateValidEnd, List<String> subjects, List<String> themes, String language, String lowerCorner, String upperCorner) {
+	public DublinCoreXML(
+			String identifier, 
+			String title, 
+			String description, 
+			String location, 
+			String fileId, 
+			List<String> attachments, 
+			String type, 
+			String typeResearch, 
+			String creator, 
+			String publisher, 
+			String contributor, 
+			String rights, 
+			String useLimitation, 
+			String format, 
+			String source, Date date,
+			Date dateIssued, 
+			Date dateValidStart, 
+			Date dateValidEnd, 
+			List<String> subjects, 
+			List<String> themes, 
+			List<String> wooThemes, 
+			String language, 
+			String lowerCorner, 
+			String upperCorner
+		) {
 		super();
 		this.identifier = identifier;
 		this.title = title;
@@ -92,6 +116,7 @@ public class DublinCoreXML {
 		this.dateValidEnd = dateValidEnd;
 		this.subjects = subjects;
 		this.themes = themes;
+		this.wooThemes = wooThemes;
 		this.language = language;
 		this.lowerCorner = lowerCorner;
 		this.upperCorner = upperCorner;
@@ -263,6 +288,14 @@ public class DublinCoreXML {
 	
 	public void setThemes(List<String> themes) {
 		this.themes = themes;
+	}
+	
+	public List<String> getWooThemes() {
+		return wooThemes;
+	}
+	
+	public void setWooThemes(List<String> wooThemes) {
+		this.wooThemes = wooThemes;
 	}
 
 	public String getLanguage() {

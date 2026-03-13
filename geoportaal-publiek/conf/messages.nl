@@ -23,7 +23,8 @@ tsv.language=dutch
 metadata.type.dataset=GIS bestanden
 metadata.type.dataset.archived=GIS bestanden in archief
 metadata.type.service=Services
-metadata.type.dc=Overige datasets
+metadata.type.dc.map=Statische kaarten
+metadata.type.dc.rest=Overige datasets
 
 metadata.sort.dataset=Sorteer op datum van dataset
 metadata.sort.description=Sorteer op datum van beschrijving

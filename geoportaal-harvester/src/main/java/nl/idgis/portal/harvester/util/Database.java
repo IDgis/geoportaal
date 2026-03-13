@@ -112,6 +112,8 @@ public class Database {
 				subjectItemName = subjectItem.substring("subject: ".length());
 			} else if(subjectItem.startsWith("theme: ")) {
 				// do nothing
+			} else if(subjectItem.startsWith("woo theme: ")) {
+				// do nothing
 			} else {
 				subjectItemName = subjectItem;
 			}
@@ -207,7 +209,8 @@ public class Database {
 			String creator,
 			String description,
 			String thumbnail,
-			Integer accessId) {
+			Integer accessId,
+			String typeInformation) {
 		qf.insert(document)
 			.set(document.uuid, uuid)
 			.set(document.mdTypeId, mdTypeId)
@@ -218,6 +221,7 @@ public class Database {
 			.set(document.description, description)
 			.set(document.thumbnail, thumbnail)
 			.set(document.accessId, accessId)
+			.set(document.typeInformation, typeInformation)
 			.execute();
 	}
 	

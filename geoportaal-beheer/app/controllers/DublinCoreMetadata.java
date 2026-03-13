@@ -8,18 +8,22 @@ import static models.QMdFormat.mdFormat;
 import static models.QMdFormatLabel.mdFormatLabel;
 import static models.QMdSubject.mdSubject;
 import static models.QMdTheme.mdTheme;
+import static models.QMdWooTheme.mdWooTheme;
 import static models.QMetadata.metadata;
 import static models.QRights.rights;
 import static models.QRightsLabel.rightsLabel;
 import static models.QStatus.status;
 import static models.QSubject.subject;
 import static models.QTheme.theme;
+import static models.QThemeLabel.themeLabel;
 import static models.QTypeInformation.typeInformation;
 import static models.QTypeInformationLabel.typeInformationLabel;
 import static models.QTypeResearch.typeResearch;
 import static models.QTypeResearchLabel.typeResearchLabel;
 import static models.QUseLimitation.useLimitation;
 import static models.QUseLimitationLabel.useLimitationLabel;
+import static models.QWooTheme.wooTheme;
+import static models.QWooThemeLabel.wooThemeLabel;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -212,8 +216,18 @@ public class DublinCoreMetadata extends SimpleWebDAV {
 			List<String> themes = tx.select(theme.name)
 				.from(mdTheme)
 				.join(theme).on(mdTheme.theme.eq(theme.id))
+				.join(themeLabel).on(theme.id.eq(themeLabel.themeId))
 				.where(mdTheme.metadataId.eq(datasetRow.get(metadata.id)))
-				.orderBy(theme.name.asc())
+				.orderBy(themeLabel.label.asc())
+				.fetch();
+			
+			// Fetches the woo themes
+			List<String> wooThemes = tx.select(wooTheme.name)
+				.from(mdWooTheme)
+				.join(wooTheme).on(mdWooTheme.wooTheme.eq(wooTheme.id))
+				.join(wooThemeLabel).on(wooTheme.id.eq(wooThemeLabel.wooThemeId))
+				.where(mdWooTheme.metadataId.eq(datasetRow.get(metadata.id)))
+				.orderBy(wooThemeLabel.label.asc())
 				.fetch();
 			
 			// Fetches the values of the constants table
@@ -248,6 +262,7 @@ public class DublinCoreMetadata extends SimpleWebDAV {
 					dve,
 					subjects,
 					themes,
+					wooThemes,
 					constantsRow.get(constants.language),
 					lowerCorner,
 					upperCorner

@@ -21,7 +21,6 @@
 		<dc:rights>@dcx.getRights()</dc:rights>
 		<dc:rights rdf:datatype="@useLimitation">@dcx.getUseLimitation()</dc:rights>
 		<dc:format>@dcx.getFormat()</dc:format> 
-		<dc:source>@dcx.getSource()</dc:source>
 		@if(dcx.getDate() != null) {
 			<dc:date>@sdf.format(dcx.getDate().getTime())</dc:date>
 		}
@@ -41,6 +40,9 @@
 		}
 		@for(theme <- dcx.getThemes()) {
 			<dc:subject>theme: @theme</dc:subject>
+		}
+		@for(wooTheme <- dcx.getWooThemes()) {
+			<dc:subject>woo theme: @wooTheme</dc:subject>
 		}
 		<dc:language>@dcx.getLanguage()</dc:language>
 		<ows:WGS84BoundingBox>
