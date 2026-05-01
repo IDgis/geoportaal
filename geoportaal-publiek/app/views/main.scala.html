@@ -25,7 +25,7 @@
 				<a href="/">
 					<img 
 						src="@routes.Assets.versioned(play.Play.application().configuration().getString("portal.client.logo.path"))" 
-						alt="@routes.Assets.versioned(play.Play.application().configuration().getString("portal.client.logo.alt"))"
+						alt="@play.Play.application().configuration().getString("portal.client.logo.alt")"
 					/>
 				</a>
 				@if("intern".equals(play.Play.application().configuration().getString("portal.access"))) {
