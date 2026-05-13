@@ -24,6 +24,10 @@ nav:after {
 	display:block;
 	clear:both;
 }
+h2 {
+	font-size: 20px;
+	font-weight: bold;
+}
 p {
 	line-height:25px;
 	font-size:16px;
