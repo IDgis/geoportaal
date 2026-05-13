@@ -57,9 +57,9 @@ about.paragraph.1.2=Een groot aantal datasets wordt vrij beschikbaar gesteld, zo
 about.paragraph.1.3=Voor de geodatasets en de services heb je speciale software nodig. Hiervoor wordt de verzamelnaam "GIS" gebruikt (geografisch informatiesysteem). Een veel gebruikt GIS is het systeem ARCGIS van het bedrijf ESRI. Maar er zijn ook "open source" GIS systemen. Deze zijn veelal gratis. Een veelgebruikt gratis GIS is bijvoorbeeld QGIS.
 about.paragraph.1.4=De datasets zijn veelal te downloaden, zodat je ze met een GIS verder kan gebruiken.
 about.paragraph.1.5=Voor de andere kaarten (overige datasets) heb je geen GIS nodig. Dit zijn plaatjes, meestal in de vorm van een PDF. Je kan dit soort bestanden bekijken met bijvoorbeeld Adobe reader.
-about.paragraph.header.2=Over metadata:
+about.paragraph.header.2=Over metadata
 about.paragraph.2.1=“Metadata” is de term die bij kaarten vaak wordt gebruikt voor de beschrijving van kaarten. Om het delen van gegevens makkelijker te maken, zijn standaarden gemaakt voor de beschrijving van kaarten. In technische termen: ISO19115 en ISO19119. Deze standaarden worden beheerd door een onafhankelijke organisatie (Geonovum: <a class="link" href="http://www.geonovum.nl" target="_blank">http://www.geonovum.nl</a>).
-about.paragraph.header.3=Over downloaden:
+about.paragraph.header.3=Over downloaden
 about.paragraph.3.1=De bestanden kan je in veel gevallen op je eigen pc opslaan. Dat is handig, omdat je dan zelf de data verder kan bewerken, analyseren of weergeven. Precies zoals jij dat wilt, voor je eigen doeleinden.
 about.paragraph.3.2=Gebruik hiervoor de knop “download”. Voor gebruik van dit soort gegevens is speciale software nodig. Dat wordt vaak een GIS genoemd (Geografisch Informatie Systeem). Veel gebruikte systemen zijn Arcgis en QGis. Voor meer informatie over dit soort systemen, zie: <a class="link" href="https://nl.wikipedia.org/wiki/Geografisch_informatiesysteem" target="_blank">https://nl.wikipedia.org/wiki/Geografisch_informatiesysteem</a>.
 about.paragraph.3.3=Bij de download kan je kiezen uit verschillend formaten:
@@ -72,9 +72,10 @@ about.paragraph.3.3.option.6=<b>GML</b> (Geography Markup Language, een open sta
 about.paragraph.3.3.option.7=<b>KML</b> (Keyhole Markup Language, te gebruiken in Google Earth)
 about.paragraph.3.4=Door meerdere formaten beschikbaar te stellen, kan je zelf kiezen welk bestandsformaat het beste past bij de software die jij zelf wilt gebruiken.
 about.paragraph.3.5=Heb je niet de beschikking over dergelijke GIS-software, maar wil je toch kaarten zien? Dat kan, omdat er ook veel pdf-bestanden beschikbaar gesteld worden. Zie hiervoor verder bij de toelichting over de “overige datasets”.
-about.paragraph.header.4=Over overige datasets:
+about.paragraph.header.4=Over overige datasets
 about.paragraph.4.1=Naast bestanden en services kan je ook “overige datasets” vinden in het Geoportaal. Dat zijn kaarten (meestal pdf’s) die gemaakt zijn op basis van de bestanden en services. Deze kaarten worden speciaal gemaakt voor diverse communicatie-doeleinden.
 about.paragraph.4.2=Je kan dit soort kaarten eenvoudig bekijken. Je hebt daarvoor geen geavanceerd GIS systeem voor nodig. Een pdf kan je openen met een PDF reader. Deze readers worden gratis beschikbaar gesteld, bijvoorbeeld door het bedrijf Adobe (<a class="link" href="http://www.adobe.nl" target="_blank">http://www.adobe.nl</a>).  De metadata van deze overige datasets wordt ontsloten via de Dublin-core standaard.
+about.paragraph.header.5=Toegankelijkheid van deze website
 
 contact.header=Contact
 contact.header.intern=Intern: Contact

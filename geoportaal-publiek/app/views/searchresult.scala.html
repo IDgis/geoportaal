@@ -123,7 +123,7 @@
 					<p>
 						@if(doc.get(document.thumbnail) != null) {
 							<a href="@routes.Application.getMetadata(doc.get(mdType.name), doc.get(document.uuid))" target="_blank">
-								<img src="@doc.get(document.thumbnail)" class="md-thumbnail">
+								<img src="@doc.get(document.thumbnail)" alt="" class="md-thumbnail">
 							</a>
 						}
 						
