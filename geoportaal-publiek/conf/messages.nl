@@ -20,6 +20,8 @@ results.expand=Resultaten uitklappen
 
 tsv.language=dutch
 
+metadata.link.arialabel.prefix=Meer informatie over
+
 metadata.type.dataset=GIS bestanden
 metadata.type.dataset.archived=GIS bestanden in archief
 metadata.type.service=Services
