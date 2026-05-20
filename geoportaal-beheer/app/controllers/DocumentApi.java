@@ -172,16 +172,16 @@ public class DocumentApi extends Controller {
 			}
 			
 			if ("dateAsc".equals(sort)) {
-				datasetQuery.orderBy(metadata.dateSourcePublication.asc());
+				datasetQuery.orderBy(metadata.dateSourcePublication.asc(), metadata.title.asc());
 			}
 			if ("dateDesc".equals(sort)) {
-				datasetQuery.orderBy(metadata.dateSourcePublication.desc());
+				datasetQuery.orderBy(metadata.dateSourcePublication.desc(), metadata.title.asc());
 			}
 			if ("titleAsc".equals(sort)) {
-				datasetQuery.orderBy(metadata.title.asc());
+				datasetQuery.orderBy(metadata.title.asc(), metadata.dateSourcePublication.desc());
 			}
 			if ("titleDesc".equals(sort)) {
-				datasetQuery.orderBy(metadata.title.desc());
+				datasetQuery.orderBy(metadata.title.desc(), metadata.dateSourcePublication.desc());
 			}
 			
 			root.put("count", datasetQuery.fetchCount());
