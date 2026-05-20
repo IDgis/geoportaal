@@ -207,8 +207,6 @@ a.md-title:hover {
 }
 .results-controls {
 	overflow: auto;
-}
-.toolbar {
 	display: grid;
 	grid-template-columns: 1fr auto;
 	align-items: center;
@@ -219,11 +217,12 @@ a.md-title:hover {
 #browse-page-information {
 	padding-left: 20px;
 }
+.browse-expand-sort {
+	grid-column: 2;
+	margin-top: 5px;
+}
 .filter-options {
 	margin: 5px 0 20px 15px;
-}
-#expand-area {
-	margin-top: 7px;
 }
 #browse-subjects-header {
 	font-size: 17px;
