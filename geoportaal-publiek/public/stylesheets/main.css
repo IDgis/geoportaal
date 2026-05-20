@@ -14,11 +14,6 @@ body {
 body.background-acceptance {
 	background-color:#f3f7d4;
 }
-nav {
-	margin-left:auto;
-	margin-right:auto;
-	width:100%;
-}
 nav:after {
 	content:'';
 	display:block;
@@ -212,6 +207,9 @@ a.md-title:hover {
 }
 .results-controls {
 	overflow: auto;
+	display: grid;
+	grid-template-columns: 1fr auto;
+	align-items: center;
 }
 #search-page-information {
 	margin-left: 15px;
@@ -219,14 +217,12 @@ a.md-title:hover {
 #browse-page-information {
 	padding-left: 20px;
 }
+.browse-expand-sort {
+	grid-column: 2;
+	margin-top: 5px;
+}
 .filter-options {
-	margin: 10px 0 20px 15px;
-}
-.display-options {
-	margin-top: 10px;
-}
-#expand-area {
-	margin-top: 7px;
+	margin: 5px 0 20px 15px;
 }
 #browse-subjects-header {
 	font-size: 17px;
