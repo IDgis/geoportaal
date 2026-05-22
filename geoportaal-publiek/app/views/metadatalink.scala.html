@@ -11,7 +11,7 @@
 	class="link"
 	href="@routes.Application.getMetadata(typeName, uuid)"
 	target="_blank"
-	aria-label="@title@if("service".equals(typeName)){@if("view".equals(typeService)){ - WMS}@if("download".equals(typeService)){ - WFS}}"
+	aria-label="@Messages.get("metadata.link.arialabel.prefix") @title@if("service".equals(typeName)){@if("view".equals(typeService)){ - WMS}@if("download".equals(typeService)){ - WFS}}"
 >
 	@Messages.get("button.metadata")
 </a>
