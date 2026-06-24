@@ -208,7 +208,7 @@ public class Application extends Controller {
 			}
 			
 			if(originalTypes.contains("dcMap") && !originalTypes.contains("dcRest")) {
-				queryDocuments.where(document.typeInformation.isNull().or(document.typeInformation.eq("Kaart")));
+				queryDocuments.where(document.typeInformation.eq("Kaart"));
 			} else if(!originalTypes.contains("dcMap") && originalTypes.contains("dcRest")) {
 				queryDocuments.where(document.typeInformation.isNull().or(document.typeInformation.ne("Kaart")));
 			}
