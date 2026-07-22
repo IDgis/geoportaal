@@ -13,6 +13,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -467,7 +469,8 @@ public class Application extends Controller {
 	public Promise<Result> getAttachment(String uuid, String attachmentName) throws IOException {
 		String portalAccess = configuration.getString("portal.access");
 		String adminUrl = configuration.getString("admin.url");
-		String url = adminUrl + "/attachment/" + uuid + "/" + attachmentName.replaceAll(" ", "%20");
+		String encodedAttachmentName = URLEncoder.encode(attachmentName, StandardCharsets.UTF_8.name()).replace("+", "%20");
+		String url = adminUrl + "/attachment/" + uuid + "/" + encodedAttachmentName;
 		
 		WSRequest request = ws.url(url);
 		
