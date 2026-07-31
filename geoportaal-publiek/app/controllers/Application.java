@@ -149,7 +149,11 @@ public class Application extends Controller {
 		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
 		
 		String[] typesArray = typesString.split("\\++");
-		List<String> originalTypes = Arrays.asList(typesArray);
+		List<String> originalTypes = new ArrayList<String>(Arrays.asList(typesArray));
+		// DC value needs to be removed to avoid unexpected behavior. Otherwise it can return 
+		// all DC documents without dcMap and dcRest (the only valid options for DC documents).
+		originalTypes.remove("dc");
+		
 		List<String> types = new ArrayList<String>(originalTypes);
 		types.remove("dcMap");
 		types.remove("dcRest");
