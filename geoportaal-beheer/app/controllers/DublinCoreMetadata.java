@@ -309,25 +309,20 @@ public class DublinCoreMetadata extends SimpleWebDAV {
 			// Fetches the message of the use limitation attribute value
 			String useLimitation = Messages.get("xml.uselimitation");
 			
-			String stylesheetIntern = configuration.getString("geoportaal.stylesheet.intern.url");
-			String stylesheetExtern = configuration.getString("geoportaal.stylesheet.extern.url");
-			
 			// Returns the XML page
 			if("1".equals(headerTrusted)) {
 				return Optional.<Resource>of(new DefaultResource("application/xml", 
-						views.xml.metadataintern.render(dcx, sdf, useLimitation, false, stylesheetIntern).body().getBytes("UTF-8")));
+						views.xml.metadata.render(dcx, sdf, useLimitation, true).body().getBytes("UTF-8")));
 			} else {
 				return Optional.<Resource>of(new DefaultResource("application/xml", 
-						views.xml.metadataextern.render(dcx, sdf, useLimitation, false, stylesheetExtern).body().getBytes("UTF-8")));
+						views.xml.metadata.render(dcx, sdf, useLimitation, false).body().getBytes("UTF-8")));
 			}
 		});
 	}
 	
-	public Html getMetadataInternal(String name, boolean noStyle) throws MalformedURLException, IOException {
+	public Html getMetadataInternal(String name) throws MalformedURLException, IOException {
 		// Generate metadata
 		DublinCoreXML dcx = generateMetadata(name, OriginRequest.ADMIN);
-		
-		String stylesheet = configuration.getString("geoportaal.stylesheet.intern.url");
 		
 		// Create an object to easily format dates
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -336,6 +331,6 @@ public class DublinCoreMetadata extends SimpleWebDAV {
 		String useLimitation = Messages.get("xml.uselimitation");
 		
 		// Returns the XML page
-		return views.xml.metadataintern.render(dcx, sdf, useLimitation, noStyle, stylesheet);
+		return views.xml.metadata.render(dcx, sdf, useLimitation, true);
 	}
 }

@@ -28,6 +28,7 @@ import static models.QWooThemeLabel.wooThemeLabel;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URL;
 import java.nio.file.Files;
 import java.sql.Timestamp;
 import java.text.DecimalFormat;
@@ -41,6 +42,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import javax.inject.Inject;
+import javax.xml.transform.TransformerException;
 
 import com.querydsl.core.Tuple;
 import com.querydsl.sql.SQLQuery;
@@ -54,12 +56,14 @@ import play.data.DynamicForm;
 import play.data.Form;
 import play.i18n.Messages;
 import play.libs.ws.WSClient;
+import play.Configuration;
 import play.mvc.Controller;
 import play.mvc.Http.MultipartFormData.FilePart;
 import play.mvc.Result;
 import play.mvc.Security;
 import play.twirl.api.Html;
 import util.QueryDSL;
+import util.XslTransformer;
 import views.html.*;
 
 /**
@@ -72,6 +76,7 @@ import views.html.*;
 public class Metadata extends Controller {
 	@Inject QueryDSL q;
 	@Inject WSClient ws;
+	private final Configuration configuration = play.Play.application().configuration();
 	
 	/**
 	 * Render the form of a new metadata record
@@ -997,10 +1002,20 @@ public class Metadata extends Controller {
 		});
 	}
 	
-	public Result getMetadata(String uuid, Boolean noStyle) throws MalformedURLException, IOException {
-		Html h = new DublinCoreMetadata(q).getMetadataInternal(uuid + ".xml", noStyle);
+	public Result getMetadata(String uuid) throws IOException {
+		Html xml = new DublinCoreMetadata(q).getMetadataInternal(uuid + ".xml");
 		
-		return ok(h).as("application/xml");
+		try {
+			String xslUrl = configuration.getString("geoportaal.stylesheet.intern.url");
+			String base = routes.Metadata.getMetadata(uuid).absoluteURL(request());
+			String absoluteXslUrl = new URL(new URL(base), xslUrl).toString();
+			
+			String html = XslTransformer.transform(xml.body(), absoluteXslUrl);
+			return ok(html).as("text/html; charset=utf-8");
+		} catch (TransformerException e) {
+			Logger.error("XSLT transformation failed for metadata " + uuid, e);
+			return internalServerError("Could not display the metadata");
+		}
 	}
 	
 	/**
