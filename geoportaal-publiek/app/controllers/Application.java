@@ -494,7 +494,7 @@ public class Application extends Controller {
 		});
 	}
 	
-	public Promise<Result> getMetadata(String type, String uuid, Boolean noStyle) throws MalformedURLException, IOException {
+	public Promise<Result> getMetadata(String type, String uuid) throws MalformedURLException, IOException {
 		String portalAccess = configuration.getString("portal.access");
 		
 		String url = getMetadataUrl(type);
@@ -569,21 +569,6 @@ public class Application extends Controller {
 						
 						String finalContent = sb.substring(indexBegin, indexEnd);
 						nodelist.item(node).setNodeValue(metadataPrefix + finalContent);
-					}
-				}
-			}
-			
-			if(noStyle) {
-				// remove existing stylesheet
-				NodeList children = d.getChildNodes();
-				for(int i = 0; i < children.getLength(); i++) {
-					Node n = children.item(i);
-					
-					if(n.getNodeType() == Node.PROCESSING_INSTRUCTION_NODE) {
-						ProcessingInstruction pi = (ProcessingInstruction)n;
-						if("xml-stylesheet".equals(pi.getTarget())) {
-							d.removeChild(pi);
-						}
 					}
 				}
 			}
