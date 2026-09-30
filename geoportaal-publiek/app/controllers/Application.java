@@ -13,6 +13,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
+import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.sql.Timestamp;
@@ -29,6 +30,7 @@ import javax.xml.namespace.NamespaceContext;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
@@ -49,6 +51,7 @@ import com.querydsl.sql.SQLQuery;
 import models.DocSubject;
 import models.Search;
 import play.Configuration;
+import play.Logger;
 import play.Routes;
 import play.data.Form;
 import play.i18n.Lang;
@@ -60,6 +63,7 @@ import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
 import util.QueryDSL;
+import util.XslTransformer;
 import views.html.*;
 
 public class Application extends Controller {
@@ -494,12 +498,15 @@ public class Application extends Controller {
 		});
 	}
 	
-	public Promise<Result> getMetadata(String type, String uuid) throws MalformedURLException, IOException {
+	public Promise<Result> getMetadata(String type, String uuid) throws IOException {
 		String portalAccess = configuration.getString("portal.access");
 		
 		String url = getMetadataUrl(type);
-			
-		if(url == null) {
+		
+		String base = routes.Application.getMetadata(type, uuid).absoluteURL(request());
+		String absoluteXslUrl = getStylesheetUrl(type, base);
+		
+		if (url == null || absoluteXslUrl == null) {
 			return Promise.pure(notFound("404 - not found"));
 		}
 		
@@ -518,9 +525,6 @@ public class Application extends Controller {
 			
 			DocumentBuilder db = dbf.newDocumentBuilder();
 			Document d = db.parse(response.getBodyAsStream());
-			
-			TransformerFactory tf = TransformerFactory.newInstance();
-			Transformer t = tf.newTransformer();
 			
 			if("service".equals(type)) {
 				XPathFactory factory = XPathFactory.newInstance();
@@ -573,21 +577,42 @@ public class Application extends Controller {
 				}
 			}
 			
-			ByteArrayOutputStream boas = new ByteArrayOutputStream();
-			t.transform(new DOMSource(d), new StreamResult(boas));
-			boas.close();
-			
-			return ok(boas.toByteArray()).as("UTF-8").as("application/xml");
+			try {
+				String html = XslTransformer.transform(new DOMSource(d), absoluteXslUrl);
+				return ok(html).as("text/html; charset=utf-8");
+			} catch (TransformerException e) {
+				Logger.error("XSLT transformation failed for " + type + " " + uuid + " (" + absoluteXslUrl + ")", e);
+				return internalServerError("Could not display the metadata");
+			}
 		});
 	}
 	
-	public String getMetadataUrl(String type) {
+	private String getMetadataUrl(String type) {
 		return q.withTransaction(tx -> {
 			return tx.select(mdType.url)
 				.from(mdType)
 				.where(mdType.name.eq(type))
 				.fetchOne();
 		});
+	}
+	
+	private String getStylesheetUrl(String type, String base) throws MalformedURLException {
+		switch (type) {
+			case "dataset":
+			case "service":
+			case "dc":
+				break;
+			default:
+				return null;
+		}
+		
+		String configured = configuration.getString("portal.stylesheet." + type + ".url");
+		if (configured == null || configured.isEmpty()) {
+			Logger.warn("No stylesheet configured for metadata type '" + type + "'");
+			return null;
+		}
+		
+		return new URL(new URL(base), configured).toString();
 	}
 	
 	/**
