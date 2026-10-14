@@ -25,6 +25,8 @@ public class XslTransformer {
 
 	public static String transform(Source xml, String xslUrl) throws TransformerException {
 		Transformer t = createFactory().newTransformer(new StreamSource(xslUrl));
+		t.setOutputProperty(OutputKeys.METHOD, "html");
+		t.setOutputProperty(OutputKeys.DOCTYPE_SYSTEM, "about:legacy-compat");
 		StringWriter out = new StringWriter();
 		t.transform(xml, new StreamResult(out));
 		return out.toString();
