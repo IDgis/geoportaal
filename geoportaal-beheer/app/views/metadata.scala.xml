@@ -1,5 +1,5 @@
-@(dcx: models.DublinCoreXML, sdf: java.text.SimpleDateFormat, useLimitation: String, noStyle: Boolean, stylesheet: String)<?xml version="1.0" encoding="UTF-8"?>
-@if(!noStyle){<?xml-stylesheet type="text/xsl" href="@stylesheet"?>}<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" 
+@(dcx: models.DublinCoreXML, sdf: java.text.SimpleDateFormat, useLimitation: String, isInternal: Boolean)<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" 
 	xmlns:dcmiBox="http://dublincore.org/documents/2000/07/11/dcmi-box/" xmlns:dcterms="http://purl.org/dc/terms/" 
 	xmlns:ows="http://www.opengis.net/ows">
 	<rdf:Description rdf:about="http://dublincore.org/">
@@ -20,7 +20,10 @@
 		<dc:contributor>@dcx.getContributor()</dc:contributor>
 		<dc:rights>@dcx.getRights()</dc:rights>
 		<dc:rights rdf:datatype="@useLimitation">@dcx.getUseLimitation()</dc:rights>
-		<dc:format>@dcx.getFormat()</dc:format> 
+		<dc:format>@dcx.getFormat()</dc:format>
+		@if(isInternal) {
+			<dc:source>@dcx.getSource()</dc:source>
+		}
 		@if(dcx.getDate() != null) {
 			<dc:date>@sdf.format(dcx.getDate().getTime())</dc:date>
 		}

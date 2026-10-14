@@ -91,7 +91,7 @@ require([
 		
 		on(win.doc, '.delete-attachment-button:click', function(e) {
 			var attToDel = query(this).parents('.attachment-file')[0];
-			var attachmentName = domAttr.get(query('~ span', this)[0], 'innerHTML');
+			var attachmentName = domAttr.get(query('~ span', this)[0], 'textContent');
 			var idDelEl = domConstruct.create('input');
 			
 			domAttr.set(idDelEl, 'type', 'hidden');
