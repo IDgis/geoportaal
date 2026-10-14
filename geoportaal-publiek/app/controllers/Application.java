@@ -498,12 +498,12 @@ public class Application extends Controller {
 		});
 	}
 	
-	public Promise<Result> getMetadata(String type, String uuid) throws IOException {
+	public Promise<Result> getMetadata(String type, String uuid, Boolean noStyle) throws IOException {
 		String portalAccess = configuration.getString("portal.access");
 		
 		String url = getMetadataUrl(type);
 		
-		String base = routes.Application.getMetadata(type, uuid).absoluteURL(request());
+		String base = routes.Application.getMetadata(type, uuid, false).absoluteURL(request());
 		String absoluteXslUrl = getStylesheetUrl(type, base);
 		
 		if (url == null || absoluteXslUrl == null) {
@@ -575,6 +575,16 @@ public class Application extends Controller {
 						nodelist.item(node).setNodeValue(metadataPrefix + finalContent);
 					}
 				}
+			}
+			
+			if(noStyle) {
+				TransformerFactory tf = TransformerFactory.newInstance();
+				Transformer t = tf.newTransformer();
+
+				ByteArrayOutputStream out = new ByteArrayOutputStream();
+				t.transform(new DOMSource(d), new StreamResult(out));
+
+				return ok(out.toByteArray()).as("application/xml; charset=utf-8");
 			}
 			
 			try {

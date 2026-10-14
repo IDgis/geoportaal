@@ -1002,12 +1002,16 @@ public class Metadata extends Controller {
 		});
 	}
 	
-	public Result getMetadata(String uuid) throws IOException {
+	public Result getMetadata(String uuid, Boolean noStyle) throws IOException {
 		Html xml = new DublinCoreMetadata(q).getMetadataInternal(uuid + ".xml");
+		
+		if(noStyle) {
+			return ok(xml).as("text/xml; charset=utf-8");
+		}
 		
 		try {
 			String xslUrl = configuration.getString("geoportaal.stylesheet.intern.url");
-			String base = routes.Metadata.getMetadata(uuid).absoluteURL(request());
+			String base = routes.Metadata.getMetadata(uuid, false).absoluteURL(request());
 			String absoluteXslUrl = new URL(new URL(base), xslUrl).toString();
 			
 			String html = XslTransformer.transform(xml.body(), absoluteXslUrl);
